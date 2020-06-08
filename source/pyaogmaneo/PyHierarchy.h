@@ -69,12 +69,12 @@ struct PyLayerDesc {
     {}
 };
 
-class PyHierarchy32 {
+class PyHierarchy {
 private:
-    aon::Hierarchy<aon::ColSize32> h;
+    aon::Hierarchy h;
 
 public:
-    PyHierarchy32(
+    PyHierarchy(
         const std::vector<PyInt3> &inputSizes,
         const std::vector<int> &inputTypes,
         const std::vector<PyLayerDesc> &layerDescs

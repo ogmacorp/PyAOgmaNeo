@@ -10,7 +10,7 @@
 
 using namespace pyaon;
 
-PyHierarchy32::PyHierarchy32(
+PyHierarchy::PyHierarchy(
     const std::vector<PyInt3> &inputSizes,
     const std::vector<int> &inputTypes,
     const std::vector<PyLayerDesc> &layerDescs
@@ -36,7 +36,7 @@ PyHierarchy32::PyHierarchy32(
         }
     }
 
-    aon::Array<aon::HierarchyLayerDesc> cLayerDescs(layerDescs.size());
+    aon::Array<aon::Hierarchy::LayerDesc> cLayerDescs(layerDescs.size());
 
     for (int l = 0; l < layerDescs.size(); l++) {
         cLayerDescs[l].hiddenSize = aon::Int3(layerDescs[l].hiddenSize.x, layerDescs[l].hiddenSize.y, layerDescs[l].hiddenSize.z);
@@ -51,7 +51,7 @@ PyHierarchy32::PyHierarchy32(
     h.initRandom(cInputSizes, cInputTypes, cLayerDescs);
 }
 
-void PyHierarchy32::step(
+void PyHierarchy::step(
     const std::vector<std::vector<unsigned char> > &inputCs,
     bool learnEnabled,
     float reward,
