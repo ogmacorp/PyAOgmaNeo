@@ -31,11 +31,11 @@ struct PyLayerDesc {
 
     int ffRadius;
     int pRadius;
+    int aRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
-    int aRadius;
     int historyCapacity;
 
     PyLayerDesc()
