@@ -19,6 +19,7 @@
 %{
 #include "PyConstructs.h"
 #include "PyHierarchy.h"
+#include "PyImageEncoder.h"
 %}
 
 // Handle STL exceptions
@@ -40,8 +41,10 @@
 %template(StdVec2Duchar) std::vector<std::vector<unsigned char> >;
 %template(StdVecInt3) std::vector<pyaon::PyInt3>;
 %template(StdVecLayerDesc) std::vector<pyaon::PyLayerDesc>;
+%template(StdVecImageEncoderVisibleLayerDesc) std::vector<pyaon::PyImageEncoderVisibleLayerDesc>;
 
 %rename("%(strip:[Py])s") ""; // Remove Py prefix that was added to avoid naming collisions
 
 %include "PyConstructs.h"
 %include "PyHierarchy.h"
+%include "PyImageEncoder.h"
