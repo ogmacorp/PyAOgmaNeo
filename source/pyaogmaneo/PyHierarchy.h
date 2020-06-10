@@ -183,19 +183,6 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCExpScale(
-        int l,
-        float expScale
-    ) {
-        h.getSCLayer(l).expScale = expScale;
-    }
-
-    float getSCExpScale(
-        int l
-    ) const {
-        return h.getSCLayer(l).expScale;
-    }
-
     void setPAlpha(
         int l,
         int v,
@@ -213,25 +200,6 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
         
         return h.getPLayers(l)[v]->alpha;
-    }
-
-    void setPExpScale(
-        int l,
-        int v,
-        float expScale
-    ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        h.getPLayers(l)[v]->expScale = expScale;
-    }
-
-    float getPExpScale(
-        int l,
-        int v
-    ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        return h.getPLayers(l)[v]->expScale;
     }
 
     void setAAlpha(
@@ -317,23 +285,6 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->historyIters;
-    }
-
-    void setAExpScale(
-        int v,
-        float expScale
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->expScale = expScale;
-    }
-
-    float getAExpScale(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->expScale;
     }
 };
 } // namespace pyaon
