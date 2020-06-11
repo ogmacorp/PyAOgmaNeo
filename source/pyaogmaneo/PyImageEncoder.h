@@ -39,6 +39,7 @@ private:
 
 public:
     float alpha;
+    float gamma;
     
     PyImageEncoder(
         const PyInt3 &hiddenSize,
@@ -46,7 +47,7 @@ public:
     );
 
     void step(
-        const std::vector<std::vector<unsigned char> > &inputs,
+        const std::vector<std::vector<float> > &inputs,
         bool learnEnabled = true
     );
 
@@ -58,10 +59,10 @@ public:
         return enc.getNumVisibleLayers();
     }
 
-    std::vector<unsigned char> getReconstruction(
+    std::vector<float> getReconstruction(
         int i
     ) const {
-        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
+        std::vector<float> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
