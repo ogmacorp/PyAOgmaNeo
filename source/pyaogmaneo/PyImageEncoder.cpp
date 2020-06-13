@@ -28,14 +28,14 @@ PyImageEncoder::PyImageEncoder(
 }
 
 void PyImageEncoder::step(
-    const std::vector<std::vector<float> > &inputs,
+    const std::vector<std::vector<unsigned char> > &inputs,
     bool learnEnabled
 ) {
     enc.alpha = alpha;
     enc.gamma = gamma;
     
-    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::FloatBuffer*> cInputs(inputs.size());
+    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::Array<unsigned char>*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         cInputsBacking[i].resize(inputs[i].size());

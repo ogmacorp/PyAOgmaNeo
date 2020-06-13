@@ -47,7 +47,7 @@ public:
     );
 
     void step(
-        const std::vector<std::vector<float> > &inputs,
+        const std::vector<std::vector<unsigned char> > &inputs,
         bool learnEnabled = true
     );
 
@@ -59,10 +59,10 @@ public:
         return enc.getNumVisibleLayers();
     }
 
-    std::vector<float> getReconstruction(
+    std::vector<unsigned char> getReconstruction(
         int i
     ) const {
-        std::vector<float> reconstruction(enc.getReconstruction(i).size());
+        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
