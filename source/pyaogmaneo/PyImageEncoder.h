@@ -39,6 +39,7 @@ private:
 
 public:
     float alpha;
+    float gamma;
     
     PyImageEncoder(
         const PyInt3 &hiddenSize,
