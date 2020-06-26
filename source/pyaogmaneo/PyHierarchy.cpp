@@ -55,7 +55,7 @@ PyHierarchy::PyHierarchy(
     const std::string &name
 ) {
     PyStreamReader reader;
-    reader.is.open(name, std::ios::binary);
+    reader.ins.open(name, std::ios::binary);
 
     h.read(reader);
 }
@@ -64,7 +64,7 @@ void PyHierarchy::save(
     const std::string &name
 ) {
     PyStreamWriter writer;
-    writer.os.open(name, std::ios::binary);
+    writer.outs.open(name, std::ios::binary);
 
     h.write(writer);
 }

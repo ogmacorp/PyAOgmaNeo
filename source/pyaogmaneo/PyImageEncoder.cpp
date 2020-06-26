@@ -31,7 +31,7 @@ PyImageEncoder::PyImageEncoder(
     const std::string &name
 ) {
     PyStreamReader reader;
-    reader.is.open(name, std::ios::binary);
+    reader.ins.open(name, std::ios::binary);
 
     enc.read(reader);
 
@@ -43,7 +43,7 @@ void PyImageEncoder::save(
     const std::string &name
 ) {
     PyStreamWriter writer;
-    writer.os.open(name, std::ios::binary);
+    writer.outs.open(name, std::ios::binary);
 
     enc.write(writer);
 }

@@ -38,19 +38,21 @@ public:
 
 class PyStreamReader : public aon::StreamReader {
 public:
-    std::ifstream is;
+    std::ifstream ins;
 
-    void read(void* data, int len) override {
-        is.read(static_cast<char*>(data), len);
-    }
+    void read(
+        void* data,
+        int len
+    ) override;
 };
 
 class PyStreamWriter : public aon::StreamWriter {
 public:
-    std::ofstream os;
+    std::ofstream outs;
 
-    void write(const void* data, int len) override {
-        os.write(static_cast<const char*>(data), len);
-    }
+    void write(
+        const void* data,
+        int len
+    ) override;
 };
 } // namespace pyaon
