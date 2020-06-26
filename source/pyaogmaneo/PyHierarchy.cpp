@@ -51,6 +51,24 @@ PyHierarchy::PyHierarchy(
     h.initRandom(cInputSizes, cInputTypes, cLayerDescs);
 }
 
+PyHierarchy::PyHierarchy(
+    const std::string &name
+) {
+    PyStreamReader reader;
+    reader.is.open(name, std::ios::binary);
+
+    h.read(reader);
+}
+
+void PyHierarchy::save(
+    const std::string &name
+) {
+    PyStreamWriter writer;
+    writer.os.open(name, std::ios::binary);
+
+    h.write(writer);
+}
+
 void PyHierarchy::step(
     const std::vector<std::vector<unsigned char> > &inputCs,
     bool learnEnabled,

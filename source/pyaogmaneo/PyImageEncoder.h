@@ -46,6 +46,14 @@ public:
         const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
     );
 
+    PyImageEncoder(
+        const std::string &name
+    );
+
+    void save(
+        const std::string &name
+    );
+
     void step(
         const std::vector<std::vector<unsigned char> > &inputs,
         bool learnEnabled = true

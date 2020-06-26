@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <aogmaneo/Helpers.h>
+#include <fstream>
+
 namespace pyaon {
 class PyInt3 {
 private:
@@ -31,5 +34,23 @@ public:
     y(y),
     z(z)
     {}
+};
+
+class PyStreamReader : public aon::StreamReader {
+public:
+    std::ifstream is;
+
+    void read(void* data, int len) override {
+        is.read(static_cast<char*>(data), len);
+    }
+};
+
+class PyStreamWriter : public aon::StreamWriter {
+public:
+    std::ofstream os;
+
+    void write(const void* data, int len) override {
+        os.write(static_cast<const char*>(data), len);
+    }
 };
 } // namespace pyaon

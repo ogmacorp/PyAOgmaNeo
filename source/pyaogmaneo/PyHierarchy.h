@@ -80,6 +80,14 @@ public:
         const std::vector<PyLayerDesc> &layerDescs
     );
 
+    PyHierarchy(
+        const std::string &name
+    );
+
+    void save(
+        const std::string &name
+    );
+
     void step(
         const std::vector<std::vector<unsigned char> > &inputCs,
         bool learnEnabled = true,
@@ -127,13 +135,13 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    int getTicks(
+    unsigned char getTicks(
         int l
     ) const {
         return h.getTicks(l);
     }
 
-    int getTicksPerUpdate(
+    unsigned char getTicksPerUpdate(
         int l
     ) const {
         return h.getTicksPerUpdate(l);
