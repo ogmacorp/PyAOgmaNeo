@@ -45,7 +45,7 @@ struct PyLayerDesc {
     pRadius(2),
     aRadius(2),
     ticksPerUpdate(2),
-    temporalHorizon(4),
+    temporalHorizon(2),
     historyCapacity(32)
     {}
 
@@ -78,6 +78,14 @@ public:
         const std::vector<PyInt3> &inputSizes,
         const std::vector<int> &inputTypes,
         const std::vector<PyLayerDesc> &layerDescs
+    );
+
+    PyHierarchy(
+        const std::string &name
+    );
+
+    void save(
+        const std::string &name
     );
 
     void step(
@@ -127,13 +135,13 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    int getTicks(
+    unsigned char getTicks(
         int l
     ) const {
         return h.getTicks(l);
     }
 
-    int getTicksPerUpdate(
+    unsigned char getTicksPerUpdate(
         int l
     ) const {
         return h.getTicksPerUpdate(l);
@@ -200,6 +208,25 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
         
         return h.getPLayers(l)[v]->alpha;
+    }
+
+    void setPTargetRange(
+        int l,
+        int v,
+        float targetRange
+    ) {
+        assert(h.getPLayers(l)[v] != nullptr);
+        
+        h.getPLayers(l)[v]->targetRange = targetRange;
+    }
+
+    float getPTargetRange(
+        int l,
+        int v
+    ) const {
+        assert(h.getPLayers(l)[v] != nullptr);
+        
+        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(

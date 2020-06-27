@@ -33,6 +33,9 @@
   }
 }
 
+%ignore pyaon::PyStreamReader;
+%ignore pyaon::PyStreamWriter;
+
 %template(StdVeci) std::vector<int>;
 %template(StdVec2Di) std::vector<std::vector<int> >;
 %template(StdVecf) std::vector<float>;

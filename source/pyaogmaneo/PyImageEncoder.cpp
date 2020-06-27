@@ -14,7 +14,7 @@ PyImageEncoder::PyImageEncoder(
     const PyInt3 &hiddenSize,
     const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
 ) {
-    aon::Array<aon::ImageEncoderVisibleLayerDesc> cVisibleLayerDescs(visibleLayerDescs.size());
+    aon::Array<aon::ImageEncoder::VisibleLayerDesc> cVisibleLayerDescs(visibleLayerDescs.size());
 
     for (int v = 0; v < visibleLayerDescs.size(); v++) {
         cVisibleLayerDescs[v].size = aon::Int3(visibleLayerDescs[v].size.x, visibleLayerDescs[v].size.y, visibleLayerDescs[v].size.z);
@@ -25,6 +25,27 @@ PyImageEncoder::PyImageEncoder(
 
     alpha = enc.alpha;
     gamma = enc.gamma;
+}
+
+PyImageEncoder::PyImageEncoder(
+    const std::string &name
+) {
+    PyStreamReader reader;
+    reader.ins.open(name, std::ios::binary);
+
+    enc.read(reader);
+
+    alpha = enc.alpha;
+    gamma = enc.gamma;
+}
+
+void PyImageEncoder::save(
+    const std::string &name
+) {
+    PyStreamWriter writer;
+    writer.outs.open(name, std::ios::binary);
+
+    enc.write(writer);
 }
 
 void PyImageEncoder::step(
