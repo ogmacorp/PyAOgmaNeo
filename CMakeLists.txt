@@ -26,6 +26,7 @@ if(PYTHON_VERSION)
     message("Python target version: ${PYTHON_VERSION}")            
 endif()
 
+
 ############################################################################
 # Add the OpenMP library
 
@@ -76,7 +77,11 @@ endif()
 ############################################################################
 # Find Python package
 
-find_package(PythonLibs REQUIRED)
+if(PYTHON_VERSION)
+    find_package(PythonLibs ${PYTHON_VERSION} EXACT REQUIRED)
+else()
+    find_package(PythonLibs REQUIRED)
+endif()
 
 include_directories(${PYTHON_INCLUDE_DIR})
 
