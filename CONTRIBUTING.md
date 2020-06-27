@@ -1,6 +1,6 @@
-# Contributing to PyOgmaNeo2
+# Contributing to PyAOgmaNeo
 
-Thank you for your interest in contributing to PyOgmaNeo2!
+Thank you for your interest in contributing to PyAOgmaNeo!
 
 ## How to Contribute
 

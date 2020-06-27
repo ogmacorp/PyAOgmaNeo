@@ -1,4 +1,4 @@
-PyOgmaNeo - Copyright (c) 2016-2020 Ogma Intelligent Systems Corp. https://ogma.ai
+PyAOgmaNeo - Copyright (c) 2016-2020 Ogma Intelligent Systems Corp. https://ogma.ai
 
 This program is published under the Attribution-NonCommercial-ShareAlike 4.0 
 International (CC BY-NC-SA 4.0) License, in the hope that it will be useful,

@@ -1,24 +1,22 @@
 <!---
-  PyOgmaNeo
-  Copyright(c) 2016-2020 Ogma Intelligent Systems Corp. All rights reserved.
+  PyAOgmaNeo
+  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
 
   This copy of OgmaNeo is licensed to you under the terms described
-  in the PYOGMANEO_LICENSE.md file included in this distribution.
+  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 --->
 
-# PyOgmaNeo, V2
+# PyAOgmaNeo
 
 [![Join the chat at https://gitter.im/ogmaneo/Lobby](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/ogmaneo/Lobby)
 
 ## Introduction 
 
-Welcome to the [Ogma](https://ogmacorp.com) PyOgmaNeo2 library, which contains Python bindings to the [OgmaNeo2](https://github.com/ogmacorp/OgmaNeo2) library.
-
-There is a [deprecated version](https://github.com/ogmacorp/OgmaNeo) of OgmaNeo2 that contains an outdated implementation of SPH. Please use OgmaNeo2 (which this repository provides Python bindings for) if possible.
+Welcome to the [Ogma](https://ogmacorp.com) PyAOgmaNeo library, which contains Python bindings to the [AOgmaNeo](https://github.com/ogmacorp/AOgmaNeo) library.
 
 ## Requirements
 
-An install of [OgmaNeo2](https://github.com/ogmacorp/OgmaNeo2) is required before installing the bindings. Make sure to build with `-DBUILD_SHARED_LIBS=On`.
+An install of [AOgmaNeo](https://github.com/ogmacorp/AOgmaNeo) is required before installing the bindings. Make sure to build with `-DBUILD_SHARED_LIBS=On`.
 
 Additionally this binding requires an installation of [SWIG](http://www.swig.org/) v3+
 
@@ -42,7 +40,7 @@ Installation may fail if an old build directory still exists from a previous bui
 
 ## Importing and Setup
 
-The PyOgmaNeo2 module can be imported using:
+The PyAOgmaNeo module can be imported using:
 
 ```python
 import pyogmaneo
@@ -52,12 +50,12 @@ Refer to the `WavyLinePrediction.py` example for further details.
 
 ## Contributions
 
-Refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) file for information on making contributions to PyOgmaNeo2.
+Refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) file for information on making contributions to PyAOgmaNeo.
 
 ## License and Copyright
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />The work in this repository is licensed under the <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. See the  [PYOGMANEO_LICENSE.md](./PYOGMANEO_LICENSE.md) and [LICENSE.md](./LICENSE.md) file for further information.
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />The work in this repository is licensed under the <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. See the  [PYAOGMANEO_LICENSE.md](./PYAOGMANEO_LICENSE.md) and [LICENSE.md](./LICENSE.md) file for further information.
 
 Contact Ogma via licenses@ogmacorp.com to discuss commercial use and licensing options.
 
-OgmaNeo Copyright (c) 2016-2020 [Ogma Intelligent Systems Corp](https://ogmacorp.com). All rights reserved.
+PyAOgmaNeo Copyright (c) 2020 [Ogma Intelligent Systems Corp](https://ogmacorp.com). All rights reserved.
