@@ -30,6 +30,7 @@ struct PyLayerDesc {
     PyInt3 hiddenSize;
 
     int ffRadius;
+    int lRadius;
     int pRadius;
     int aRadius;
 
@@ -42,6 +43,7 @@ struct PyLayerDesc {
     :
     hiddenSize(4, 4, 16),
     ffRadius(2),
+    lRadius(2),
     pRadius(2),
     aRadius(2),
     ticksPerUpdate(2),
@@ -52,6 +54,7 @@ struct PyLayerDesc {
     PyLayerDesc(
         const PyInt3 &hiddenSize,
         int ffRadius,
+        int lRadius,
         int pRadius,
         int aRadius,
         int ticksPerUpdate,
@@ -61,6 +64,7 @@ struct PyLayerDesc {
     :
     hiddenSize(hiddenSize),
     ffRadius(ffRadius),
+    lRadius(lRadius),
     pRadius(pRadius),
     aRadius(aRadius),
     ticksPerUpdate(ticksPerUpdate),
@@ -191,23 +195,36 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setPAlpha(
+    void setSCExplainIters(
+        int l,
+        int explainIters
+    ) {
+        h.getSCLayer(l).explainIters = explainIters;
+    }
+
+    int getSCExplainIters(
+        int l
+    ) const {
+        return h.getSCLayer(l).explainIters;
+    }
+
+    void setPBeta(
         int l,
         int v,
-        float alpha
+        float beta
     ) {
         assert(h.getPLayers(l)[v] != nullptr);
         
-        h.getPLayers(l)[v]->alpha = alpha;
+        h.getPLayers(l)[v]->beta = beta;
     }
 
-    float getPAlpha(
+    float getPBeta(
         int l,
         int v
     ) const {
         assert(h.getPLayers(l)[v] != nullptr);
         
-        return h.getPLayers(l)[v]->alpha;
+        return h.getPLayers(l)[v]->beta;
     }
 
     void setPTargetRange(
