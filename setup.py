@@ -194,8 +194,6 @@ setup(
         "Environment :: Console",
         "Intended Audience :: Science/Research",
         "License :: Other/Proprietary License",
-        "Operating System :: MacOS :: MacOS X",
-        "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
