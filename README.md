@@ -43,7 +43,7 @@ Installation may fail if an old build directory still exists from a previous bui
 The PyAOgmaNeo module can be imported using:
 
 ```python
-import pyogmaneo
+import pyaogmaneo
 ```
 
 Refer to the `WavyLinePrediction.py` example for further details.
