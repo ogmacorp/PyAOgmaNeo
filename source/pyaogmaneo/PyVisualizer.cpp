@@ -30,7 +30,7 @@ PyVisualizer::PyVisualizer(
 
     InitWindow(width, height, title.c_str());
 
-    camera.position = (Vector3){ 10.0f, 10.0f, 10.0f };
+    camera.position = (Vector3){ 20.0f, 20.0f, 20.0f };
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     camera.fovy = 70.0f;
