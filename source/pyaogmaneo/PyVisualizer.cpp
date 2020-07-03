@@ -14,9 +14,10 @@ const Color cellActiveColor = (Color){ 255, 64, 64, 255 };
 const Color cellPredictedColor = (Color){ 64, 255, 64, 255 };
 const Color cellOffColor = (Color){ 192, 192, 192, 255 };
 
-const float cellRadius = 0.3f;
-const float columnRadius = 0.4f;
-const float layerDelta = 10.0f;
+const float cellRadius = 0.25f;
+const float columnRadius = 0.3f;
+const float layerDelta = 6.0f;
+const float weightScaling = 1.0f;
 
 PyVisualizer::PyVisualizer(
     int width,
@@ -31,7 +32,9 @@ PyVisualizer::PyVisualizer(
     camera.fovy = 70.0f;
     camera.type = CAMERA_PERSPECTIVE;
 
-    SetCameraMode(camera, CAMERA_ORBITAL);
+    SetCameraMode(camera, CAMERA_FREE);
+
+    SetCameraAltControl(KEY_LEFT_SHIFT);
 }
 
 PyVisualizer::~PyVisualizer() {
@@ -49,22 +52,34 @@ void PyVisualizer::update(
     cells.clear();
     lines.clear();
 
-    columns.reserve(oldColumnSize);
-    cells.reserve(oldCellsSize);
-    lines.reserve(oldLinesSize);
+    if (oldColumnSize > 0)
+        columns.reserve(oldColumnSize);
+
+    if (oldCellsSize > 0)
+        cells.reserve(oldCellsSize);
+
+    if (oldLinesSize > 0)
+        lines.reserve(oldLinesSize);
 
     // Generate necessary geometry
-
     const aon::Hierarchy &ah = h.h;
+
+    // Calculate full size
+    float hierarchyHeight = 0.0f;
+
+    for (int l = 0; l < ah.getNumLayers(); l++)
+        hierarchyHeight += layerDelta + ah.getSCLayer(l).getHiddenSize().z;
+
+    float zOffset = -hierarchyHeight * 0.5f;
 
     for (int l = 0; l < ah.getNumLayers(); l++) {
         aon::ByteBuffer csdr = ah.getSCLayer(l).getHiddenCs();
         aon::ByteBuffer pcsdr;
         
         if (l < ah.getNumLayers() - 1)
-            pcsdr = ah.getPLayers(l + 1)[ah.getTicksPerUpdate(l + 1) - ah.getTicks(l + 1)]->getHiddenCs();
+            pcsdr = ah.getPLayers(l + 1)[ah.getTicksPerUpdate(l + 1) - 1 - ah.getTicks(l + 1)]->getHiddenCs();
 
-        Vector3 offset = (Vector3){-ah.getSCLayer(l).getHiddenSize().x * 0.5f, -ah.getSCLayer(l).getHiddenSize().y * 0.5f, (l + 1) * layerDelta };
+        Vector3 offset = (Vector3){ -ah.getSCLayer(l).getHiddenSize().x * 0.5f, -ah.getSCLayer(l).getHiddenSize().y * 0.5f, zOffset };
 
         // Construct columns
         for (int cx = 0; cx < ah.getSCLayer(l).getHiddenSize().x; cx++)
@@ -74,10 +89,12 @@ void PyVisualizer::update(
                 unsigned char c = csdr[columnIndex];
                 
                 for (int cz = 0; cz < ah.getSCLayer(l).getHiddenSize().z; cz++)
-                    cells.push_back(std::tuple<Vector3, Color>((Vector3){ cx + offset.x, cy + offset.y, cz + offset.z }, cz == c ? cellActiveColor : (pcsdr.size() != 0 && cz == pcsdr[columnIndex] ? cellPredictedColor : cellOffColor)));
+                    cells.push_back(std::tuple<Vector3, Color>((Vector3){ cx + offset.x, cz + offset.z, cy + offset.y }, cz == c ? cellActiveColor : (pcsdr.size() != 0 && cz == pcsdr[columnIndex] ? cellPredictedColor : cellOffColor)));
 
-                columns.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ cx + offset.x, cy + offset.y, offset.z }, (Vector3){ columnRadius * 2.0f, ah.getSCLayer(l).getHiddenSize().z + columnRadius * 2.0f, columnRadius * 2.0f }, (Color){0, 0, 0, 255}));
+                columns.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ cx + offset.x, offset.z + ah.getSCLayer(l).getHiddenSize().z * 0.5f - columnRadius, cy + offset.y }, (Vector3){ columnRadius * 2.0f, ah.getSCLayer(l).getHiddenSize().z + columnRadius * 2.0f, columnRadius * 2.0f }, (Color){0, 0, 0, 255}));
             }
+
+        zOffset += layerDelta + ah.getSCLayer(l).getHiddenSize().z;
     }
 }
 
@@ -90,20 +107,18 @@ void PyVisualizer::render() {
 
         BeginMode3D(camera);
 
-            for (int i = 0; i < cells.size(); i++) {
+            for (int i = 0; i < cells.size(); i++)
                 DrawSphere(std::get<0>(cells[i]), cellRadius, std::get<1>(cells[i]));
-            }
 
-            for (int i = 0; i < columns.size(); i++) {
+            for (int i = 0; i < columns.size(); i++)
                 DrawCubeWiresV(std::get<0>(columns[i]), std::get<1>(columns[i]), std::get<2>(columns[i]));
-            }
 
         EndMode3D();
 
-        DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-        DrawRectangleLines( 10, 10, 220, 70, BLUE);
+        DrawRectangle( 10, 10, 220, 50, Fade(SKYBLUE, 0.5f));
+        DrawRectangleLines( 10, 10, 220, 50, BLUE);
 
-        DrawText("Mouse move to look around", 40, 60, 10, DARKGRAY);
+        DrawText("Mouse move to look around", 20, 20, 10, DARKGRAY);
 
     EndDrawing();
 }
