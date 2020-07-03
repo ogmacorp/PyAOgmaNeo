@@ -24,6 +24,8 @@ PyVisualizer::PyVisualizer(
     int height,
     const std::string &title
 ) {
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+
     InitWindow(width, height, title.c_str());
 
     camera.position = (Vector3){ 10.0f, 10.0f, 10.0f };
@@ -68,9 +70,49 @@ void PyVisualizer::update(
     float hierarchyHeight = 0.0f;
 
     for (int l = 0; l < ah.getNumLayers(); l++)
-        hierarchyHeight += layerDelta + ah.getSCLayer(l).getHiddenSize().z;
+        hierarchyHeight += (l < ah.getNumLayers() - 1 ? layerDelta : 0) + ah.getSCLayer(l).getHiddenSize().z;
+
+    // Find total input layer width
+    float inputWidthTotal = 0.0f;
+    float maxInputHeight = 0.0f;
+
+    for (int i = 0; i < ah.getInputSizes().size(); i++) {
+        inputWidthTotal += (i < ah.getInputSizes().size() - 1 ? layerDelta : 0) + ah.getInputSizes()[i].x;
+
+        maxInputHeight = std::max<float>(maxInputHeight, ah.getInputSizes()[i].z);
+    }
 
     float zOffset = -hierarchyHeight * 0.5f;
+
+    // Render input layers
+    float xOffset = -inputWidthTotal * 0.5f;
+
+    for (int i = 0; i < ah.getInputSizes().size(); i++) {
+        const aon::CircleBuffer<aon::ByteBuffer> &hist = ah.getHistories(0)[i];
+
+        aon::ByteBuffer csdr = hist[0];
+        aon::ByteBuffer pcsdr;
+        
+        if (ah.getPLayers(0)[i] != nullptr || ah.getALayers()[i] != nullptr)
+            pcsdr = ah.getPredictionCs(i);
+        
+        Vector3 offset = (Vector3){ -ah.getInputSizes()[i].x * 0.5f + xOffset, -ah.getInputSizes()[i].y * 0.5f, -ah.getInputSizes()[i].z * 0.5f + zOffset - layerDelta - maxInputHeight * 0.5f};
+
+        // Construct columns
+        for (int cx = 0; cx < ah.getInputSizes()[i].x; cx++)
+            for (int cy = 0; cy < ah.getInputSizes()[i].y; cy++) {
+                int columnIndex = aon::address2(aon::Int2(cx, cy), aon::Int2(ah.getInputSizes()[i].x, ah.getInputSizes()[i].y));
+
+                unsigned char c = csdr[columnIndex];
+                
+                for (int cz = 0; cz < ah.getInputSizes()[i].z; cz++)
+                    cells.push_back(std::tuple<Vector3, Color>((Vector3){ cx + offset.x, cz + offset.z, cy + offset.y }, cz == c ? cellActiveColor : (pcsdr.size() != 0 && cz == pcsdr[columnIndex] ? cellPredictedColor : cellOffColor)));
+
+                columns.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ cx + offset.x, offset.z + ah.getInputSizes()[i].z * 0.5f - columnRadius, cy + offset.y }, (Vector3){ columnRadius * 2.0f, ah.getInputSizes()[i].z + columnRadius * 2.0f, columnRadius * 2.0f }, (Color){0, 0, 0, 255}));
+            }
+
+        xOffset += layerDelta + ah.getInputSizes()[i].x;
+    }
 
     for (int l = 0; l < ah.getNumLayers(); l++) {
         aon::ByteBuffer csdr = ah.getSCLayer(l).getHiddenCs();
@@ -79,7 +121,7 @@ void PyVisualizer::update(
         if (l < ah.getNumLayers() - 1)
             pcsdr = ah.getPLayers(l + 1)[ah.getTicksPerUpdate(l + 1) - 1 - ah.getTicks(l + 1)]->getHiddenCs();
 
-        Vector3 offset = (Vector3){ -ah.getSCLayer(l).getHiddenSize().x * 0.5f, -ah.getSCLayer(l).getHiddenSize().y * 0.5f, zOffset };
+        Vector3 offset = (Vector3){ -ah.getSCLayer(l).getHiddenSize().x * 0.5f, -ah.getSCLayer(l).getHiddenSize().y * 0.5f, zOffset }; // -ah.getSCLayer(l).getHiddenSize().z * 0.5f + 
 
         // Construct columns
         for (int cx = 0; cx < ah.getSCLayer(l).getHiddenSize().x; cx++)
