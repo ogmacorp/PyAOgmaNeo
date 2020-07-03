@@ -168,10 +168,12 @@ void PyVisualizer::render() {
 
         EndMode3D();
 
-        DrawRectangle( 10, 10, 220, 50, Fade(SKYBLUE, 0.5f));
-        DrawRectangleLines( 10, 10, 220, 50, BLUE);
+        DrawRectangle( 10, 10, 290, 50, Fade(SKYBLUE, 0.5f));
+        DrawRectangleLines( 10, 10, 290, 50, BLUE);
 
-        DrawText("Mouse move to look around", 20, 20, 10, DARKGRAY);
+        DrawText("Middle mouse button + move mouse -> pan", 20, 20, 8, DARKGRAY);
+        DrawText("Shift + middle mouse button + move mouse -> rotate", 20, 30, 8, DARKGRAY);
+        DrawText("Scroll wheel -> zoom", 20, 40, 8, DARKGRAY);
 
     EndDrawing();
 }
