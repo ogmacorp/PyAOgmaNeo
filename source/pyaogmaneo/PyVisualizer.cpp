@@ -8,6 +8,8 @@
 
 #include "PyVisualizer.h"
 
+#include <unordered_map>
+
 using namespace pyaon;
 
 const Color cellActiveColor = (Color){ 255, 64, 64, 255 };
@@ -106,10 +108,13 @@ void PyVisualizer::update(
                 unsigned char c = csdr[columnIndex];
                 
                 for (int cz = 0; cz < ah.getInputSizes()[i].z; cz++)
-                    cells.push_back(std::tuple<Vector3, Color>((Vector3){ cx + offset.x, cz + offset.z, cy + offset.y }, cz == c ? cellActiveColor : (pcsdr.size() != 0 && cz == pcsdr[columnIndex] ? cellPredictedColor : cellOffColor)));
+                    cells.push_back(std::tuple<Vector3, Color>((Vector3){ cx + offset.x + 0.5f, cz + offset.z, cy + offset.y + 0.5f }, cz == c ? cellActiveColor : (pcsdr.size() != 0 && cz == pcsdr[columnIndex] ? cellPredictedColor : cellOffColor)));
 
-                columns.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ cx + offset.x, offset.z + ah.getInputSizes()[i].z * 0.5f - columnRadius, cy + offset.y }, (Vector3){ columnRadius * 2.0f, ah.getInputSizes()[i].z + columnRadius * 2.0f, columnRadius * 2.0f }, (Color){0, 0, 0, 255}));
+                columns.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ cx + offset.x + 0.5f, offset.z + ah.getInputSizes()[i].z * 0.5f - columnRadius, cy + offset.y + 0.5f }, (Vector3){ columnRadius * 2.0f, ah.getInputSizes()[i].z + columnRadius * 2.0f, columnRadius * 2.0f }, (Color){0, 0, 0, 255}));
             }
+
+        // Line to next layer
+        lines.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ xOffset, zOffset - layerDelta - (maxInputHeight - ah.getInputSizes()[i].z) * 0.5f, 0.0f }, (Vector3){ 0.0f, zOffset, 0.0f }, (Color){ 0, 0, 0, 128 }));
 
         xOffset += layerDelta + ah.getInputSizes()[i].x;
     }
@@ -121,7 +126,7 @@ void PyVisualizer::update(
         if (l < ah.getNumLayers() - 1)
             pcsdr = ah.getPLayers(l + 1)[ah.getTicksPerUpdate(l + 1) - 1 - ah.getTicks(l + 1)]->getHiddenCs();
 
-        Vector3 offset = (Vector3){ -ah.getSCLayer(l).getHiddenSize().x * 0.5f, -ah.getSCLayer(l).getHiddenSize().y * 0.5f, zOffset }; // -ah.getSCLayer(l).getHiddenSize().z * 0.5f + 
+        Vector3 offset = (Vector3){ -ah.getSCLayer(l).getHiddenSize().x * 0.5f, -ah.getSCLayer(l).getHiddenSize().y * 0.5f, zOffset };
 
         // Construct columns
         for (int cx = 0; cx < ah.getSCLayer(l).getHiddenSize().x; cx++)
@@ -131,10 +136,12 @@ void PyVisualizer::update(
                 unsigned char c = csdr[columnIndex];
                 
                 for (int cz = 0; cz < ah.getSCLayer(l).getHiddenSize().z; cz++)
-                    cells.push_back(std::tuple<Vector3, Color>((Vector3){ cx + offset.x, cz + offset.z, cy + offset.y }, cz == c ? cellActiveColor : (pcsdr.size() != 0 && cz == pcsdr[columnIndex] ? cellPredictedColor : cellOffColor)));
+                    cells.push_back(std::tuple<Vector3, Color>((Vector3){ cx + offset.x + 0.5f, cz + offset.z, cy + offset.y + 0.5f }, cz == c ? cellActiveColor : (pcsdr.size() != 0 && cz == pcsdr[columnIndex] ? cellPredictedColor : cellOffColor)));
 
-                columns.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ cx + offset.x, offset.z + ah.getSCLayer(l).getHiddenSize().z * 0.5f - columnRadius, cy + offset.y }, (Vector3){ columnRadius * 2.0f, ah.getSCLayer(l).getHiddenSize().z + columnRadius * 2.0f, columnRadius * 2.0f }, (Color){0, 0, 0, 255}));
+                columns.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ cx + offset.x + 0.5f, offset.z + ah.getSCLayer(l).getHiddenSize().z * 0.5f - columnRadius, cy + offset.y + 0.5f }, (Vector3){ columnRadius * 2.0f, ah.getSCLayer(l).getHiddenSize().z + columnRadius * 2.0f, columnRadius * 2.0f }, (Color){0, 0, 0, 255}));
             }
+
+        lines.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ 0.0f, zOffset + ah.getSCLayer(l).getHiddenSize().z, 0.0f }, (Vector3){ 0.0f, zOffset + ah.getSCLayer(l).getHiddenSize().z + layerDelta, 0.0f }, (Color){ 0, 0, 0, 128 }));
 
         zOffset += layerDelta + ah.getSCLayer(l).getHiddenSize().z;
     }
@@ -154,6 +161,9 @@ void PyVisualizer::render() {
 
             for (int i = 0; i < columns.size(); i++)
                 DrawCubeWiresV(std::get<0>(columns[i]), std::get<1>(columns[i]), std::get<2>(columns[i]));
+
+            for (int i = 0; i < lines.size(); i++)
+                DrawLine3D(std::get<0>(lines[i]), std::get<1>(lines[i]), std::get<2>(lines[i]));
 
         EndMode3D();
 
