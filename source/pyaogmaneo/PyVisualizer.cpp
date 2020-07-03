@@ -141,7 +141,8 @@ void PyVisualizer::update(
                 columns.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ cx + offset.x + 0.5f, offset.z + ah.getSCLayer(l).getHiddenSize().z * 0.5f - columnRadius, cy + offset.y + 0.5f }, (Vector3){ columnRadius * 2.0f, ah.getSCLayer(l).getHiddenSize().z + columnRadius * 2.0f, columnRadius * 2.0f }, (Color){0, 0, 0, 255}));
             }
 
-        lines.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ 0.0f, zOffset + ah.getSCLayer(l).getHiddenSize().z, 0.0f }, (Vector3){ 0.0f, zOffset + ah.getSCLayer(l).getHiddenSize().z + layerDelta, 0.0f }, (Color){ 0, 0, 0, 128 }));
+        if (l < ah.getNumLayers() - 1)
+            lines.push_back(std::tuple<Vector3, Vector3, Color>((Vector3){ 0.0f, zOffset + ah.getSCLayer(l).getHiddenSize().z, 0.0f }, (Vector3){ 0.0f, zOffset + ah.getSCLayer(l).getHiddenSize().z + layerDelta, 0.0f }, (Color){ 0, 0, 0, 128 }));
 
         zOffset += layerDelta + ah.getSCLayer(l).getHiddenSize().z;
     }
