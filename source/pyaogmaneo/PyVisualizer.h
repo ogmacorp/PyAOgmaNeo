@@ -14,9 +14,16 @@
 
 #include <raylib.h>
 
+#define RAYGUI_SUPPORT_ICONS
+
+#include "../raygui/raygui.h"
+
 namespace pyaon {
 class PyVisualizer {
 private:
+    int winWidth;
+    int winHeight;
+
     Camera camera;
 
     // Storing generated model
@@ -24,10 +31,38 @@ private:
     std::vector<std::tuple<Vector3, Color>> cells;
     std::vector<std::tuple<Vector3, Vector3, Color>> lines;
 
+    // Selection
+    int selectLayer;
+    int selectInput;
+    int selectX;
+    int selectY;
+    int selectZ;
+
+    int selectLayerPrev;
+    int selectInputPrev;
+    int selectXPrev;
+    int selectYPrev;
+    int selectZPrev;
+
+    bool showTextures;
+    bool refreshTextures;
+
+    // FF
+    int ffVli;
+    int ffVliRange;
+    int ffZ;
+    int ffZRange;
+
+    Texture2D ffTexture;
+    int ffWidth;
+    int ffHeight;
+
+    // FB
+
 public:
     PyVisualizer(
-        int width,
-        int height,
+        int winWidth,
+        int winHeight,
         const std::string &title
     );
 
