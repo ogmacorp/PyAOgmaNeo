@@ -402,13 +402,13 @@ void PyVisualizer::render() {
         GuiEnable();
 
         if (showTextures) {
-            DrawTextureEx(ffTexture, (Vector2){ 10, winHeight - 60 - ffHeight * textureScaling}, 0.0f, textureScaling, (Color){ 255, 255, 255, 255 });
+            DrawTextureEx(ffTexture, (Vector2){ 10, winHeight - 80 - ffHeight * textureScaling}, 0.0f, textureScaling, (Color){ 255, 255, 255, 255 });
 
             int oldffVli = ffVli;
             int oldffZ = ffZ;
 
-            ffVli = GuiSlider((Rectangle){ 20, winHeight - 20, 160, 16 }, "Vli", TextFormat("%i", ffVli), ffVli, 0, ffVliRange);
-            ffZ = GuiSlider((Rectangle){ 20, winHeight - 40, 160, 16 }, "Vli", TextFormat("%i", ffZ), ffZ, 0, ffZRange);
+            ffVli = GuiSlider((Rectangle){ 20, winHeight - 20, 200, 20 }, "Vli", TextFormat("%i", ffVli), ffVli, 0, ffVliRange);
+            ffZ = GuiSlider((Rectangle){ 20, winHeight - 50, 200, 20 }, "Z", TextFormat("%i", ffZ), ffZ, 0, ffZRange);
 
             refreshTextures = ffVli != oldffVli || ffZ != oldffZ;
         }
