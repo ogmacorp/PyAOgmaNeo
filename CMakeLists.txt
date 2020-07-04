@@ -24,7 +24,7 @@ if(NOT CMAKE_BUILD_TYPE)
     message("CMAKE_BUILD_TYPE not set, setting it to Release")
     set(CMAKE_BUILD_TYPE Release)
 endif()
-set(CMAKE_BUILD_TYPE Debug)
+
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(PYTHON_VERSION)
@@ -56,6 +56,7 @@ include_directories(${AOGMANEO_INCLUDE_DIR})
 find_package(Raylib REQUIRED)
 
 include_directories(${raylib_INCLUDE_DIRS})
+
 
 ############################################################################
 # Add the PyAOgmaNeoCpp library

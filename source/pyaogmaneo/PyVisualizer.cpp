@@ -407,8 +407,8 @@ void PyVisualizer::render() {
             int oldffVli = ffVli;
             int oldffZ = ffZ;
 
-            ffVli = GuiSlider((Rectangle){ 20, winHeight - 20, 200, 20 }, "Vli", TextFormat("%i", ffVli), ffVli, 0, ffVliRange);
-            ffZ = GuiSlider((Rectangle){ 20, winHeight - 50, 200, 20 }, "Z", TextFormat("%i", ffZ), ffZ, 0, ffZRange);
+            ffVli = GuiSlider((Rectangle){ 20, winHeight - 30, 200, 20 }, "Vli", TextFormat("%i", ffVli), ffVli, 0, ffVliRange);
+            ffZ = GuiSlider((Rectangle){ 20, winHeight - 60, 200, 20 }, "Z", TextFormat("%i", ffZ), ffZ, 0, ffZRange);
 
             refreshTextures = ffVli != oldffVli || ffZ != oldffZ;
         }
