@@ -60,6 +60,15 @@ PyHierarchy::PyHierarchy(
     h.read(reader);
 }
 
+PyHierarchy::PyHierarchy(
+    const std::vector<unsigned char> &buffer
+) {
+    PyBufferReader reader;
+    reader.buffer = &buffer;
+
+    h.read(reader);
+}
+
 void PyHierarchy::save(
     const std::string &name
 ) {
@@ -67,6 +76,14 @@ void PyHierarchy::save(
     writer.outs.open(name, std::ios::binary);
 
     h.write(writer);
+}
+
+std::vector<unsigned char> PyHierarchy::save() {
+    PyBufferWriter writer;
+
+    h.write(writer);
+
+    return writer.buffer;
 }
 
 void PyHierarchy::step(

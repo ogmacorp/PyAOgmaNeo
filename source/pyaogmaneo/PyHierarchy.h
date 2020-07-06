@@ -84,9 +84,15 @@ public:
         const std::string &name
     );
 
+    PyHierarchy(
+        const std::vector<unsigned char> &buffer
+    );
+
     void save(
         const std::string &name
     );
+
+    std::vector<unsigned char> save();
 
     void step(
         const std::vector<std::vector<unsigned char> > &inputCs,

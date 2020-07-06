@@ -17,3 +17,19 @@ void PyStreamReader::read(void* data, int len) {
 void PyStreamWriter::write(const void* data, int len) {
     outs.write(static_cast<const char*>(data), len);
 }
+
+void PyBufferReader::read(void* data, int len) {
+    for (int i = 0; i < len; i++)
+        static_cast<unsigned char*>(data)[i] = (*buffer)[start + i];
+
+    start += len;
+}
+
+void PyBufferWriter::write(const void* data, int len) {
+    int start = buffer.size();
+
+    buffer.resize(buffer.size() + len);
+
+    for (int i = 0; i < len; i++)
+        buffer[start + i] = static_cast<const unsigned char*>(data)[i];
+}
