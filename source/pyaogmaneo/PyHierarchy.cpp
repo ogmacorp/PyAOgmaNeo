@@ -46,6 +46,7 @@ PyHierarchy::PyHierarchy(
         cLayerDescs[l].temporalHorizon = layerDescs[l].temporalHorizon;
         cLayerDescs[l].ticksPerUpdate = layerDescs[l].ticksPerUpdate;
         cLayerDescs[l].historyCapacity = layerDescs[l].historyCapacity;
+        cLayerDescs[l].supportSize = layerDescs[l].supportSize;
     }
 
     h.initRandom(cInputSizes, cInputTypes, cLayerDescs);

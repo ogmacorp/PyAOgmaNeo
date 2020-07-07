@@ -37,6 +37,7 @@ struct PyLayerDesc {
     int temporalHorizon;
 
     int historyCapacity;
+    int supportSize;
 
     PyLayerDesc()
     :
@@ -46,7 +47,8 @@ struct PyLayerDesc {
     aRadius(2),
     ticksPerUpdate(2),
     temporalHorizon(2),
-    historyCapacity(32)
+    historyCapacity(32),
+    supportSize(64)
     {}
 
     PyLayerDesc(
@@ -56,7 +58,8 @@ struct PyLayerDesc {
         int aRadius,
         int ticksPerUpdate,
         int temporalHorizon,
-        int historyCapacity
+        int historyCapacity,
+        int supportSize
     )
     :
     hiddenSize(hiddenSize),
@@ -65,7 +68,8 @@ struct PyLayerDesc {
     aRadius(aRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon),
-    historyCapacity(historyCapacity)
+    historyCapacity(historyCapacity),
+    supportSize(supportSize)
     {}
 };
 
