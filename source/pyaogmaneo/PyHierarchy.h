@@ -265,6 +265,19 @@ public:
         return h.getALayers()[v]->gamma;
     }
 
+    std::vector<float> getHiddenProbs(
+        int v
+    ) const {
+        assert(h.getALayers()[v] != nullptr);
+        
+        std::vector<float> hiddenProbs(h.getALayers()[v]->getHiddenProbs().size());
+
+        for (int j = 0; j < h.getALayers()[v]->getHiddenProbs().size(); j++)
+            hiddenProbs[j] = h.getALayers()[v]->getHiddenProbs()[j];
+
+        return hiddenProbs;
+    }
+
     friend class PyVisualizer;
 };
 } // namespace pyaon
