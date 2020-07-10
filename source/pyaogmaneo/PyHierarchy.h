@@ -181,7 +181,7 @@ public:
     ) {
         return h.getALayers()[v] != nullptr;
     }
-
+    
     void setSCAlpha(
         int l,
         float alpha
@@ -193,6 +193,32 @@ public:
         int l
     ) const {
         return h.getSCLayer(l).alpha;
+    }
+
+    void setSCBeta(
+        int l,
+        float beta
+    ) {
+        h.getSCLayer(l).beta = beta;
+    }
+
+    float getSCBeta(
+        int l
+    ) const {
+        return h.getSCLayer(l).beta;
+    }
+
+    void setSCMinVigilance(
+        int l,
+        float minVigilance
+    ) {
+        h.getSCLayer(l).minVigilance = minVigilance;
+    }
+
+    float getSCMinVigilance(
+        int l
+    ) const {
+        return h.getSCLayer(l).minVigilance;
     }
 
     void setPAlpha(
@@ -212,6 +238,25 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
         
         return h.getPLayers(l)[v]->alpha;
+    }
+
+    void setPTargetRange(
+        int l,
+        int v,
+        float targetRange
+    ) {
+        assert(h.getPLayers(l)[v] != nullptr);
+        
+        h.getPLayers(l)[v]->targetRange = targetRange;
+    }
+
+    float getPTargetRange(
+        int l,
+        int v
+    ) const {
+        assert(h.getPLayers(l)[v] != nullptr);
+        
+        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
