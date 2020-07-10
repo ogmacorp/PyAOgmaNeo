@@ -342,12 +342,12 @@ void PyVisualizer::update(
 
                     aon::Int2 offset(ix - fieldLowerBound.x, iy - fieldLowerBound.y);
 
-                    float weight = vl.weights[ffZ + vld.size.z * (offset.y + diam * (offset.x + diam * hiddenIndex))];
+                    unsigned char weight = vl.weights[ffZ + vld.size.z * (offset.y + diam * (offset.x + diam * hiddenIndex))];
 
                     // Rescale
-                    unsigned char c = aon::min(1.0f, aon::expf(weight * weightScaling)) * 255;
+                    //unsigned char c = aon::min(1.0f, aon::expf(weight * weightScaling)) * 255;
 
-                    colors[offset.y + offset.x * diam] = (Color){ c, c, c, 255 };
+                    colors[offset.y + offset.x * diam] = (Color){ weight, weight, weight, 255 };
                 }
 
             // Load image
