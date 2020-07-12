@@ -228,14 +228,14 @@ public:
     void setPAlpha(
         int l,
         int v,
-        float alpha
+        int alpha
     ) {
         assert(h.getPLayers(l)[v] != nullptr);
         
         h.getPLayers(l)[v]->alpha = alpha;
     }
 
-    float getPAlpha(
+    int getPAlpha(
         int l,
         int v
     ) const {
