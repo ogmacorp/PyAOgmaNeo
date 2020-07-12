@@ -342,12 +342,12 @@ void PyVisualizer::update(
 
                     aon::Int2 offset(ix - fieldLowerBound.x, iy - fieldLowerBound.y);
 
-                    unsigned char weight = vl.weights[ffZ + vld.size.z * (offset.y + diam * (offset.x + diam * hiddenIndex))];
+                    unsigned char weight = vl.weights[offset.y + diam * (offset.x + diam * hiddenIndex)];
+                    unsigned char commitC = vl.weights[offset.y + diam * (offset.x + diam * hiddenIndex)];
 
-                    // Rescale
-                    //unsigned char c = aon::min(1.0f, aon::expf(weight * weightScaling)) * 255;
+                    unsigned char c = (ffZ == commitC ? weight : 0);
 
-                    colors[offset.y + offset.x * diam] = (Color){ weight, weight, weight, 255 };
+                    colors[offset.y + offset.x * diam] = (Color){ c, c, c, 255 };
                 }
 
             // Load image
@@ -381,7 +381,7 @@ void PyVisualizer::render() {
         BeginMode3D(camera);
 
             for (int i = 0; i < cells.size(); i++)
-                DrawSphere(std::get<0>(cells[i]), cellRadius, std::get<1>(cells[i]));
+                DrawSphereEx(std::get<0>(cells[i]), cellRadius, 6, 6, std::get<1>(cells[i]));
 
             for (int i = 0; i < columns.size(); i++)
                 DrawCubeWiresV(std::get<0>(columns[i]), std::get<1>(columns[i]), std::get<2>(columns[i]));

@@ -244,24 +244,24 @@ public:
         return h.getPLayers(l)[v]->alpha;
     }
 
-    void setPTargetRange(
-        int l,
-        int v,
-        float targetRange
-    ) {
-        assert(h.getPLayers(l)[v] != nullptr);
+    // void setPTargetRange(
+    //     int l,
+    //     int v,
+    //     float targetRange
+    // ) {
+    //     assert(h.getPLayers(l)[v] != nullptr);
         
-        h.getPLayers(l)[v]->targetRange = targetRange;
-    }
+    //     h.getPLayers(l)[v]->targetRange = targetRange;
+    // }
 
-    float getPTargetRange(
-        int l,
-        int v
-    ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
+    // float getPTargetRange(
+    //     int l,
+    //     int v
+    // ) const {
+    //     assert(h.getPLayers(l)[v] != nullptr);
         
-        return h.getPLayers(l)[v]->targetRange;
-    }
+    //     return h.getPLayers(l)[v]->targetRange;
+    // }
 
     void setAAlpha(
         int v,
