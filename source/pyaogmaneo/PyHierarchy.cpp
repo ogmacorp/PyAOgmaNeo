@@ -46,8 +46,6 @@ PyHierarchy::PyHierarchy(
         cLayerDescs[l].aRadius = layerDescs[l].aRadius;
         cLayerDescs[l].temporalHorizon = layerDescs[l].temporalHorizon;
         cLayerDescs[l].ticksPerUpdate = layerDescs[l].ticksPerUpdate;
-        cLayerDescs[l].historyCapacity = layerDescs[l].historyCapacity;
-        cLayerDescs[l].supportSize = layerDescs[l].supportSize;
     }
 
     h.initRandom(cInputSizes, cInputTypes, cLayerDescs);
@@ -74,8 +72,7 @@ void PyHierarchy::save(
 void PyHierarchy::step(
     const std::vector<std::vector<unsigned char> > &inputCs,
     bool learnEnabled,
-    float reward,
-    bool mimic
+    float reward
 ) {
     assert(inputCs.size() == h.getInputSizes().size());
 
@@ -93,5 +90,5 @@ void PyHierarchy::step(
         cInputCs[i] = &cInputCsBacking[i];
     }
     
-    h.step(cInputCs, learnEnabled, reward, mimic);
+    h.step(cInputCs, learnEnabled, reward);
 }

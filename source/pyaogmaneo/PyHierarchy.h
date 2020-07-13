@@ -37,9 +37,6 @@ struct PyLayerDesc {
     int ticksPerUpdate;
     int temporalHorizon;
 
-    int historyCapacity;
-    int supportSize;
-
     PyLayerDesc()
     :
     hiddenSize(4, 4, 16),
@@ -48,9 +45,7 @@ struct PyLayerDesc {
     pRadius(2),
     aRadius(2),
     ticksPerUpdate(2),
-    temporalHorizon(2),
-    historyCapacity(32),
-    supportSize(64)
+    temporalHorizon(2)
     {}
 
     PyLayerDesc(
@@ -60,9 +55,7 @@ struct PyLayerDesc {
         int pRadius,
         int aRadius,
         int ticksPerUpdate,
-        int temporalHorizon,
-        int historyCapacity,
-        int supportSize
+        int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
@@ -71,9 +64,7 @@ struct PyLayerDesc {
     pRadius(pRadius),
     aRadius(aRadius),
     ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon),
-    historyCapacity(historyCapacity),
-    supportSize(supportSize)
+    temporalHorizon(temporalHorizon)
     {}
 };
 
@@ -99,8 +90,7 @@ public:
     void step(
         const std::vector<std::vector<unsigned char> > &inputCs,
         bool learnEnabled = true,
-        float reward = 0.0f,
-        bool mimic = false
+        float reward = 0.0f
     );
 
     int getNumLayers() const {
@@ -212,17 +202,30 @@ public:
         return h.getSCLayer(l).beta;
     }
 
-    void setSCMinVigilance(
+    void setSCTargetResets(
         int l,
-        float minVigilance
+        float targetResets
     ) {
-        h.getSCLayer(l).minVigilance = minVigilance;
+        h.getSCLayer(l).targetResets = targetResets;
     }
 
-    float getSCMinVigilance(
+    float getSCTargetResets(
         int l
     ) const {
-        return h.getSCLayer(l).minVigilance;
+        return h.getSCLayer(l).targetResets;
+    }
+
+    void setSCGamma(
+        int l,
+        float gamma
+    ) {
+        h.getSCLayer(l).gamma = gamma;
+    }
+
+    float getSCGamma(
+        int l
+    ) const {
+        return h.getSCLayer(l).gamma;
     }
 
     void setPAlpha(
@@ -244,24 +247,24 @@ public:
         return h.getPLayers(l)[v]->alpha;
     }
 
-    // void setPTargetRange(
-    //     int l,
-    //     int v,
-    //     float targetRange
-    // ) {
-    //     assert(h.getPLayers(l)[v] != nullptr);
+    void setPTargetRange(
+        int l,
+        int v,
+        float targetRange
+    ) {
+        assert(h.getPLayers(l)[v] != nullptr);
         
-    //     h.getPLayers(l)[v]->targetRange = targetRange;
-    // }
+        h.getPLayers(l)[v]->targetRange = targetRange;
+    }
 
-    // float getPTargetRange(
-    //     int l,
-    //     int v
-    // ) const {
-    //     assert(h.getPLayers(l)[v] != nullptr);
+    float getPTargetRange(
+        int l,
+        int v
+    ) const {
+        assert(h.getPLayers(l)[v] != nullptr);
         
-    //     return h.getPLayers(l)[v]->targetRange;
-    // }
+        return h.getPLayers(l)[v]->targetRange;
+    }
 
     void setAAlpha(
         int v,
@@ -278,23 +281,6 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->alpha;
-    }
-
-    void setABeta(
-        int v,
-        float beta
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->beta = beta;
-    }
-
-    float getABeta(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->beta;
     }
 
     void setAGamma(
@@ -314,17 +300,21 @@ public:
         return h.getALayers()[v]->gamma;
     }
 
-    std::vector<float> getHiddenProbs(
+    void setATraceDecay(
+        int v,
+        float traceDecay
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->traceDecay = traceDecay;
+    }
+
+    float getATraceDecay(
         int v
     ) const {
         assert(h.getALayers()[v] != nullptr);
         
-        std::vector<float> hiddenProbs(h.getALayers()[v]->getHiddenProbs().size());
-
-        for (int j = 0; j < h.getALayers()[v]->getHiddenProbs().size(); j++)
-            hiddenProbs[j] = h.getALayers()[v]->getHiddenProbs()[j];
-
-        return hiddenProbs;
+        return h.getALayers()[v]->traceDecay;
     }
 
     friend class PyVisualizer;
