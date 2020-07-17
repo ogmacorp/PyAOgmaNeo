@@ -37,6 +37,8 @@ struct PyLayerDesc {
     int ticksPerUpdate;
     int temporalHorizon;
 
+    int historyCapacity;
+
     PyLayerDesc()
     :
     hiddenSize(4, 4, 16),
@@ -45,7 +47,8 @@ struct PyLayerDesc {
     pRadius(2),
     aRadius(2),
     ticksPerUpdate(2),
-    temporalHorizon(2)
+    temporalHorizon(2),
+    historyCapacity(32)
     {}
 
     PyLayerDesc(
@@ -55,7 +58,8 @@ struct PyLayerDesc {
         int pRadius,
         int aRadius,
         int ticksPerUpdate,
-        int temporalHorizon
+        int temporalHorizon,
+        int historyCapacity
     )
     :
     hiddenSize(hiddenSize),
@@ -64,7 +68,8 @@ struct PyLayerDesc {
     pRadius(pRadius),
     aRadius(aRadius),
     ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon)
+    temporalHorizon(temporalHorizon),
+    historyCapacity(32)
     {}
 };
 
@@ -247,23 +252,6 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->gamma;
-    }
-
-    void setATraceDecay(
-        int v,
-        float traceDecay
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->traceDecay = traceDecay;
-    }
-
-    float getATraceDecay(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->traceDecay;
     }
 
     friend class PyVisualizer;
