@@ -95,7 +95,8 @@ public:
     void step(
         const std::vector<std::vector<unsigned char> > &inputCs,
         bool learnEnabled = true,
-        float reward = 0.0f
+        float reward = 0.0f,
+        bool mimic = false
     );
 
     int getNumLayers() const {
