@@ -343,7 +343,7 @@ void PyVisualizer::update(
                     aon::Int2 offset(ix - fieldLowerBound.x, iy - fieldLowerBound.y);
 
                     unsigned char weight = vl.weights[offset.y + diam * (offset.x + diam * hiddenIndex)];
-                    unsigned char commitC = vl.weights[offset.y + diam * (offset.x + diam * hiddenIndex)];
+                    unsigned char commitC = vl.commitCs[offset.y + diam * (offset.x + diam * hiddenIndex)];
 
                     unsigned char c = (ffZ == commitC ? weight : 0);
 
