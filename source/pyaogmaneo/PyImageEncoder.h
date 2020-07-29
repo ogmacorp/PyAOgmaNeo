@@ -39,7 +39,8 @@ private:
 
 public:
     float alpha;
-    float gamma;
+    float beta;
+    float minVigilance;
     
     PyImageEncoder(
         const PyInt3 &hiddenSize,
