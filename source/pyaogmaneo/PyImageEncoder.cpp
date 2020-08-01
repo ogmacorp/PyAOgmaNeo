@@ -25,7 +25,7 @@ PyImageEncoder::PyImageEncoder(
 
     alpha = enc.alpha;
     beta = enc.beta;
-    minVigilance = enc.minVigilance;
+    sigma = enc.sigma;
 }
 
 PyImageEncoder::PyImageEncoder(
@@ -38,7 +38,7 @@ PyImageEncoder::PyImageEncoder(
 
     alpha = enc.alpha;
     beta = enc.beta;
-    minVigilance = enc.minVigilance;
+    sigma = enc.sigma;
 }
 
 void PyImageEncoder::save(
@@ -56,7 +56,7 @@ void PyImageEncoder::step(
 ) {
     enc.alpha = alpha;
     enc.beta = beta;
-    enc.minVigilance = minVigilance;
+    enc.sigma = sigma;
     
     aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
     aon::Array<const aon::Array<unsigned char>*> cInputs(inputs.size());
