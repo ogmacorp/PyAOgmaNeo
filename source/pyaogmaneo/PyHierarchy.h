@@ -39,6 +39,8 @@ struct PyLayerDesc {
 
     int historyCapacity;
 
+    float initVigilance;
+
     PyLayerDesc()
     :
     hiddenSize(4, 4, 32),
@@ -48,7 +50,8 @@ struct PyLayerDesc {
     aRadius(4),
     ticksPerUpdate(2),
     temporalHorizon(2),
-    historyCapacity(32)
+    historyCapacity(32),
+    initVigilance(0.5f)
     {}
 
     PyLayerDesc(
@@ -59,7 +62,8 @@ struct PyLayerDesc {
         int aRadius,
         int ticksPerUpdate,
         int temporalHorizon,
-        int historyCapacity
+        int historyCapacity,
+        float initVigilance
     )
     :
     hiddenSize(hiddenSize),
@@ -69,7 +73,8 @@ struct PyLayerDesc {
     aRadius(aRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon),
-    historyCapacity(historyCapacity)
+    historyCapacity(historyCapacity),
+    initVigilance(initVigilance)
     {}
 };
 
@@ -208,17 +213,17 @@ public:
         return h.getSCLayer(l).beta;
     }
 
-    void setSCMinVigilance(
+    void setSCSigma(
         int l,
-        float minVigilance
+        float sigma
     ) {
-        h.getSCLayer(l).minVigilance = minVigilance;
+        h.getSCLayer(l).sigma = sigma;
     }
 
-    float getSCMinVigilance(
+    float getSCSigma(
         int l
     ) const {
-        return h.getSCLayer(l).minVigilance;
+        return h.getSCLayer(l).sigma;
     }
 
     void setPAlpha(
