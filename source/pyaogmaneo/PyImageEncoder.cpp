@@ -12,6 +12,7 @@ using namespace pyaon;
 
 PyImageEncoder::PyImageEncoder(
     const PyInt3 &hiddenSize,
+    float initVigilance,
     const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
 ) {
     aon::Array<aon::ImageEncoder::VisibleLayerDesc> cVisibleLayerDescs(visibleLayerDescs.size());
@@ -21,7 +22,7 @@ PyImageEncoder::PyImageEncoder(
         cVisibleLayerDescs[v].radius = visibleLayerDescs[v].radius;
     }
 
-    enc.initRandom(aon::Int3(hiddenSize.x, hiddenSize.y, hiddenSize.z), cVisibleLayerDescs);
+    enc.initRandom(aon::Int3(hiddenSize.x, hiddenSize.y, hiddenSize.z), initVigilance, cVisibleLayerDescs);
 
     alpha = enc.alpha;
     beta = enc.beta;

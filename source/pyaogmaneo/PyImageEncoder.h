@@ -44,6 +44,7 @@ public:
     
     PyImageEncoder(
         const PyInt3 &hiddenSize,
+        float initVigilance,
         const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
     );
 
