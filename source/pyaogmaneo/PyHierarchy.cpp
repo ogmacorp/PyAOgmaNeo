@@ -40,13 +40,13 @@ PyHierarchy::PyHierarchy(
 
     for (int l = 0; l < layerDescs.size(); l++) {
         cLayerDescs[l].hiddenSize = aon::Int3(layerDescs[l].hiddenSize.x, layerDescs[l].hiddenSize.y, layerDescs[l].hiddenSize.z);
-        cLayerDescs[l].clumpSize = aon::Int2(layerDescs[l].clumpSize.x, layerDescs[l].clumpSize.y);
         cLayerDescs[l].ffRadius = layerDescs[l].ffRadius;
         cLayerDescs[l].pRadius = layerDescs[l].pRadius;
         cLayerDescs[l].aRadius = layerDescs[l].aRadius;
         cLayerDescs[l].temporalHorizon = layerDescs[l].temporalHorizon;
         cLayerDescs[l].ticksPerUpdate = layerDescs[l].ticksPerUpdate;
         cLayerDescs[l].historyCapacity = layerDescs[l].historyCapacity;
+        cLayerDescs[l].initVigilance = layerDescs[l].initVigilance;
     }
 
     h.initRandom(cInputSizes, cInputTypes, cLayerDescs);

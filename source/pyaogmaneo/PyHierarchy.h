@@ -28,7 +28,6 @@ inline int getNumThreads() {
 
 struct PyLayerDesc {
     PyInt3 hiddenSize;
-    PyInt2 clumpSize;
 
     int ffRadius;
     int pRadius;
@@ -44,7 +43,6 @@ struct PyLayerDesc {
     PyLayerDesc()
     :
     hiddenSize(4, 4, 32),
-    clumpSize(4, 4),
     ffRadius(4),
     pRadius(4),
     aRadius(4),
@@ -56,7 +54,6 @@ struct PyLayerDesc {
 
     PyLayerDesc(
         const PyInt3 &hiddenSize,
-        const PyInt2 &clumpSize,
         int ffRadius,
         int pRadius,
         int aRadius,
@@ -67,7 +64,6 @@ struct PyLayerDesc {
     )
     :
     hiddenSize(hiddenSize),
-    clumpSize(clumpSize),
     ffRadius(ffRadius),
     pRadius(pRadius),
     aRadius(aRadius),
