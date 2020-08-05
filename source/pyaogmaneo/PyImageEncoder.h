@@ -40,11 +40,10 @@ private:
 public:
     float alpha;
     float beta;
-    float sigma;
+    float vigilance;
     
     PyImageEncoder(
         const PyInt3 &hiddenSize,
-        float initVigilance,
         const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
     );
 

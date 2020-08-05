@@ -12,7 +12,6 @@ using namespace pyaon;
 
 PyImageEncoder::PyImageEncoder(
     const PyInt3 &hiddenSize,
-    float initVigilance,
     const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
 ) {
     aon::Array<aon::ImageEncoder::VisibleLayerDesc> cVisibleLayerDescs(visibleLayerDescs.size());
@@ -22,11 +21,11 @@ PyImageEncoder::PyImageEncoder(
         cVisibleLayerDescs[v].radius = visibleLayerDescs[v].radius;
     }
 
-    enc.initRandom(aon::Int3(hiddenSize.x, hiddenSize.y, hiddenSize.z), initVigilance, cVisibleLayerDescs);
+    enc.initRandom(aon::Int3(hiddenSize.x, hiddenSize.y, hiddenSize.z), cVisibleLayerDescs);
 
     alpha = enc.alpha;
     beta = enc.beta;
-    sigma = enc.sigma;
+    vigilance = enc.vigilance;
 }
 
 PyImageEncoder::PyImageEncoder(
@@ -39,7 +38,7 @@ PyImageEncoder::PyImageEncoder(
 
     alpha = enc.alpha;
     beta = enc.beta;
-    sigma = enc.sigma;
+    vigilance = enc.vigilance;
 }
 
 void PyImageEncoder::save(
@@ -57,7 +56,7 @@ void PyImageEncoder::step(
 ) {
     enc.alpha = alpha;
     enc.beta = beta;
-    enc.sigma = sigma;
+    enc.vigilance = vigilance;
     
     aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
     aon::Array<const aon::Array<unsigned char>*> cInputs(inputs.size());
