@@ -11,8 +11,12 @@ cmake_minimum_required(VERSION 3.13)
 project(PyAOgmaNeo)
 
 set(CMAKE_VERBOSE_MAKEFILE OFF)
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake/")
 
@@ -20,6 +24,7 @@ if(NOT CMAKE_BUILD_TYPE)
     message("CMAKE_BUILD_TYPE not set, setting it to Release")
     set(CMAKE_BUILD_TYPE Release)
 endif()
+
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(PYTHON_VERSION)
@@ -46,6 +51,14 @@ include_directories(${AOGMANEO_INCLUDE_DIR})
 
 
 ############################################################################
+# Add Raylib
+
+find_package(Raylib REQUIRED)
+
+include_directories(${raylib_INCLUDE_DIRS})
+
+
+############################################################################
 # Add the PyAOgmaNeoCpp library
 
 set(PYAOGMANEO_INCLUDE_DIR "source/pyaogmaneo;")
@@ -61,6 +74,7 @@ add_library(PyAOgmaNeoCpp ${PYAOGMANEO_SRC})
 
 target_link_libraries(PyAOgmaNeoCpp ${OpenMP_CXX_LIBRARIES})
 target_link_libraries(PyAOgmaNeoCpp ${AOGMANEO_LIBRARIES})
+target_link_libraries(PyAOgmaNeoCpp ${raylib_LIBRARIES})
 
 
 ############################################################################
