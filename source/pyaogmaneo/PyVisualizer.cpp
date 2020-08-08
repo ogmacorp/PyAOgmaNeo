@@ -381,7 +381,7 @@ void PyVisualizer::render() {
         BeginMode3D(camera);
 
             for (int i = 0; i < cells.size(); i++)
-                DrawSphere(std::get<0>(cells[i]), cellRadius, std::get<1>(cells[i]));
+                DrawSphereEx(std::get<0>(cells[i]), cellRadius, 6, 6, std::get<1>(cells[i]));
 
             for (int i = 0; i < columns.size(); i++)
                 DrawCubeWiresV(std::get<0>(columns[i]), std::get<1>(columns[i]), std::get<2>(columns[i]));
