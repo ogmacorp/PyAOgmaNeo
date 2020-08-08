@@ -380,7 +380,7 @@ void PyVisualizer::update(
                 for (int y = 0; y < imHeight; y++) {
                     unsigned char c = imEncImg[y + imHeight * x];
 
-                    colors[y + imHeight * x] = (Color){ c, c, c, 255 };
+                    colors[x + imWidth * y] = (Color){ c, c, c, 255 };
                 }
         }
         else {
@@ -390,7 +390,7 @@ void PyVisualizer::update(
                     unsigned char g = imEncImg[1 + 3 * (y + imHeight * x)];
                     unsigned char b = imEncImg[2 + 3 * (y + imHeight * x)];
 
-                    colors[y + imHeight * x] = (Color){ r, g, b, 255 };
+                    colors[x + imWidth * y] = (Color){ r, g, b, 255 };
                 }
         }
 
