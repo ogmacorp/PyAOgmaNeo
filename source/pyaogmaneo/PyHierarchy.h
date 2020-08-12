@@ -310,40 +310,6 @@ public:
         return h.getALayers()[v]->gamma;
     }
 
-    void setAMinSteps(
-        int v,
-        int minSteps
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->minSteps = minSteps;
-    }
-
-    int getAMinSteps(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->minSteps;
-    }
-
-    void setAHistoryIters(
-        int v,
-        int historyIters
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->historyIters;
-    }
-
     friend class PyVisualizer;
 };
 } // namespace pyaon
