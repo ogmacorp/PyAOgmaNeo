@@ -28,6 +28,7 @@ inline int getNumThreads() {
 
 struct PyLayerDesc {
     PyInt3 hiddenSize;
+    PyInt2 clumpSize;
 
     int ffRadius;
     int pRadius;
@@ -40,10 +41,11 @@ struct PyLayerDesc {
 
     PyLayerDesc()
     :
-    hiddenSize(4, 4, 16),
-    ffRadius(2),
-    pRadius(2),
-    aRadius(2),
+    hiddenSize(4, 4, 32),
+    clumpSize(4, 4),
+    ffRadius(4),
+    pRadius(4),
+    aRadius(4),
     ticksPerUpdate(2),
     temporalHorizon(2),
     historyCapacity(32)
@@ -51,6 +53,7 @@ struct PyLayerDesc {
 
     PyLayerDesc(
         const PyInt3 &hiddenSize,
+        const PyInt2 &clumpSize,
         int ffRadius,
         int pRadius,
         int aRadius,
@@ -60,6 +63,7 @@ struct PyLayerDesc {
     )
     :
     hiddenSize(hiddenSize),
+    clumpSize(clumpSize),
     ffRadius(ffRadius),
     pRadius(pRadius),
     aRadius(aRadius),
@@ -84,15 +88,9 @@ public:
         const std::string &name
     );
 
-    PyHierarchy(
-        const std::vector<unsigned char> &buffer
-    );
-
     void save(
         const std::string &name
     );
-
-    std::vector<unsigned char> save();
 
     void step(
         const std::vector<std::vector<unsigned char> > &inputCs,
@@ -183,7 +181,7 @@ public:
     ) {
         return h.getALayers()[v] != nullptr;
     }
-
+    
     void setSCAlpha(
         int l,
         float alpha
@@ -197,17 +195,30 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCExplainIters(
+    void setSCBeta(
         int l,
-        int explainIters
+        float beta
     ) {
-        h.getSCLayer(l).explainIters = explainIters;
+        h.getSCLayer(l).beta = beta;
     }
 
-    int getSCExplainIters(
+    float getSCBeta(
         int l
     ) const {
-        return h.getSCLayer(l).explainIters;
+        return h.getSCLayer(l).beta;
+    }
+
+    void setSCVigilance(
+        int l,
+        float vigilance
+    ) {
+        h.getSCLayer(l).vigilance = vigilance;
+    }
+
+    float getSCVigilance(
+        int l
+    ) const {
+        return h.getSCLayer(l).vigilance;
     }
 
     void setPAlpha(
@@ -227,6 +238,25 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
         
         return h.getPLayers(l)[v]->alpha;
+    }
+
+    void setPTargetRange(
+        int l,
+        int v,
+        float targetRange
+    ) {
+        assert(h.getPLayers(l)[v] != nullptr);
+        
+        h.getPLayers(l)[v]->targetRange = targetRange;
+    }
+
+    float getPTargetRange(
+        int l,
+        int v
+    ) const {
+        assert(h.getPLayers(l)[v] != nullptr);
+        
+        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
@@ -278,40 +308,6 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->gamma;
-    }
-
-    void setAMinSteps(
-        int v,
-        int minSteps
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->minSteps = minSteps;
-    }
-
-    int getAMinSteps(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->minSteps;
-    }
-
-    void setAHistoryIters(
-        int v,
-        int historyIters
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->historyIters;
     }
 
     friend class PyVisualizer;

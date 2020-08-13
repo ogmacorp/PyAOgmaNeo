@@ -43,6 +43,7 @@
 %template(StdVec2Df) std::vector<std::vector<float> >;
 %template(StdVecuchar) std::vector<unsigned char>;
 %template(StdVec2Duchar) std::vector<std::vector<unsigned char> >;
+%template(StdVecInt2) std::vector<pyaon::PyInt2>;
 %template(StdVecInt3) std::vector<pyaon::PyInt3>;
 %template(StdVecLayerDesc) std::vector<pyaon::PyLayerDesc>;
 %template(StdVecImageEncoderVisibleLayerDesc) std::vector<pyaon::PyImageEncoderVisibleLayerDesc>;
