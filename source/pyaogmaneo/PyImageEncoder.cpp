@@ -24,8 +24,7 @@ PyImageEncoder::PyImageEncoder(
     enc.initRandom(aon::Int3(hiddenSize.x, hiddenSize.y, hiddenSize.z), cVisibleLayerDescs);
 
     alpha = enc.alpha;
-    beta = enc.beta;
-    vigilance = enc.vigilance;
+    gamma = enc.gamma;
 }
 
 PyImageEncoder::PyImageEncoder(
@@ -37,8 +36,7 @@ PyImageEncoder::PyImageEncoder(
     enc.read(reader);
 
     alpha = enc.alpha;
-    beta = enc.beta;
-    vigilance = enc.vigilance;
+    gamma = enc.gamma;
 }
 
 void PyImageEncoder::save(
@@ -55,8 +53,7 @@ void PyImageEncoder::step(
     bool learnEnabled
 ) {
     enc.alpha = alpha;
-    enc.beta = beta;
-    enc.vigilance = vigilance;
+    enc.gamma = gamma;
     
     aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
     aon::Array<const aon::Array<unsigned char>*> cInputs(inputs.size());
