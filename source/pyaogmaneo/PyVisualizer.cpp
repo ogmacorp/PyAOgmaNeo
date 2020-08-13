@@ -345,10 +345,10 @@ void PyVisualizer::update(
 
                     aon::Int2 offset(ix - fieldLowerBound.x, iy - fieldLowerBound.y);
 
-                    unsigned char weight = vl.weights[offset.y + diam * (offset.x + diam * hiddenIndex)];
-                    unsigned char commitC = vl.commitCs[offset.y + diam * (offset.x + diam * hiddenIndex)];
+                    float weight = vl.weights[ffZ + vld.size.z * (offset.y + diam * (offset.x + diam * hiddenIndex))];
 
-                    unsigned char c = (ffZ == commitC ? weight : 0);
+                    // Rescale
+                    unsigned char c = aon::min(1.0f, aon::expf(weight * weightScaling)) * 255;
 
                     colors[offset.y + offset.x * diam] = (Color){ c, c, c, 255 };
                 }

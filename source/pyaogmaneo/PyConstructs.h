@@ -13,27 +13,6 @@
 #include <fstream>
 
 namespace pyaon {
-class PyInt2 {
-private:
-public:
-    int x, y;
-
-    PyInt2() 
-    :
-    x(0),
-    y(0)
-    {}
-
-    PyInt2(
-        int x,
-        int y
-    )
-    :
-    x(x),
-    y(y)
-    {}
-};
-
 class PyInt3 {
 private:
 public:
