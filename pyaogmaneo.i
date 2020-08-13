@@ -20,7 +20,6 @@
 #include "PyConstructs.h"
 #include "PyHierarchy.h"
 #include "PyImageEncoder.h"
-#include "PyVisualizer.h"
 %}
 
 // Handle STL exceptions
@@ -52,4 +51,3 @@
 %include "PyConstructs.h"
 %include "PyHierarchy.h"
 %include "PyImageEncoder.h"
-%include "PyVisualizer.h"
