@@ -28,7 +28,6 @@ inline int getNumThreads() {
 
 struct PyLayerDesc {
     PyInt3 hiddenSize;
-    PyInt2 clumpSize;
 
     int ffRadius;
     int pRadius;
@@ -41,11 +40,10 @@ struct PyLayerDesc {
 
     PyLayerDesc()
     :
-    hiddenSize(4, 4, 32),
-    clumpSize(4, 4),
-    ffRadius(4),
-    pRadius(4),
-    aRadius(4),
+    hiddenSize(4, 4, 16),
+    ffRadius(2),
+    pRadius(2),
+    aRadius(2),
     ticksPerUpdate(2),
     temporalHorizon(2),
     historyCapacity(32)
@@ -53,7 +51,6 @@ struct PyLayerDesc {
 
     PyLayerDesc(
         const PyInt3 &hiddenSize,
-        const PyInt2 &clumpSize,
         int ffRadius,
         int pRadius,
         int aRadius,
@@ -63,7 +60,6 @@ struct PyLayerDesc {
     )
     :
     hiddenSize(hiddenSize),
-    clumpSize(clumpSize),
     ffRadius(ffRadius),
     pRadius(pRadius),
     aRadius(aRadius),
@@ -187,7 +183,7 @@ public:
     ) {
         return h.getALayers()[v] != nullptr;
     }
-    
+
     void setSCAlpha(
         int l,
         float alpha
@@ -201,30 +197,17 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCBeta(
+    void setSCExplainIters(
         int l,
-        float beta
+        int explainIters
     ) {
-        h.getSCLayer(l).beta = beta;
+        h.getSCLayer(l).explainIters = explainIters;
     }
 
-    float getSCBeta(
+    int getSCExplainIters(
         int l
     ) const {
-        return h.getSCLayer(l).beta;
-    }
-
-    void setSCVigilance(
-        int l,
-        float vigilance
-    ) {
-        h.getSCLayer(l).vigilance = vigilance;
-    }
-
-    float getSCVigilance(
-        int l
-    ) const {
-        return h.getSCLayer(l).vigilance;
+        return h.getSCLayer(l).explainIters;
     }
 
     void setPAlpha(
@@ -244,25 +227,6 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
         
         return h.getPLayers(l)[v]->alpha;
-    }
-
-    void setPTargetRange(
-        int l,
-        int v,
-        float targetRange
-    ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        h.getPLayers(l)[v]->targetRange = targetRange;
-    }
-
-    float getPTargetRange(
-        int l,
-        int v
-    ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
