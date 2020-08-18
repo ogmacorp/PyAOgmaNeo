@@ -197,6 +197,32 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
+    void setSCGamma(
+        int l,
+        float gamma
+    ) {
+        h.getSCLayer(l).gamma = gamma;
+    }
+
+    float getSCGamma(
+        int l
+    ) const {
+        return h.getSCLayer(l).gamma;
+    }
+
+    void setSCExplainIters(
+        int l,
+        int explainIters
+    ) {
+        h.getSCLayer(l).explainIters = explainIters;
+    }
+
+    int getSCExplainIters(
+        int l
+    ) const {
+        return h.getSCLayer(l).explainIters;
+    }
+
     void setPAlpha(
         int l,
         int v,
