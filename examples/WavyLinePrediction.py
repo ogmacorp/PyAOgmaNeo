@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Set the number of threads
-pyogmaneo.setNumThreads(4)
+pyaon.setNumThreads(4)
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
 inputColumnSize = 64
@@ -25,10 +25,10 @@ bounds = (-1.0, 1.0)
 lds = []
 
 for i in range(5): # Layers with exponential memory
-    ld = pyogmaneo.LayerDesc()
+    ld = pyaon.LayerDesc()
 
     # Set the hidden (encoder) layer size: width x height x columnSize
-    ld.hiddenSize = pyogmaneo.Int3(4, 4, 16)
+    ld.hiddenSize = pyaon.Int3(4, 4, 16)
 
     ld.ffRadius = 2 # Sparse coder radius onto visible layers
     ld.pRadius = 2 # Predictor radius onto sparse coder hidden layer (and feed back)
@@ -39,7 +39,7 @@ for i in range(5): # Layers with exponential memory
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = pyogmaneo.Hierarchy([ pyogmaneo.Int3(1, 1, inputColumnSize) ], [ pyogmaneo.inputTypePrediction ], lds)
+h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePrediction ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 2000
