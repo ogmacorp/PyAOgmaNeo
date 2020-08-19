@@ -208,23 +208,23 @@ public:
         return h.getSCLayer(l).explainIters;
     }
 
-    void setPBeta(
+    void setPAlpha(
         int l,
         int v,
-        float beta
+        float alpha
     ) {
         assert(h.getPLayers(l)[v] != nullptr);
         
-        h.getPLayers(l)[v]->beta = beta;
+        h.getPLayers(l)[v]->alpha = alpha;
     }
 
-    float getPBeta(
+    float getPAlpha(
         int l,
         int v
     ) const {
         assert(h.getPLayers(l)[v] != nullptr);
         
-        return h.getPLayers(l)[v]->beta;
+        return h.getPLayers(l)[v]->alpha;
     }
 
     void setPTargetRange(
@@ -295,40 +295,6 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->gamma;
-    }
-
-    void setAMinSteps(
-        int v,
-        int minSteps
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->minSteps = minSteps;
-    }
-
-    int getAMinSteps(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->minSteps;
-    }
-
-    void setAHistoryIters(
-        int v,
-        int historyIters
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->historyIters;
     }
 };
 } // namespace pyaon
