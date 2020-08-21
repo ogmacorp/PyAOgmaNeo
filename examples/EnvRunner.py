@@ -137,6 +137,7 @@ class EnvRunner:
             ld.hiddenSize = layerSizes[i]
 
             ld.ffRadius = layerRadius
+            ld.lRadius = layerRadius
             ld.pRadius = layerRadius
             ld.aRadius = layerRadius
 
