@@ -31,7 +31,7 @@ for i in range(12): # Layers with exponential memory
     ld.hiddenSize = pyaon.Int3(4, 4, 16)
 
     ld.ffRadius = 4 # Sparse coder radius onto visible layers
-    ld.lRadius = 4
+    ld.lRadius = 2
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
@@ -57,7 +57,7 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
 
-    print(h.getHiddenCs(0))
+    print(h.getHiddenCs(3))
 
     # Print progress
     if t % 100 == 0:
