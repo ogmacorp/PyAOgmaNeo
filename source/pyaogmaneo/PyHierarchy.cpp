@@ -89,8 +89,7 @@ std::vector<unsigned char> PyHierarchy::save() {
 void PyHierarchy::step(
     const std::vector<std::vector<unsigned char> > &inputCs,
     bool learnEnabled,
-    float reward,
-    bool mimic
+    float reward
 ) {
     assert(inputCs.size() == h.getInputSizes().size());
 
@@ -108,5 +107,5 @@ void PyHierarchy::step(
         cInputCs[i] = &cInputCsBacking[i];
     }
     
-    h.step(cInputCs, learnEnabled, reward, mimic);
+    h.step(cInputCs, learnEnabled, reward);
 }

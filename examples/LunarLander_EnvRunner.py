@@ -15,7 +15,7 @@ from EnvRunner import EnvRunner # EnvRunner automatically creates an OgmaNeo2 hi
 
 env = gym.make('LunarLander-v2')
 
-runner = EnvRunner(env, terminalReward=0.0, rewardScale=1.0) # Cart-Pole environment always returns a reward of 1, so use a custom reward function: -1 if episode ends, 0 otherwise
+runner = EnvRunner(env, terminalReward=0.0, rewardScale=0.1) # Cart-Pole environment always returns a reward of 1, so use a custom reward function: -1 if episode ends, 0 otherwise
 
 averageReward = 0.0
 maxReward = 0.0
