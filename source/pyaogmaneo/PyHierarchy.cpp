@@ -41,7 +41,6 @@ PyHierarchy::PyHierarchy(
     for (int l = 0; l < layerDescs.size(); l++) {
         cLayerDescs[l].hiddenSize = aon::Int3(layerDescs[l].hiddenSize.x, layerDescs[l].hiddenSize.y, layerDescs[l].hiddenSize.z);
         cLayerDescs[l].ffRadius = layerDescs[l].ffRadius;
-        cLayerDescs[l].lRadius = layerDescs[l].lRadius;
         cLayerDescs[l].pRadius = layerDescs[l].pRadius;
         cLayerDescs[l].aRadius = layerDescs[l].aRadius;
         cLayerDescs[l].temporalHorizon = layerDescs[l].temporalHorizon;
@@ -61,6 +60,15 @@ PyHierarchy::PyHierarchy(
     h.read(reader);
 }
 
+PyHierarchy::PyHierarchy(
+    const std::vector<unsigned char> &buffer
+) {
+    PyBufferReader reader;
+    reader.buffer = &buffer;
+
+    h.read(reader);
+}
+
 void PyHierarchy::save(
     const std::string &name
 ) {
@@ -68,6 +76,14 @@ void PyHierarchy::save(
     writer.outs.open(name, std::ios::binary);
 
     h.write(writer);
+}
+
+std::vector<unsigned char> PyHierarchy::save() {
+    PyBufferWriter writer;
+
+    h.write(writer);
+
+    return writer.buffer;
 }
 
 void PyHierarchy::step(

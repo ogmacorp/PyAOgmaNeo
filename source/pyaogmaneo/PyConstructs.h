@@ -9,6 +9,7 @@
 #pragma once
 
 #include <aogmaneo/Helpers.h>
+#include <vector>
 #include <fstream>
 
 namespace pyaon {
@@ -49,6 +50,33 @@ public:
 class PyStreamWriter : public aon::StreamWriter {
 public:
     std::ofstream outs;
+
+    void write(
+        const void* data,
+        int len
+    ) override;
+};
+
+class PyBufferReader : public aon::StreamReader {
+public:
+    int start;
+    const std::vector<unsigned char>* buffer;
+
+    PyBufferReader()
+    :
+    start(0),
+    buffer(nullptr)
+    {}
+
+    void read(
+        void* data,
+        int len
+    ) override;
+};
+
+class PyBufferWriter : public aon::StreamWriter {
+public:
+    std::vector<unsigned char> buffer;
 
     void write(
         const void* data,

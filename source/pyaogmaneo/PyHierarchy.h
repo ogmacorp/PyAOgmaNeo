@@ -30,7 +30,6 @@ struct PyLayerDesc {
     PyInt3 hiddenSize;
 
     int ffRadius;
-    int lRadius;
     int pRadius;
     int aRadius;
 
@@ -43,7 +42,6 @@ struct PyLayerDesc {
     :
     hiddenSize(4, 4, 16),
     ffRadius(2),
-    lRadius(2),
     pRadius(2),
     aRadius(2),
     ticksPerUpdate(2),
@@ -54,7 +52,6 @@ struct PyLayerDesc {
     PyLayerDesc(
         const PyInt3 &hiddenSize,
         int ffRadius,
-        int lRadius,
         int pRadius,
         int aRadius,
         int ticksPerUpdate,
@@ -64,7 +61,6 @@ struct PyLayerDesc {
     :
     hiddenSize(hiddenSize),
     ffRadius(ffRadius),
-    lRadius(lRadius),
     pRadius(pRadius),
     aRadius(aRadius),
     ticksPerUpdate(ticksPerUpdate),
@@ -88,9 +84,15 @@ public:
         const std::string &name
     );
 
+    PyHierarchy(
+        const std::vector<unsigned char> &buffer
+    );
+
     void save(
         const std::string &name
     );
+
+    std::vector<unsigned char> save();
 
     void step(
         const std::vector<std::vector<unsigned char> > &inputCs,
@@ -195,30 +197,17 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCBeta(
+    void setSCExpScale(
         int l,
-        float beta
+        float expScale
     ) {
-        h.getSCLayer(l).beta = beta;
+        h.getSCLayer(l).expScale = expScale;
     }
 
-    float getSCBeta(
+    float getSCExpScale(
         int l
     ) const {
-        return h.getSCLayer(l).beta;
-    }
-
-    void setSCExplainIters(
-        int l,
-        int explainIters
-    ) {
-        h.getSCLayer(l).explainIters = explainIters;
-    }
-
-    int getSCExplainIters(
-        int l
-    ) const {
-        return h.getSCLayer(l).explainIters;
+        return h.getSCLayer(l).expScale;
     }
 
     void setPAlpha(
@@ -238,25 +227,6 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
         
         return h.getPLayers(l)[v]->alpha;
-    }
-
-    void setPTargetRange(
-        int l,
-        int v,
-        float targetRange
-    ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        h.getPLayers(l)[v]->targetRange = targetRange;
-    }
-
-    float getPTargetRange(
-        int l,
-        int v
-    ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
@@ -308,6 +278,40 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->gamma;
+    }
+
+    void setAMinSteps(
+        int v,
+        int minSteps
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->minSteps = minSteps;
+    }
+
+    int getAMinSteps(
+        int v
+    ) const {
+        assert(h.getALayers()[v] != nullptr);
+        
+        return h.getALayers()[v]->minSteps;
+    }
+
+    void setAHistoryIters(
+        int v,
+        int historyIters
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->historyIters = historyIters;
+    }
+
+    int getAHistoryIters(
+        int v
+    ) const {
+        assert(h.getALayers()[v] != nullptr);
+        
+        return h.getALayers()[v]->historyIters;
     }
 };
 } // namespace pyaon
