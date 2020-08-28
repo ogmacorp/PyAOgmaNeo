@@ -20,7 +20,7 @@ runner = EnvRunner(env, terminalReward=0.0, rewardScale=1.0) # Cart-Pole environ
 averageReward = 0.0
 maxReward = 0.0
 
-for episode in range(1000):
+for episode in range(2000):
     env.reset()
 
     totalReward = 0.0
