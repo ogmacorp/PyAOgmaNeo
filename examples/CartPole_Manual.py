@@ -48,7 +48,7 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
     ld.aRadius = 4 # Actor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
-    ld.temporalHorizon = 4 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
+    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
     
     lds.append(ld)
 
