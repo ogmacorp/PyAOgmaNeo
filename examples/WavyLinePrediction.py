@@ -45,7 +45,7 @@ h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePred
 iters = 10000
 
 def wave(t):
-    return np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.04 * 2.0 * np.pi + 0.45)
+    return float(t % 19 == 0)#np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.04 * 2.0 * np.pi + 0.45)
 
 for t in range(iters):
     # The value to encode into the input column
