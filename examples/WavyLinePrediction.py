@@ -45,7 +45,7 @@ h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePred
 iters = 10000
 
 def wave(t):
-    return float(t % 19 == 0)#np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.035 * 2.0 * np.pi + 0.45)
+    return np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.04 * 2.0 * np.pi + 0.45)
 
 for t in range(iters):
     # The value to encode into the input column
@@ -56,7 +56,7 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
 
-    print(h.getHiddenCs(0))
+    print(h.getHiddenCs(3))
 
     # Print progress
     if t % 100 == 0:

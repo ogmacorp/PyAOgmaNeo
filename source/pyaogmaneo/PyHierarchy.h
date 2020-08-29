@@ -97,7 +97,8 @@ public:
     void step(
         const std::vector<std::vector<unsigned char> > &inputCs,
         bool learnEnabled = true,
-        float reward = 0.0f
+        float reward = 0.0f,
+        bool mimic = false
     );
 
     int getNumLayers() const {
@@ -196,17 +197,17 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCExplainIters(
+    void setSCExpScale(
         int l,
-        int explainIters
+        float expScale
     ) {
-        h.getSCLayer(l).explainIters = explainIters;
+        h.getSCLayer(l).expScale = expScale;
     }
 
-    int getSCExplainIters(
+    float getSCExpScale(
         int l
     ) const {
-        return h.getSCLayer(l).explainIters;
+        return h.getSCLayer(l).expScale;
     }
 
     void setPAlpha(
@@ -226,6 +227,25 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
         
         return h.getPLayers(l)[v]->alpha;
+    }
+
+    void setPTargetRange(
+        int l,
+        int v,
+        float targetRange
+    ) {
+        assert(h.getPLayers(l)[v] != nullptr);
+        
+        h.getPLayers(l)[v]->targetRange = targetRange;
+    }
+
+    float getPTargetRange(
+        int l,
+        int v
+    ) const {
+        assert(h.getPLayers(l)[v] != nullptr);
+        
+        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
@@ -312,7 +332,5 @@ public:
         
         return h.getALayers()[v]->historyIters;
     }
-
-    friend class PyVisualizer;
 };
 } // namespace pyaon
