@@ -197,17 +197,17 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCExpScale(
+    void setSCTargetRange(
         int l,
-        float expScale
+        float targetRange
     ) {
-        h.getSCLayer(l).expScale = expScale;
+        h.getSCLayer(l).targetRange = targetRange;
     }
 
-    float getSCExpScale(
+    float getSCTargetRange(
         int l
     ) const {
-        return h.getSCLayer(l).expScale;
+        return h.getSCLayer(l).targetRange;
     }
 
     void setPAlpha(
@@ -229,23 +229,23 @@ public:
         return h.getPLayers(l)[v]->alpha;
     }
 
-    void setPExpScale(
+    void setPTargetRange(
         int l,
         int v,
-        float expScale
+        float targetRange
     ) {
         assert(h.getPLayers(l)[v] != nullptr);
         
-        h.getPLayers(l)[v]->expScale = expScale;
+        h.getPLayers(l)[v]->targetRange = targetRange;
     }
 
-    float getPExpScale(
+    float getPTargetRange(
         int l,
         int v
     ) const {
         assert(h.getPLayers(l)[v] != nullptr);
         
-        return h.getPLayers(l)[v]->expScale;
+        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
