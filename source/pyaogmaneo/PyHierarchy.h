@@ -197,19 +197,6 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCTargetRange(
-        int l,
-        float targetRange
-    ) {
-        h.getSCLayer(l).targetRange = targetRange;
-    }
-
-    float getSCTargetRange(
-        int l
-    ) const {
-        return h.getSCLayer(l).targetRange;
-    }
-
     void setPAlpha(
         int l,
         int v,
@@ -227,25 +214,6 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
         
         return h.getPLayers(l)[v]->alpha;
-    }
-
-    void setPTargetRange(
-        int l,
-        int v,
-        float targetRange
-    ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        h.getPLayers(l)[v]->targetRange = targetRange;
-    }
-
-    float getPTargetRange(
-        int l,
-        int v
-    ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
@@ -299,38 +267,6 @@ public:
         return h.getALayers()[v]->gamma;
     }
 
-    void setAMinSteps(
-        int v,
-        int minSteps
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->minSteps = minSteps;
-    }
-
-    int getAMinSteps(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->minSteps;
-    }
-
-    void setAHistoryIters(
-        int v,
-        int historyIters
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->historyIters;
-    }
+    friend class PyVisualizer;
 };
 } // namespace pyaon
