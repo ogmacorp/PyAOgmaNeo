@@ -55,22 +55,22 @@ public:
     );
 
     void step(
-        const std::vector<std::vector<unsigned char> > &inputs,
+        const std::vector<std::vector<float> > &inputs,
         bool learnEnabled = true
     );
 
     void reconstruct(
-        const std::vector<unsigned char> &reconCs
+        const std::vector<int> &reconCs
     );
 
     int getNumVisibleLayers() const {
         return enc.getNumVisibleLayers();
     }
 
-    std::vector<unsigned char> getReconstruction(
+    std::vector<float> getReconstruction(
         int i
     ) const {
-        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
+        std::vector<float> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
@@ -78,8 +78,8 @@ public:
         return reconstruction;
     }
 
-    std::vector<unsigned char> getHiddenCs() const {
-        std::vector<unsigned char> hiddenCs(enc.getHiddenCs().size());
+    std::vector<int> getHiddenCs() const {
+        std::vector<int> hiddenCs(enc.getHiddenCs().size());
 
         for (int j = 0; j < hiddenCs.size(); j++)
             hiddenCs[j] = enc.getHiddenCs()[j];

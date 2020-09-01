@@ -95,7 +95,7 @@ public:
     std::vector<unsigned char> save();
 
     void step(
-        const std::vector<std::vector<unsigned char> > &inputCs,
+        const std::vector<std::vector<int> > &inputCs,
         bool learnEnabled = true,
         float reward = 0.0f,
         bool mimic = false
@@ -105,10 +105,10 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<unsigned char> getPredictionCs(
+    std::vector<int> getPredictionCs(
         int i
     ) const {
-        std::vector<unsigned char> predictions(h.getPredictionCs(i).size());
+        std::vector<int> predictions(h.getPredictionCs(i).size());
 
         for (int j = 0; j < predictions.size(); j++)
             predictions[j] = h.getPredictionCs(i)[j];
@@ -122,10 +122,10 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<unsigned char> getHiddenCs(
+    std::vector<int> getHiddenCs(
         int l
     ) {
-        std::vector<unsigned char> hiddenCs(h.getSCLayer(l).getHiddenCs().size());
+        std::vector<int> hiddenCs(h.getSCLayer(l).getHiddenCs().size());
 
         for (int j = 0; j < hiddenCs.size(); j++)
             hiddenCs[j] = h.getSCLayer(l).getHiddenCs()[j];
@@ -141,13 +141,13 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    unsigned char getTicks(
+    int getTicks(
         int l
     ) const {
         return h.getTicks(l);
     }
 
-    unsigned char getTicksPerUpdate(
+    int getTicksPerUpdate(
         int l
     ) const {
         return h.getTicksPerUpdate(l);
