@@ -229,23 +229,23 @@ public:
         return h.getPLayers(l)[v]->alpha;
     }
 
-    void setPExpScale(
+    void setPTargetRange(
         int l,
         int v,
-        float expScale
+        float targetRange
     ) {
         assert(h.getPLayers(l)[v] != nullptr);
         
-        h.getPLayers(l)[v]->expScale = expScale;
+        h.getPLayers(l)[v]->targetRange = targetRange;
     }
 
-    float getPExpScale(
+    float getPTargetRange(
         int l,
         int v
     ) const {
         assert(h.getPLayers(l)[v] != nullptr);
         
-        return h.getPLayers(l)[v]->expScale;
+        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
