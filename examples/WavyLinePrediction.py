@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Set the number of threads
-pyaon.setNumThreads(8)
+pyaon.setNumThreads(4)
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
 inputColumnSize = 64
@@ -24,18 +24,18 @@ bounds = (-1.0, 1.0)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(12): # Layers with exponential memory
+for i in range(7): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     # Set the hidden (encoder) layer size: width x height x columnSize
     ld.hiddenSize = pyaon.Int3(4, 4, 16)
 
     ld.ffRadius = 4 # Sparse coder radius onto visible layers
-    ld.lRadius = 2
+    ld.lRadius = 4
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
-    ld.temporalHorizon = 4 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
+    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
     
     lds.append(ld)
 
@@ -43,10 +43,10 @@ for i in range(12): # Layers with exponential memory
 h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePrediction ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 50000
 
 def wave(t):
-    return float(t % 19 == 0)#np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.035 * 2.0 * np.pi + 0.45)
+    return float(t % 17 == 0)#np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.035 * 2.0 * np.pi + 0.45)
 
 for t in range(iters):
     # The value to encode into the input column
@@ -57,7 +57,7 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
 
-    print(h.getHiddenCs(3))
+    print(h.getHiddenCs(0))
 
     # Print progress
     if t % 100 == 0:
