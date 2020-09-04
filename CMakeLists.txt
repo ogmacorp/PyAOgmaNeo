@@ -45,6 +45,14 @@ include_directories(${AOGMANEO_INCLUDE_DIR})
 
 
 ############################################################################
+# Add Raylib
+
+find_package(Raylib REQUIRED)
+
+include_directories(${raylib_INCLUDE_DIRS})
+
+
+############################################################################
 # Add the PyAOgmaNeoCpp library
 
 set(PYAOGMANEO_INCLUDE_DIR "source/pyaogmaneo;")
