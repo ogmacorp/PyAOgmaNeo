@@ -68,7 +68,7 @@ add_library(PyAOgmaNeoCpp ${PYAOGMANEO_SRC})
 
 target_link_libraries(PyAOgmaNeoCpp ${OpenMP_CXX_LIBRARIES})
 target_link_libraries(PyAOgmaNeoCpp ${AOGMANEO_LIBRARIES})
-
+target_link_libraries(PyAOgmaNeoCpp ${raylib_LIBRARIES})
 
 ############################################################################
 # Find SWIG and setup building the Python bindings to PyAOgmaNeo library

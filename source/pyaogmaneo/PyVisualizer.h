@@ -31,6 +31,11 @@ private:
     std::vector<std::tuple<Vector3, Color>> cells;
     std::vector<std::tuple<Vector3, Vector3, Color>> lines;
 
+    // Images being encoded (optional)
+    Texture2D imEncTexture;
+    bool hasImEncImg;
+    Model imEncPlane;
+
     // Selection
     int selectLayer;
     int selectInput;
@@ -70,6 +75,17 @@ public:
 
     void update(
         const PyHierarchy &h
+    ) {
+        update(h, {}, -1, 0, 0, true);
+    }
+
+    void update(
+        const PyHierarchy &h,
+        const std::vector<unsigned char> &imEncImg,
+        int imEncIndex,
+        int imWidth,
+        int imHeight,
+        bool grayscale
     );
 
     void render();

@@ -73,18 +73,28 @@ PyVisualizer::PyVisualizer(
     ffVliRange = 0;
     ffZ = 0;
     ffZRange = 0;
+
+    hasImEncImg = false;
 }
 
 PyVisualizer::~PyVisualizer() {
-    if (showTextures) {
+    if (showTextures)
         UnloadTexture(ffTexture);
+
+    if (hasImEncImg) {
+        UnloadModel(imEncPlane);
     }
 
     CloseWindow();
 }
 
 void PyVisualizer::update(
-    const PyHierarchy &h
+    const PyHierarchy &h,
+    const std::vector<unsigned char> &imEncImg,
+    int imEncIndex,
+    int imWidth,
+    int imHeight,
+    bool grayscale
 ) {
     int oldColumnSize = columns.size();
     int oldCellsSize = cells.size();
@@ -291,13 +301,6 @@ void PyVisualizer::update(
         showTextures = false;
 
     if (refreshTextures) {
-        if (showTextures) {
-            // Unload old
-            UnloadTexture(ffTexture);
-        }
-
-        showTextures = true;
-
         // FF
         if (selectLayer >= 0) {
             ffVliRange = ah.getSCLayer(selectLayer).getNumVisibleLayers();
@@ -354,14 +357,61 @@ void PyVisualizer::update(
             Image image = LoadImageEx(&colors[0], width, height);
 
             // Load texture
-            ffTexture = LoadTextureFromImage(image);
+            if (showTextures) // Already have, just update
+                UpdateTexture(ffTexture, image.data);
+            else
+                ffTexture = LoadTextureFromImage(image);
 
             ffWidth = width;
             ffHeight = height;
 
             // Unload image
             UnloadImage(image);
+
+            showTextures = true;
         }
+    }
+
+    if (imEncIndex >= 0) {
+        aon::Array<Color> colors(imWidth * imHeight, (Color){ 0, 0, 0, 255 });
+
+        if (grayscale) {
+            for (int x = 0; x < imWidth; x++)
+                for (int y = 0; y < imHeight; y++) {
+                    unsigned char c = imEncImg[y + imHeight * x];
+
+                    colors[x + imWidth * y] = (Color){ c, c, c, 255 };
+                }
+        }
+        else {
+            for (int x = 0; x < imWidth; x++)
+                for (int y = 0; y < imHeight; y++) {
+                    unsigned char r = imEncImg[0 + 3 * (y + imHeight * x)];
+                    unsigned char g = imEncImg[1 + 3 * (y + imHeight * x)];
+                    unsigned char b = imEncImg[2 + 3 * (y + imHeight * x)];
+
+                    colors[x + imWidth * y] = (Color){ r, g, b, 255 };
+                }
+        }
+
+        // Load im enc texture
+        Image image = LoadImageEx(&colors[0], imWidth, imHeight);
+
+        if (hasImEncImg)
+            UpdateTexture(imEncTexture, image.data);
+        else {
+            imEncTexture = LoadTextureFromImage(image);
+
+            UnloadImage(image);
+
+            Mesh m = GenMeshPlane(30.0f, 30.0f, 1, 1);
+
+            imEncPlane = LoadModelFromMesh(m);
+
+            imEncPlane.materials[0].maps[0].texture = imEncTexture;
+        }
+
+        hasImEncImg = true;
     }
 
     selectLayerPrev = selectLayer;
@@ -381,13 +431,17 @@ void PyVisualizer::render() {
         BeginMode3D(camera);
 
             for (int i = 0; i < cells.size(); i++)
-                DrawSphere(std::get<0>(cells[i]), cellRadius, std::get<1>(cells[i]));
+                DrawSphereEx(std::get<0>(cells[i]), cellRadius, 6, 6, std::get<1>(cells[i]));
 
             for (int i = 0; i < columns.size(); i++)
                 DrawCubeWiresV(std::get<0>(columns[i]), std::get<1>(columns[i]), std::get<2>(columns[i]));
 
             for (int i = 0; i < lines.size(); i++)
                 DrawLine3D(std::get<0>(lines[i]), std::get<1>(lines[i]), std::get<2>(lines[i]));
+
+            if (hasImEncImg) {
+                DrawModel(imEncPlane, (Vector3){ 0.0f, -60.0f, 0.0f }, 1.0f, (Color){ 255, 255, 255, 255 });
+            }
 
         EndMode3D();
 
@@ -414,4 +468,4 @@ void PyVisualizer::render() {
         }
 
     EndDrawing();
-}
+}!
