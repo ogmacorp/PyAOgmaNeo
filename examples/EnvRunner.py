@@ -49,7 +49,6 @@ class EnvRunner:
         elif type(self.env.observation_space) is gym.spaces.Box:
             if len(self.env.observation_space.shape) == 1 or len(self.env.observation_space.shape) == 0:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
-                squareTotal = squareSize * squareSize
                 self.inputSizes.append(Int3(squareSize, squareSize, obsResolution))
                 self.inputTypes.append(pyaon.inputTypeNone)
                 lows = list(self.env.observation_space.low)
@@ -115,7 +114,6 @@ class EnvRunner:
                     self.inputHighs.append(highs)
                 else:
                     squareSize = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
-                    squareTotal = squareSize * squareSize
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append(Int3(squareSize, squareSize, actionResolution))
                     self.inputTypes.append(pyaon.inputTypeAction)
@@ -157,7 +155,7 @@ class EnvRunner:
 
             startAct = []
 
-            for j in range(size):
+            for _ in range(size):
                 startAct.append(np.random.randint(0, self.inputSizes[index].z))
 
             self.actions.append(startAct)
@@ -176,7 +174,7 @@ class EnvRunner:
                 # Format image
                 img = cv2.resize(obs, ( self.imageSizes[0][0], self.imageSizes[0][1] ))
                 
-                img = np.swapaxes(img, 0, 1)
+                #img = np.swapaxes(img, 0, 1)
                 
                 #delta = img - self.imgsPrev[0]
  
@@ -239,7 +237,7 @@ class EnvRunner:
         if len(feedActions) == 1:
             feedActions = feedActions[0]
 
-        obs, reward, done, info = self.env.step(feedActions)
+        obs, reward, done, _ = self.env.step(feedActions)
 
         if obsPreprocess is not None:
             obs = obsPreprocess(obs)
