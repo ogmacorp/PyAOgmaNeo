@@ -354,7 +354,25 @@ void PyVisualizer::update(
                 }
 
             // Load image
-            Image image = LoadImageEx(&colors[0], width, height);
+            Image image = { 0 };
+            image.data = NULL;
+            image.width = width;
+            image.height = height;
+            image.mipmaps = 1;
+            image.format = UNCOMPRESSED_R8G8B8A8;
+
+            int k = 0;
+
+            image.data = (unsigned char *)RL_MALLOC(image.width*image.height*4*sizeof(unsigned char));
+
+            for (int i = 0; i < image.width*image.height*4; i += 4)
+            {
+                ((unsigned char *)image.data)[i] = colors[k].r;
+                ((unsigned char *)image.data)[i + 1] = colors[k].g;
+                ((unsigned char *)image.data)[i + 2] = colors[k].b;
+                ((unsigned char *)image.data)[i + 3] = colors[k].a;
+                k++;
+            }
 
             // Load texture
             if (showTextures) // Already have, just update
@@ -395,7 +413,25 @@ void PyVisualizer::update(
         }
 
         // Load im enc texture
-        Image image = LoadImageEx(&colors[0], imWidth, imHeight);
+        Image image = { 0 };
+        image.data = NULL;
+        image.width = imWidth;
+        image.height = imHeight;
+        image.mipmaps = 1;
+        image.format = UNCOMPRESSED_R8G8B8A8;
+
+        int k = 0;
+
+        image.data = (unsigned char *)RL_MALLOC(image.width*image.height*4*sizeof(unsigned char));
+
+        for (int i = 0; i < image.width*image.height*4; i += 4)
+        {
+            ((unsigned char *)image.data)[i] = colors[k].r;
+            ((unsigned char *)image.data)[i + 1] = colors[k].g;
+            ((unsigned char *)image.data)[i + 2] = colors[k].b;
+            ((unsigned char *)image.data)[i + 3] = colors[k].a;
+            k++;
+        }
 
         if (hasImEncImg)
             UpdateTexture(imEncTexture, image.data);
@@ -468,4 +504,4 @@ void PyVisualizer::render() {
         }
 
     EndDrawing();
-}!
+}
