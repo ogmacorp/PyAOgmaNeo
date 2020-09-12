@@ -171,13 +171,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    bool pLayerExists(
-        int l,
-        int v
-    ) {
-        return h.getPLayers(l)[v] != nullptr;
-    }
-
     bool aLayerExists(
         int v
     ) {
@@ -199,21 +192,19 @@ public:
 
     void setPAlpha(
         int l,
-        int v,
+        int i,
+        int t,
         float alpha
     ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        h.getPLayers(l)[v]->alpha = alpha;
+        h.getPLayers(l)[i][t].alpha = alpha;
     }
 
     float getPAlpha(
         int l,
-        int v
+        int i,
+        int t
     ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        return h.getPLayers(l)[v]->alpha;
+        return h.getPLayers(l)[i][t].alpha;
     }
 
     void setAAlpha(
