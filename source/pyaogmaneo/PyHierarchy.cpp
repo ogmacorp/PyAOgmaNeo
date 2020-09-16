@@ -87,15 +87,15 @@ std::vector<unsigned char> PyHierarchy::save() {
 }
 
 void PyHierarchy::step(
-    const std::vector<std::vector<unsigned char> > &inputCs,
+    const std::vector<std::vector<int> > &inputCs,
     bool learnEnabled,
     float reward,
     bool mimic
 ) {
     assert(inputCs.size() == h.getInputSizes().size());
 
-    aon::Array<aon::ByteBuffer> cInputCsBacking(inputCs.size());
-    aon::Array<const aon::ByteBuffer*> cInputCs(inputCs.size());
+    aon::Array<aon::IntBuffer> cInputCsBacking(inputCs.size());
+    aon::Array<const aon::IntBuffer*> cInputCs(inputCs.size());
 
     for (int i = 0; i < inputCs.size(); i++) {
         assert(inputCs[i].size() == h.getInputSizes()[i].x * h.getInputSizes()[i].y);

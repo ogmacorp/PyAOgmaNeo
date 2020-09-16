@@ -49,14 +49,14 @@ void PyImageEncoder::save(
 }
 
 void PyImageEncoder::step(
-    const std::vector<std::vector<unsigned char> > &inputs,
+    const std::vector<std::vector<float> > &inputs,
     bool learnEnabled
 ) {
     enc.alpha = alpha;
     enc.gamma = gamma;
     
-    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::Array<unsigned char>*> cInputs(inputs.size());
+    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::Array<float>*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         cInputsBacking[i].resize(inputs[i].size());
@@ -71,9 +71,9 @@ void PyImageEncoder::step(
 }
 
 void PyImageEncoder::reconstruct(
-    const std::vector<unsigned char> &reconCs
+    const std::vector<int> &reconCs
 ) {
-    aon::ByteBuffer cReconCsBacking(reconCs.size());
+    aon::IntBuffer cReconCsBacking(reconCs.size());
 
     for (int j = 0; j < reconCs.size(); j++)
         cReconCsBacking[j] = reconCs[j];
