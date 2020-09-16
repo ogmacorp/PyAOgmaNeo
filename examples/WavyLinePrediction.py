@@ -42,7 +42,7 @@ for i in range(8): # Layers with exponential memory
 h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePrediction ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 5000
+iters = 3000
 
 def wave(t):
     return float(t % 19 == 0)#np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.04 * 2.0 * np.pi + 0.45)
