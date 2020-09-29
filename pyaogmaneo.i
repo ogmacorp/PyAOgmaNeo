@@ -18,7 +18,7 @@
 
 %{
 #include "PyConstructs.h"
-#include "PyHierarchy.h"
+#include "PySheet.h"
 #include "PyImageEncoder.h"
 %}
 
@@ -43,11 +43,12 @@
 %template(StdVecuchar) std::vector<unsigned char>;
 %template(StdVec2Duchar) std::vector<std::vector<unsigned char> >;
 %template(StdVecInt3) std::vector<pyaon::PyInt3>;
-%template(StdVecLayerDesc) std::vector<pyaon::PyLayerDesc>;
+%template(StdVecSheetInputDesc) std::vector<pyaon::PySheetInputDesc>;
+%template(StdVecSheetOutputDesc) std::vector<pyaon::PySheetOutputDesc>;
 %template(StdVecImageEncoderVisibleLayerDesc) std::vector<pyaon::PyImageEncoderVisibleLayerDesc>;
 
 %rename("%(strip:[Py])s") ""; // Remove Py prefix that was added to avoid naming collisions
 
 %include "PyConstructs.h"
-%include "PyHierarchy.h"
+%include "PySheet.h"
 %include "PyImageEncoder.h"
