@@ -107,5 +107,58 @@ public:
 
         return predictions;
     }
+
+    void setATemperature(
+        float value
+    ) {
+        s.actor.temperature = value;
+    }
+
+    float getATemperature() const {
+        return s.actor.temperature;
+    }
+
+    void setAAlpha(
+        float value
+    ) {
+        s.actor.alpha = value;
+    }
+
+    float getAAlpha() const {
+        return s.actor.alpha;
+    }
+
+    void setAGamma(
+        float value
+    ) {
+        s.actor.gamma = value;
+    }
+
+    float getAGamma() const {
+        return s.actor.gamma;
+    }
+
+    void setATraceDecay(
+        float value
+    ) {
+        s.actor.traceDecay = value;
+    }
+
+    float getATraceDecay() const {
+        return s.actor.traceDecay;
+    }
+
+    void setPAlpha(
+        int i,
+        float value
+    ) {
+        s.predictors[i].alpha = value;
+    }
+
+    float getPAlpha(
+        int i
+    ) const {
+        return s.predictors[i].alpha;
+    }
 };
 } // namespace pyaon
