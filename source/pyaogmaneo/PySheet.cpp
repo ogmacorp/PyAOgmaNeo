@@ -21,6 +21,7 @@ PySheet::PySheet(
     for (int i = 0; i < inputDescs.size(); i++) {
         cInputDescs[i].size = aon::Int3(inputDescs[i].size.x, inputDescs[i].size.y, inputDescs[i].size.z);
         cInputDescs[i].radius = inputDescs[i].radius;
+        cInputDescs[i].recurrent = inputDescs[i].recurrent;
     }
     
     aon::Array<aon::Sheet::OutputDesc> cOutputDescs(outputDescs.size());

@@ -27,19 +27,24 @@ struct PySheetInputDesc {
 
     int radius;
 
+    bool recurrent;
+
     PySheetInputDesc()
     :
     size(4, 4, 16),
-    radius(2)
+    radius(2),
+    recurrent(false)
     {}
 
     PySheetInputDesc(
         const PyInt3 &size,
-        int radius
+        int radius,
+        bool recurrent
     )
     :
     size(size),
-    radius(radius)
+    radius(radius),
+    recurrent(recurrent)
     {}
 };
 
