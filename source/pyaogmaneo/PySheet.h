@@ -117,16 +117,6 @@ public:
         return predictions;
     }
 
-    void setATemperature(
-        float value
-    ) {
-        s.actor.temperature = value;
-    }
-
-    float getATemperature() const {
-        return s.actor.temperature;
-    }
-
     void setAAlpha(
         float value
     ) {
