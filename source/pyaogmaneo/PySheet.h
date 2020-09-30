@@ -97,6 +97,15 @@ public:
         bool learnEnabled = true
     );
 
+    std::vector<int> getActorHiddenCs() const {
+        std::vector<int> actorHiddenCs(s.actor.getHiddenCs().size());
+
+        for (int j = 0; j < actorHiddenCs.size(); j++)
+            actorHiddenCs[j] = s.actor.getHiddenCs()[j];
+
+        return actorHiddenCs;
+    }
+
     std::vector<int> getPredictionCs(
         int i
     ) const {
