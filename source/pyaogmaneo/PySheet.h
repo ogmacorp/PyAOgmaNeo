@@ -90,7 +90,7 @@ public:
 
     std::vector<unsigned char> save();
 
-    void step(
+    std::vector<std::vector<int> > step(
         const std::vector<std::vector<int> > &inputCs,
         const std::vector<std::vector<int> > &targetCs,
         int subSteps,

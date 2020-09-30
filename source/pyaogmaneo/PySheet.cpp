@@ -68,7 +68,7 @@ std::vector<unsigned char> PySheet::save() {
     return writer.buffer;
 }
 
-void PySheet::step(
+std::vector<std::vector<int> > PySheet::step(
     const std::vector<std::vector<int> > &inputCs,
     const std::vector<std::vector<int> > &targetCs,
     int subSteps,
@@ -98,5 +98,18 @@ void PySheet::step(
         cTargetCs[i] = &cTargetCsBacking[i];
     }
 
-    s.step(cInputCs, cTargetCs, subSteps, learnEnabled);
+    aon::Array<aon::IntBuffer> cIntermediates(subSteps);
+
+    s.step(cInputCs, cTargetCs, cIntermediates, learnEnabled);
+
+    std::vector<std::vector<int>> intermediates(cIntermediates.size());
+
+    for (int i = 0; i < cIntermediates.size(); i++) {
+        intermediates[i].resize(cIntermediates[i].size());
+
+        for (int j = 0; j < cIntermediates[i].size(); j++)
+            intermediates[i][j] = cIntermediates[i][j];
+    }
+
+    return intermediates;
 }
