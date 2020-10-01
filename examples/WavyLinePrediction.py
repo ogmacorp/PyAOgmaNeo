@@ -24,7 +24,7 @@ bounds = (-1.0, 1.0)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory
+for i in range(5): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     # Set the hidden (encoder) layer size: width x height x columnSize
@@ -34,7 +34,7 @@ for i in range(2): # Layers with exponential memory
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
-    ld.temporalHorizon = 16 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
+    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
     
     lds.append(ld)
 
@@ -42,10 +42,10 @@ for i in range(2): # Layers with exponential memory
 h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePrediction ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 500
+iters = 10000
 
 def wave(t):
-    return float(t % 19 == 0) #np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.035 * 2.0 * np.pi + 0.45)
+    return np.sin(2.0 * np.pi * t * 0.01 + 0.5)#float(t % 19 == 0) #np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.035 * 2.0 * np.pi + 0.45)
 
 for t in range(iters):
     # The value to encode into the input column
