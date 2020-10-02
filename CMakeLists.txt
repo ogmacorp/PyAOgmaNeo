@@ -69,7 +69,7 @@ target_link_libraries(PyAOgmaNeoCpp ${AOGMANEO_LIBRARIES})
 # Find SWIG and setup building the Python bindings to PyAOgmaNeo library
 
 find_package(SWIG REQUIRED)
-include(${SWIG_USE_FILE})
+include(UseSWIG)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
@@ -102,8 +102,8 @@ set_source_files_properties(pyaogmaneo.i PROPERTIES CPLUSPLUS ON)
 
 swig_add_library(pyaogmaneo LANGUAGE python SOURCES pyaogmaneo.i)
 
-target_link_libraries(pyaogmaneo PyAOgmaNeoCpp ${PYTHON_LIBRARIES})
+target_link_libraries(${SWIG_MODULE_pyaogmaneo_REAL_NAME} PyAOgmaNeoCpp ${PYTHON_LIBRARIES})
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SWIG_OUTDIR})
-install(TARGETS pyaogmaneo DESTINATION ${CMAKE_SWIG_OUTDIR})
+install(TARGETS ${SWIG_MODULE_pyaogmaneo_REAL_NAME} DESTINATION ${CMAKE_SWIG_OUTDIR})
 install(FILES ${CMAKE_BINARY_DIR}/pyaogmaneo.py DESTINATION ${CMAKE_SWIG_OUTDIR})
