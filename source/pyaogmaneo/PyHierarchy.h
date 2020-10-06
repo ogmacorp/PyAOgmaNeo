@@ -197,6 +197,19 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
+    void setSCBeta(
+        int l,
+        float beta
+    ) {
+        h.getSCLayer(l).beta = beta;
+    }
+
+    float getSCBeta(
+        int l
+    ) const {
+        return h.getSCLayer(l).beta;
+    }
+
     void setPAlpha(
         int l,
         int v,
