@@ -43,7 +43,7 @@ class EnvRunner:
 
         if type(self.env.observation_space) is gym.spaces.Discrete:
             self.inputSizes.append(Int3(1, 1, self.env.observation_space.n))
-            self.inputTypes.append(pyaon.inputTypeNone)
+            self.inputTypes.append(pyaon.inputTypePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.observation_space) is gym.spaces.Box:
@@ -51,7 +51,7 @@ class EnvRunner:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
                 squareTotal = squareSize * squareSize
                 self.inputSizes.append(Int3(squareSize, squareSize, obsResolution))
-                self.inputTypes.append(pyaon.inputTypeNone)
+                self.inputTypes.append(pyaon.inputTypePrediction)
                 lows = list(self.env.observation_space.low)
                 highs = list(self.env.observation_space.high)
                 
@@ -91,7 +91,7 @@ class EnvRunner:
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
-            self.inputTypes.append(pyaon.inputTypeNone)
+            self.inputTypes.append(pyaon.inputTypePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 1.0 ])
 
