@@ -14,9 +14,8 @@
 #include <fstream>
 
 namespace pyaon {
-const int inputTypeNone = 0;
-const int inputTypePrediction = 1;
-const int inputTypeAction = 2;
+const int inputTypePrediction = 0;
+const int inputTypeAction = 1;
 
 inline void setNumThreads(int numThreads) {
     aon::setNumThreads(numThreads);
@@ -171,13 +170,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    bool pLayerExists(
-        int l,
-        int v
-    ) {
-        return h.getPLayers(l)[v] != nullptr;
-    }
-
     bool aLayerExists(
         int v
     ) {
@@ -215,18 +207,14 @@ public:
         int v,
         float alpha
     ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        h.getPLayers(l)[v]->alpha = alpha;
+        h.getPLayers(l)[v].alpha = alpha;
     }
 
     float getPAlpha(
         int l,
         int v
     ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-        
-        return h.getPLayers(l)[v]->alpha;
+        return h.getPLayers(l)[v].alpha;
     }
 
     void setAAlpha(
