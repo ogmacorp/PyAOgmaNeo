@@ -42,10 +42,10 @@ for i in range(5): # Layers with exponential memory
 h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePrediction ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 1000
 
 def wave(t):
-    return np.sin(2.0 * np.pi * t * 0.01 + 0.5)#float(t % 19 == 0) #np.sin(t * 0.02 * 2.0 * np.pi) * np.sin(t * 0.035 * 2.0 * np.pi + 0.45)
+    return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
 
 for t in range(iters):
     # The value to encode into the input column
