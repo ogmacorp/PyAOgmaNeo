@@ -28,7 +28,7 @@ for i in range(7): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     # Set the hidden (encoder) layer size: width x height x columnSize
-    ld.hiddenSize = pyaon.Int3(4, 4, 32)
+    ld.hiddenSize = pyaon.Int3(4, 4, 16)
 
     ld.ffRadius = 4 # Sparse coder radius onto visible layers
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
@@ -45,7 +45,7 @@ h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePred
 iters = 10000
 
 def wave(t):
-    return float(t % 21 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
+    return float(t % 11 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
 
 for t in range(iters):
     # The value to encode into the input column
