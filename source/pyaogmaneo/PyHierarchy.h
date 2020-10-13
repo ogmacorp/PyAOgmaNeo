@@ -189,32 +189,23 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCBeta(
-        int l,
-        float beta
-    ) {
-        h.getSCLayer(l).beta = beta;
-    }
-
-    float getSCBeta(
-        int l
-    ) const {
-        return h.getSCLayer(l).beta;
-    }
-
     void setPAlpha(
         int l,
         int v,
         float alpha
     ) {
-        h.getPLayers(l)[v].alpha = alpha;
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        h.getPLayers(l)[v]->alpha = alpha;
     }
 
     float getPAlpha(
         int l,
         int v
     ) const {
-        return h.getPLayers(l)[v].alpha;
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        return h.getPLayers(l)[v]->alpha;
     }
 
     void setAAlpha(
