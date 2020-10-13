@@ -194,18 +194,14 @@ public:
         int v,
         float alpha
     ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        h.getPLayers(l)[v]->alpha = alpha;
+        h.getPLayers(l)[v].alpha = alpha;
     }
 
     float getPAlpha(
         int l,
         int v
     ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        return h.getPLayers(l)[v]->alpha;
+        return h.getPLayers(l)[v].alpha;
     }
 
     void setAAlpha(

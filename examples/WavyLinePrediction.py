@@ -28,7 +28,7 @@ for i in range(7): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     # Set the hidden (encoder) layer size: width x height x columnSize
-    ld.hiddenSize = pyaon.Int3(4, 4, 32)
+    ld.hiddenSize = pyaon.Int3(4, 4, 16)
 
     ld.ffRadius = 4 # Sparse coder radius onto visible layers
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
