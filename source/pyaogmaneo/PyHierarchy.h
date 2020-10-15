@@ -14,8 +14,9 @@
 #include <fstream>
 
 namespace pyaon {
-const int inputTypePrediction = 0;
-const int inputTypeAction = 1;
+const int inputTypeNone = 0;
+const int inputTypePrediction = 1;
+const int inputTypeAction = 2;
 
 inline void setNumThreads(int numThreads) {
     aon::setNumThreads(numThreads);

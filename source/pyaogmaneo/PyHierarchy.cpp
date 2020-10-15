@@ -24,9 +24,14 @@ PyHierarchy::PyHierarchy(
 
     for (int i = 0; i < inputTypes.size(); i++) {
         switch(inputTypes[i]) {
+        case inputTypeNone:
+            cInputTypes[i] = aon::none;
+            break;
+
         case inputTypePrediction:
             cInputTypes[i] = aon::prediction;
             break;
+
         case inputTypeAction:
             cInputTypes[i] = aon::action;
             break;
