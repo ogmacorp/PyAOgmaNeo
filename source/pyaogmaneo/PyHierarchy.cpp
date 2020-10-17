@@ -24,6 +24,9 @@ PyHierarchy::PyHierarchy(
 
     for (int i = 0; i < inputTypes.size(); i++) {
         switch(inputTypes[i]) {
+        case inputTypeNone:
+            cInputTypes[i] = aon::none;
+            break;
         case inputTypePrediction:
             cInputTypes[i] = aon::prediction;
             break;
@@ -38,10 +41,9 @@ PyHierarchy::PyHierarchy(
     for (int l = 0; l < layerDescs.size(); l++) {
         cLayerDescs[l].hiddenSize = aon::Int3(layerDescs[l].hiddenSize.x, layerDescs[l].hiddenSize.y, layerDescs[l].hiddenSize.z);
         cLayerDescs[l].ffRadius = layerDescs[l].ffRadius;
+        cLayerDescs[l].rRadius = layerDescs[l].rRadius;
         cLayerDescs[l].pRadius = layerDescs[l].pRadius;
         cLayerDescs[l].aRadius = layerDescs[l].aRadius;
-        cLayerDescs[l].temporalHorizon = layerDescs[l].temporalHorizon;
-        cLayerDescs[l].ticksPerUpdate = layerDescs[l].ticksPerUpdate;
         cLayerDescs[l].historyCapacity = layerDescs[l].historyCapacity;
     }
 

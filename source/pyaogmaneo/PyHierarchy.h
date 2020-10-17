@@ -14,8 +14,9 @@
 #include <fstream>
 
 namespace pyaon {
-const int inputTypePrediction = 0;
-const int inputTypeAction = 1;
+const int inputTypeNone = 0;
+const int inputTypePrediction = 1;
+const int inputTypeAction = 2;
 
 inline void setNumThreads(int numThreads) {
     aon::setNumThreads(numThreads);
@@ -29,11 +30,9 @@ struct PyLayerDesc {
     PyInt3 hiddenSize;
 
     int ffRadius;
+    int rRadius;
     int pRadius;
     int aRadius;
-
-    int ticksPerUpdate;
-    int temporalHorizon;
 
     int historyCapacity;
 
@@ -41,20 +40,18 @@ struct PyLayerDesc {
     :
     hiddenSize(4, 4, 16),
     ffRadius(2),
+    rRadius(2),
     pRadius(2),
     aRadius(2),
-    ticksPerUpdate(2),
-    temporalHorizon(2),
     historyCapacity(32)
     {}
 
     PyLayerDesc(
         const PyInt3 &hiddenSize,
         int ffRadius,
+        int rRadius,
         int pRadius,
         int aRadius,
-        int ticksPerUpdate,
-        int temporalHorizon,
         int historyCapacity
     )
     :
@@ -62,8 +59,6 @@ struct PyLayerDesc {
     ffRadius(ffRadius),
     pRadius(pRadius),
     aRadius(aRadius),
-    ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon),
     historyCapacity(historyCapacity)
     {}
 };
@@ -115,12 +110,6 @@ public:
         return predictions;
     }
 
-    bool getUpdate(
-        int l
-    ) const {
-        return h.getUpdate(l);
-    }
-
     std::vector<int> getHiddenCs(
         int l
     ) {
@@ -138,18 +127,6 @@ public:
         aon::Int3 size = h.getSCLayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
-    }
-
-    int getTicks(
-        int l
-    ) const {
-        return h.getTicks(l);
-    }
-
-    int getTicksPerUpdate(
-        int l
-    ) const {
-        return h.getTicksPerUpdate(l);
     }
 
     int getNumSCVisibleLayers(
