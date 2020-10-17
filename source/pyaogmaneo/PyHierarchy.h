@@ -170,10 +170,16 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    bool aLayerExists(
-        int v
+    bool ipLayerExists(
+        int i
     ) {
-        return h.getALayers()[v] != nullptr;
+        return h.getIPLayers()[i] != nullptr;
+    }
+
+    bool aLayerExists(
+        int i
+    ) {
+        return h.getALayers()[i] != nullptr;
     }
 
     void setSCAlpha(
@@ -191,17 +197,15 @@ public:
 
     void setPAlpha(
         int l,
-        int v,
         float alpha
     ) {
-        h.getPLayers(l)[v].alpha = alpha;
+        h.getPLayer(l).alpha = alpha;
     }
 
     float getPAlpha(
-        int l,
-        int v
+        int l
     ) const {
-        return h.getPLayers(l)[v].alpha;
+        return h.getPLayer(l).alpha;
     }
 
     void setAAlpha(
