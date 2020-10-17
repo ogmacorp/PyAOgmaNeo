@@ -24,13 +24,14 @@ bounds = (-1.0, 1.0)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(7): # Layers with exponential memory
+for i in range(2): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     # Set the hidden (encoder) layer size: width x height x columnSize
-    ld.hiddenSize = pyaon.Int3(4, 4, 16)
+    ld.hiddenSize = pyaon.Int3(6, 6, 16)
 
     ld.ffRadius = 4 # Sparse coder radius onto visible layers
+    ld.rRadius = 4
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
@@ -45,7 +46,7 @@ h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePred
 iters = 30000
 
 def wave(t):
-    return float(t % 5 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
+    return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
 
 for t in range(iters):
     # The value to encode into the input column
@@ -56,7 +57,7 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
 
-    print(h.getHiddenCs(3))
+    print(h.getHiddenCs(0))
 
     # Print progress
     if t % 100 == 0:
