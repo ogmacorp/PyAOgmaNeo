@@ -43,7 +43,7 @@ class EnvRunner:
 
         if type(self.env.observation_space) is gym.spaces.Discrete:
             self.inputSizes.append(Int3(1, 1, self.env.observation_space.n))
-            self.inputTypes.append(pyaon.inputTypePrediction)
+            self.inputTypes.append(pyaon.typePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.observation_space) is gym.spaces.Box:
@@ -51,7 +51,7 @@ class EnvRunner:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
                 squareTotal = squareSize * squareSize
                 self.inputSizes.append(Int3(squareSize, squareSize, obsResolution))
-                self.inputTypes.append(pyaon.inputTypePrediction)
+                self.inputTypes.append(pyaon.typePrediction)
                 lows = list(self.env.observation_space.low)
                 highs = list(self.env.observation_space.high)
                 
@@ -91,7 +91,7 @@ class EnvRunner:
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
-            self.inputTypes.append(pyaon.inputTypePrediction)
+            self.inputTypes.append(pyaon.typePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 1.0 ])
 
@@ -99,7 +99,7 @@ class EnvRunner:
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.actionIndices.append(len(self.inputSizes))
             self.inputSizes.append(Int3(1, 1, self.env.action_space.n))
-            self.inputTypes.append(pyaon.inputTypeAction)
+            self.inputTypes.append(pyaon.typeAction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.action_space) is gym.spaces.Box:
@@ -107,7 +107,7 @@ class EnvRunner:
                 if len(self.env.action_space.shape) == 2:
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append(Int3(self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
-                    self.inputTypes.append(pyaon.inputTypeAction)
+                    self.inputTypes.append(pyaon.typeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -118,7 +118,7 @@ class EnvRunner:
                     squareTotal = squareSize * squareSize
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append(Int3(squareSize, squareSize, actionResolution))
-                    self.inputTypes.append(pyaon.inputTypeAction)
+                    self.inputTypes.append(pyaon.typeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -143,7 +143,12 @@ class EnvRunner:
             lds.append(ld)
 
         if loadName is None:
-            self.h = pyaon.Hierarchy(self.inputSizes, self.inputTypes, lds)
+            ioDescs = []
+
+            for i in range(len(self.inputSizes)):
+                ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i]))
+
+            self.h = pyaon.Hierarchy(ioDescs, lds)
         else:
             self.h = pyaon.Hierarchy(loadName)
 
@@ -167,7 +172,7 @@ class EnvRunner:
         actionIndex = 0
 
         for i in range(len(self.inputSizes)):
-            if self.inputTypes[i] == pyaon.inputTypeAction:
+            if self.inputTypes[i] == pyaon.typeAction:
                 self.inputs.append(self.actions[actionIndex])
 
                 actionIndex += 1
@@ -212,7 +217,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] is pyaon.inputTypeAction)
+            assert(self.inputTypes[index] == pyaon.typeAction)
 
             if self.inputLows[index][0] < self.inputHighs[index][0]:
                 feedAction = []
@@ -253,7 +258,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] is pyaon.inputTypeAction)
+            assert(self.inputTypes[index] is pyaon.typeAction)
 
             self.actions[i] = list(self.h.getPredictionCs(index))
         
