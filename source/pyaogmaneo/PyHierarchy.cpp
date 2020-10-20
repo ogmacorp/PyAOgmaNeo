@@ -11,33 +11,14 @@
 using namespace pyaon;
 
 PyHierarchy::PyHierarchy(
-    const std::vector<PyInt3> &inputSizes,
-    const std::vector<int> &inputTypes,
+    const std::vector<PyIODesc> &ioDescs,
     const std::vector<PyLayerDesc> &layerDescs
 ) {
-    aon::Array<aon::Int3> cInputSizes(inputSizes.size());
+    aon::Array<aon::Hierarchy::IODesc> cIODescs(ioDescs.size());
 
-    for (int i = 0; i < inputSizes.size(); i++)
-        cInputSizes[i] = aon::Int3(inputSizes[i].x, inputSizes[i].y, inputSizes[i].z);
+    for (int i = 0; i < ioDescs.size(); i++)
+        cIODescs[i] = aon::Hierarchy::IODesc(aon::Int3(ioDescs[i].size.x, ioDescs[i].size.y, ioDescs[i].size.z), static_cast<aon::IOType>(ioDescs[i].type));
     
-    aon::Array<aon::InputType> cInputTypes(inputTypes.size());
-
-    for (int i = 0; i < inputTypes.size(); i++) {
-        switch(inputTypes[i]) {
-        case inputTypeNone:
-            cInputTypes[i] = aon::none;
-            break;
-
-        case inputTypePrediction:
-            cInputTypes[i] = aon::prediction;
-            break;
-
-        case inputTypeAction:
-            cInputTypes[i] = aon::action;
-            break;
-        }
-    }
-
     aon::Array<aon::Hierarchy::LayerDesc> cLayerDescs(layerDescs.size());
 
     for (int l = 0; l < layerDescs.size(); l++) {
@@ -50,7 +31,7 @@ PyHierarchy::PyHierarchy(
         cLayerDescs[l].historyCapacity = layerDescs[l].historyCapacity;
     }
 
-    h.initRandom(cInputSizes, cInputTypes, cLayerDescs);
+    h.initRandom(cIODescs, cLayerDescs);
 }
 
 PyHierarchy::PyHierarchy(

@@ -39,7 +39,7 @@ for i in range(7): # Layers with exponential memory
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = pyaon.Hierarchy([ pyaon.Int3(1, 1, inputColumnSize) ], [ pyaon.inputTypePrediction ], lds)
+h = pyaon.Hierarchy([ pyaon.IODesc(pyaon.Int3(1, 1, inputColumnSize), pyaon.typePrediction) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 30000

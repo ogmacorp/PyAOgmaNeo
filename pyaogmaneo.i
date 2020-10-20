@@ -43,6 +43,7 @@
 %template(StdVecuchar) std::vector<unsigned char>;
 %template(StdVec2Duchar) std::vector<std::vector<unsigned char> >;
 %template(StdVecInt3) std::vector<pyaon::PyInt3>;
+%template(StdVecIODesc) std::vector<pyaon::PyIODesc>;
 %template(StdVecLayerDesc) std::vector<pyaon::PyLayerDesc>;
 %template(StdVecImageEncoderVisibleLayerDesc) std::vector<pyaon::PyImageEncoderVisibleLayerDesc>;
 
