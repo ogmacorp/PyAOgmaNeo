@@ -14,8 +14,8 @@
 #include <fstream>
 
 namespace pyaon {
-const int inputTypePrediction = 0;
-const int inputTypeAction = 1;
+const int typePrediction = 0;
+const int typeAction = 1;
 
 inline void setNumThreads(int numThreads) {
     aon::setNumThreads(numThreads);
@@ -24,6 +24,27 @@ inline void setNumThreads(int numThreads) {
 inline int getNumThreads() {
     return aon::getNumThreads();
 }
+
+struct PyIODesc {
+    PyInt3 size;
+
+    int type;
+
+    PyIODesc()
+    :
+    size(4, 4, 16),
+    type(typePrediction)
+    {}
+
+    PyIODesc(
+        const PyInt3 &size,
+        int type
+    )
+    :
+    size(size),
+    type(type)
+    {}
+};
 
 struct PyLayerDesc {
     PyInt3 hiddenSize;
@@ -74,8 +95,7 @@ private:
 
 public:
     PyHierarchy(
-        const std::vector<PyInt3> &inputSizes,
-        const std::vector<int> &inputTypes,
+        const std::vector<PyIODesc> &ioDescs,
         const std::vector<PyLayerDesc> &layerDescs
     );
 
