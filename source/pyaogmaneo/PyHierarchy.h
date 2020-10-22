@@ -308,7 +308,5 @@ public:
         
         return h.getALayers()[v]->historyIters;
     }
-
-    friend class PyVisualizer;
 };
 } // namespace pyaon
