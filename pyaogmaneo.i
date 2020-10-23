@@ -36,7 +36,7 @@
 %ignore pyaon::PyStreamReader;
 %ignore pyaon::PyStreamWriter;
 
-%template(Int3) std::array<int, 3>;
+%template(StdArray3i) std::array<int, 3>;
 %template(StdVeci) std::vector<int>;
 %template(StdVec2Di) std::vector<std::vector<int> >;
 %template(StdVecf) std::vector<float>;

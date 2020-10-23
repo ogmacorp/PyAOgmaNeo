@@ -9,7 +9,6 @@
 # -*- coding: utf-8 -*-
 
 import pyaogmaneo as pyaon
-from pyaogmaneo import Int3
 import numpy as np
 import gym
 import cv2
@@ -20,7 +19,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ Int3(4, 4, 16) ], layerRadius=4, hiddenSize=Int3(8, 8, 16), imageRadius=9, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=4, loadName=None):
+    def __init__(self, env, layerSizes=3 * [ (4, 4, 16) ], layerRadius=4, hiddenSize=(8, 8, 16), imageRadius=9, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=4, loadName=None):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -42,7 +41,7 @@ class EnvRunner:
         self.infSensitivity = infSensitivity
 
         if type(self.env.observation_space) is gym.spaces.Discrete:
-            self.inputSizes.append(Int3(1, 1, self.env.observation_space.n))
+            self.inputSizes.append((1, 1, self.env.observation_space.n))
             self.inputTypes.append(pyaon.typePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
@@ -50,7 +49,7 @@ class EnvRunner:
             if len(self.env.observation_space.shape) == 1 or len(self.env.observation_space.shape) == 0:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
                 squareTotal = squareSize * squareSize
-                self.inputSizes.append(Int3(squareSize, squareSize, obsResolution))
+                self.inputSizes.append((squareSize, squareSize, obsResolution))
                 self.inputTypes.append(pyaon.typePrediction)
                 lows = list(self.env.observation_space.low)
                 highs = list(self.env.observation_space.high)
@@ -81,7 +80,7 @@ class EnvRunner:
             vlds = []
 
             for i in range(len(self.imageSizes)):
-                vld = pyaon.ImageEncoderVisibleLayerDesc(Int3(self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
+                vld = pyaon.ImageEncoderVisibleLayerDesc((self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
 
                 vlds.append(vld)
 
@@ -99,7 +98,7 @@ class EnvRunner:
         # Actions
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.actionIndices.append(len(self.inputSizes))
-            self.inputSizes.append(Int3(1, 1, self.env.action_space.n))
+            self.inputSizes.append((1, 1, self.env.action_space.n))
             self.inputTypes.append(pyaon.typeAction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
@@ -107,7 +106,7 @@ class EnvRunner:
             if len(self.env.action_space.shape) < 3:
                 if len(self.env.action_space.shape) == 2:
                     self.actionIndices.append(len(self.inputSizes))
-                    self.inputSizes.append(Int3(self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
+                    self.inputSizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
                     self.inputTypes.append(pyaon.typeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
@@ -118,7 +117,7 @@ class EnvRunner:
                     squareSize = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
                     squareTotal = squareSize * squareSize
                     self.actionIndices.append(len(self.inputSizes))
-                    self.inputSizes.append(Int3(squareSize, squareSize, actionResolution))
+                    self.inputSizes.append((squareSize, squareSize, actionResolution))
                     self.inputTypes.append(pyaon.typeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
@@ -133,9 +132,7 @@ class EnvRunner:
         lds = []
 
         for i in range(len(layerSizes)):
-            ld = pyaon.LayerDesc()
-
-            ld.hiddenSize = layerSizes[i]
+            ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.ffRadius = layerRadius
             ld.pRadius = layerRadius
@@ -165,7 +162,7 @@ class EnvRunner:
             startAct = []
 
             for j in range(size):
-                startAct.append(np.random.randint(0, self.inputSizes[index].z))
+                startAct.append(np.random.randint(0, self.inputSizes[index][2]))
 
             self.actions.append(startAct)
 
@@ -200,17 +197,17 @@ class EnvRunner:
                 for j in range(len(self.inputLows[i])):
                     if self.inputLows[i][j] < self.inputHighs[i][j]:
                         # Rescale
-                        indices.append(int((obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]) * (self.inputSizes[i].z - 1) + 0.5))
+                        indices.append(int((obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]) * (self.inputSizes[i][2] - 1) + 0.5))
                     elif self.inputLows[i][j] > self.inputHighs[i][j]: # Inf
                         v = obs[j]
 
                         # Rescale
-                        indices.append(int(sigmoid(v * self.infSensitivity) * (self.inputSizes[i].z - 1) + 0.5))
+                        indices.append(int(sigmoid(v * self.infSensitivity) * (self.inputSizes[i][2] - 1) + 0.5))
                     else:
                         indices.append(int(obs[j]))
 
-                if len(indices) < self.inputSizes[i].x * self.inputSizes[i].y:
-                    indices += ((self.inputSizes[i].x * self.inputSizes[i].y) - len(indices)) * [ int(0) ]
+                if len(indices) < self.inputSizes[i][0] * self.inputSizes[i][1]:
+                    indices += ((self.inputSizes[i][0] * self.inputSizes[i][1]) - len(indices)) * [ int(0) ]
 
                 self.inputs.append(indices)
 
@@ -228,17 +225,17 @@ class EnvRunner:
                 # Explore
                 for j in range(len(self.inputLows[index])):
                     if np.random.rand() < epsilon:
-                        self.actions[i][j] = np.random.randint(0, self.inputSizes[index].z)
+                        self.actions[i][j] = np.random.randint(0, self.inputSizes[index][2])
 
                     if self.inputLows[index][j] < self.inputHighs[index][j]:
-                        feedAction.append(self.actions[i][j] / float(self.inputSizes[index].z - 1) * (self.inputHighs[index][j] - self.inputLows[index][j]) + self.inputLows[index][j])
+                        feedAction.append(self.actions[i][j] / float(self.inputSizes[index][2] - 1) * (self.inputHighs[index][j] - self.inputLows[index][j]) + self.inputLows[index][j])
                     else:
                         feedAction.append(self.actions[i][j])
 
                 feedActions.append(feedAction)
             else:
                 if np.random.rand() < epsilon:
-                    self.actions[i][0] = np.random.randint(0, self.inputSizes[index].z)
+                    self.actions[i][0] = np.random.randint(0, self.inputSizes[index][2])
 
                 feedActions.append(int(self.actions[i][0]))
 

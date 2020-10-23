@@ -38,10 +38,7 @@ pyaon.setNumThreads(4)
 lds = []
 
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc()
-
-    # Set the hidden (encoder) layer size: width x height x columnSize
-    ld.hiddenSize = pyaon.Int3(4, 4, 16)
+    ld = pyaon.LayerDesc(hiddenSize=( 4, 4, 16 ))
 
     ld.ffRadius = 4 # Sparse coder radius onto visible layers
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
@@ -54,7 +51,7 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(pyaon.Int3(1, numObs, obsColumnSize), pyaon.typeNone), pyaon.IODesc(pyaon.Int3(1, 1, numActions), pyaon.typeAction) ], lds)
+h.initRandom([ pyaon.IODesc((1, numObs, obsColumnSize), pyaon.typeNone), pyaon.IODesc((1, 1, numActions), pyaon.typeAction) ], lds)
 
 reward = 0.0
 
