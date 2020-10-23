@@ -17,6 +17,10 @@ Simple 3-component integer vector type used typically to define sizes of various
 
     Third (z) component
 
+.. function:: Int3.__init__(self)
+
+    Default initialize to x=0, y=0, z=0
+
 .. function:: Int3.__init__(self, x, y, z)
 
     Initialize from components

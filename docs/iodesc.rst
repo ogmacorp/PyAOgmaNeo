@@ -19,6 +19,10 @@ Describes a single input/output channel for a hierarchy
 
         The prediction of the specified type will be retrieved with Hierarchy.getPredictionCIs (regardless of type).
 
+.. function:: IODesc.__init__(self)
+
+    Initialize to sensible defaults
+
 .. function:: IODesc.__init__(self, size, type)
 
     Initialize to given values
