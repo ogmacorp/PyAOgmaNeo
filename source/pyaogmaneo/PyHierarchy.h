@@ -31,6 +31,12 @@ struct PyIODesc {
 
     int type;
 
+    PyIODesc()
+    :
+    size(4, 4, 16),
+    type(0)
+    {}
+
     PyIODesc(
         const PyInt3 &size,
         int type
@@ -62,6 +68,25 @@ struct PyLayerDesc {
     ticksPerUpdate(2),
     temporalHorizon(2),
     historyCapacity(32)
+    {}
+
+    PyLayerDesc(
+        const PyInt3 &hiddenSize,
+        int ffRadius,
+        int pRadius,
+        int aRadius,
+        int ticksPerUpdate,
+        int temporalHorizon,
+        int historyCapacity
+    )
+    :
+    hiddenSize(hiddenSize),
+    ffRadius(ffRadius),
+    pRadius(pRadius),
+    aRadius(aRadius),
+    ticksPerUpdate(ticksPerUpdate),
+    temporalHorizon(temporalHorizon),
+    historyCapacity(historyCapacity)
     {}
 };
 
@@ -135,7 +160,7 @@ public:
     ) {
         aon::Int3 size = h.getSCLayer(l).getHiddenSize();
 
-        return { size.x, size.y, size.z };
+        return PyInt3(size.x, size.y, size.z);
     }
 
     int getTicks(
@@ -165,7 +190,7 @@ public:
     ) const {
         aon::Int3 size = h.getInputSizes()[i];
 
-        return { size.x, size.y, size.z };
+        return PyInt3(size.x, size.y, size.z);
     }
 
     bool pLayerExists(

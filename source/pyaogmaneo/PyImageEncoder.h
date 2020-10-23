@@ -18,10 +18,15 @@ struct PyImageEncoderVisibleLayerDesc {
 
     int radius;
 
+    PyImageEncoderVisibleLayerDesc()
+    :
+    size(8, 8, 16),
+    radius(2)
+    {}
+
     PyImageEncoderVisibleLayerDesc(
         const PyInt3 &size,
-        int radius
-    )
+        int radius)
     : 
     size(size),
     radius(radius)
