@@ -10,7 +10,7 @@
 
 using namespace pyaon;
 
-PyHierarchy::PyHierarchy(
+void PyHierarchy::initRandom(
     const std::vector<PyIODesc> &ioDescs,
     const std::vector<PyLayerDesc> &layerDescs
 ) {
@@ -34,7 +34,7 @@ PyHierarchy::PyHierarchy(
     h.initRandom(cIODescs, cLayerDescs);
 }
 
-PyHierarchy::PyHierarchy(
+void PyHierarchy::initFromFile(
     const std::string &name
 ) {
     PyStreamReader reader;
@@ -43,7 +43,7 @@ PyHierarchy::PyHierarchy(
     h.read(reader);
 }
 
-PyHierarchy::PyHierarchy(
+void PyHierarchy::initFromBuffer(
     const std::vector<unsigned char> &buffer
 ) {
     PyBufferReader reader;
@@ -52,7 +52,7 @@ PyHierarchy::PyHierarchy(
     h.read(reader);
 }
 
-void PyHierarchy::save(
+void PyHierarchy::saveToFile(
     const std::string &name
 ) {
     PyStreamWriter writer;
@@ -61,7 +61,7 @@ void PyHierarchy::save(
     h.write(writer);
 }
 
-std::vector<unsigned char> PyHierarchy::serialize() {
+std::vector<unsigned char> PyHierarchy::serializeToBuffer() {
     PyBufferWriter writer;
 
     h.write(writer);
@@ -70,26 +70,26 @@ std::vector<unsigned char> PyHierarchy::serialize() {
 }
 
 void PyHierarchy::step(
-    const std::vector<std::vector<int> > &inputCs,
+    const std::vector<std::vector<int> > &inputCIs,
     bool learnEnabled,
     float reward,
     bool mimic
 ) {
-    assert(inputCs.size() == h.getInputSizes().size());
+    assert(inputCIs.size() == h.getInputSizes().size());
 
-    aon::Array<aon::IntBuffer> cInputCsBacking(inputCs.size());
-    aon::Array<const aon::IntBuffer*> cInputCs(inputCs.size());
+    aon::Array<aon::IntBuffer> cInputCIsBacking(inputCIs.size());
+    aon::Array<const aon::IntBuffer*> cInputCIs(inputCIs.size());
 
-    for (int i = 0; i < inputCs.size(); i++) {
-        assert(inputCs[i].size() == h.getInputSizes()[i].x * h.getInputSizes()[i].y);
+    for (int i = 0; i < inputCIs.size(); i++) {
+        assert(inputCIs[i].size() == h.getInputSizes()[i].x * h.getInputSizes()[i].y);
 
-        cInputCsBacking[i].resize(inputCs[i].size());
+        cInputCIsBacking[i].resize(inputCIs[i].size());
 
-        for (int j = 0; j < inputCs[i].size(); j++)
-            cInputCsBacking[i][j] = inputCs[i][j];
+        for (int j = 0; j < inputCIs[i].size(); j++)
+            cInputCIsBacking[i][j] = inputCIs[i][j];
 
-        cInputCs[i] = &cInputCsBacking[i];
+        cInputCIs[i] = &cInputCIsBacking[i];
     }
     
-    h.step(cInputCs, learnEnabled, reward, mimic);
+    h.step(cInputCIs, learnEnabled, reward, mimic);
 }

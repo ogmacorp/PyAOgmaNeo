@@ -10,7 +10,7 @@
 
 using namespace pyaon;
 
-PyImageEncoder::PyImageEncoder(
+void PyImageEncoder::initRandom(
     const PyInt3 &hiddenSize,
     const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
 ) {
@@ -27,7 +27,7 @@ PyImageEncoder::PyImageEncoder(
     gamma = enc.gamma;
 }
 
-PyImageEncoder::PyImageEncoder(
+void PyImageEncoder::initFromFile(
     const std::string &name
 ) {
     PyStreamReader reader;
@@ -39,13 +39,33 @@ PyImageEncoder::PyImageEncoder(
     gamma = enc.gamma;
 }
 
-void PyImageEncoder::save(
+void PyImageEncoder::initFromBuffer(
+    const std::vector<unsigned char> &buffer
+) {
+    PyBufferReader reader;
+    reader.buffer = &buffer;
+
+    enc.read(reader);
+
+    alpha = enc.alpha;
+    gamma = enc.gamma;
+}
+
+void PyImageEncoder::saveToFile(
     const std::string &name
 ) {
     PyStreamWriter writer;
     writer.outs.open(name, std::ios::binary);
 
     enc.write(writer);
+}
+
+std::vector<unsigned char> PyImageEncoder::serializeToBuffer() {
+    PyBufferWriter writer;
+
+    enc.write(writer);
+
+    return writer.buffer;
 }
 
 void PyImageEncoder::step(
@@ -71,12 +91,12 @@ void PyImageEncoder::step(
 }
 
 void PyImageEncoder::reconstruct(
-    const std::vector<int> &reconCs
+    const std::vector<int> &reconCIs
 ) {
-    aon::IntBuffer cReconCsBacking(reconCs.size());
+    aon::IntBuffer cReconCIsBacking(reconCIs.size());
 
-    for (int j = 0; j < reconCs.size(); j++)
-        cReconCsBacking[j] = reconCs[j];
+    for (int j = 0; j < reconCIs.size(); j++)
+        cReconCIsBacking[j] = reconCIs[j];
 
-    enc.reconstruct(&cReconCsBacking);
+    enc.reconstruct(&cReconCIsBacking);
 }

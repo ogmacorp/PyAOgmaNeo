@@ -41,18 +41,26 @@ public:
     float alpha;
     float gamma;
     
-    PyImageEncoder(
+    PyImageEncoder() {}
+
+    void initRandom(
         const PyInt3 &hiddenSize,
         const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
     );
 
-    PyImageEncoder(
+    void initFromFile(
         const std::string &name
     );
 
-    void save(
+    void initFromBuffer(
+        const std::vector<unsigned char> &buffer
+    );
+
+    void saveToFile(
         const std::string &name
     );
+
+    std::vector<unsigned char> serializeToBuffer();
 
     void step(
         const std::vector<std::vector<float> > &inputs,
@@ -60,7 +68,7 @@ public:
     );
 
     void reconstruct(
-        const std::vector<int> &reconCs
+        const std::vector<int> &reconCIs
     );
 
     int getNumVisibleLayers() const {
@@ -78,13 +86,13 @@ public:
         return reconstruction;
     }
 
-    std::vector<int> getHiddenCs() const {
-        std::vector<int> hiddenCs(enc.getHiddenCs().size());
+    std::vector<int> getHiddenCIs() const {
+        std::vector<int> hiddenCIs(enc.getHiddenCIs().size());
 
-        for (int j = 0; j < hiddenCs.size(); j++)
-            hiddenCs[j] = enc.getHiddenCs()[j];
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = enc.getHiddenCIs()[j];
 
-        return hiddenCs;
+        return hiddenCIs;
     }
 
     PyInt3 getHiddenSize() const {

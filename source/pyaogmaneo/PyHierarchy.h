@@ -95,27 +95,29 @@ private:
     aon::Hierarchy h;
 
 public:
-    PyHierarchy(
+    PyHierarchy() {}
+
+    void initRandom(
         const std::vector<PyIODesc> &ioDescs,
         const std::vector<PyLayerDesc> &layerDescs
     );
 
-    PyHierarchy(
+    void initFromFile(
         const std::string &name
     );
 
-    PyHierarchy(
+    void initFromBuffer(
         const std::vector<unsigned char> &buffer
     );
 
-    void save(
+    void saveToFile(
         const std::string &name
     );
 
-    std::vector<unsigned char> serialize();
+    std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<int> > &inputCs,
+        const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled = true,
         float reward = 0.0f,
         bool mimic = false
@@ -125,13 +127,13 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<int> getPredictionCs(
+    std::vector<int> getPredictionCIs(
         int i
     ) const {
-        std::vector<int> predictions(h.getPredictionCs(i).size());
+        std::vector<int> predictions(h.getPredictionCIs(i).size());
 
         for (int j = 0; j < predictions.size(); j++)
-            predictions[j] = h.getPredictionCs(i)[j];
+            predictions[j] = h.getPredictionCIs(i)[j];
 
         return predictions;
     }
@@ -142,15 +144,15 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getHiddenCs(
+    std::vector<int> getHiddenCIs(
         int l
     ) {
-        std::vector<int> hiddenCs(h.getSCLayer(l).getHiddenCs().size());
+        std::vector<int> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
 
-        for (int j = 0; j < hiddenCs.size(); j++)
-            hiddenCs[j] = h.getSCLayer(l).getHiddenCs()[j];
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = h.getSCLayer(l).getHiddenCIs()[j];
 
-        return hiddenCs;
+        return hiddenCIs;
     }
 
     PyInt3 getHiddenSize(
