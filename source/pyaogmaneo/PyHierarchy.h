@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "PyConstructs.h"
+#include "PyHelpers.h"
 #include <aogmaneo/Hierarchy.h>
 #include <vector>
+#include <array>
 #include <fstream>
 
 namespace pyaon {
@@ -27,18 +28,18 @@ inline int getNumThreads() {
 }
 
 struct PyIODesc {
-    PyInt3 size;
+    std::array<int, 3> size;
 
     int type;
 
     PyIODesc()
     :
-    size(4, 4, 16),
+    size{ 4, 4, 16 },
     type(0)
     {}
 
     PyIODesc(
-        const PyInt3 &size,
+        std::array<int, 3> size,
         int type
     )
     :
@@ -48,7 +49,7 @@ struct PyIODesc {
 };
 
 struct PyLayerDesc {
-    PyInt3 hiddenSize;
+    std::array<int, 3> hiddenSize;
 
     int ffRadius;
     int pRadius;
@@ -60,7 +61,7 @@ struct PyLayerDesc {
     int historyCapacity;
 
     PyLayerDesc(
-        const PyInt3 &hiddenSize = PyInt3(4, 4, 16),
+        std::array<int, 3> hiddenSize = { 4, 4, 16 },
         int ffRadius = 2,
         int pRadius = 2,
         int aRadius = 2,
@@ -144,12 +145,12 @@ public:
         return hiddenCIs;
     }
 
-    PyInt3 getHiddenSize(
+    std::array<int, 3> getHiddenSize(
         int l
     ) {
         aon::Int3 size = h.getSCLayer(l).getHiddenSize();
 
-        return PyInt3(size.x, size.y, size.z);
+        return { size.x, size.y, size.z };
     }
 
     int getTicks(
@@ -174,12 +175,12 @@ public:
         return h.getInputSizes().size();
     }
 
-    PyInt3 getInputSize(
+    std::array<int, 3> getInputSize(
         int i
     ) const {
         aon::Int3 size = h.getInputSizes()[i];
 
-        return PyInt3(size.x, size.y, size.z);
+        return { size.x, size.y, size.z };
     }
 
     bool pLayerExists(

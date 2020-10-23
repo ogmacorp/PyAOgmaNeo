@@ -8,24 +8,25 @@
 
 #pragma once
 
-#include "PyConstructs.h"
+#include "PyHelpers.h"
 #include <aogmaneo/ImageEncoder.h>
 #include <vector>
+#include <array>
 
 namespace pyaon {
 struct PyImageEncoderVisibleLayerDesc {
-    PyInt3 size;
+    std::array<int, 3> size;
 
     int radius;
 
     PyImageEncoderVisibleLayerDesc()
     :
-    size(8, 8, 16),
+    size{ 8, 8, 16 },
     radius(2)
     {}
 
     PyImageEncoderVisibleLayerDesc(
-        const PyInt3 &size,
+        std::array<int, 3> size,
         int radius)
     : 
     size(size),
@@ -44,7 +45,7 @@ public:
     PyImageEncoder() {}
 
     void initRandom(
-        const PyInt3 &hiddenSize,
+        std::array<int, 3> hiddenSize,
         const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
     );
 
@@ -95,18 +96,18 @@ public:
         return hiddenCIs;
     }
 
-    PyInt3 getHiddenSize() const {
+    std::array<int, 3> getHiddenSize() const {
         aon::Int3 size = enc.getHiddenSize();
 
-        return PyInt3(size.x, size.y, size.z);
+        return { size.x, size.y, size.z };
     }
 
-    PyInt3 getVisibleSize(
+    std::array<int, 3> getVisibleSize(
         int i
     ) const {
         aon::Int3 size = enc.getVisibleLayerDesc(i).size;
 
-        return PyInt3(size.x, size.y, size.z);
+        return { size.x, size.y, size.z };
     }
 };
 } // namespace pyaon

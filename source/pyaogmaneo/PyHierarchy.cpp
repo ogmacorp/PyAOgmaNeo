@@ -17,12 +17,12 @@ void PyHierarchy::initRandom(
     aon::Array<aon::Hierarchy::IODesc> cIODescs(ioDescs.size());
 
     for (int i = 0; i < ioDescs.size(); i++)
-        cIODescs[i] = aon::Hierarchy::IODesc(aon::Int3(ioDescs[i].size.x, ioDescs[i].size.y, ioDescs[i].size.z), static_cast<aon::IOType>(ioDescs[i].type));
+        cIODescs[i] = aon::Hierarchy::IODesc(aon::Int3(ioDescs[i].size[0], ioDescs[i].size[1], ioDescs[i].size[2]), static_cast<aon::IOType>(ioDescs[i].type));
     
     aon::Array<aon::Hierarchy::LayerDesc> cLayerDescs(layerDescs.size());
 
     for (int l = 0; l < layerDescs.size(); l++) {
-        cLayerDescs[l].hiddenSize = aon::Int3(layerDescs[l].hiddenSize.x, layerDescs[l].hiddenSize.y, layerDescs[l].hiddenSize.z);
+        cLayerDescs[l].hiddenSize = aon::Int3(layerDescs[l].hiddenSize[0], layerDescs[l].hiddenSize[1], layerDescs[l].hiddenSize[2]);
         cLayerDescs[l].ffRadius = layerDescs[l].ffRadius;
         cLayerDescs[l].pRadius = layerDescs[l].pRadius;
         cLayerDescs[l].aRadius = layerDescs[l].aRadius;

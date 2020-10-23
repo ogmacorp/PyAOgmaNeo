@@ -17,7 +17,7 @@
 %include "std_vector.i"
 
 %{
-#include "PyConstructs.h"
+#include "PyHelpers.h"
 #include "PyHierarchy.h"
 #include "PyImageEncoder.h"
 %}
@@ -36,19 +36,20 @@
 %ignore pyaon::PyStreamReader;
 %ignore pyaon::PyStreamWriter;
 
+%template(Int3) std::array<int, 3>;
 %template(StdVeci) std::vector<int>;
 %template(StdVec2Di) std::vector<std::vector<int> >;
 %template(StdVecf) std::vector<float>;
 %template(StdVec2Df) std::vector<std::vector<float> >;
 %template(StdVecuchar) std::vector<unsigned char>;
 %template(StdVec2Duchar) std::vector<std::vector<unsigned char> >;
-%template(StdVecInt3) std::vector<pyaon::PyInt3>;
+%template(StdVecInt3) std::vector<std::array<int, 3> >;
 %template(StdVecIODesc) std::vector<pyaon::PyIODesc>;
 %template(StdVecLayerDesc) std::vector<pyaon::PyLayerDesc>;
 %template(StdVecImageEncoderVisibleLayerDesc) std::vector<pyaon::PyImageEncoderVisibleLayerDesc>;
 
 %rename("%(strip:[Py])s") ""; // Remove Py prefix that was added to avoid naming collisions
 
-%include "PyConstructs.h"
+%include "PyHelpers.h"
 %include "PyHierarchy.h"
 %include "PyImageEncoder.h"

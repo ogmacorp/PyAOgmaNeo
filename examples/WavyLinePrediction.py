@@ -25,13 +25,13 @@ bounds = (-1.0, 1.0)
 lds = []
 
 for i in range(7): # Layers with exponential memory
-    ld = pyaon.LayerDesc(hiddenSize=pyaon.Int3(4, 4, 16))
+    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
     
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(pyaon.Int3(1, 1, inputColumnSize), pyaon.typePrediction) ], lds)
+h.initRandom([ pyaon.IODesc((1, 1, inputColumnSize), pyaon.typePrediction) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 30000
