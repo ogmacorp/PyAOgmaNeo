@@ -18,6 +18,12 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param name: (string) save file name
 
+.. function:: Hierarchy.__init__(self, buffer)
+
+    Initialize a hierarchy given a byte buffer.
+
+    :param buffer: ([uint8]) byte buffer to read from
+
 .. function:: Hierarchy.step(self, inputCs, learnEnabled=True, reward=0.0, mimic=False)
 
     Perform a simulation step of the hierarchy. This will produce new predictions or actions if those are being used (as specified in the IODesc's)
@@ -32,6 +38,12 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     Save the hierarchy to a file.
 
     :param name: (string) save file name
+
+.. function:: Hierarchy.serialize(self)
+
+    Serialize the hierarchy (write to byte list)
+
+    :rtype: ([uint8]) byte buffer
 
 .. function:: Hierarchy.getNumLayers(self)
 
@@ -212,3 +224,33 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param i: (int32) index of the input layer
     :rtype: (int32) historyIters
+
+.. function:: Hierarchy.getFFRadius(self, l)
+
+    Get the feed forward (FF) radius of a layer
+
+    :param l: (int32) index of the layer
+    :rtype: (int32) FF radius
+
+.. function:: Hierarchy.getPRadius(self, l, v)
+
+    Get the predictor (P) radius of a layer
+
+    :param l: (int32) index of the layer
+    :param v: (int32) index of the input layer 
+    :rtype: (int32) P radius
+
+.. function:: Hierarchy.getARadius(self, v)
+
+    Get the actor (A) radius of a layer
+
+    :param v: (int32) index of the input layer 
+    :rtype: (int32) A radius
+
+.. function:: Hierarchy.getAHistoryCapacity(self, v)
+
+    Get the actor (A) history capacity
+
+    :param v: (int32) index of the input layer 
+    :rtype: (int32) history capacity
+

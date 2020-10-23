@@ -61,7 +61,7 @@ void PyHierarchy::save(
     h.write(writer);
 }
 
-std::vector<unsigned char> PyHierarchy::save() {
+std::vector<unsigned char> PyHierarchy::serialize() {
     PyBufferWriter writer;
 
     h.write(writer);

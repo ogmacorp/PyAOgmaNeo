@@ -112,7 +112,7 @@ public:
         const std::string &name
     );
 
-    std::vector<unsigned char> save();
+    std::vector<unsigned char> serialize();
 
     void step(
         const std::vector<std::vector<int> > &inputCs,
@@ -191,9 +191,16 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    bool pLayerExists(
+        int l,
+        int v
+    ) const {
+        return h.getPLayers(l)[v] != nullptr;
+    }
+
     bool aLayerExists(
         int v
-    ) {
+    ) const {
         return h.getALayers()[v] != nullptr;
     }
 
@@ -312,6 +319,32 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->historyIters;
+    }
+
+    // Retrieve additional parameters on the SPH's structure
+    int getFFRadius(
+        int l
+    ) const {
+        return h.getSCLayer(l).getVisibleLayerDesc(0).radius;
+    }
+
+    int getPRadius(
+        int l,
+        int v
+    ) const {
+        return h.getPLayers(l)[v]->getVisibleLayerDesc(0).radius;
+    }
+
+    int getARadius(
+        int v
+    ) const {
+        return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
+    }
+
+    int getAHistoryCapacity(
+        int v
+    ) const {
+        return h.getALayers()[v]->getHistoryCapacity();
     }
 };
 } // namespace pyaon
