@@ -32,15 +32,9 @@ struct PyIODesc {
 
     int type;
 
-    PyIODesc()
-    :
-    size{ 4, 4, 16 },
-    type(0)
-    {}
-
     PyIODesc(
-        std::array<int, 3> size,
-        int type
+        std::array<int, 3> size = { 4, 4, 16 },
+        int type = typeNone
     )
     :
     size(size),

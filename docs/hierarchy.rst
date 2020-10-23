@@ -81,7 +81,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     Get the hidden size of the encoder of a certain layer
 
     :param l: (int32) index of the layer
-    :rtype: (Int3) size of layer. Will always be equal to the size if was initialzed to in the layer descriptor (LayerDesc.hiddenSize)
+    :rtype: ((int32, int32, int32)) size of layer. Will always be equal to the size if was initialzed to in the layer descriptor (LayerDesc.hiddenSize)
 
 .. function:: Hierarchy.getTicks(self, l)
 

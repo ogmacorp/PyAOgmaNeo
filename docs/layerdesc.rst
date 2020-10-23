@@ -5,7 +5,7 @@ Layer Descriptor
 
 Describes the layers of the hierarchy during initialization. Fill these variables with the desired structure and properties of the hierarchy
 
-.. attribute:: (Int3) LayerDesc.hiddenSize
+.. attribute:: ((int32, int32, int32)) LayerDesc.hiddenSize
 
     Hidden layer sparse coder (AKA encoder) size
 
@@ -29,6 +29,6 @@ Describes the layers of the hierarchy during initialization. Fill these variable
 
     Temporal horizon of sparse coder (AKA encoder). Must be greater than or equal to LayerDesc.ticksPerUpdate. If no temporal window overshoot is desired, set equal to LayerDesc.ticksPerUpdate, otherwise the overshoot is how much large it is than LayerDesc.ticksPerUpdate
 
-.. function:: LayerDesc.__init__(self)
+.. function:: LayerDesc.__init__(self, size=(4, 4, 16), ffRadius=2, pRadius=2, aRadius=2, ticksPerUpdate=2, temporalHorizon=2, historyCapacity=32)
 
-    Initialize to sensible defaults
+    Initialize to given values

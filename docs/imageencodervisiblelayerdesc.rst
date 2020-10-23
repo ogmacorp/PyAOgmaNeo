@@ -5,7 +5,7 @@ Image Encoder Visible Layer Desciptor
 
 Describes a single visible layer of an ImageEncoder for use during initialization
 
-.. attribute:: (Int3) ImageEncoderVisibleLayerDesc.size
+.. attribute:: ((int32, int32, int32)) ImageEncoderVisibleLayerDesc.size
 
     Size of the input. Last value (z) will be 3 for RGB images
 

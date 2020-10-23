@@ -5,7 +5,7 @@ Input-Ouput Descriptor (IODesc)
 
 Describes a single input/output channel for a hierarchy
 
-.. attribute:: (Int3) IODesc.size
+.. attribute:: ((int32, int32, int32)) IODesc.size
 
     Size of the input/output
 
@@ -19,10 +19,6 @@ Describes a single input/output channel for a hierarchy
 
         The prediction of the specified type will be retrieved with Hierarchy.getPredictionCIs (regardless of type).
 
-.. function:: IODesc.__init__(self)
-
-    Initialize to sensible defaults
-
-.. function:: IODesc.__init__(self, size, type)
+.. function:: IODesc.__init__(self, size=(4, 4, 16), type=pyaogmaneo.typeNone)
 
     Initialize to given values
