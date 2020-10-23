@@ -15,10 +15,6 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(NOT WIN32)
-    set(CXX_COMPILE_FLAGS "-fPIC") # Link static on linux
-endif()
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake/")
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -67,7 +63,7 @@ add_library(PyAOgmaNeoCpp ${PYAOGMANEO_SRC})
 
 target_link_libraries(PyAOgmaNeoCpp ${OpenMP_CXX_LIBRARIES})
 target_link_libraries(PyAOgmaNeoCpp ${AOGMANEO_LIBRARIES})
-message(${AOGMANEO_LIBRARIES})
+
 
 ############################################################################
 # Find SWIG and setup building the Python bindings to PyAOgmaNeo library
