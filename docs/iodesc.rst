@@ -14,8 +14,10 @@ Describes a single input/output channel for a hierarchy
     Type of input/output layer. Can be:
 
         pyaogmaneo.typeNone: No prediction will be generated (purely an input layer)
+
         pyaogmaneo.typePrediction: A prediction of the next timestep of values will be generated
-        pyaogmaneo.typeAction: A action will be generated (for use with reinforcement learning)
+
+        pyaogmaneo.typeAction: An action will be generated (for use with reinforcement learning)
 
         The prediction of the specified type will be retrieved with Hierarchy.getPredictionCIs (regardless of type).
 
