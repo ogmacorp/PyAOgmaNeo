@@ -87,7 +87,8 @@ class EnvRunner:
 
                 self.imgsPrev.append(np.zeros(self.imageSizes[i]))
 
-            self.imEnc = pyaon.ImageEncoder(hiddenSize, vlds)
+            self.imEnc = pyaon.ImageEncoder()
+            self.imEnc.initRandom(hiddenSize, vlds)
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
@@ -142,15 +143,17 @@ class EnvRunner:
 
             lds.append(ld)
 
+        self.h = pyaon.Hierarchy()
+
         if loadName is None:
             ioDescs = []
 
             for i in range(len(self.inputSizes)):
                 ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i]))
 
-            self.h = pyaon.Hierarchy(ioDescs, lds)
+            self.h.initRandom(ioDescs, lds)
         else:
-            self.h = pyaon.Hierarchy(loadName)
+            self.h.initFromFile(loadName)
 
         self.actions = []
 
@@ -189,7 +192,7 @@ class EnvRunner:
                 # Encode image
                 self.imEnc.step([ img.ravel().tolist() ], True)
 
-                self.inputs.append(list(self.imEnc.getHiddenCs()))
+                self.inputs.append(list(self.imEnc.getHiddenCIs()))
 
             else:
                 indices = []
@@ -260,6 +263,6 @@ class EnvRunner:
 
             assert(self.inputTypes[index] is pyaon.typeAction)
 
-            self.actions[i] = list(self.h.getPredictionCs(index))
+            self.actions[i] = list(self.h.getPredictionCIs(index))
         
         return done, reward

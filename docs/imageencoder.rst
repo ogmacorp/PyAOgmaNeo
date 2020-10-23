@@ -14,18 +14,40 @@ It is implemented as a neural gas.
 
     Gas falloff. Must be nonzero positive value. Higher means stronger (sharper) falloff
 
-.. function:: ImageEncoder.__init__(self, hiddenSize, visibleLayerDescs)
+.. function:: ImageEncoder.__init__(self):
+
+    Does nothing.
+
+.. function:: ImageEncoder.initRandom(self, hiddenSize, visibleLayerDescs)
 
     Initialize an image encoder of given structure.
 
     :param hiddenSize: (Int3) size of the output (hidden) layer that will be generated.
     :param visibleLayerDescs: ([ImageEncoderVisibleLayerDesc]) list of ImageEncoderVisibleLayerDesc describing each input (visible) layer
 
-.. function:: ImageEncoder.__init__(self, name)
+.. function:: ImageEncoder.initFromFile(self, name)
 
     Initialize an image encoder given a save file.
 
     :param name: (string) save file name
+
+.. function:: ImageEncoder.initFromBuffer(self, buffer)
+
+    Initialize a hierarchy given a byte buffer.
+
+    :param buffer: ([uint8]) byte buffer to read from
+
+.. function:: ImageEncoder.saveToFile(self, name)
+
+    Save the image encoder to a file.
+
+    :param name: (string) save file name
+
+.. function:: ImageEncoder.serializeToBuffer(self)
+
+    Serialize the hierarchy (write to byte list)
+
+    :rtype: ([uint8]) byte buffer
 
 .. function:: ImageEncoder.step(self, inputs, learnEnabled=True)
 
@@ -34,12 +56,12 @@ It is implemented as a neural gas.
     :param inputs: ([FloatBuffer]) list of input float buffers representing the image of the dimensions described in the initialization. If using regular RGB images, the values in this buffer should be in the range [0, 1] (not [0, 255])
     :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
 
-.. function:: ImageEncoder.reconstruct(self, reconCs)
+.. function:: ImageEncoder.reconstruct(self, reconCIs)
 
-    Reconstruct (reverse the encoding of) a given CSDR (reconCs). This action perform the oppositive of regular inference - get the inputs given the output representation.
+    Reconstruct (reverse the encoding of) a given CSDR (reconCIs). This action perform the oppositive of regular inference - get the inputs given the output representation.
     After this function is called, the reconstructions for all inputs will be updated/generated. This can then be retrieved with ImageEncoder.getReconstruction (described below).
 
-    :param reconCs: (IntBuffer) CSDR to reconstruct
+    :param reconCIs: (IntBuffer) CSDR to reconstruct
 
 .. function:: ImageEncoder.getReconstruction(self, index)
 
@@ -47,12 +69,6 @@ It is implemented as a neural gas.
 
     :param index: (int32) index of the visible layer to retrieve the reconstruction from
     :rtype: (FloatBuffer) reconstruction of the input
-
-.. function:: ImageEncoder.save(self, name)
-
-    Save the image encoder to a file.
-
-    :param name: (string) save file name
 
 .. function:: ImageEncoder.getNumVisibleLayers(self)
 
@@ -67,7 +83,7 @@ It is implemented as a neural gas.
     :param index: (int32) index of the input (visible) layer
     :rtype: (ImageEncoderVisibleLayerDesc) the descriptor
 
-.. function:: ImageEncoder.getHiddenCs(self)
+.. function:: ImageEncoder.getHiddenCIs(self)
 
     Get the hidden encoded state (output CSDR)
 

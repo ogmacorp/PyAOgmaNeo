@@ -53,7 +53,8 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = pyaon.Hierarchy([ pyaon.IODesc(pyaon.Int3(1, numObs, obsColumnSize), pyaon.typeNone), pyaon.IODesc(pyaon.Int3(1, 1, numActions), pyaon.typeAction) ], lds)
+h = pyaon.Hierarchy()
+h.initRandom([ pyaon.IODesc(pyaon.Int3(1, numObs, obsColumnSize), pyaon.typeNone), pyaon.IODesc(pyaon.Int3(1, 1, numActions), pyaon.typeAction) ], lds)
 
 reward = 0.0
 
@@ -65,10 +66,10 @@ for episode in range(1000):
         # Bin the 4 observations. Since we don't know the limits of the observation, we just squash it
         binnedObs = (sigmoid(obs * obsSquashScale) * (obsColumnSize - 1) + 0.5).astype(np.int).ravel().tolist()
 
-        h.step([ binnedObs, h.getPredictionCs(1) ], True, reward)
+        h.step([ binnedObs, h.getPredictionCIs(1) ], True, reward)
 
         # Retrieve the action, the hierarchy already automatically applied exploration
-        action = h.getPredictionCs(1)[0] # First and only column
+        action = h.getPredictionCIs(1)[0] # First and only column
 
         obs, reward, done, info = env.step(action)
 

@@ -31,12 +31,6 @@ struct PyIODesc {
 
     int type;
 
-    PyIODesc()
-    :
-    size(4, 4, 16),
-    type(typeNone)
-    {}
-
     PyIODesc(
         const PyInt3 &size,
         int type
@@ -68,25 +62,6 @@ struct PyLayerDesc {
     ticksPerUpdate(2),
     temporalHorizon(2),
     historyCapacity(32)
-    {}
-
-    PyLayerDesc(
-        const PyInt3 &hiddenSize,
-        int ffRadius,
-        int pRadius,
-        int aRadius,
-        int ticksPerUpdate,
-        int temporalHorizon,
-        int historyCapacity
-    )
-    :
-    hiddenSize(hiddenSize),
-    ffRadius(ffRadius),
-    pRadius(pRadius),
-    aRadius(aRadius),
-    ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon),
-    historyCapacity(historyCapacity)
     {}
 };
 

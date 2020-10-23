@@ -5,45 +5,49 @@ Hierarchy
 
 The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when used for reinforcement learning. This is the main piece of any PyAOgmaNeo project
 
-.. function:: Hierarchy.__init__(self, ioDescs, lds)
+.. function:: Hierarchy.__init__(self):
+
+    Does nothing.
+
+.. function:: Hierarchy.initRandom(self, ioDescs, lds)
 
     Initialize a hierarchy (random weights) of given structure.
 
     :param ioDescs: ([IODesc]) list of IODesc's (input-output descriptors, see IODesc). Defines the size of each input layer and its type
     :param lds: ([LayerDesc]) A list of filled-out descriptors (LayerDesc objects) describing how all the layers in the hierarchy should look
 
-.. function:: Hierarchy.__init__(self, name)
+.. function:: Hierarchy.initFromFile(self, name)
 
     Initialize a hierarchy given a save file.
 
     :param name: (string) save file name
 
-.. function:: Hierarchy.__init__(self, buffer)
+.. function:: Hierarchy.initFromBuffer(self, buffer)
 
     Initialize a hierarchy given a byte buffer.
 
     :param buffer: ([uint8]) byte buffer to read from
 
-.. function:: Hierarchy.step(self, inputCs, learnEnabled=True, reward=0.0, mimic=False)
-
-    Perform a simulation step of the hierarchy. This will produce new predictions or actions if those are being used (as specified in the IODesc's)
-
-    :param inputCs: ([IntBuffer]) list of input integer buffers representing the CSDRs of the dimensions described in the initialization
-    :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
-    :param reward: (float32) reward signal, if action input layers (pyaogmaneo.IODesc type set to typeAction) are present this will be used to update those to maximize reward. Defaults to 0.0
-    :param mimic: If true, sets the actors (action generators for reinforcement learning) to behave like regular predictors. This is useful for imitation learning followed by reinforcement learning
-
-.. function:: Hierarchy.save(self, name)
+.. function:: Hierarchy.saveToFile(self, name)
 
     Save the hierarchy to a file.
 
     :param name: (string) save file name
 
-.. function:: Hierarchy.serialize(self)
+.. function:: Hierarchy.serializeToBuffer(self)
 
     Serialize the hierarchy (write to byte list)
 
     :rtype: ([uint8]) byte buffer
+
+.. function:: Hierarchy.step(self, inputCIs, learnEnabled=True, reward=0.0, mimic=False)
+
+    Perform a simulation step of the hierarchy. This will produce new predictions or actions if those are being used (as specified in the IODesc's)
+
+    :param inputCIs: ([IntBuffer]) list of input integer buffers representing the CSDRs of the dimensions described in the initialization
+    :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
+    :param reward: (float32) reward signal, if action input layers (pyaogmaneo.IODesc type set to typeAction) are present this will be used to update those to maximize reward. Defaults to 0.0
+    :param mimic: If true, sets the actors (action generators for reinforcement learning) to behave like regular predictors. This is useful for imitation learning followed by reinforcement learning
 
 .. function:: Hierarchy.getNumLayers(self)
 
@@ -51,7 +55,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :rtype: (int32) number of layers
 
-.. function:: Hierarchy.getPredictionCs(self, i)
+.. function:: Hierarchy.getPredictionCIs(self, i)
 
     Get a prediction for a given input layer index. If the IODesc for this index is of type action, it will return the action instead
 
@@ -65,7 +69,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (boolean) True if updated, False otherwise
 
-.. function:: Hierarchy.getHiddenCs(self, l)
+.. function:: Hierarchy.getHiddenCIs(self, l)
 
     Get the CSDR of the encoder of a certain layer
 

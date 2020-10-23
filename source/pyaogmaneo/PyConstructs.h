@@ -18,13 +18,6 @@ private:
 public:
     int x, y, z;
 
-    PyInt3() 
-    :
-    x(0),
-    y(0),
-    z(0)
-    {}
-
     PyInt3(
         int x,
         int y,

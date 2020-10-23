@@ -39,7 +39,8 @@ for i in range(7): # Layers with exponential memory
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = pyaon.Hierarchy([ pyaon.IODesc(pyaon.Int3(1, 1, inputColumnSize), pyaon.typePrediction) ], lds)
+h = pyaon.Hierarchy()
+h.initRandom([ pyaon.IODesc(pyaon.Int3(1, 1, inputColumnSize), pyaon.typePrediction) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 30000
@@ -56,7 +57,7 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
 
-    print(h.getHiddenCs(3))
+    print(h.getHiddenCIs(3))
 
     # Print progress
     if t % 100 == 0:
@@ -77,9 +78,9 @@ for t2 in range(500):
     valueToEncodeBinned = int((valueToEncode - bounds[0]) / (bounds[1] - bounds[0]) * (inputColumnSize - 1) + 0.5)
 
     # Run off of own predictions with learning disabled
-    h.step([ h.getPredictionCs(0) ], False) # Learning disabled
+    h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
-    predIndex = h.getPredictionCs(0)[0] # First (only in this case) input layer prediction
+    predIndex = h.getPredictionCIs(0)[0] # First (only in this case) input layer prediction
     
     # Decode value (de-bin)
     value = predIndex / float(inputColumnSize - 1) * (bounds[1] - bounds[0]) + bounds[0]

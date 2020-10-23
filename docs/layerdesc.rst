@@ -32,7 +32,3 @@ Describes the layers of the hierarchy during initialization. Fill these variable
 .. function:: LayerDesc.__init__(self)
 
     Initialize to sensible defaults
-
-.. function:: LayerDesc.__init__(self, hiddenSize, ffRadius, pRadius, aRadius, ticksPerUpdate, temporalHorizon, historyCapacity)
-
-    Initialize whole descriptor to given values
