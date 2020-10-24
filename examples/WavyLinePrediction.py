@@ -37,7 +37,7 @@ h.initRandom([ pyaon.IODesc((1, 1, inputColumnSize), pyaon.typePrediction) ], ld
 iters = 30000
 
 def wave(t):
-    return float(t % 41 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
+    return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
 
 for t in range(iters):
     # The value to encode into the input column

@@ -32,13 +32,27 @@ struct PyIODesc {
 
     int type;
 
+    int ffRadius;
+    int pRadius;
+    int aRadius;
+
+    int historyCapacity;
+
     PyIODesc(
-        std::array<int, 3> size = { 4, 4, 16 },
-        int type = typeNone
+        std::array<int, 3> size = std::array<int, 3>{ 4, 4, 16 },
+        int type = typeNone,
+        int ffRadius  = 2,
+        int pRadius = 2,
+        int aRadius = 2,
+        int historyCapacity = 32
     )
     :
     size(size),
-    type(type)
+    type(type),
+    ffRadius(ffRadius),
+    pRadius(pRadius),
+    aRadius(aRadius),
+    historyCapacity(historyCapacity)
     {}
 };
 
@@ -47,30 +61,23 @@ struct PyLayerDesc {
 
     int ffRadius;
     int pRadius;
-    int aRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
-    int historyCapacity;
-
     PyLayerDesc(
-        std::array<int, 3> hiddenSize = { 4, 4, 16 },
+        std::array<int, 3> hiddenSize = std::array<int, 3>{ 4, 4, 16 },
         int ffRadius = 2,
         int pRadius = 2,
-        int aRadius = 2,
         int ticksPerUpdate = 2,
-        int temporalHorizon = 2,
-        int historyCapacity = 32
+        int temporalHorizon = 2
     )
     :
     hiddenSize(hiddenSize),
     ffRadius(ffRadius),
     pRadius(pRadius),
-    aRadius(aRadius),
     ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon),
-    historyCapacity(historyCapacity)
+    temporalHorizon(temporalHorizon)
     {}
 };
 

@@ -22,9 +22,6 @@ void PyImageEncoder::initRandom(
     }
 
     enc.initRandom(aon::Int3(hiddenSize[0], hiddenSize[1], hiddenSize[2]), cVisibleLayerDescs);
-
-    alpha = enc.alpha;
-    gamma = enc.gamma;
 }
 
 void PyImageEncoder::initFromFile(
@@ -34,9 +31,6 @@ void PyImageEncoder::initFromFile(
     reader.ins.open(name, std::ios::binary);
 
     enc.read(reader);
-
-    alpha = enc.alpha;
-    gamma = enc.gamma;
 }
 
 void PyImageEncoder::initFromBuffer(
@@ -46,9 +40,6 @@ void PyImageEncoder::initFromBuffer(
     reader.buffer = &buffer;
 
     enc.read(reader);
-
-    alpha = enc.alpha;
-    gamma = enc.gamma;
 }
 
 void PyImageEncoder::saveToFile(
@@ -72,9 +63,6 @@ void PyImageEncoder::step(
     const std::vector<std::vector<float> > &inputs,
     bool learnEnabled
 ) {
-    enc.alpha = alpha;
-    enc.gamma = gamma;
-    
     aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
     aon::Array<const aon::Array<float>*> cInputs(inputs.size());
 

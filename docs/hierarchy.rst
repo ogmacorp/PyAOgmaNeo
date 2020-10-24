@@ -9,12 +9,12 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     Does nothing.
 
-.. function:: Hierarchy.initRandom(self, ioDescs, lds)
+.. function:: Hierarchy.initRandom(self, ioDescs, layerDescs)
 
     Initialize a hierarchy (random weights) of given structure.
 
     :param ioDescs: ([IODesc]) list of IODesc's (input-output descriptors, see IODesc). Defines the size of each input layer and its type
-    :param lds: ([LayerDesc]) A list of filled-out descriptors (LayerDesc objects) describing how all the layers in the hierarchy should look
+    :param layerDescs: ([LayerDesc]) A list of filled-out descriptors (LayerDesc objects) describing how all the layers in the hierarchy should look
 
 .. function:: Hierarchy.initFromFile(self, name)
 
@@ -51,7 +51,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
 .. function:: Hierarchy.getNumLayers(self)
 
-    Return the number of layers (encoders with paired decoders) the hierarchy has. Will be equal to (len(lds))
+    Return the number of layers (encoders with paired decoders) the hierarchy has. Will be equal to (len(layerDescs))
 
     :rtype: (int32) number of layers
 

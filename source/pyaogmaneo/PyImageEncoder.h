@@ -20,7 +20,7 @@ struct PyImageEncoderVisibleLayerDesc {
     int radius;
 
     PyImageEncoderVisibleLayerDesc(
-        std::array<int, 3> size = { 32, 32, 3 },
+        std::array<int, 3> size = std::array<int, 3>{ 32, 32, 3 },
         int radius = 4
     )
     : 
@@ -34,9 +34,6 @@ private:
     aon::ImageEncoder enc;
 
 public:
-    float alpha;
-    float gamma;
-    
     PyImageEncoder() {}
 
     void initRandom(
@@ -103,6 +100,27 @@ public:
         aon::Int3 size = enc.getVisibleLayerDesc(i).size;
 
         return { size.x, size.y, size.z };
+    }
+
+    // Params
+    void setAlpha(
+        float alpha
+    ) {
+        enc.alpha = alpha;
+    }
+
+    float getAlpha() const {
+        return enc.alpha;
+    }
+
+    void setGamma(
+        float gamma
+    ) {
+        enc.gamma = gamma;
+    }
+
+    float getGamma() const {
+        return enc.gamma;
     }
 };
 } // namespace pyaon

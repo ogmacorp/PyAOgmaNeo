@@ -16,19 +16,27 @@ void PyHierarchy::initRandom(
 ) {
     aon::Array<aon::Hierarchy::IODesc> cIODescs(ioDescs.size());
 
-    for (int i = 0; i < ioDescs.size(); i++)
-        cIODescs[i] = aon::Hierarchy::IODesc(aon::Int3(ioDescs[i].size[0], ioDescs[i].size[1], ioDescs[i].size[2]), static_cast<aon::IOType>(ioDescs[i].type));
+    for (int i = 0; i < ioDescs.size(); i++) {
+        cIODescs[i] = aon::Hierarchy::IODesc(
+            aon::Int3(ioDescs[i].size[0], ioDescs[i].size[1], ioDescs[i].size[2]),
+            static_cast<aon::IOType>(ioDescs[i].type),
+            ioDescs[i].ffRadius,
+            ioDescs[i].pRadius,
+            ioDescs[i].aRadius,
+            ioDescs[i].historyCapacity
+        );
+    }
     
     aon::Array<aon::Hierarchy::LayerDesc> cLayerDescs(layerDescs.size());
 
     for (int l = 0; l < layerDescs.size(); l++) {
-        cLayerDescs[l].hiddenSize = aon::Int3(layerDescs[l].hiddenSize[0], layerDescs[l].hiddenSize[1], layerDescs[l].hiddenSize[2]);
-        cLayerDescs[l].ffRadius = layerDescs[l].ffRadius;
-        cLayerDescs[l].pRadius = layerDescs[l].pRadius;
-        cLayerDescs[l].aRadius = layerDescs[l].aRadius;
-        cLayerDescs[l].temporalHorizon = layerDescs[l].temporalHorizon;
-        cLayerDescs[l].ticksPerUpdate = layerDescs[l].ticksPerUpdate;
-        cLayerDescs[l].historyCapacity = layerDescs[l].historyCapacity;
+        cLayerDescs[l] = aon::Hierarchy::LayerDesc(
+            aon::Int3(layerDescs[l].hiddenSize[0], layerDescs[l].hiddenSize[1], layerDescs[l].hiddenSize[2]),
+            layerDescs[l].ffRadius,
+            layerDescs[l].pRadius,
+            layerDescs[l].ticksPerUpdate,
+            layerDescs[l].temporalHorizon
+        );
     }
 
     h.initRandom(cIODescs, cLayerDescs);
