@@ -20,7 +20,7 @@ struct PyImageEncoderVisibleLayerDesc {
     int radius;
 
     PyImageEncoderVisibleLayerDesc(
-        std::array<int, 3> size = std::array<int, 3>{ 32, 32, 3 },
+        std::array<int, 3> size = std::array<int, 3>({ 32, 32, 3 }),
         int radius = 4
     )
     : 
