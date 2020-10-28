@@ -8,25 +8,21 @@
 
 #pragma once
 
-#include "PyConstructs.h"
+#include "PyHelpers.h"
 #include <aogmaneo/ImageEncoder.h>
 #include <vector>
+#include <array>
 
 namespace pyaon {
 struct PyImageEncoderVisibleLayerDesc {
-    PyInt3 size;
+    std::array<int, 3> size;
 
     int radius;
 
-    PyImageEncoderVisibleLayerDesc()
-    :
-    size(8, 8, 16),
-    radius(2)
-    {}
-
     PyImageEncoderVisibleLayerDesc(
-        const PyInt3 &size,
-        int radius)
+        std::array<int, 3> size = std::array<int, 3>({ 32, 32, 3 }),
+        int radius = 4
+    )
     : 
     size(size),
     radius(radius)
@@ -38,21 +34,26 @@ private:
     aon::ImageEncoder enc;
 
 public:
-    float alpha;
-    float gamma;
-    
-    PyImageEncoder(
-        const PyInt3 &hiddenSize,
+    PyImageEncoder() {}
+
+    void initRandom(
+        std::array<int, 3> hiddenSize,
         const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
     );
 
-    PyImageEncoder(
+    void initFromFile(
         const std::string &name
     );
 
-    void save(
+    void initFromBuffer(
+        const std::vector<unsigned char> &buffer
+    );
+
+    void saveToFile(
         const std::string &name
     );
+
+    std::vector<unsigned char> serializeToBuffer();
 
     void step(
         const std::vector<std::vector<float> > &inputs,
@@ -60,7 +61,7 @@ public:
     );
 
     void reconstruct(
-        const std::vector<int> &reconCs
+        const std::vector<int> &reconCIs
     );
 
     int getNumVisibleLayers() const {
@@ -78,27 +79,48 @@ public:
         return reconstruction;
     }
 
-    std::vector<int> getHiddenCs() const {
-        std::vector<int> hiddenCs(enc.getHiddenCs().size());
+    std::vector<int> getHiddenCIs() const {
+        std::vector<int> hiddenCIs(enc.getHiddenCIs().size());
 
-        for (int j = 0; j < hiddenCs.size(); j++)
-            hiddenCs[j] = enc.getHiddenCs()[j];
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = enc.getHiddenCIs()[j];
 
-        return hiddenCs;
+        return hiddenCIs;
     }
 
-    PyInt3 getHiddenSize() const {
+    std::array<int, 3> getHiddenSize() const {
         aon::Int3 size = enc.getHiddenSize();
 
-        return PyInt3(size.x, size.y, size.z);
+        return { size.x, size.y, size.z };
     }
 
-    PyInt3 getVisibleSize(
+    std::array<int, 3> getVisibleSize(
         int i
     ) const {
         aon::Int3 size = enc.getVisibleLayerDesc(i).size;
 
-        return PyInt3(size.x, size.y, size.z);
+        return { size.x, size.y, size.z };
+    }
+
+    // Params
+    void setAlpha(
+        float alpha
+    ) {
+        enc.alpha = alpha;
+    }
+
+    float getAlpha() const {
+        return enc.alpha;
+    }
+
+    void setGamma(
+        float gamma
+    ) {
+        enc.gamma = gamma;
+    }
+
+    float getGamma() const {
+        return enc.gamma;
     }
 };
 } // namespace pyaon

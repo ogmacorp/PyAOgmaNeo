@@ -9,7 +9,6 @@
 # -*- coding: utf-8 -*-
 
 import pyaogmaneo as pyaon
-from pyaogmaneo import Int3
 import numpy as np
 import gym
 import cv2
@@ -20,7 +19,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ Int3(4, 4, 16) ], layerRadius=4, hiddenSize=Int3(8, 8, 16), imageRadius=9, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=4, loadName=None):
+    def __init__(self, env, layerSizes=4 * [ (4, 4, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=6, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8, loadName=None):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -42,16 +41,16 @@ class EnvRunner:
         self.infSensitivity = infSensitivity
 
         if type(self.env.observation_space) is gym.spaces.Discrete:
-            self.inputSizes.append(Int3(1, 1, self.env.observation_space.n))
-            self.inputTypes.append(pyaon.inputTypePrediction)
+            self.inputSizes.append((1, 1, self.env.observation_space.n))
+            self.inputTypes.append(pyaon.typePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.observation_space) is gym.spaces.Box:
             if len(self.env.observation_space.shape) == 1 or len(self.env.observation_space.shape) == 0:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
                 squareTotal = squareSize * squareSize
-                self.inputSizes.append(Int3(squareSize, squareSize, obsResolution))
-                self.inputTypes.append(pyaon.inputTypePrediction)
+                self.inputSizes.append((squareSize, squareSize, obsResolution))
+                self.inputTypes.append(pyaon.typePrediction)
                 lows = list(self.env.observation_space.low)
                 highs = list(self.env.observation_space.high)
                 
@@ -81,33 +80,34 @@ class EnvRunner:
             vlds = []
 
             for i in range(len(self.imageSizes)):
-                vld = pyaon.ImageEncoderVisibleLayerDesc(Int3(self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
+                vld = pyaon.ImageEncoderVisibleLayerDesc((self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
 
                 vlds.append(vld)
 
                 self.imgsPrev.append(np.zeros(self.imageSizes[i]))
 
-            self.imEnc = pyaon.ImageEncoder(hiddenSize, vlds)
+            self.imEnc = pyaon.ImageEncoder()
+            self.imEnc.initRandom(hiddenSize, vlds)
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
-            self.inputTypes.append(pyaon.inputTypePrediction)
+            self.inputTypes.append(pyaon.typePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 1.0 ])
 
         # Actions
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.actionIndices.append(len(self.inputSizes))
-            self.inputSizes.append(Int3(1, 1, self.env.action_space.n))
-            self.inputTypes.append(pyaon.inputTypeAction)
+            self.inputSizes.append((1, 1, self.env.action_space.n))
+            self.inputTypes.append(pyaon.typeAction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.action_space) is gym.spaces.Box:
             if len(self.env.action_space.shape) < 3:
                 if len(self.env.action_space.shape) == 2:
                     self.actionIndices.append(len(self.inputSizes))
-                    self.inputSizes.append(Int3(self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
-                    self.inputTypes.append(pyaon.inputTypeAction)
+                    self.inputSizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
+                    self.inputTypes.append(pyaon.typeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -117,8 +117,8 @@ class EnvRunner:
                     squareSize = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
                     squareTotal = squareSize * squareSize
                     self.actionIndices.append(len(self.inputSizes))
-                    self.inputSizes.append(Int3(squareSize, squareSize, actionResolution))
-                    self.inputTypes.append(pyaon.inputTypeAction)
+                    self.inputSizes.append((squareSize, squareSize, actionResolution))
+                    self.inputTypes.append(pyaon.typeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -132,9 +132,7 @@ class EnvRunner:
         lds = []
 
         for i in range(len(layerSizes)):
-            ld = pyaon.LayerDesc()
-
-            ld.hiddenSize = layerSizes[i]
+            ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.ffRadius = layerRadius
             ld.pRadius = layerRadius
@@ -142,10 +140,17 @@ class EnvRunner:
 
             lds.append(ld)
 
+        self.h = pyaon.Hierarchy()
+
         if loadName is None:
-            self.h = pyaon.Hierarchy(self.inputSizes, self.inputTypes, lds)
+            ioDescs = []
+
+            for i in range(len(self.inputSizes)):
+                ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i]))
+
+            self.h.initRandom(ioDescs, lds)
         else:
-            self.h = pyaon.Hierarchy(loadName)
+            self.h.initFromFile(loadName)
 
         self.actions = []
 
@@ -157,7 +162,7 @@ class EnvRunner:
             startAct = []
 
             for j in range(size):
-                startAct.append(np.random.randint(0, self.inputSizes[index].z))
+                startAct.append(np.random.randint(0, self.inputSizes[index][2]))
 
             self.actions.append(startAct)
 
@@ -167,7 +172,7 @@ class EnvRunner:
         actionIndex = 0
 
         for i in range(len(self.inputSizes)):
-            if self.inputTypes[i] == pyaon.inputTypeAction:
+            if self.inputTypes[i] == pyaon.typeAction:
                 self.inputs.append(self.actions[actionIndex])
 
                 actionIndex += 1
@@ -184,7 +189,7 @@ class EnvRunner:
                 # Encode image
                 self.imEnc.step([ img.ravel().tolist() ], True)
 
-                self.inputs.append(list(self.imEnc.getHiddenCs()))
+                self.inputs.append(list(self.imEnc.getHiddenCIs()))
 
             else:
                 indices = []
@@ -192,17 +197,17 @@ class EnvRunner:
                 for j in range(len(self.inputLows[i])):
                     if self.inputLows[i][j] < self.inputHighs[i][j]:
                         # Rescale
-                        indices.append(int((obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]) * (self.inputSizes[i].z - 1) + 0.5))
+                        indices.append(int((obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]) * (self.inputSizes[i][2] - 1) + 0.5))
                     elif self.inputLows[i][j] > self.inputHighs[i][j]: # Inf
                         v = obs[j]
 
                         # Rescale
-                        indices.append(int(sigmoid(v * self.infSensitivity) * (self.inputSizes[i].z - 1) + 0.5))
+                        indices.append(int(sigmoid(v * self.infSensitivity) * (self.inputSizes[i][2] - 1) + 0.5))
                     else:
                         indices.append(int(obs[j]))
 
-                if len(indices) < self.inputSizes[i].x * self.inputSizes[i].y:
-                    indices += ((self.inputSizes[i].x * self.inputSizes[i].y) - len(indices)) * [ int(0) ]
+                if len(indices) < self.inputSizes[i][0] * self.inputSizes[i][1]:
+                    indices += ((self.inputSizes[i][0] * self.inputSizes[i][1]) - len(indices)) * [ int(0) ]
 
                 self.inputs.append(indices)
 
@@ -212,7 +217,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] is pyaon.inputTypeAction)
+            assert(self.inputTypes[index] == pyaon.typeAction)
 
             if self.inputLows[index][0] < self.inputHighs[index][0]:
                 feedAction = []
@@ -220,17 +225,17 @@ class EnvRunner:
                 # Explore
                 for j in range(len(self.inputLows[index])):
                     if np.random.rand() < epsilon:
-                        self.actions[i][j] = np.random.randint(0, self.inputSizes[index].z)
+                        self.actions[i][j] = np.random.randint(0, self.inputSizes[index][2])
 
                     if self.inputLows[index][j] < self.inputHighs[index][j]:
-                        feedAction.append(self.actions[i][j] / float(self.inputSizes[index].z - 1) * (self.inputHighs[index][j] - self.inputLows[index][j]) + self.inputLows[index][j])
+                        feedAction.append(self.actions[i][j] / float(self.inputSizes[index][2] - 1) * (self.inputHighs[index][j] - self.inputLows[index][j]) + self.inputLows[index][j])
                     else:
                         feedAction.append(self.actions[i][j])
 
                 feedActions.append(feedAction)
             else:
                 if np.random.rand() < epsilon:
-                    self.actions[i][0] = np.random.randint(0, self.inputSizes[index].z)
+                    self.actions[i][0] = np.random.randint(0, self.inputSizes[index][2])
 
                 feedActions.append(int(self.actions[i][0]))
 
@@ -253,8 +258,8 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] is pyaon.inputTypeAction)
+            assert(self.inputTypes[index] is pyaon.typeAction)
 
-            self.actions[i] = list(self.h.getPredictionCs(index))
+            self.actions[i] = list(self.h.getPredictionCIs(index))
         
         return done, reward

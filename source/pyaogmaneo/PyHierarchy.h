@@ -8,14 +8,16 @@
 
 #pragma once
 
-#include "PyConstructs.h"
+#include "PyHelpers.h"
 #include <aogmaneo/Hierarchy.h>
 #include <vector>
+#include <array>
 #include <fstream>
 
 namespace pyaon {
-const int typePrediction = 0;
-const int typeAction = 1;
+const int typeNone = 0;
+const int typePrediction = 1;
+const int typeAction = 2;
 
 inline void setNumThreads(int numThreads) {
     aon::setNumThreads(numThreads);
@@ -26,66 +28,56 @@ inline int getNumThreads() {
 }
 
 struct PyIODesc {
-    PyInt3 size;
+    std::array<int, 3> size;
 
     int type;
-
-    PyIODesc()
-    :
-    size(4, 4, 16),
-    type(typePrediction)
-    {}
-
-    PyIODesc(
-        const PyInt3 &size,
-        int type
-    )
-    :
-    size(size),
-    type(type)
-    {}
-};
-
-struct PyLayerDesc {
-    PyInt3 hiddenSize;
 
     int ffRadius;
     int pRadius;
     int aRadius;
 
+    int historyCapacity;
+
+    PyIODesc(
+        std::array<int, 3> size = std::array<int, 3>({ 4, 4, 16 }),
+        int type = typeNone,
+        int ffRadius  = 2,
+        int pRadius = 2,
+        int aRadius = 2,
+        int historyCapacity = 32
+    )
+    :
+    size(size),
+    type(type),
+    ffRadius(ffRadius),
+    pRadius(pRadius),
+    aRadius(aRadius),
+    historyCapacity(historyCapacity)
+    {}
+};
+
+struct PyLayerDesc {
+    std::array<int, 3> hiddenSize;
+
+    int ffRadius;
+    int pRadius;
+
     int ticksPerUpdate;
     int temporalHorizon;
 
-    int historyCapacity;
-
-    PyLayerDesc()
-    :
-    hiddenSize(4, 4, 16),
-    ffRadius(2),
-    pRadius(2),
-    aRadius(2),
-    ticksPerUpdate(2),
-    temporalHorizon(2),
-    historyCapacity(32)
-    {}
-
     PyLayerDesc(
-        const PyInt3 &hiddenSize,
-        int ffRadius,
-        int pRadius,
-        int aRadius,
-        int ticksPerUpdate,
-        int temporalHorizon,
-        int historyCapacity
+        std::array<int, 3> hiddenSize = std::array<int, 3>({ 4, 4, 16 }),
+        int ffRadius = 2,
+        int pRadius = 2,
+        int ticksPerUpdate = 2,
+        int temporalHorizon = 2
     )
     :
     hiddenSize(hiddenSize),
     ffRadius(ffRadius),
     pRadius(pRadius),
-    aRadius(aRadius),
     ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon),
-    historyCapacity(historyCapacity)
+    temporalHorizon(temporalHorizon)
     {}
 };
 
@@ -94,27 +86,29 @@ private:
     aon::Hierarchy h;
 
 public:
-    PyHierarchy(
+    PyHierarchy() {}
+
+    void initRandom(
         const std::vector<PyIODesc> &ioDescs,
         const std::vector<PyLayerDesc> &layerDescs
     );
 
-    PyHierarchy(
+    void initFromFile(
         const std::string &name
     );
 
-    PyHierarchy(
+    void initFromBuffer(
         const std::vector<unsigned char> &buffer
     );
 
-    void save(
+    void saveToFile(
         const std::string &name
     );
 
-    std::vector<unsigned char> save();
+    std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<int> > &inputCs,
+        const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled = true,
         float reward = 0.0f,
         bool mimic = false
@@ -124,13 +118,13 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<int> getPredictionCs(
+    std::vector<int> getPredictionCIs(
         int i
     ) const {
-        std::vector<int> predictions(h.getPredictionCs(i).size());
+        std::vector<int> predictions(h.getPredictionCIs(i).size());
 
         for (int j = 0; j < predictions.size(); j++)
-            predictions[j] = h.getPredictionCs(i)[j];
+            predictions[j] = h.getPredictionCIs(i)[j];
 
         return predictions;
     }
@@ -141,18 +135,18 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getHiddenCs(
+    std::vector<int> getHiddenCIs(
         int l
     ) {
-        std::vector<int> hiddenCs(h.getSCLayer(l).getHiddenCs().size());
+        std::vector<int> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
 
-        for (int j = 0; j < hiddenCs.size(); j++)
-            hiddenCs[j] = h.getSCLayer(l).getHiddenCs()[j];
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = h.getSCLayer(l).getHiddenCIs()[j];
 
-        return hiddenCs;
+        return hiddenCIs;
     }
 
-    PyInt3 getHiddenSize(
+    std::array<int, 3> getHiddenSize(
         int l
     ) {
         aon::Int3 size = h.getSCLayer(l).getHiddenSize();
@@ -182,7 +176,7 @@ public:
         return h.getInputSizes().size();
     }
 
-    PyInt3 getInputSize(
+    std::array<int, 3> getInputSize(
         int i
     ) const {
         aon::Int3 size = h.getInputSizes()[i];
@@ -191,9 +185,9 @@ public:
     }
 
     bool aLayerExists(
-        int v
-    ) {
-        return h.getALayers()[v] != nullptr;
+        int i
+    ) const {
+        return h.getALayers()[i] != nullptr;
     }
 
     void setSCAlpha(
@@ -211,17 +205,19 @@ public:
 
     void setPAlpha(
         int l,
-        int v,
+        int i,
+        int t,
         float alpha
     ) {
-        h.getPLayers(l)[v].alpha = alpha;
+        h.getPLayers(l)[i][t].alpha = alpha;
     }
 
     float getPAlpha(
         int l,
-        int v
+        int i,
+        int t
     ) const {
-        return h.getPLayers(l)[v].alpha;
+        return h.getPLayers(l)[i][t].alpha;
     }
 
     void setAAlpha(
@@ -307,6 +303,33 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->historyIters;
+    }
+
+    // Retrieve additional parameters on the SPH's structure
+    int getFFRadius(
+        int l
+    ) const {
+        return h.getSCLayer(l).getVisibleLayerDesc(0).radius;
+    }
+
+    int getPRadius(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getPLayers(l)[i][t].getVisibleLayerDesc(0).radius;
+    }
+
+    int getARadius(
+        int i
+    ) const {
+        return h.getALayers()[i]->getVisibleLayerDesc(0).radius;
+    }
+
+    int getAHistoryCapacity(
+        int i
+    ) const {
+        return h.getALayers()[i]->getHistoryCapacity();
     }
 };
 } // namespace pyaon

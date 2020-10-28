@@ -38,10 +38,7 @@ pyaon.setNumThreads(4)
 lds = []
 
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc()
-
-    # Set the hidden (encoder) layer size: width x height x columnSize
-    ld.hiddenSize = pyaon.Int3(4, 4, 16)
+    ld = pyaon.LayerDesc(hiddenSize=( 4, 4, 16 ))
 
     ld.ffRadius = 4 # Sparse coder radius onto visible layers
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
@@ -53,7 +50,8 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = pyaon.Hierarchy([ pyaon.Int3(1, numObs, obsColumnSize), pyaon.Int3(1, 1, numActions) ], [ pyaon.inputTypeNone, pyaon.inputTypeAction ], lds)
+h = pyaon.Hierarchy()
+h.initRandom([ pyaon.IODesc((1, numObs, obsColumnSize), pyaon.typeNone), pyaon.IODesc((1, 1, numActions), pyaon.typeAction) ], lds)
 
 reward = 0.0
 
@@ -65,10 +63,10 @@ for episode in range(1000):
         # Bin the 4 observations. Since we don't know the limits of the observation, we just squash it
         binnedObs = (sigmoid(obs * obsSquashScale) * (obsColumnSize - 1) + 0.5).astype(np.int).ravel().tolist()
 
-        h.step([ binnedObs, h.getPredictionCs(1) ], True, reward)
+        h.step([ binnedObs, h.getPredictionCIs(1) ], True, reward)
 
         # Retrieve the action, the hierarchy already automatically applied exploration
-        action = h.getPredictionCs(1)[0] # First and only column
+        action = h.getPredictionCIs(1)[0] # First and only column
 
         obs, reward, done, info = env.step(action)
 

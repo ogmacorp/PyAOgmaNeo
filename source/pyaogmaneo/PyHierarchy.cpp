@@ -10,31 +10,39 @@
 
 using namespace pyaon;
 
-PyHierarchy::PyHierarchy(
+void PyHierarchy::initRandom(
     const std::vector<PyIODesc> &ioDescs,
     const std::vector<PyLayerDesc> &layerDescs
 ) {
     aon::Array<aon::Hierarchy::IODesc> cIODescs(ioDescs.size());
 
-    for (int i = 0; i < ioDescs.size(); i++)
-        cIODescs[i] = aon::Hierarchy::IODesc(aon::Int3(ioDescs[i].size.x, ioDescs[i].size.y, ioDescs[i].size.z), static_cast<aon::IOType>(ioDescs[i].type));
-
+    for (int i = 0; i < ioDescs.size(); i++) {
+        cIODescs[i] = aon::Hierarchy::IODesc(
+            aon::Int3(ioDescs[i].size[0], ioDescs[i].size[1], ioDescs[i].size[2]),
+            static_cast<aon::IOType>(ioDescs[i].type),
+            ioDescs[i].ffRadius,
+            ioDescs[i].pRadius,
+            ioDescs[i].aRadius,
+            ioDescs[i].historyCapacity
+        );
+    }
+    
     aon::Array<aon::Hierarchy::LayerDesc> cLayerDescs(layerDescs.size());
 
     for (int l = 0; l < layerDescs.size(); l++) {
-        cLayerDescs[l].hiddenSize = aon::Int3(layerDescs[l].hiddenSize.x, layerDescs[l].hiddenSize.y, layerDescs[l].hiddenSize.z);
-        cLayerDescs[l].ffRadius = layerDescs[l].ffRadius;
-        cLayerDescs[l].pRadius = layerDescs[l].pRadius;
-        cLayerDescs[l].aRadius = layerDescs[l].aRadius;
-        cLayerDescs[l].temporalHorizon = layerDescs[l].temporalHorizon;
-        cLayerDescs[l].ticksPerUpdate = layerDescs[l].ticksPerUpdate;
-        cLayerDescs[l].historyCapacity = layerDescs[l].historyCapacity;
+        cLayerDescs[l] = aon::Hierarchy::LayerDesc(
+            aon::Int3(layerDescs[l].hiddenSize[0], layerDescs[l].hiddenSize[1], layerDescs[l].hiddenSize[2]),
+            layerDescs[l].ffRadius,
+            layerDescs[l].pRadius,
+            layerDescs[l].ticksPerUpdate,
+            layerDescs[l].temporalHorizon
+        );
     }
 
     h.initRandom(cIODescs, cLayerDescs);
 }
 
-PyHierarchy::PyHierarchy(
+void PyHierarchy::initFromFile(
     const std::string &name
 ) {
     PyStreamReader reader;
@@ -43,7 +51,7 @@ PyHierarchy::PyHierarchy(
     h.read(reader);
 }
 
-PyHierarchy::PyHierarchy(
+void PyHierarchy::initFromBuffer(
     const std::vector<unsigned char> &buffer
 ) {
     PyBufferReader reader;
@@ -52,7 +60,7 @@ PyHierarchy::PyHierarchy(
     h.read(reader);
 }
 
-void PyHierarchy::save(
+void PyHierarchy::saveToFile(
     const std::string &name
 ) {
     PyStreamWriter writer;
@@ -61,7 +69,7 @@ void PyHierarchy::save(
     h.write(writer);
 }
 
-std::vector<unsigned char> PyHierarchy::save() {
+std::vector<unsigned char> PyHierarchy::serializeToBuffer() {
     PyBufferWriter writer;
 
     h.write(writer);
@@ -70,26 +78,26 @@ std::vector<unsigned char> PyHierarchy::save() {
 }
 
 void PyHierarchy::step(
-    const std::vector<std::vector<int> > &inputCs,
+    const std::vector<std::vector<int> > &inputCIs,
     bool learnEnabled,
     float reward,
     bool mimic
 ) {
-    assert(inputCs.size() == h.getInputSizes().size());
+    assert(inputCIs.size() == h.getInputSizes().size());
 
-    aon::Array<aon::IntBuffer> cInputCsBacking(inputCs.size());
-    aon::Array<const aon::IntBuffer*> cInputCs(inputCs.size());
+    aon::Array<aon::IntBuffer> cInputCIsBacking(inputCIs.size());
+    aon::Array<const aon::IntBuffer*> cInputCIs(inputCIs.size());
 
-    for (int i = 0; i < inputCs.size(); i++) {
-        assert(inputCs[i].size() == h.getInputSizes()[i].x * h.getInputSizes()[i].y);
+    for (int i = 0; i < inputCIs.size(); i++) {
+        assert(inputCIs[i].size() == h.getInputSizes()[i].x * h.getInputSizes()[i].y);
 
-        cInputCsBacking[i].resize(inputCs[i].size());
+        cInputCIsBacking[i].resize(inputCIs[i].size());
 
-        for (int j = 0; j < inputCs[i].size(); j++)
-            cInputCsBacking[i][j] = inputCs[i][j];
+        for (int j = 0; j < inputCIs[i].size(); j++)
+            cInputCIsBacking[i][j] = inputCIs[i][j];
 
-        cInputCs[i] = &cInputCsBacking[i];
+        cInputCIs[i] = &cInputCIsBacking[i];
     }
     
-    h.step(cInputCs, learnEnabled, reward, mimic);
+    h.step(cInputCIs, learnEnabled, reward, mimic);
 }

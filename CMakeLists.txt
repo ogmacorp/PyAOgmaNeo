@@ -99,6 +99,7 @@ endif()
 
 #set_source_files_properties(pyaogmaneo.i PROPERTIES SWIG_MODULE_NAME pyaogmaneo)
 set_source_files_properties(pyaogmaneo.i PROPERTIES CPLUSPLUS ON)
+set_property(SOURCE pyaogmaneo.i PROPERTY SWIG_FLAGS "-py3" "-keyword")
 
 swig_add_library(pyaogmaneo LANGUAGE python SOURCES pyaogmaneo.i)
 
