@@ -9,10 +9,13 @@
 #pragma once
 
 #include <aogmaneo/Helpers.h>
+#include <array>
 #include <vector>
 #include <fstream>
 
 namespace pyaon {
+typedef std::array<int, 3> Arr3i;
+
 class PyStreamReader : public aon::StreamReader {
 public:
     std::ifstream ins;

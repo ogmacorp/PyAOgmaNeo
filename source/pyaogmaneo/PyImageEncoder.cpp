@@ -11,7 +11,7 @@
 using namespace pyaon;
 
 void PyImageEncoder::initRandom(
-    std::array<int, 3> hiddenSize,
+    Arr3i hiddenSize,
     const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
 ) {
     aon::Array<aon::ImageEncoder::VisibleLayerDesc> cVisibleLayerDescs(visibleLayerDescs.size());

@@ -10,9 +10,6 @@
 
 #include "PyHelpers.h"
 #include <aogmaneo/Hierarchy.h>
-#include <vector>
-#include <array>
-#include <fstream>
 
 namespace pyaon {
 const int typePrediction = 0;
@@ -27,7 +24,7 @@ inline int getNumThreads() {
 }
 
 struct PyIODesc {
-    std::array<int, 3> size;
+    Arr3i size;
 
     int type;
 
@@ -38,7 +35,7 @@ struct PyIODesc {
     int historyCapacity;
 
     PyIODesc(
-        std::array<int, 3> size = std::array<int, 3>({ 4, 4, 16 }),
+        Arr3i size = Arr3i({ 4, 4, 16 }),
         int type = typePrediction,
         int ffRadius  = 2,
         int pRadius = 2,
@@ -56,7 +53,7 @@ struct PyIODesc {
 };
 
 struct PyLayerDesc {
-    std::array<int, 3> hiddenSize;
+    Arr3i hiddenSize;
 
     int ffRadius;
     int pRadius;
@@ -65,7 +62,7 @@ struct PyLayerDesc {
     int temporalHorizon;
 
     PyLayerDesc(
-        std::array<int, 3> hiddenSize = std::array<int, 3>({ 4, 4, 16 }),
+        Arr3i hiddenSize = Arr3i({ 4, 4, 16 }),
         int ffRadius = 2,
         int pRadius = 2,
         int ticksPerUpdate = 2,
@@ -145,7 +142,7 @@ public:
         return hiddenCIs;
     }
 
-    std::array<int, 3> getHiddenSize(
+    Arr3i getHiddenSize(
         int l
     ) {
         aon::Int3 size = h.getSCLayer(l).getHiddenSize();
@@ -175,7 +172,7 @@ public:
         return h.getInputSizes().size();
     }
 
-    std::array<int, 3> getInputSize(
+    Arr3i getInputSize(
         int i
     ) const {
         aon::Int3 size = h.getInputSizes()[i];
