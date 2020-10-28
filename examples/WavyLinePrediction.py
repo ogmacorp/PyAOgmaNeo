@@ -26,18 +26,6 @@ lds = []
 
 for i in range(7): # Layers with exponential memory
     ld = pyaon.LayerDesc()
-<<<<<<< HEAD
-
-    # Set the hidden (encoder) layer size: width x height x columnSize
-    ld.hiddenSize = pyaon.Int3(4, 4, 16)
-
-    ld.ffRadius = 4 # Sparse coder radius onto visible layers
-    ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
-
-    ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
-    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
-=======
->>>>>>> master
     
     lds.append(ld)
 

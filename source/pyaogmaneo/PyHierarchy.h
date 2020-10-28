@@ -15,9 +15,8 @@
 #include <fstream>
 
 namespace pyaon {
-const int typeNone = 0;
-const int typePrediction = 1;
-const int typeAction = 2;
+const int typePrediction = 0;
+const int typeAction = 1;
 
 inline void setNumThreads(int numThreads) {
     aon::setNumThreads(numThreads);
@@ -40,7 +39,7 @@ struct PyIODesc {
 
     PyIODesc(
         std::array<int, 3> size = std::array<int, 3>({ 4, 4, 16 }),
-        int type = typeNone,
+        int type = typePrediction,
         int ffRadius  = 2,
         int pRadius = 2,
         int aRadius = 2,
