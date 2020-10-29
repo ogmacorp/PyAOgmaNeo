@@ -16,27 +16,20 @@ Welcome to the [Ogma](https://ogmacorp.com) PyAOgmaNeo library, which contains P
 
 ## Requirements
 
-An install of [AOgmaNeo](https://github.com/ogmacorp/AOgmaNeo) is required before installing the bindings. Make sure to build with `-DBUILD_SHARED_LIBS=On`.
-
-Additionally this binding requires an installation of [SWIG](http://www.swig.org/) v3+
-
-#### [SWIG](http://www.swig.org/)
-
-- Linux requires SWIG installed via, for example ```sudo apt-get install swig3.0``` command (or via ```yum```).
-- Windows requires installation of SWIG (v3). With the SourceForge Zip expanded, and the PATH environment variable updating to include the SWIG installation binary directory (for example `C:\Program Files (x86)\swigwin-3.0.8`).
+- OpenMP (this will likely already be installed on your system)
+- pybind11
+- cmake
 
 ## Installation
 
-The following example can be used to build the Python package:
+In this directory:
 
-> python3 setup.py install --user  
+> pip install .
 
-or create a wheel file for installation via pip:
+This will download the AOgmaNeo library these bindings depend on automatically, and compile them.
 
-> python3 setup.py bdist_wheel  
-> pip3 install dist/*.whl --user
-
-Installation may fail if an old build directory still exists from a previous build. Make sure to remove such directories before rebuilding.
+Note that the branch of AOgmaNeo that will be used for building is based on the current branch of this repository (PyAOgmaNeo).
+The build system will automatically download the AOgmaNeo branch of the same name as that currently checked out in this repository.
 
 ## Importing and Setup
 
@@ -46,7 +39,8 @@ The PyAOgmaNeo module can be imported using:
 import pyaogmaneo
 ```
 
-Refer to the `WavyLinePrediction.py` example for further details.
+Refer to [the examples](./examples) for usage.
+An API reference is available in the [docs directory](./docs). It can be built for easier viewing using [Sphinx](https://www.sphinx-doc.org/en/master/) (e.g. run `make html` in the docs directory).
 
 ## Contributions
 
