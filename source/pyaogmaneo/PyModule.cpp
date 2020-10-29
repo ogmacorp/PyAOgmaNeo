@@ -6,10 +6,11 @@
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 // ----------------------------------------------------------------------------
 
-#include "PyHierarchy.h"
-#include "PyImageEncoder.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+
+#include "PyHierarchy.h"
+#include "PyImageEncoder.h"
 
 namespace py = pybind11;
 

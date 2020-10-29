@@ -8,7 +8,7 @@
 
 cmake_minimum_required(VERSION 3.13)
 
-project(PyAOgmaNeo)
+project(pyaogmaneo)
 
 include(FetchContent)
 
@@ -36,16 +36,6 @@ execute_process(
 
 
 ############################################################################
-# Add the OpenMP library
-
-find_package(OpenMP REQUIRED)
- 
-include_directories(${OpenMP_CXX_INCLUDE_DIRS})
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}") # This links -fopenmp
-
-
-############################################################################
 # Add the AOgmaNeo library
 
 FetchContent_Declare(
@@ -63,17 +53,22 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(AOgmaNeo)
 
 ############################################################################
-# Add the PyAOgmaNeolibrary
+# Add the pyaogmaneo
 
 set(PYAOGMANEO_INCLUDE_DIR "source/pyaogmaneo;")
 
 include_directories(${PYAOGMANEO_INCLUDE_DIR})
 
-file(GLOB_RECURSE PYAOGMANEO_SRC
-    "source/pyaogmaneo/*.cpp"
+set(PYAOGMANEO_SRC
+    "source/pyaogmaneo/PyModule.cpp"
+    "source/pyaogmaneo/PyHelpers.cpp"
+    "source/pyaogmaneo/PyHierarchy.cpp"
+    "source/pyaogmaneo/PyImageEncoder.cpp"
 )
 
-add_subdirectory(extern/pybind11)
-pybind11_add_module(PyAOgmaNeo ${PYAOGMANEO_SRC})
+find_package(Python COMPONENTS Interpreter Development)
+find_package(pybind11 CONFIG)
 
-target_link_libraries(PyAOgmaNeo PUBLIC ${OpenMP_CXX_LIBRARIES} AOgmaNeo)
+pybind11_add_module(pyaogmaneo ${PYAOGMANEO_SRC})
+
+target_link_libraries(pyaogmaneo PUBLIC AOgmaNeo)
