@@ -127,38 +127,3 @@ public:
     }
 };
 } // namespace pyaon
-
-// Binding
-void mod_init_imageencoder(py::module &m) {
-    py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
-        .def(py::init<
-                std::tuple<int, int, int>,
-                int
-            >(),
-            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("radius") = 4
-        )
-        .def_readwrite("size", &pyaon::ImageEncoderVisibleLayerDesc::size)
-        .def_readwrite("radius", &pyaon::ImageEncoderVisibleLayerDesc::radius);
-        
-
-    py::class_<pyaon::ImageEncoder>(m, "ImageEncoder")
-        .def("initRandom", &pyaon::ImageEncoder::initRandom)
-        .def("initFromFile", &pyaon::ImageEncoder::initFromFile)
-        .def("saveToFile", &pyaon::ImageEncoder::saveToFile)
-        .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
-        .def("step", &pyaon::ImageEncoder::step,
-            py::arg("inputs"),
-            py::arg("learnEnabled") = true
-        )
-        .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
-        .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
-        .def("getReconstruction", &pyaon::ImageEncoder::getReconstruction)
-        .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
-        .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
-        .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
-        .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
-        .def("getAlpha", &pyaon::ImageEncoder::getAlpha)
-        .def("setGamma", &pyaon::ImageEncoder::setGamma)
-        .def("getGamma", &pyaon::ImageEncoder::getGamma);
-}

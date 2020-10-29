@@ -17,8 +17,6 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake/")
-
 if(NOT CMAKE_BUILD_TYPE)
     message("CMAKE_BUILD_TYPE not set, setting it to Release")
     set(CMAKE_BUILD_TYPE Release)
@@ -78,4 +76,4 @@ file(GLOB_RECURSE PYAOGMANEO_SRC
 add_subdirectory(extern/pybind11)
 pybind11_add_module(PyAOgmaNeo ${PYAOGMANEO_SRC})
 
-target_link_libraries(PyAOgmaNeo PRIVATE ${OpenMP_CXX_LIBRARIES} AOgmaNeo)
+target_link_libraries(PyAOgmaNeo PUBLIC ${OpenMP_CXX_LIBRARIES} AOgmaNeo)
