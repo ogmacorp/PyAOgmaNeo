@@ -24,28 +24,10 @@ endif()
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-############################################################################
-# Find current git branch, used to match branch name in AOgmaNeo
-
-execute_process(
-    COMMAND git rev-parse --abbrev-ref HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_BRANCH
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-
-############################################################################
-# Add the AOgmaNeo library
-
-if(${GIT_BRANCH} STREQUAL "")
-    set(GIT_BRANCH "master")
-endif()
-
 FetchContent_Declare(
     AOgmaNeo
     GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-    GIT_TAG origin/${GIT_BRANCH}
+    GIT_TAG origin/master
 )
 
 #FetchContent_GetProperties(AOgmaNeo)
