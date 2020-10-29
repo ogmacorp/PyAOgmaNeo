@@ -10,7 +10,14 @@ from distutils.version import LooseVersion
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
-        Extension.__init__(self, name, sources=[])
+        Extension.__init__(self, name, sources=[
+            "source/pyaogmaneo/PyHelpers.h",
+            "source/pyaogmaneo/PyHelpers.cpp",
+            "source/pyaogmaneo/PyHierarchy.h",
+            "source/pyaogmaneo/PyHierarchy.cpp",
+            "source/pyaogmaneo/PyImageEncoder.h",
+            "source/pyaogmaneo/PyImageEncoder.cpp",
+            ])
         self.sourcedir = os.path.abspath(sourcedir)
 
 class CMakeBuild(build_ext):
@@ -60,7 +67,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="pyaogmaneo",
-    version="1.0.10",
+    version="1.0.11",
     description="Python bindings for the AOgmaNeo library",
     long_description='https://github.com/ogmacorp/PyAOgmaNeo',
     author='Ogma Intelligent Systems Corp',
