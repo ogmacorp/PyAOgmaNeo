@@ -36,14 +36,12 @@ FetchContent_Declare(
     GIT_TAG origin/master 
 )
 
-#FetchContent_GetProperties(AOgmaNeo)
+FetchContent_GetProperties(AOgmaNeo)
 
-#if(NOT AOgmaNeo_POPULATED)
-#    FetchContent_Populate(AOgmaNeo)
-#endif()
-
-FetchContent_MakeAvailable(AOgmaNeo)
-FetchContent_MakeAvailable(pybind11)
+if(NOT AOgmaNeo_POPULATED)
+    FetchContent_Populate(AOgmaNeo)
+    add_subdirectory(${aogmaneo_SOURCE_DIR} ${aogmaneo_BINARY_DIR})
+endif()
 
 FetchContent_GetProperties(pybind11)
 
@@ -51,6 +49,8 @@ if(NOT pybind11_POPULATED)
     FetchContent_Populate(pybind11)
     add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
 endif()
+
+include_directories(${AOgmaNeo_SOURCE_DIR}/source)
 
 ############################################################################
 # Add the pyaogmaneo

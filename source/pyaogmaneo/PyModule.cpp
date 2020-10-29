@@ -89,6 +89,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumSCVisibleLayers", &pyaon::Hierarchy::getNumSCVisibleLayers)
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
+        .def("pLayerExists", &pyaon::Hierarchy::pLayerExists)
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
         .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)

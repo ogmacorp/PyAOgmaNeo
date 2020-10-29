@@ -175,6 +175,13 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    bool pLayerExists(
+        int l,
+        int v
+    ) const {
+        return h.getPLayers(l)[v] != nullptr;
+    }
+
     bool aLayerExists(
         int i
     ) const {
@@ -196,19 +203,21 @@ public:
 
     void setPAlpha(
         int l,
-        int i,
-        int t,
+        int v,
         float alpha
     ) {
-        h.getPLayers(l)[i][t].alpha = alpha;
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        h.getPLayers(l)[v]->alpha = alpha;
     }
 
     float getPAlpha(
         int l,
-        int i,
-        int t
+        int v
     ) const {
-        return h.getPLayers(l)[i][t].alpha;
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        return h.getPLayers(l)[v]->alpha;
     }
 
     void setAAlpha(
@@ -305,22 +314,21 @@ public:
 
     int getPRadius(
         int l,
-        int i,
-        int t
+        int v
     ) const {
-        return h.getPLayers(l)[i][t].getVisibleLayerDesc(0).radius;
+        return h.getPLayers(l)[v]->getVisibleLayerDesc(0).radius;
     }
 
     int getARadius(
-        int i
+        int v
     ) const {
-        return h.getALayers()[i]->getVisibleLayerDesc(0).radius;
+        return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
     }
 
     int getAHistoryCapacity(
-        int i
+        int v
     ) const {
-        return h.getALayers()[i]->getHistoryCapacity();
+        return h.getALayers()[v]->getHistoryCapacity();
     }
 };
 } // namespace pyaon
