@@ -1,188 +1,66 @@
-# ----------------------------------------------------------------------------
-#  PyAOgmaNeo
-#  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
-#
-#  This copy of OgmaNeo is licensed to you under the terms described
-#  in the PYAOGMANEO_LICENSE.md file included in this distribution.
-# ----------------------------------------------------------------------------
-
-# -*- coding: utf-8 -*-
+import os
+import re
+import sys
+import platform
+import subprocess
 
 from setuptools import setup, Extension
-from distutils.command.build import build
-from distutils.command.build_ext import build_ext
-from distutils.command.install import install
-from distutils import sysconfig
+from setuptools.command.build_ext import build_ext
+from distutils.version import LooseVersion
 
-import shutil
-import shlex
-import subprocess
-import os, sys
-import os.path
-from os import chdir, getcwd
-from os.path import abspath, dirname, split
+class CMakeExtension(Extension):
+    def __init__(self, name, sourcedir=''):
+        Extension.__init__(self, name, sources=[])
+        self.sourcedir = os.path.abspath(sourcedir)
 
-# Check if we're running 64-bit Python
-is64bit = sys.maxsize > 2**32
-
-# Check if this is a debug build of Python.
-if hasattr(sys, 'gettotalrefcount'):
-    build_type = 'Debug'
-else:
-    build_type = 'Release'
-
-
-# Subclass the distutils install command
-class install_subclass(install):
-    description = "Building the PyAOgmaNeo C++ library, generating SWiG bindings, and installing PyAOgmaNeo"
-
+class CMakeBuild(build_ext):
     def run(self):
-        # Run build_ext first, so that it can generate
-        # the OgmaNeo library and SwiG the .i file
-        self.run_command("build_ext")
+        try:
+            out = subprocess.check_output(['cmake', '--version'])
+        except OSError:
+            raise RuntimeError("CMake must be installed to build the following extensions: " +
+                               ", ".join(e.name for e in self.extensions))
 
-        # Return through the usual super().run
-        return install.run(self)
+        if platform.system() == "Windows":
+            cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
+            if cmake_version < '3.1.0':
+                raise RuntimeError("CMake >= 3.1.0 is required on Windows")
 
+        for ext in self.extensions:
+            self.build_extension(ext)
 
-# Subclass the disutils build command, to reorder sub_commands
-# (build_ext *before* build_py)
-class build_subclass(build):
-    sub_commands = [('build_ext',     build.has_ext_modules),
-                    ('build_py',      build.has_pure_modules),
-                    ('build_clib',    build.has_c_libraries),
-                    ('build_scripts', build.has_scripts),
-                   ]
+    def build_extension(self, ext):
+        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+        # required for auto-detection of auxiliary "native" libs
+        if not extdir.endswith(os.path.sep):
+            extdir += os.path.sep
 
+        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
+                      '-DPYTHON_EXECUTABLE=' + sys.executable]
 
-# Subclass the distutils build_ext command
-class build_ext_subclass(build_ext):
-    description = "Building the C-extension for PyAOgmaNeo with CMake"
-    user_options = [('extra-cmake-args=', None, 'extra arguments for CMake')]
+        cfg = 'Debug' if self.debug else 'Release'
+        build_args = ['--config', cfg]
 
-    def initialize_options(self):
-        build_ext.initialize_options(self)
-        self.extra_cmake_args = ''
-
-    def get_ext_path(self, name):
-        build_py = self.get_finalized_command('build_py')
-        package_dir = build_py.get_package_dir('pyaogmaneo')
-        suffix = sysconfig.get_config_var('EXT_SUFFIX')
-        if suffix is None:
-            suffix = sysconfig.get_config_var('SO')
-        suffix = "." + suffix.rsplit(".", 1)[-1]
-        filename = "../" + name + suffix
-        return os.path.abspath(os.path.join(package_dir, filename))
-
-    def get_ext_name(self, name):
-        suffix = sysconfig.get_config_var('EXT_SUFFIX')
-        if suffix is None:
-            suffix = sysconfig.get_config_var('SO')
-        suffix = "." + suffix.rsplit(".", 1)[-1]
-        return name + suffix
-
-    def get_py_path(self, name):
-        build_py = self.get_finalized_command('build_py')
-        package_dir = build_py.get_package_dir('pyaogmaneo')
-        filename = "../" + name + ".py"
-        return os.path.abspath(os.path.join(package_dir, filename))
-
-    def get_py_name(self, name):
-        return name + ".py"
-
-    def build_extensions(self):
-        global build_type
-
-        # The directory containing this setup.py
-        source = dirname(abspath(__file__))
-
-        # The staging directory for the library being built
-        build_temp = os.path.join(os.getcwd(), self.build_temp)
-        build_lib = os.path.join(os.getcwd(), self.build_lib)
-
-        # Change to the build directory
-        saved_cwd = getcwd()
-        if not os.path.isdir(build_temp):
-            self.mkpath(build_temp)
-        chdir(build_temp)
-
-        extra_cmake_args = shlex.split(self.extra_cmake_args)
-        cmake_command = ['cmake'] + extra_cmake_args
-
-        if "-G" not in self.extra_cmake_args:
-            cmake_generator = 'Unix Makefiles'
-
-            if sys.platform == 'darwin':
-                cmake_generator = 'Xcode'
-
-            elif sys.platform == 'win32':
-                if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_info.minor <= 2):
-                    cmake_generator = 'MinGW Makefiles'
-                else:
-                    if sys.version_info.major == 3 and (sys.version_info.minor == 3 or sys.version_info.minor == 4):
-                        cmake_generator = 'Visual Studio 10 2010'
-                    else:
-                        cmake_generator = 'Visual Studio 14 2015'
-                    if is64bit:
-                        cmake_generator += ' Win64'
-
-            cmake_command += ['-G', cmake_generator]
-            cmake_command += ['-DPYTHON_VERSION='+str(sys.version_info.major)]
-
-        cmake_command.append(source)
-        subprocess.call(cmake_command)
-
-        if sys.platform == 'win32' or sys.platform == 'darwin':
-            self.spawn(['cmake', '--build', '.', '--target', 'install', '--config', build_type])
+        if platform.system() == "Windows":
+            cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
+            if sys.maxsize > 2**32:
+                cmake_args += ['-A', 'x64']
+            build_args += ['--', '/m']
         else:
-            self.spawn(['cmake', '--build', '.', '--config', build_type])
+            cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
+            build_args += ['--', '-j2']
 
-        if not self.inplace:
-            # Move the library and neo.py bindings interface
-            # to the place expected by the Python build
-            self._found_names = []
-            built_ext = self.get_ext_name("_pyaogmaneo")
-            if os.path.exists(built_ext):
-                ext_path = os.path.join(build_lib, built_ext)
-                if os.path.exists(ext_path):
-                    os.remove(ext_path)
-                self.mkpath(os.path.dirname(ext_path))
-                print('Moving library', built_ext,
-                      'to build path', ext_path)
-                shutil.copy(built_ext, ext_path)
-                shutil.copy(ext_path, saved_cwd)
-                self._found_names.append("_pyaogmaneo")
-
-                built_py = self.get_py_name("pyaogmaneo")
-                py_path = os.path.join(build_lib, built_py)
-                print('Moving Py file', built_py,
-                      'to build path', py_path)
-                shutil.copy(built_py, py_path)
-                shutil.copy(py_path, saved_cwd)
-            else:
-                raise RuntimeError('C-extension failed to build:',
-                                   os.path.abspath(built_ext))
-
-        chdir(saved_cwd)
-
-    def get_names(self):
-        return self._found_names
-
-    def get_outputs(self):
-        # Just the C extensions
-        return [self.get_ext_path(name) for name in self.get_names()]
-
-
-# The list of cpp files here is optional, the CMakeLists.txt
-# script overrides this list of cpp source files.
-extension_mod = Extension(
-    name="_pyaogmaneo",
-    sources=["pyaogmaneo.i"]
-)
+        env = os.environ.copy()
+        env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),
+                                                              self.distribution.get_version())
+        if not os.path.exists(self.build_temp):
+            os.makedirs(self.build_temp)
+        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
 
 setup(
     name="pyaogmaneo",
-    version="1.0.2",
+    version="1.0.4",
     description="Python bindings for the AOgmaNeo library",
     long_description='https://github.com/ogmacorp/PyAOgmaNeo',
     author='Ogma Intelligent Systems Corp',
@@ -199,11 +77,8 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
-    py_modules=["pyaogmaneo"],
-    ext_modules=[extension_mod],
+    ext_modules=[CMakeExtension("pyaogmaneo")],
     cmdclass={
-        'build': build_subclass,
-        'build_ext': build_ext_subclass,
-        'install': install_subclass
+        'build_ext': CMakeBuild,
     },
 )

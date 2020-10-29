@@ -10,6 +10,8 @@ cmake_minimum_required(VERSION 3.13)
 
 project(PyAOgmaNeo)
 
+include(FetchContent)
+
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -24,9 +26,15 @@ endif()
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-if(PYTHON_VERSION)
-    message("Python target version: ${PYTHON_VERSION}")            
-endif()
+############################################################################
+# Find current git branch, used to match branch name in AOgmaNeo
+
+execute_process(
+    COMMAND git rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_BRANCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
 
 ############################################################################
@@ -40,71 +48,34 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}") # This links -fope
 
 
 ############################################################################
-# Add the OgmaNeo library
+# Add the AOgmaNeo library
 
-find_package(AOgmaNeo REQUIRED)
+FetchContent_Declare(
+    AOgmaNeo
+    GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
+    GIT_TAG origin/${GIT_BRANCH}
+)
 
-include_directories(${AOGMANEO_INCLUDE_DIR})
+#FetchContent_GetProperties(AOgmaNeo)
 
+#if(NOT AOgmaNeo_POPULATED)
+#    FetchContent_Populate(AOgmaNeo)
+#endif()
+
+FetchContent_MakeAvailable(AOgmaNeo)
 
 ############################################################################
-# Add the PyAOgmaNeoCpp library
+# Add the PyAOgmaNeolibrary
 
 set(PYAOGMANEO_INCLUDE_DIR "source/pyaogmaneo;")
 
 include_directories(${PYAOGMANEO_INCLUDE_DIR})
 
 file(GLOB_RECURSE PYAOGMANEO_SRC
-    "source/pyaogmaneo/*.h"
     "source/pyaogmaneo/*.cpp"
 )
 
-add_library(PyAOgmaNeoCpp ${PYAOGMANEO_SRC})
+add_subdirectory(extern/pybind11)
+pybind11_add_module(PyAOgmaNeo ${PYAOGMANEO_SRC})
 
-target_link_libraries(PyAOgmaNeoCpp ${OpenMP_CXX_LIBRARIES})
-target_link_libraries(PyAOgmaNeoCpp ${AOGMANEO_LIBRARIES})
-
-
-############################################################################
-# Find SWIG and setup building the Python bindings to PyAOgmaNeo library
-
-find_package(SWIG REQUIRED)
-include(${SWIG_USE_FILE})
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
-endif()
-
-
-############################################################################
-# Find Python package
-
-if(PYTHON_VERSION)
-    find_package(PythonLibs ${PYTHON_VERSION} EXACT REQUIRED)
-else()
-    find_package(PythonLibs REQUIRED)
-endif()
-
-include_directories(${PYTHON_INCLUDE_DIR})
-
-
-############################################################################
-# Setup SWIG bindings
-
-set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}")
-
-if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
-
-#set_source_files_properties(pyaogmaneo.i PROPERTIES SWIG_MODULE_NAME pyaogmaneo)
-set_source_files_properties(pyaogmaneo.i PROPERTIES CPLUSPLUS ON)
-set_property(SOURCE pyaogmaneo.i PROPERTY SWIG_FLAGS "-py3" "-keyword")
-
-swig_add_library(pyaogmaneo LANGUAGE python SOURCES pyaogmaneo.i)
-
-target_link_libraries(pyaogmaneo PyAOgmaNeoCpp ${PYTHON_LIBRARIES})
-
-set(CMAKE_INSTALL_PREFIX ${CMAKE_SWIG_OUTDIR})
-install(TARGETS pyaogmaneo DESTINATION ${CMAKE_SWIG_OUTDIR})
-install(FILES ${CMAKE_BINARY_DIR}/pyaogmaneo.py DESTINATION ${CMAKE_SWIG_OUTDIR})
+target_link_libraries(PyAOgmaNeo PRIVATE ${OpenMP_CXX_LIBRARIES} AOgmaNeo)

@@ -10,6 +10,10 @@
 
 #include "PyHelpers.h"
 #include <aogmaneo/Hierarchy.h>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+namespace py = pybind11;
 
 namespace pyaon {
 const int typePrediction = 0;
@@ -23,8 +27,8 @@ inline int getNumThreads() {
     return aon::getNumThreads();
 }
 
-struct PyIODesc {
-    Arr3i size;
+struct IODesc {
+    std::tuple<int, int, int> size;
 
     int type;
 
@@ -34,13 +38,13 @@ struct PyIODesc {
 
     int historyCapacity;
 
-    PyIODesc(
-        Arr3i size = Arr3i({ 4, 4, 16 }),
-        int type = typePrediction,
-        int ffRadius  = 2,
-        int pRadius = 2,
-        int aRadius = 2,
-        int historyCapacity = 32
+    IODesc(
+        const std::tuple<int, int, int> &size,
+        int type,
+        int ffRadius,
+        int pRadius,
+        int aRadius,
+        int historyCapacity
     )
     :
     size(size),
@@ -52,8 +56,8 @@ struct PyIODesc {
     {}
 };
 
-struct PyLayerDesc {
-    Arr3i hiddenSize;
+struct LayerDesc {
+    std::tuple<int, int, int> hiddenSize;
 
     int ffRadius;
     int pRadius;
@@ -61,12 +65,12 @@ struct PyLayerDesc {
     int ticksPerUpdate;
     int temporalHorizon;
 
-    PyLayerDesc(
-        Arr3i hiddenSize = Arr3i({ 4, 4, 16 }),
-        int ffRadius = 2,
-        int pRadius = 2,
-        int ticksPerUpdate = 2,
-        int temporalHorizon = 2
+    LayerDesc(
+        const std::tuple<int, int, int> &hiddenSize,
+        int ffRadius,
+        int pRadius,
+        int ticksPerUpdate,
+        int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
@@ -77,16 +81,16 @@ struct PyLayerDesc {
     {}
 };
 
-class PyHierarchy {
+class Hierarchy {
 private:
     aon::Hierarchy h;
 
 public:
-    PyHierarchy() {}
+    Hierarchy() {}
 
     void initRandom(
-        const std::vector<PyIODesc> &ioDescs,
-        const std::vector<PyLayerDesc> &layerDescs
+        const std::vector<IODesc> &ioDescs,
+        const std::vector<LayerDesc> &layerDescs
     );
 
     void initFromFile(
@@ -142,7 +146,7 @@ public:
         return hiddenCIs;
     }
 
-    Arr3i getHiddenSize(
+    std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
         aon::Int3 size = h.getSCLayer(l).getHiddenSize();
@@ -172,7 +176,7 @@ public:
         return h.getInputSizes().size();
     }
 
-    Arr3i getInputSize(
+    std::tuple<int, int, int> getInputSize(
         int i
     ) const {
         aon::Int3 size = h.getInputSizes()[i];
@@ -329,3 +333,88 @@ public:
     }
 };
 } // namespace pyaon
+
+// Binding
+void mod_init_hierarchy(py::module &m) {
+    py::class_<pyaon::IODesc>(m, "IODesc")
+        .def(py::init<
+                std::tuple<int, int, int>,
+                int,
+                int,
+                int,
+                int,
+                int
+            >(),
+            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("type") = 0,
+            py::arg("ffRadius") = 2,
+            py::arg("pRadius") = 2,
+            py::arg("aRadius") = 2,
+            py::arg("historyCapacity") = 32
+        )
+        .def_readwrite("size", &pyaon::IODesc::size)
+        .def_readwrite("type", &pyaon::IODesc::type)
+        .def_readwrite("ffRadius", &pyaon::IODesc::ffRadius)
+        .def_readwrite("pRadius", &pyaon::IODesc::pRadius)
+        .def_readwrite("aRadius", &pyaon::IODesc::aRadius)
+        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
+
+    py::class_<pyaon::LayerDesc>(m, "LayerDesc")
+        .def(py::init<
+                std::tuple<int, int, int>,
+                int,
+                int,
+                int,
+                int
+            >(),
+            py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("ffRadius") = 2,
+            py::arg("pRadius") = 2,
+            py::arg("ticksPerUpdate") = 2,
+            py::arg("temporalHorizon") = 2
+        )
+        .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
+        .def_readwrite("pRadius", &pyaon::LayerDesc::pRadius)
+        .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
+        .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
+
+    py::class_<pyaon::Hierarchy>(m, "Hierarchy")
+        .def("initRandom", &pyaon::Hierarchy::initRandom)
+        .def("initFromFile", &pyaon::Hierarchy::initFromFile)
+        .def("saveToFile", &pyaon::Hierarchy::saveToFile)
+        .def("serializeToBuffer", &pyaon::Hierarchy::serializeToBuffer)
+        .def("step", &pyaon::Hierarchy::step,
+            py::arg("inputCIs"),
+            py::arg("learnEnabled") = true,
+            py::arg("reward") = 0.0f,
+            py::arg("mimic") = false
+        )
+        .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
+        .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
+        .def("getUpdate", &pyaon::Hierarchy::getUpdate)
+        .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
+        .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
+        .def("getTicks", &pyaon::Hierarchy::getTicks)
+        .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
+        .def("getNumSCVisibleLayers", &pyaon::Hierarchy::getNumSCVisibleLayers)
+        .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
+        .def("getInputSize", &pyaon::Hierarchy::getInputSize)
+        .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
+        .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
+        .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
+        .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
+        .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
+        .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
+        .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
+        .def("setABeta", &pyaon::Hierarchy::setABeta)
+        .def("getABeta", &pyaon::Hierarchy::getABeta)
+        .def("setAGamma", &pyaon::Hierarchy::setAGamma)
+        .def("getAGamma", &pyaon::Hierarchy::getAGamma)
+        .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
+        .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
+        .def("getFFRadius", &pyaon::Hierarchy::getFFRadius)
+        .def("getPRadius", &pyaon::Hierarchy::getPRadius)
+        .def("getARadius", &pyaon::Hierarchy::getARadius)
+        .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
+}

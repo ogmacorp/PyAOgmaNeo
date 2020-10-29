@@ -11,15 +11,20 @@
 #include "PyHelpers.h"
 #include <aogmaneo/ImageEncoder.h>
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+namespace py = pybind11;
+
 namespace pyaon {
-struct PyImageEncoderVisibleLayerDesc {
-    Arr3i size;
+struct ImageEncoderVisibleLayerDesc {
+    std::tuple<int, int, int> size;
 
     int radius;
 
-    PyImageEncoderVisibleLayerDesc(
-        Arr3i size = Arr3i({ 32, 32, 3 }),
-        int radius = 4
+    ImageEncoderVisibleLayerDesc(
+        const std::tuple<int, int, int> &size,
+        int radius
     )
     : 
     size(size),
@@ -27,16 +32,16 @@ struct PyImageEncoderVisibleLayerDesc {
     {}
 };
 
-class PyImageEncoder {
+class ImageEncoder {
 private:
     aon::ImageEncoder enc;
 
 public:
-    PyImageEncoder() {}
+    ImageEncoder() {}
 
     void initRandom(
-        Arr3i hiddenSize,
-        const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
+        const std::tuple<int, int, int> &hiddenSize,
+        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
     );
 
     void initFromFile(
@@ -86,13 +91,13 @@ public:
         return hiddenCIs;
     }
 
-    Arr3i getHiddenSize() const {
+    std::tuple<int, int, int> getHiddenSize() const {
         aon::Int3 size = enc.getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
 
-    Arr3i getVisibleSize(
+    std::tuple<int, int, int> getVisibleSize(
         int i
     ) const {
         aon::Int3 size = enc.getVisibleLayerDesc(i).size;
@@ -122,3 +127,38 @@ public:
     }
 };
 } // namespace pyaon
+
+// Binding
+void mod_init_imageencoder(py::module &m) {
+    py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
+        .def(py::init<
+                std::tuple<int, int, int>,
+                int
+            >(),
+            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("radius") = 4
+        )
+        .def_readwrite("size", &pyaon::ImageEncoderVisibleLayerDesc::size)
+        .def_readwrite("radius", &pyaon::ImageEncoderVisibleLayerDesc::radius);
+        
+
+    py::class_<pyaon::ImageEncoder>(m, "ImageEncoder")
+        .def("initRandom", &pyaon::ImageEncoder::initRandom)
+        .def("initFromFile", &pyaon::ImageEncoder::initFromFile)
+        .def("saveToFile", &pyaon::ImageEncoder::saveToFile)
+        .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
+        .def("step", &pyaon::ImageEncoder::step,
+            py::arg("inputs"),
+            py::arg("learnEnabled") = true
+        )
+        .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
+        .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
+        .def("getReconstruction", &pyaon::ImageEncoder::getReconstruction)
+        .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
+        .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
+        .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
+        .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
+        .def("getAlpha", &pyaon::ImageEncoder::getAlpha)
+        .def("setGamma", &pyaon::ImageEncoder::setGamma)
+        .def("getGamma", &pyaon::ImageEncoder::getGamma);
+}

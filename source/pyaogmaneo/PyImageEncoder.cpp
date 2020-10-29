@@ -10,56 +10,56 @@
 
 using namespace pyaon;
 
-void PyImageEncoder::initRandom(
-    Arr3i hiddenSize,
-    const std::vector<PyImageEncoderVisibleLayerDesc> &visibleLayerDescs
+void ImageEncoder::initRandom(
+    const std::tuple<int, int, int> &hiddenSize,
+    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
 ) {
     aon::Array<aon::ImageEncoder::VisibleLayerDesc> cVisibleLayerDescs(visibleLayerDescs.size());
 
     for (int v = 0; v < visibleLayerDescs.size(); v++) {
-        cVisibleLayerDescs[v].size = aon::Int3(visibleLayerDescs[v].size[0], visibleLayerDescs[v].size[1], visibleLayerDescs[v].size[2]);
+        cVisibleLayerDescs[v].size = aon::Int3(std::get<0>(visibleLayerDescs[v].size), std::get<1>(visibleLayerDescs[v].size), std::get<2>(visibleLayerDescs[v].size));
         cVisibleLayerDescs[v].radius = visibleLayerDescs[v].radius;
     }
 
-    enc.initRandom(aon::Int3(hiddenSize[0], hiddenSize[1], hiddenSize[2]), cVisibleLayerDescs);
+    enc.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), cVisibleLayerDescs);
 }
 
-void PyImageEncoder::initFromFile(
+void ImageEncoder::initFromFile(
     const std::string &name
 ) {
-    PyStreamReader reader;
+    StreamReader reader;
     reader.ins.open(name, std::ios::binary);
 
     enc.read(reader);
 }
 
-void PyImageEncoder::initFromBuffer(
+void ImageEncoder::initFromBuffer(
     const std::vector<unsigned char> &buffer
 ) {
-    PyBufferReader reader;
+    BufferReader reader;
     reader.buffer = &buffer;
 
     enc.read(reader);
 }
 
-void PyImageEncoder::saveToFile(
+void ImageEncoder::saveToFile(
     const std::string &name
 ) {
-    PyStreamWriter writer;
+    StreamWriter writer;
     writer.outs.open(name, std::ios::binary);
 
     enc.write(writer);
 }
 
-std::vector<unsigned char> PyImageEncoder::serializeToBuffer() {
-    PyBufferWriter writer;
+std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
+    BufferWriter writer;
 
     enc.write(writer);
 
     return writer.buffer;
 }
 
-void PyImageEncoder::step(
+void ImageEncoder::step(
     const std::vector<std::vector<float> > &inputs,
     bool learnEnabled
 ) {
@@ -78,7 +78,7 @@ void PyImageEncoder::step(
     enc.step(cInputs, learnEnabled);
 }
 
-void PyImageEncoder::reconstruct(
+void ImageEncoder::reconstruct(
     const std::vector<int> &reconCIs
 ) {
     aon::IntBuffer cReconCIsBacking(reconCIs.size());

@@ -10,15 +10,15 @@
 
 using namespace pyaon;
 
-void PyHierarchy::initRandom(
-    const std::vector<PyIODesc> &ioDescs,
-    const std::vector<PyLayerDesc> &layerDescs
+void Hierarchy::initRandom(
+    const std::vector<IODesc> &ioDescs,
+    const std::vector<LayerDesc> &layerDescs
 ) {
     aon::Array<aon::Hierarchy::IODesc> cIODescs(ioDescs.size());
 
     for (int i = 0; i < ioDescs.size(); i++) {
         cIODescs[i] = aon::Hierarchy::IODesc(
-            aon::Int3(ioDescs[i].size[0], ioDescs[i].size[1], ioDescs[i].size[2]),
+            aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
             ioDescs[i].ffRadius,
             ioDescs[i].pRadius,
@@ -31,7 +31,7 @@ void PyHierarchy::initRandom(
 
     for (int l = 0; l < layerDescs.size(); l++) {
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
-            aon::Int3(layerDescs[l].hiddenSize[0], layerDescs[l].hiddenSize[1], layerDescs[l].hiddenSize[2]),
+            aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].ffRadius,
             layerDescs[l].pRadius,
             layerDescs[l].ticksPerUpdate,
@@ -42,42 +42,42 @@ void PyHierarchy::initRandom(
     h.initRandom(cIODescs, cLayerDescs);
 }
 
-void PyHierarchy::initFromFile(
+void Hierarchy::initFromFile(
     const std::string &name
 ) {
-    PyStreamReader reader;
+    StreamReader reader;
     reader.ins.open(name, std::ios::binary);
 
     h.read(reader);
 }
 
-void PyHierarchy::initFromBuffer(
+void Hierarchy::initFromBuffer(
     const std::vector<unsigned char> &buffer
 ) {
-    PyBufferReader reader;
+    BufferReader reader;
     reader.buffer = &buffer;
 
     h.read(reader);
 }
 
-void PyHierarchy::saveToFile(
+void Hierarchy::saveToFile(
     const std::string &name
 ) {
-    PyStreamWriter writer;
+    StreamWriter writer;
     writer.outs.open(name, std::ios::binary);
 
     h.write(writer);
 }
 
-std::vector<unsigned char> PyHierarchy::serializeToBuffer() {
-    PyBufferWriter writer;
+std::vector<unsigned char> Hierarchy::serializeToBuffer() {
+    BufferWriter writer;
 
     h.write(writer);
 
     return writer.buffer;
 }
 
-void PyHierarchy::step(
+void Hierarchy::step(
     const std::vector<std::vector<int> > &inputCIs,
     bool learnEnabled,
     float reward,

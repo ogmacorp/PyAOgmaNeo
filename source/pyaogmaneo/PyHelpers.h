@@ -9,14 +9,12 @@
 #pragma once
 
 #include <aogmaneo/Helpers.h>
-#include <array>
+#include <tuple>
 #include <vector>
 #include <fstream>
 
 namespace pyaon {
-typedef std::array<int, 3> Arr3i;
-
-class PyStreamReader : public aon::StreamReader {
+class StreamReader : public aon::StreamReader {
 public:
     std::ifstream ins;
 
@@ -26,7 +24,7 @@ public:
     ) override;
 };
 
-class PyStreamWriter : public aon::StreamWriter {
+class StreamWriter : public aon::StreamWriter {
 public:
     std::ofstream outs;
 
@@ -36,12 +34,12 @@ public:
     ) override;
 };
 
-class PyBufferReader : public aon::StreamReader {
+class BufferReader : public aon::StreamReader {
 public:
     int start;
     const std::vector<unsigned char>* buffer;
 
-    PyBufferReader()
+    BufferReader()
     :
     start(0),
     buffer(nullptr)
@@ -53,7 +51,7 @@ public:
     ) override;
 };
 
-class PyBufferWriter : public aon::StreamWriter {
+class BufferWriter : public aon::StreamWriter {
 public:
     std::vector<unsigned char> buffer;
 
