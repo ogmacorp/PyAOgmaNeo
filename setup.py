@@ -17,6 +17,7 @@ class CMakeExtension(Extension):
             "source/pyaogmaneo/PyHierarchy.cpp",
             "source/pyaogmaneo/PyImageEncoder.h",
             "source/pyaogmaneo/PyImageEncoder.cpp",
+            "source/pyaogmaneo/PyModule.cpp",
             ])
         self.sourcedir = os.path.abspath(sourcedir)
 
