@@ -13,8 +13,9 @@
 
 namespace pyaon {
 enum IOType {
-    prediction = 0,
-    action = 1
+    none = 0,
+    prediction = 1,
+    action = 2
 };
 
 struct IODesc {

@@ -19,6 +19,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("getNumThreads", &pyaon::getNumThreads);
 
     py::enum_<pyaon::IOType>(m, "IOType")
+        .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
         .value("action", pyaon::action)
         .export_values();
@@ -33,7 +34,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("type") = pyaon::prediction,
+            py::arg("type") = pyaon::none,
             py::arg("ffRadius") = 2,
             py::arg("pRadius") = 2,
             py::arg("aRadius") = 2,
