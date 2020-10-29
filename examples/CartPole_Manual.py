@@ -42,7 +42,6 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
 
     ld.ffRadius = 4 # Sparse coder radius onto visible layers
     ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
-    ld.aRadius = 4 # Actor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
     ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
@@ -51,7 +50,7 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((1, numObs, obsColumnSize), pyaon.typeNone), pyaon.IODesc((1, 1, numActions), pyaon.typeAction) ], lds)
+h.initRandom([ pyaon.IODesc((1, numObs, obsColumnSize), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
 
 reward = 0.0
 

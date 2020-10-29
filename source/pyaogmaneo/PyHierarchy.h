@@ -12,21 +12,15 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
-const int typePrediction = 0;
-const int typeAction = 1;
-
-inline void setNumThreads(int numThreads) {
-    aon::setNumThreads(numThreads);
-}
-
-inline int getNumThreads() {
-    return aon::getNumThreads();
-}
+enum IOType {
+    prediction = 0,
+    action = 1
+};
 
 struct IODesc {
     std::tuple<int, int, int> size;
 
-    int type;
+    IOType type;
 
     int ffRadius;
     int pRadius;
@@ -36,7 +30,7 @@ struct IODesc {
 
     IODesc(
         const std::tuple<int, int, int> &size,
-        int type,
+        IOType type,
         int ffRadius,
         int pRadius,
         int aRadius,

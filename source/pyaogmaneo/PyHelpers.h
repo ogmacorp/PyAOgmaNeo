@@ -14,6 +14,14 @@
 #include <fstream>
 
 namespace pyaon {
+inline void setNumThreads(int numThreads) {
+    aon::setNumThreads(numThreads);
+}
+
+inline int getNumThreads() {
+    return aon::getNumThreads();
+}
+
 class StreamReader : public aon::StreamReader {
 public:
     std::ifstream ins;

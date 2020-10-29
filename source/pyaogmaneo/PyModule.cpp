@@ -15,17 +15,25 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(pyaogmaneo, m) {
+    m.def("setNumThreads", &pyaon::setNumThreads);
+    m.def("getNumThreads", &pyaon::getNumThreads);
+
+    py::enum_<pyaon::IOType>(m, "IOType")
+        .value("prediction", pyaon::prediction)
+        .value("action", pyaon::action)
+        .export_values();
+
     py::class_<pyaon::IODesc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
-                int,
+                pyaon::IOType,
                 int,
                 int,
                 int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("type") = 0,
+            py::arg("type") = pyaon::prediction,
             py::arg("ffRadius") = 2,
             py::arg("pRadius") = 2,
             py::arg("aRadius") = 2,
@@ -59,6 +67,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
+        .def(py::init<>())
         .def("initRandom", &pyaon::Hierarchy::initRandom)
         .def("initFromFile", &pyaon::Hierarchy::initFromFile)
         .def("saveToFile", &pyaon::Hierarchy::saveToFile)
@@ -110,6 +119,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         
 
     py::class_<pyaon::ImageEncoder>(m, "ImageEncoder")
+        .def(py::init<>())
         .def("initRandom", &pyaon::ImageEncoder::initRandom)
         .def("initFromFile", &pyaon::ImageEncoder::initFromFile)
         .def("saveToFile", &pyaon::ImageEncoder::saveToFile)
