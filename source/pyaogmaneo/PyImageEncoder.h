@@ -11,11 +11,6 @@
 #include "PyHelpers.h"
 #include <aogmaneo/ImageEncoder.h>
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-
-namespace py = pybind11;
-
 namespace pyaon {
 struct ImageEncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;

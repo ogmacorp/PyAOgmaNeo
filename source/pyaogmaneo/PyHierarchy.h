@@ -10,10 +10,6 @@
 
 #include "PyHelpers.h"
 #include <aogmaneo/Hierarchy.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-
-namespace py = pybind11;
 
 namespace pyaon {
 const int typePrediction = 0;
