@@ -38,6 +38,10 @@ execute_process(
 ############################################################################
 # Add the AOgmaNeo library
 
+if(${GIT_BRANCH} STREQUAL "")
+    set(GIT_BRANCH "master")
+endif()
+
 FetchContent_Declare(
     AOgmaNeo
     GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
