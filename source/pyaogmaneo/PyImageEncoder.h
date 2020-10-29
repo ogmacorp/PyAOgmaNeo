@@ -55,7 +55,7 @@ public:
 
     void step(
         const std::vector<std::vector<float> > &inputs,
-        bool learnEnabled = true
+        bool learnEnabled
     );
 
     void reconstruct(

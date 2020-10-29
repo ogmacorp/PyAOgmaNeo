@@ -100,9 +100,9 @@ public:
 
     void step(
         const std::vector<std::vector<int> > &inputCIs,
-        bool learnEnabled = true,
-        float reward = 0.0f,
-        bool mimic = false
+        bool learnEnabled,
+        float reward,
+        bool mimic
     );
 
     int getNumLayers() const {
