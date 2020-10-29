@@ -30,6 +30,12 @@ FetchContent_Declare(
     GIT_TAG origin/master
 )
 
+FetchContent_Declare(
+    pybind11
+    GIT_REPOSITORY https://github.com/pybind/pybind11
+    GIT_TAG origin/master 
+)
+
 #FetchContent_GetProperties(AOgmaNeo)
 
 #if(NOT AOgmaNeo_POPULATED)
@@ -37,6 +43,7 @@ FetchContent_Declare(
 #endif()
 
 FetchContent_MakeAvailable(AOgmaNeo)
+FetchContent_MakeAvailable(pybind11)
 
 ############################################################################
 # Add the pyaogmaneo
