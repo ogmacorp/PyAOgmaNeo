@@ -60,7 +60,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="pyaogmaneo",
-    version="1.0.4",
+    version="1.0.6",
     description="Python bindings for the AOgmaNeo library",
     long_description='https://github.com/ogmacorp/PyAOgmaNeo',
     author='Ogma Intelligent Systems Corp',
@@ -82,4 +82,5 @@ setup(
         'build_ext': CMakeBuild,
     },
     zip_safe=False,
+    include_package_data=True,
 )
