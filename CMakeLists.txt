@@ -27,7 +27,7 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 FetchContent_Declare(
     AOgmaNeo
     GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-    GIT_TAG origin/master
+    GIT_TAG origin/master_error
 )
 
 FetchContent_Declare(

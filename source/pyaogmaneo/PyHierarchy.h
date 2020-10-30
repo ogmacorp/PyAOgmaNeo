@@ -13,9 +13,8 @@
 
 namespace pyaon {
 enum IOType {
-    none = 0,
-    prediction = 1,
-    action = 2
+    prediction = 0,
+    action = 1
 };
 
 struct IODesc {
@@ -175,13 +174,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    bool pLayerExists(
-        int l,
-        int v
-    ) const {
-        return h.getPLayers(l)[v] != nullptr;
-    }
-
     bool aLayerExists(
         int i
     ) const {
@@ -203,55 +195,53 @@ public:
 
     void setPAlpha(
         int l,
-        int v,
+        int i,
+        int t,
         float alpha
     ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        h.getPLayers(l)[v]->alpha = alpha;
+        h.getPLayers(l)[i][t].alpha = alpha;
     }
 
     float getPAlpha(
         int l,
-        int v
+        int i,
+        int t
     ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        return h.getPLayers(l)[v]->alpha;
+        return h.getPLayers(l)[i][t].alpha;
     }
 
     void setAAlpha(
-        int v,
+        int i,
         float alpha
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[v]->alpha = alpha;
+        h.getALayers()[i]->alpha = alpha;
     }
 
     float getAAlpha(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->alpha;
+        return h.getALayers()[i]->alpha;
     }
 
     void setABeta(
-        int v,
+        int i,
         float beta
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[v]->beta = beta;
+        h.getALayers()[i]->beta = beta;
     }
 
     float getABeta(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->beta;
+        return h.getALayers()[i]->beta;
     }
 
     void setAGamma(
@@ -264,45 +254,45 @@ public:
     }
 
     float getAGamma(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->gamma;
+        return h.getALayers()[i]->gamma;
     }
 
     void setAMinSteps(
-        int v,
+        int i,
         int minSteps
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
 
-        h.getALayers()[v]->minSteps = minSteps;
+        h.getALayers()[i]->minSteps = minSteps;
     }
 
     int getAMinSteps(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->minSteps;
+        return h.getALayers()[i]->minSteps;
     }
 
     void setAHistoryIters(
-        int v,
+        int i,
         int historyIters
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
 
-        h.getALayers()[v]->historyIters = historyIters;
+        h.getALayers()[i]->historyIters = historyIters;
     }
 
     int getAHistoryIters(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->historyIters;
+        return h.getALayers()[i]->historyIters;
     }
 
     // Retrieve additional parameters on the SPH's structure
@@ -314,21 +304,21 @@ public:
 
     int getPRadius(
         int l,
-        int v
+        int i
     ) const {
-        return h.getPLayers(l)[v]->getVisibleLayerDesc(0).radius;
+        return h.getPLayers(l)[i][0].getVisibleLayerDesc(0).radius;
     }
 
     int getARadius(
-        int v
+        int i
     ) const {
-        return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
+        return h.getALayers()[i]->getVisibleLayerDesc(0).radius;
     }
 
     int getAHistoryCapacity(
-        int v
+        int i
     ) const {
-        return h.getALayers()[v]->getHistoryCapacity();
+        return h.getALayers()[i]->getHistoryCapacity();
     }
 };
 } // namespace pyaon
