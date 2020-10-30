@@ -8,6 +8,13 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
+# For developers, set to use system install of AOgmaNeo
+use_system_aogmaneo = False
+
+if "--use_system_aogmaneo" in sys.argv:
+    use_system_aogmaneo = True
+    sys.argv.remove("--use_system_aogmaneo")
+
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[
@@ -44,7 +51,8 @@ class CMakeBuild(build_ext):
             extdir += os.path.sep
 
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                      '-DPYTHON_EXECUTABLE=' + sys.executable]
+                      '-DPYTHON_EXECUTABLE=' + sys.executable,
+                      '-DUSE_SYSTEM_AOGMANEO=' + ('On' if use_system_aogmaneo else 'Off')]
 
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]

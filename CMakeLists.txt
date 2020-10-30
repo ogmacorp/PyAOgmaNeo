@@ -24,24 +24,28 @@ endif()
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-FetchContent_Declare(
-    AOgmaNeo
-    GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-    GIT_TAG origin/master_error
-)
+if(NOT USE_SYSTEM_AOGMANEO)
+    message(STATUS "Not using system installation of AOgmaNeo, will download from repository")
+
+    FetchContent_Declare(
+        AOgmaNeo
+        GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
+        GIT_TAG origin/master_error
+    )
+
+    FetchContent_GetProperties(AOgmaNeo)
+
+    if(NOT AOgmaNeo_POPULATED)
+        FetchContent_Populate(AOgmaNeo)
+        add_subdirectory(${aogmaneo_SOURCE_DIR} ${aogmaneo_BINARY_DIR})
+    endif()
+endif()
 
 FetchContent_Declare(
     pybind11
     GIT_REPOSITORY https://github.com/pybind/pybind11
     GIT_TAG origin/master 
 )
-
-FetchContent_GetProperties(AOgmaNeo)
-
-if(NOT AOgmaNeo_POPULATED)
-    FetchContent_Populate(AOgmaNeo)
-    add_subdirectory(${aogmaneo_SOURCE_DIR} ${aogmaneo_BINARY_DIR})
-endif()
 
 FetchContent_GetProperties(pybind11)
 
