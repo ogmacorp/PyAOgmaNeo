@@ -36,7 +36,7 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
 
 for i in range(len(lds)):
-    h.setSCAlpha(i, 0.1)
+    h.setSCAlpha(i, 0.001)
 
 # Present the wave sequence for some timesteps
 iters = 30000
