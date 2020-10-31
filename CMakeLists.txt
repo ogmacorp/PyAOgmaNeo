@@ -12,6 +12,8 @@ project(pyaogmaneo)
 
 include(FetchContent)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake/")
+
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -24,24 +26,30 @@ endif()
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-FetchContent_Declare(
-    AOgmaNeo
-    GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-    GIT_TAG origin/master
-)
+if(USE_SYSTEM_AOGMANEO)
+    find_package(AOgmaNeo)
+else()
+    message(STATUS "Not using system installation of AOgmaNeo, will download from repository")
+
+    FetchContent_Declare(
+        AOgmaNeo
+        GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
+        GIT_TAG origin/master
+    )
+
+    FetchContent_GetProperties(AOgmaNeo)
+
+    if(NOT AOgmaNeo_POPULATED)
+        FetchContent_Populate(AOgmaNeo)
+        add_subdirectory(${aogmaneo_SOURCE_DIR} ${aogmaneo_BINARY_DIR})
+    endif()
+endif()
 
 FetchContent_Declare(
     pybind11
     GIT_REPOSITORY https://github.com/pybind/pybind11
     GIT_TAG origin/master 
 )
-
-FetchContent_GetProperties(AOgmaNeo)
-
-if(NOT AOgmaNeo_POPULATED)
-    FetchContent_Populate(AOgmaNeo)
-    add_subdirectory(${aogmaneo_SOURCE_DIR} ${aogmaneo_BINARY_DIR})
-endif()
 
 FetchContent_GetProperties(pybind11)
 
@@ -51,6 +59,10 @@ if(NOT pybind11_POPULATED)
 endif()
 
 include_directories(${AOgmaNeo_SOURCE_DIR}/source)
+
+find_package(OpenMP REQUIRED)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
 ############################################################################
 # Add the pyaogmaneo
@@ -71,4 +83,9 @@ find_package(pybind11 CONFIG)
 
 pybind11_add_module(pyaogmaneo ${PYAOGMANEO_SRC})
 
-target_link_libraries(pyaogmaneo PUBLIC AOgmaNeo)
+if(USE_SYSTEM_AOGMANEO)
+    message(STATUS ${AOGMANEO_LIBRARIES})
+    target_link_libraries(pyaogmaneo PUBLIC ${AOGMANEO_LIBRARIES} ${OpenMP_CXX_FLAGS})
+else()
+    target_link_libraries(pyaogmaneo PUBLIC AOgmaNeo ${OpenMP_CXX_FLAGS})
+endif()
