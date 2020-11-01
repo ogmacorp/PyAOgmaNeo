@@ -100,8 +100,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getSCExplainIters", &pyaon::Hierarchy::getSCExplainIters)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
-        .def("setPExpScale", &pyaon::Hierarchy::setPExpScale)
-        .def("getPExpScale", &pyaon::Hierarchy::getPExpScale)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
         .def("setABeta", &pyaon::Hierarchy::setABeta)
