@@ -49,9 +49,9 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
+    std::tuple<int, int> clumpSize;
 
     int ffRadius;
-    int lRadius;
     int pRadius;
 
     int ticksPerUpdate;
@@ -59,16 +59,16 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
+        const std::tuple<int, int> &clumpSize,
         int ffRadius,
-        int lRadius,
         int pRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
+    clumpSize(clumpSize),
     ffRadius(ffRadius),
-    lRadius(lRadius),
     pRadius(pRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
@@ -204,17 +204,30 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCExplainIters(
+    void setSCBeta(
         int l,
-        int explainIters
+        float beta
     ) {
-        h.getSCLayer(l).explainIters = explainIters;
+        h.getSCLayer(l).beta = beta;
     }
 
-    int getSCExplainIters(
+    float getSCBeta(
         int l
     ) const {
-        return h.getSCLayer(l).explainIters;
+        return h.getSCLayer(l).beta;
+    }
+
+    void setSCVigilance(
+        int l,
+        float vigilance
+    ) {
+        h.getSCLayer(l).vigilance = vigilance;
+    }
+
+    float getSCVigilance(
+        int l
+    ) const {
+        return h.getSCLayer(l).vigilance;
     }
 
     void setPAlpha(

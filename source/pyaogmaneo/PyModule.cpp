@@ -50,22 +50,22 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
-                int,
+                std::tuple<int, int>,
                 int,
                 int,
                 int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("clumpSize") = std::tuple<int, int>({ 4, 4 }),
             py::arg("ffRadius") = 2,
-            py::arg("lRadius") = 2,
             py::arg("pRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("clumpSize", &pyaon::LayerDesc::clumpSize)
         .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
-        .def_readwrite("lRadius", &pyaon::LayerDesc::lRadius)
         .def_readwrite("pRadius", &pyaon::LayerDesc::pRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
@@ -96,8 +96,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
         .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
-        .def("setSCExplainIters", &pyaon::Hierarchy::setSCExplainIters)
-        .def("getSCExplainIters", &pyaon::Hierarchy::getSCExplainIters)
+        .def("setSCBeta", &pyaon::Hierarchy::setSCBeta)
+        .def("getSCBeta", &pyaon::Hierarchy::getSCBeta)
+        .def("setSCVigilance", &pyaon::Hierarchy::setSCVigilance)
+        .def("getSCVigilance", &pyaon::Hierarchy::getSCVigilance)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
         .def("setPExpScale", &pyaon::Hierarchy::setPExpScale)
