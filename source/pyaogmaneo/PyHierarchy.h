@@ -204,6 +204,19 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
+    void setSCExplainIters(
+        int l,
+        int explainIters
+    ) {
+        h.getSCLayer(l).explainIters = explainIters;
+    }
+
+    int getSCExplainIters(
+        int l
+    ) const {
+        return h.getSCLayer(l).explainIters;
+    }
+
     void setPAlpha(
         int l,
         int v,
@@ -221,6 +234,25 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
 
         return h.getPLayers(l)[v]->alpha;
+    }
+
+    void setPExpScale(
+        int l,
+        int v,
+        float expScale
+    ) {
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        h.getPLayers(l)[v]->expScale = expScale;
+    }
+
+    float getPExpScale(
+        int l,
+        int v
+    ) const {
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        return h.getPLayers(l)[v]->expScale;
     }
 
     void setAAlpha(
