@@ -65,6 +65,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
+        .def_readwrite("lRadius", &pyaon::LayerDesc::lRadius)
         .def_readwrite("pRadius", &pyaon::LayerDesc::pRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
