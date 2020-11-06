@@ -102,6 +102,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getSCVigilance", &pyaon::Hierarchy::getSCVigilance)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
+        .def("setPTargetRange", &pyaon::Hierarchy::setPTargetRange)
+        .def("getPTargetRange", &pyaon::Hierarchy::getPTargetRange)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
         .def("setABeta", &pyaon::Hierarchy::setABeta)
