@@ -27,7 +27,7 @@ lds = []
 for i in range(5): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 32)
+    ld.hiddenSize = (4, 4, 16)
 
     lds.append(ld)
 
@@ -42,7 +42,7 @@ for i in range(len(lds)):
 iters = 50000
 
 def wave(t):
-    return float(t % 21 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
+    return float(t % 11 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
 
 for t in range(iters):
     # The value to encode into the input column
