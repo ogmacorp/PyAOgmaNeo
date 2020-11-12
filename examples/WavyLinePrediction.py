@@ -27,7 +27,7 @@ lds = []
 for i in range(5): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16)
+    ld.hiddenSize = (4, 4, 32)
 
     lds.append(ld)
 
@@ -36,7 +36,7 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
 
 for i in range(len(lds)):
-    h.setSCAlpha(i, 0.001)
+    h.setSCAlpha(i, 0.1)
 
 # Present the wave sequence for some timesteps
 iters = 50000
