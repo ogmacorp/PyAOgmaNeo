@@ -71,6 +71,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def("initRandom", &pyaon::Hierarchy::initRandom)
         .def("initFromFile", &pyaon::Hierarchy::initFromFile)
+        .def("initFromBuffer", &pyaon::Hierarchy::initFromBuffer)
         .def("saveToFile", &pyaon::Hierarchy::saveToFile)
         .def("serializeToBuffer", &pyaon::Hierarchy::serializeToBuffer)
         .def("step", &pyaon::Hierarchy::step,
@@ -124,6 +125,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def("initRandom", &pyaon::ImageEncoder::initRandom)
         .def("initFromFile", &pyaon::ImageEncoder::initFromFile)
+        .def("initFromBuffer", &pyaon::ImageEncoder::initFromBuffer)
         .def("saveToFile", &pyaon::ImageEncoder::saveToFile)
         .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
         .def("step", &pyaon::ImageEncoder::step,
