@@ -102,6 +102,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getABeta", &pyaon::Hierarchy::getABeta)
         .def("setAGamma", &pyaon::Hierarchy::setAGamma)
         .def("getAGamma", &pyaon::Hierarchy::getAGamma)
+        .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
+        .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getFFRadius", &pyaon::Hierarchy::getFFRadius)
