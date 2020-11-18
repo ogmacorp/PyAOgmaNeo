@@ -28,7 +28,6 @@ for i in range(7): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     ld.hiddenSize = (4, 4, 64)
-    ld.clumpSize = (4, 4)
     ld.ffRadius = 4
     ld.pRadius = 4
     
