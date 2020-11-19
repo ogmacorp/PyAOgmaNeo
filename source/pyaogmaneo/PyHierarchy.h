@@ -217,44 +217,6 @@ public:
         return h.getSCLayer(l).explainIters;
     }
 
-    void setPAlpha(
-        int l,
-        int v,
-        float alpha
-    ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        h.getPLayers(l)[v]->alpha = alpha;
-    }
-
-    float getPAlpha(
-        int l,
-        int v
-    ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        return h.getPLayers(l)[v]->alpha;
-    }
-
-    void setPExpScale(
-        int l,
-        int v,
-        float expScale
-    ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        h.getPLayers(l)[v]->expScale = expScale;
-    }
-
-    float getPExpScale(
-        int l,
-        int v
-    ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        return h.getPLayers(l)[v]->expScale;
-    }
-
     void setAAlpha(
         int v,
         float alpha
