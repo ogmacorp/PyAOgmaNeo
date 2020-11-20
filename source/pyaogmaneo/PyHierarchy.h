@@ -193,6 +193,19 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
+    void setSCMinError(
+        int l,
+        float minError
+    ) {
+        h.getSCLayer(l).minError = minError;
+    }
+
+    float getSCMinError(
+        int l
+    ) const {
+        return h.getSCLayer(l).minError;
+    }
+
     void setPAlpha(
         int l,
         int i,
