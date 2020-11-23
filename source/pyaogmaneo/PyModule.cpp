@@ -57,15 +57,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("numPriorities") = 3,
             py::arg("ffRadius") = 2,
-            py::arg("lRadius") = 2,
             py::arg("pRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("numPriorities", &pyaon::LayerDesc::numPriorities)
         .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
-        .def_readwrite("lRadius", &pyaon::LayerDesc::lRadius)
         .def_readwrite("pRadius", &pyaon::LayerDesc::pRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
@@ -97,8 +97,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
         .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
-        .def("setSCExplainIters", &pyaon::Hierarchy::setSCExplainIters)
-        .def("getSCExplainIters", &pyaon::Hierarchy::getSCExplainIters)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
         .def("setABeta", &pyaon::Hierarchy::setABeta)
