@@ -54,7 +54,7 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<float> > &inputs,
+        const std::vector<std::vector<unsigned char> > &inputs,
         bool learnEnabled
     );
 
@@ -66,10 +66,10 @@ public:
         return enc.getNumVisibleLayers();
     }
 
-    std::vector<float> getReconstruction(
+    std::vector<unsigned char> getReconstruction(
         int i
     ) const {
-        std::vector<float> reconstruction(enc.getReconstruction(i).size());
+        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
@@ -111,14 +111,24 @@ public:
         return enc.alpha;
     }
 
-    void setGamma(
-        float gamma
+    void setBeta(
+        float beta
     ) {
-        enc.gamma = gamma;
+        enc.beta = beta;
     }
 
-    float getGamma() const {
-        return enc.gamma;
+    float getBeta() const {
+        return enc.beta;
+    }
+
+    void setVigilance(
+        float vigilance
+    ) {
+        enc.vigilance = vigilance;
+    }
+
+    float getVigilance() const {
+        return enc.vigilance;
     }
 };
 } // namespace pyaon

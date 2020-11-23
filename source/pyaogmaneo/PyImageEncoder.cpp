@@ -60,11 +60,11 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 }
 
 void ImageEncoder::step(
-    const std::vector<std::vector<float> > &inputs,
+    const std::vector<std::vector<unsigned char> > &inputs,
     bool learnEnabled
 ) {
-    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::Array<float>*> cInputs(inputs.size());
+    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         cInputsBacking[i].resize(inputs[i].size());
