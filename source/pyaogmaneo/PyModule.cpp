@@ -140,8 +140,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
         .def("getAlpha", &pyaon::ImageEncoder::getAlpha)
-        .def("setBeta", &pyaon::ImageEncoder::setBeta)
-        .def("getBeta", &pyaon::ImageEncoder::getBeta)
-        .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
-        .def("getVigilance", &pyaon::ImageEncoder::getVigilance);
+        .def("setGamma", &pyaon::ImageEncoder::setGamma)
+        .def("getGamma", &pyaon::ImageEncoder::getGamma);
 }

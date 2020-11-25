@@ -111,24 +111,14 @@ public:
         return enc.alpha;
     }
 
-    void setBeta(
-        float beta
+    void setGamma(
+        float gamma
     ) {
-        enc.beta = beta;
+        enc.gamma = gamma;
     }
 
-    float getBeta() const {
-        return enc.beta;
-    }
-
-    void setVigilance(
-        float vigilance
-    ) {
-        enc.vigilance = vigilance;
-    }
-
-    float getVigilance() const {
-        return enc.vigilance;
+    float getGamma() const {
+        return enc.gamma;
     }
 };
 } // namespace pyaon
