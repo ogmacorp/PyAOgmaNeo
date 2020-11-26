@@ -52,6 +52,9 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
 h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc((1, numObs, obsColumnSize), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
 
+for i in range(len(lds)):
+    h.setSCAlpha(i, 0.1)
+
 reward = 0.0
 
 for episode in range(1000):
