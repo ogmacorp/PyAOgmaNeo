@@ -18,6 +18,32 @@ import numpy as np
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
+class ScalarEncoder:
+    def __init__(self, num_scalars, num_columns, cells_per_column, lower_bound=0.0, upper_bound=1.0):
+        self.num_scalars = num_scalars
+        self.cells_per_column = cells_per_column
+
+        self.protos = []
+
+        for i in range(num_columns):
+            self.protos.append(np.random.rand(cells_per_column, num_scalars) * (upper_bound - lower_bound) + lower_bound)
+
+    def encode(self, scalars):
+        csdr = []
+
+        for i in range(len(self.protos)):
+            acts = -np.sum(np.square(np.repeat(scalars.T, self.cells_per_column, axis=0) - self.protos[i]), axis=1)
+
+            csdr.append(np.asscalar(np.argmax(acts)))
+
+        return csdr
+
+    def decode(self, csdr):
+        scalars = np.zeros(self.num_scalars)
+
+        for i in range(len(self.protos)):
+            scalars += self.protos[csdr[i]]
+
 # Create the environment
 env = gym.make('CartPole-v1')
 
@@ -25,11 +51,7 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-# Squashing scale multiplier for observation
-obsSquashScale = 1.0
-
-# Define binning resolution
-obsColumnSize = 32
+se = ScalarEncoder(4, 9, 16)
 
 # Set the number of threads
 pyaon.setNumThreads(4)
@@ -40,8 +62,8 @@ lds = []
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
     ld = pyaon.LayerDesc(hiddenSize=( 4, 4, 16 ))
 
-    ld.ffRadius = 4 # Sparse coder radius onto visible layers
-    ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
+    ld.ffRadius = 2 # Sparse coder radius onto visible layers
+    ld.pRadius = 2 # Predictor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
     ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
@@ -50,7 +72,7 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((1, numObs, obsColumnSize), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
+h.initRandom([ pyaon.IODesc((3, 3, 16), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
 
 reward = 0.0
 
@@ -59,10 +81,9 @@ for episode in range(1000):
 
     # Timesteps
     for t in range(500):
-        # Bin the 4 observations. Since we don't know the limits of the observation, we just squash it
-        binnedObs = (sigmoid(obs * obsSquashScale) * (obsColumnSize - 1) + 0.5).astype(np.int).ravel().tolist()
+        csdr = se.encode(sigmoid(np.matrix(obs).T * 4.0))
 
-        h.step([ binnedObs, h.getPredictionCIs(1) ], True, reward)
+        h.step([ csdr, h.getPredictionCIs(1) ], True, reward)
 
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column
