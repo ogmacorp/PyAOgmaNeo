@@ -241,6 +241,7 @@ public:
 
         return h.getPLayers(l)[v]->targetRange;
     }
+
     void setAAlpha(
         int v,
         float alpha
