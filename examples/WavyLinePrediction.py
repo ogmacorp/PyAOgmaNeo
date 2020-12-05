@@ -27,7 +27,7 @@ lds = []
 for i in range(7): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16)
+    ld.hiddenSize = (4, 4, 32)
 
     lds.append(ld)
 
@@ -39,7 +39,7 @@ h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction,
 iters = 10000
 
 def wave(t):
-    return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
+    return float(t % 41 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
 
 for t in range(iters):
     # The value to encode into the input column
