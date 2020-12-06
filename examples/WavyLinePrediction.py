@@ -24,22 +24,22 @@ bounds = (-1.0, 1.0)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(7): # Layers with exponential memory
+for i in range(3): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16)
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
-# Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
+# Create the hierarchy
 h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 50000
+iters = 3000
 
 def wave(t):
-    return float(t % 41 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
+    return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
 
 for t in range(iters):
     # The value to encode into the input column
@@ -49,8 +49,6 @@ for t in range(iters):
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
-
-    print(h.getHiddenCIs(5))
 
     # Print progress
     if t % 100 == 0:

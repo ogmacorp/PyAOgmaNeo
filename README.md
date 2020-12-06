@@ -22,7 +22,11 @@ Welcome to the [Ogma](https://ogmacorp.com) PyAOgmaNeo library, which contains P
 
 ## Installation
 
-In this directory:
+You may install from pypi:
+
+> pip install pyaogmaneo
+
+Or from this directory:
 
 > pip install .
 
