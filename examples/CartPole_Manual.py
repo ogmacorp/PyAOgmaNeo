@@ -40,8 +40,8 @@ lds = []
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
     ld = pyaon.LayerDesc(hiddenSize=( 4, 4, 16 ))
 
-    ld.ffRadius = 4 # Sparse coder radius onto visible layers
-    ld.pRadius = 4 # Predictor radius onto sparse coder hidden layer (and feed back)
+    ld.ffRadius = 2 # Sparse coder radius onto visible layers
+    ld.pRadius = 2 # Predictor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
     ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
