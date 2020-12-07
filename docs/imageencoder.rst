@@ -98,3 +98,15 @@ It is implemented as a bunch of 1D SOMs.
     Get the alpha (learning rate)
 
     :rtype: (float32) alpha
+
+.. function:: ImageEncoder.setGamma(self, gamma)
+
+    Set the gamma (topology radius)
+
+    :param gamma: (float32) value to set
+
+.. function:: ImageEncoder.getGamma(self)
+
+    Get the gamma (topology radius)
+
+    :rtype: (float32) gamma

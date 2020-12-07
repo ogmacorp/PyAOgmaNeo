@@ -145,6 +145,20 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (float32) alpha
 
+.. function:: Hierarchy.setSCGamma(self, l, gamma)
+
+    Set the gamma (topology radius) of the sparsecoder (SC) (AKA encoder)
+
+    :param l: (int32) index of the layer
+    :param gamma: (float32) value to set
+
+.. function:: Hierarchy.getSCGamma(self, l)
+
+    Get the gamma (topology radius) of the sparsecoder (SC) (AKA encoder)
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) gamma
+
 .. function:: Hierarchy.setPAlpha(self, l, alpha)
 
     Set the alpha (learning rate) of a predictor (P) (AKA decoder)
