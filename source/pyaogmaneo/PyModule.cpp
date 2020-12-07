@@ -97,6 +97,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
         .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
+        .def("setSCGamma", &pyaon::Hierarchy::setSCGamma)
+        .def("getSCGamma", &pyaon::Hierarchy::getSCGamma)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
         .def("setPTargetRange", &pyaon::Hierarchy::setPTargetRange)
@@ -146,5 +148,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
-        .def("getAlpha", &pyaon::ImageEncoder::getAlpha);
+        .def("getAlpha", &pyaon::ImageEncoder::getAlpha)
+        .def("setGamma", &pyaon::ImageEncoder::setGamma)
+        .def("getGamma", &pyaon::ImageEncoder::getGamma);
 }
