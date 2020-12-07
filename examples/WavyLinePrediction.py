@@ -27,8 +27,7 @@ lds = []
 for i in range(3): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (2, 2, 64) # Size of the encoder (SparseCoder)
-    ld.numPriorities = 1
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -36,12 +35,8 @@ for i in range(3): # Layers with exponential memory
 h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
 
-for i in range(len(lds)):
-    h.setSCAlpha(i, 0.02)
-    h.setSCGamma(i, 4.0)
-
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 3000
 
 def wave(t):
     return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
@@ -62,12 +57,6 @@ for t in range(iters):
 # Recall the sequence
 ts = [] # Time step
 vs = [] # Predicted value
-
-cells = []
-
-for j in range(4):
-    cells.append([])
-
 trgs = [] # True value
 
 for t2 in range(500):
@@ -90,17 +79,13 @@ for t2 in range(500):
     # Append to plot data
     ts.append(t2)
     vs.append(value)
-
-    for j in range(len(cells)):
-        cells[j].append(h.getHiddenCIs(0)[j] / float(lds[0].hiddenSize[2] - 1))
-
     trgs.append(valueToEncode)
 
     # Show predicted value
     #print(value)
 
 # Show plot
-plt.plot(ts, vs, ts, trgs, ts, cells[0], ts, cells[1], ts, cells[2], ts, cells[3])
+plt.plot(ts, vs, ts, trgs)
 plt.show()
 
 
