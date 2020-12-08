@@ -24,10 +24,10 @@ bounds = (-1.0, 1.0)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(3): # Layers with exponential memory
+for i in range(7): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -36,10 +36,10 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 3000
+iters = 100000
 
 def wave(t):
-    return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5)
+    return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5) * np.sin(t * 0.0025 * 2.0 * np.pi - 0.25)
 
 for t in range(iters):
     # The value to encode into the input column
@@ -57,6 +57,11 @@ for t in range(iters):
 # Recall the sequence
 ts = [] # Time step
 vs = [] # Predicted value
+units = []
+
+for i in range(3):
+    units.append([])
+
 trgs = [] # True value
 
 for t2 in range(500):
@@ -79,6 +84,10 @@ for t2 in range(500):
     # Append to plot data
     ts.append(t2)
     vs.append(value)
+
+    for i in range(len(units)):
+        units[i].append(float(h.getHiddenCIs(0)[i]) / float(h.getHiddenSize(0)[2] - 1))
+
     trgs.append(valueToEncode)
 
     # Show predicted value
@@ -86,6 +95,10 @@ for t2 in range(500):
 
 # Show plot
 plt.plot(ts, vs, ts, trgs)
+
+for i in range(len(units)):
+    plt.plot(ts, units[i])
+
 plt.show()
 
 
