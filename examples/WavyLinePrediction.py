@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 pyaon.setNumThreads(8)
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-inputColumnSize = 32
+inputColumnSize = 64
 
 # The bounds of the scalar we are encoding (low, high)
 bounds = (-1.0, 1.0)
@@ -24,10 +24,11 @@ bounds = (-1.0, 1.0)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(7): # Layers with exponential memory
+for i in range(10): # Layers with exponential memory
     ld = pyaon.LayerDesc()
+    ld.numPriorities = 6
 
-    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (4, 4, 64) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -35,11 +36,15 @@ for i in range(7): # Layers with exponential memory
 h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
 
+for i in range(len(lds)):
+    h.setSCAlpha(i, 0.05)
+    h.setSCGamma(i, 2.0)
+
 # Present the wave sequence for some timesteps
-iters = 100000
+iters = 20000
 
 def wave(t):
-    return np.sin(t * 0.01 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5) * np.sin(t * 0.0025 * 2.0 * np.pi - 0.25)
+    return np.sin(t * 0.002 * 2.0 * np.pi + 1.0) * 0.8 + np.sin(t * 0.01 * 2.0 * np.pi - 1.0) * 0.1 + np.sin(t * 0.02 * 2.0 * np.pi - 1.0) * 0.1
 
 for t in range(iters):
     # The value to encode into the input column
@@ -64,7 +69,7 @@ for i in range(3):
 
 trgs = [] # True value
 
-for t2 in range(500):
+for t2 in range(3000):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
@@ -85,8 +90,10 @@ for t2 in range(500):
     ts.append(t2)
     vs.append(value)
 
+    l = 2
+
     for i in range(len(units)):
-        units[i].append(float(h.getHiddenCIs(0)[i]) / float(h.getHiddenSize(0)[2] - 1))
+        units[i].append(float(h.getHiddenCIs(l)[i]) / float(h.getHiddenSize(l)[2] - 1))
 
     trgs.append(valueToEncode)
 
@@ -96,8 +103,8 @@ for t2 in range(500):
 # Show plot
 plt.plot(ts, vs, ts, trgs)
 
-for i in range(len(units)):
-    plt.plot(ts, units[i])
+#for i in range(len(units)):
+#    plt.plot(ts, units[i])
 
 plt.show()
 
