@@ -101,6 +101,12 @@ public:
 
     std::vector<unsigned char> serializeToBuffer();
 
+    void setStateFromBuffer(
+        const std::vector<unsigned char> &buffer
+    );
+
+    std::vector<unsigned char> serializeStateToBuffer();
+
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,

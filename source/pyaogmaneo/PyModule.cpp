@@ -77,6 +77,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("initFromBuffer", &pyaon::Hierarchy::initFromBuffer)
         .def("saveToFile", &pyaon::Hierarchy::saveToFile)
         .def("serializeToBuffer", &pyaon::Hierarchy::serializeToBuffer)
+        .def("setStateFromBuffer", &pyaon::Hierarchy::setStateFromBuffer)
+        .def("serializeStateToBuffer", &pyaon::Hierarchy::serializeStateToBuffer)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,

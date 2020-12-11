@@ -78,6 +78,23 @@ std::vector<unsigned char> Hierarchy::serializeToBuffer() {
     return writer.buffer;
 }
 
+void Hierarchy::setStateFromBuffer(
+    const std::vector<unsigned char> &buffer
+) {
+    BufferReader reader;
+    reader.buffer = &buffer;
+
+    h.readState(reader);
+}
+
+std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
+    BufferWriter writer;
+
+    h.writeState(writer);
+
+    return writer.buffer;
+}
+
 void Hierarchy::step(
     const std::vector<std::vector<int> > &inputCIs,
     bool learnEnabled,
