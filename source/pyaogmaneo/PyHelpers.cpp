@@ -10,11 +10,11 @@
 
 using namespace pyaon;
 
-void StreamReader::read(void* data, int len) {
+void FileReader::read(void* data, int len) {
     ins.read(static_cast<char*>(data), len);
 }
 
-void StreamWriter::write(const void* data, int len) {
+void FileWriter::write(const void* data, int len) {
     outs.write(static_cast<const char*>(data), len);
 }
 

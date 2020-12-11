@@ -27,7 +27,7 @@ void ImageEncoder::initRandom(
 void ImageEncoder::initFromFile(
     const std::string &name
 ) {
-    StreamReader reader;
+    FileReader reader;
     reader.ins.open(name, std::ios::binary);
 
     enc.read(reader);
@@ -45,7 +45,7 @@ void ImageEncoder::initFromBuffer(
 void ImageEncoder::saveToFile(
     const std::string &name
 ) {
-    StreamWriter writer;
+    FileWriter writer;
     writer.outs.open(name, std::ios::binary);
 
     enc.write(writer);
