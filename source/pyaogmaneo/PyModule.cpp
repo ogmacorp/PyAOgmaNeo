@@ -38,7 +38,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("ffRadius") = 2,
             py::arg("pRadius") = 2,
             py::arg("aRadius") = 2,
-            py::arg("historyCapacity") = 32
+            py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
@@ -82,8 +82,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = false
+            py::arg("reward") = 0.0f
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
@@ -105,8 +104,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getPTargetRange", &pyaon::Hierarchy::getPTargetRange)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
-        .def("setABeta", &pyaon::Hierarchy::setABeta)
-        .def("getABeta", &pyaon::Hierarchy::getABeta)
         .def("setAGamma", &pyaon::Hierarchy::setAGamma)
         .def("getAGamma", &pyaon::Hierarchy::getAGamma)
         .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
