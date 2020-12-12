@@ -27,19 +27,23 @@ struct IODesc {
     int pRadius;
     int aRadius;
 
+    int historyCapacity;
+
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int ffRadius,
         int pRadius,
-        int aRadius
+        int aRadius,
+        int historyCapacity
     )
     :
     size(size),
     type(type),
     ffRadius(ffRadius),
     pRadius(pRadius),
-    aRadius(aRadius)
+    aRadius(aRadius),
+    historyCapacity(historyCapacity)
     {}
 };
 
@@ -106,7 +110,8 @@ public:
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
-        float reward
+        float reward,
+        bool mimic
     );
 
     int getNumLayers() const {
@@ -260,6 +265,22 @@ public:
         return h.getALayers()[v]->alpha;
     }
 
+    void setABeta(
+        int v,
+        float beta
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->beta = beta;
+    }
+
+    float getABeta(
+        int v
+    ) const {
+        assert(h.getALayers()[v] != nullptr);
+        
+        return h.getALayers()[v]->beta;
+    }
 
     void setAGamma(
         int v,
@@ -278,21 +299,38 @@ public:
         return h.getALayers()[v]->gamma;
     }
 
-    void setATraceDecay(
+    void setAMinSteps(
         int v,
-        float traceDecay
+        int minSteps
     ) {
         assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->traceDecay = traceDecay;
+
+        h.getALayers()[v]->minSteps = minSteps;
     }
 
-    float getATraceDecay(
+    int getAMinSteps(
         int v
     ) const {
         assert(h.getALayers()[v] != nullptr);
         
-        return h.getALayers()[v]->traceDecay;
+        return h.getALayers()[v]->minSteps;
+    }
+
+    void setAHistoryIters(
+        int v,
+        int historyIters
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+
+        h.getALayers()[v]->historyIters = historyIters;
+    }
+
+    int getAHistoryIters(
+        int v
+    ) const {
+        assert(h.getALayers()[v] != nullptr);
+        
+        return h.getALayers()[v]->historyIters;
     }
 
     // Retrieve additional parameters on the SPH's structure
@@ -313,6 +351,12 @@ public:
         int v
     ) const {
         return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
+    }
+
+    int getAHistoryCapacity(
+        int v
+    ) const {
+        return h.getALayers()[v]->getHistoryCapacity();
     }
 };
 } // namespace pyaon
