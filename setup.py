@@ -15,8 +15,6 @@ if "--use_system_aogmaneo" in sys.argv:
     use_system_aogmaneo = True
     sys.argv.remove("--use_system_aogmaneo")
 
-use_system_aogmaneo = True # Remove before release
-
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[
