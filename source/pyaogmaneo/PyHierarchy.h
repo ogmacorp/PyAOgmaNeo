@@ -49,7 +49,6 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
-    int numPriorities;
 
     int ffRadius;
     int pRadius;
@@ -59,7 +58,6 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int numPriorities,
         int ffRadius,
         int pRadius,
         int ticksPerUpdate,
@@ -67,7 +65,6 @@ struct LayerDesc {
     )
     :
     hiddenSize(hiddenSize),
-    numPriorities(numPriorities),
     ffRadius(ffRadius),
     pRadius(pRadius),
     ticksPerUpdate(ticksPerUpdate),
@@ -208,6 +205,19 @@ public:
         int l
     ) const {
         return h.getSCLayer(l).alpha;
+    }
+
+    void setSCTargetRange(
+        int l,
+        float targetRange
+    ) {
+        h.getSCLayer(l).targetRange = targetRange;
+    }
+
+    float getSCTargetRange(
+        int l
+    ) const {
+        return h.getSCLayer(l).targetRange;
     }
 
     void setPAlpha(
