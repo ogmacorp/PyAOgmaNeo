@@ -82,7 +82,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
-            py::arg("reward") = 0.0f
+            py::arg("reward") = 0.0f,
+            py::arg("mimic") = false
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
@@ -104,6 +105,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getPTargetRange", &pyaon::Hierarchy::getPTargetRange)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
+        .def("setABeta", &pyaon::Hierarchy::setABeta)
+        .def("getABeta", &pyaon::Hierarchy::getABeta)
         .def("setAGamma", &pyaon::Hierarchy::setAGamma)
         .def("getAGamma", &pyaon::Hierarchy::getAGamma)
         .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)

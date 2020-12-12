@@ -110,7 +110,8 @@ public:
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
-        float reward
+        float reward,
+        bool mimic
     );
 
     int getNumLayers() const {
@@ -262,6 +263,23 @@ public:
         assert(h.getALayers()[v] != nullptr);
         
         return h.getALayers()[v]->alpha;
+    }
+
+    void setABeta(
+        int v,
+        float beta
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->beta = beta;
+    }
+
+    float getABeta(
+        int v
+    ) const {
+        assert(h.getALayers()[v] != nullptr);
+        
+        return h.getALayers()[v]->beta;
     }
 
     void setAGamma(
