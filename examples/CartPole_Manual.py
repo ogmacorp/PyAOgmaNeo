@@ -60,7 +60,7 @@ pyaon.setNumThreads(4)
 lds = []
 
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc(hiddenSize=( 4, 4, 16 ))
+    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
 
     ld.ffRadius = 2 # Sparse coder radius onto visible layers
     ld.pRadius = 2 # Predictor radius onto sparse coder hidden layer (and feed back)
