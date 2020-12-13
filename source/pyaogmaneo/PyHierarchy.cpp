@@ -32,7 +32,6 @@ void Hierarchy::initRandom(
     for (int l = 0; l < layerDescs.size(); l++) {
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
-            layerDescs[l].numPriorities,
             layerDescs[l].ffRadius,
             layerDescs[l].pRadius,
             layerDescs[l].ticksPerUpdate,
@@ -71,7 +70,7 @@ void Hierarchy::saveToFile(
 }
 
 std::vector<unsigned char> Hierarchy::serializeToBuffer() {
-    BufferWriter writer;
+    BufferWriter writer(h.size());
 
     h.write(writer);
 
@@ -88,7 +87,7 @@ void Hierarchy::setStateFromBuffer(
 }
 
 std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
-    BufferWriter writer;
+    BufferWriter writer(h.stateSize());
 
     h.writeState(writer);
 
