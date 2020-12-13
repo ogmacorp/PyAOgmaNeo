@@ -52,7 +52,7 @@ void ImageEncoder::saveToFile(
 }
 
 std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
-    BufferWriter writer;
+    BufferWriter writer(enc.size());
 
     enc.write(writer);
 
