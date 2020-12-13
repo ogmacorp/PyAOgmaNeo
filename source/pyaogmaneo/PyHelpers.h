@@ -61,7 +61,17 @@ public:
 
 class BufferWriter : public aon::StreamWriter {
 public:
+    int start;
     std::vector<unsigned char> buffer;
+
+    BufferWriter(
+        int bufferSize
+    )
+    :
+    start(0)
+    {
+        buffer.resize(bufferSize);
+    }
 
     void write(
         const void* data,

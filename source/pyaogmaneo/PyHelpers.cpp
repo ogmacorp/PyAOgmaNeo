@@ -8,6 +8,8 @@
 
 #include "PyHelpers.h"
 
+#include <assert.h>
+
 using namespace pyaon;
 
 void FileReader::read(void* data, int len) {
@@ -26,10 +28,10 @@ void BufferReader::read(void* data, int len) {
 }
 
 void BufferWriter::write(const void* data, int len) {
-    int start = buffer.size();
-
-    buffer.resize(buffer.size() + len);
+    assert(buffer.size() >= start + len);
 
     for (int i = 0; i < len; i++)
         buffer[start + i] = static_cast<const unsigned char*>(data)[i];
+
+    start += len;
 }

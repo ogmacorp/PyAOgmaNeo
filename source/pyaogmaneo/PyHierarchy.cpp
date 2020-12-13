@@ -70,7 +70,7 @@ void Hierarchy::saveToFile(
 }
 
 std::vector<unsigned char> Hierarchy::serializeToBuffer() {
-    BufferWriter writer;
+    BufferWriter writer(h.size());
 
     h.write(writer);
 
@@ -87,7 +87,7 @@ void Hierarchy::setStateFromBuffer(
 }
 
 std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
-    BufferWriter writer;
+    BufferWriter writer(h.stateSize());
 
     h.writeState(writer);
 
