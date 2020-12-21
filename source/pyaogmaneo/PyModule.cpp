@@ -53,15 +53,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("numPriorities") = 3,
             py::arg("ffRadius") = 2,
             py::arg("pRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("numPriorities", &pyaon::LayerDesc::numPriorities)
         .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
         .def_readwrite("pRadius", &pyaon::LayerDesc::pRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
@@ -96,8 +99,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
         .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
-        .def("setSCTargetRange", &pyaon::Hierarchy::setSCTargetRange)
-        .def("getSCTargetRange", &pyaon::Hierarchy::getSCTargetRange)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
         .def("setPTargetRange", &pyaon::Hierarchy::setPTargetRange)
