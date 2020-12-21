@@ -100,6 +100,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getSCTargetRange", &pyaon::Hierarchy::getSCTargetRange)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
+        .def("setPTargetRange", &pyaon::Hierarchy::setPTargetRange)
+        .def("getPTargetRange", &pyaon::Hierarchy::getPTargetRange)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
         .def("setABeta", &pyaon::Hierarchy::setABeta)
