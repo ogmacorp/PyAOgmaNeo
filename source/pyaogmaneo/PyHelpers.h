@@ -22,7 +22,7 @@ inline int getNumThreads() {
     return aon::getNumThreads();
 }
 
-class StreamReader : public aon::StreamReader {
+class FileReader : public aon::StreamReader {
 public:
     std::ifstream ins;
 
@@ -32,7 +32,7 @@ public:
     ) override;
 };
 
-class StreamWriter : public aon::StreamWriter {
+class FileWriter : public aon::StreamWriter {
 public:
     std::ofstream outs;
 
@@ -61,7 +61,17 @@ public:
 
 class BufferWriter : public aon::StreamWriter {
 public:
+    int start;
     std::vector<unsigned char> buffer;
+
+    BufferWriter(
+        int bufferSize
+    )
+    :
+    start(0)
+    {
+        buffer.resize(bufferSize);
+    }
 
     void write(
         const void* data,

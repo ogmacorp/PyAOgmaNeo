@@ -97,6 +97,12 @@ public:
 
     std::vector<unsigned char> serializeToBuffer();
 
+    void setStateFromBuffer(
+        const std::vector<unsigned char> &buffer
+    );
+
+    std::vector<unsigned char> serializeStateToBuffer();
+
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
@@ -193,19 +199,6 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCMinError(
-        int l,
-        float minError
-    ) {
-        h.getSCLayer(l).minError = minError;
-    }
-
-    float getSCMinError(
-        int l
-    ) const {
-        return h.getSCLayer(l).minError;
-    }
-
     void setPAlpha(
         int l,
         int i,
@@ -221,6 +214,23 @@ public:
         int t
     ) const {
         return h.getPLayers(l)[i][t].alpha;
+    }
+
+    void setPTargetRange(
+        int l,
+        int i,
+        int t,
+        float targetRange
+    ) {
+        h.getPLayers(l)[i][t].targetRange = targetRange;
+    }
+
+    float getPTargetRange(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getPLayers(l)[i][t].targetRange;
     }
 
     void setAAlpha(

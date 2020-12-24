@@ -45,7 +45,7 @@ void Hierarchy::initRandom(
 void Hierarchy::initFromFile(
     const std::string &name
 ) {
-    StreamReader reader;
+    FileReader reader;
     reader.ins.open(name, std::ios::binary);
 
     h.read(reader);
@@ -63,16 +63,33 @@ void Hierarchy::initFromBuffer(
 void Hierarchy::saveToFile(
     const std::string &name
 ) {
-    StreamWriter writer;
+    FileWriter writer;
     writer.outs.open(name, std::ios::binary);
 
     h.write(writer);
 }
 
 std::vector<unsigned char> Hierarchy::serializeToBuffer() {
-    BufferWriter writer;
+    BufferWriter writer(h.size());
 
     h.write(writer);
+
+    return writer.buffer;
+}
+
+void Hierarchy::setStateFromBuffer(
+    const std::vector<unsigned char> &buffer
+) {
+    BufferReader reader;
+    reader.buffer = &buffer;
+
+    h.readState(reader);
+}
+
+std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
+    BufferWriter writer(h.stateSize());
+
+    h.writeState(writer);
 
     return writer.buffer;
 }

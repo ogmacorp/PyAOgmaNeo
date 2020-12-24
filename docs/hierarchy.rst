@@ -40,6 +40,18 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :rtype: ([uint8]) byte buffer
 
+.. function:: Hierarchy.setStateFromBuffer(self, buffer)
+
+    Sets just the state (short term memory) of the hierarchy from a buffer.
+
+    :param buffer: ([uint8]) byte buffer to read from
+
+.. function:: Hierarchy.serializeStateToBuffer(self)
+
+    Serialize just the state of the hierarchy (short term memory) (write to byte list)
+
+    :rtype: ([uint8]) byte buffer
+
 .. function:: Hierarchy.step(self, inputCIs, learnEnabled=True, reward=0.0, mimic=False)
 
     Perform a simulation step of the hierarchy. This will produce new predictions or actions if those are being used (as specified in the IODesc's)
@@ -144,6 +156,20 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param l: (int32) index of the layer
     :rtype: (float32) alpha
+
+.. function:: Hierarchy.setSCGamma(self, l, gamma)
+
+    Set the gamma (topology radius) of the sparsecoder (SC) (AKA encoder)
+
+    :param l: (int32) index of the layer
+    :param gamma: (float32) value to set
+
+.. function:: Hierarchy.getSCGamma(self, l)
+
+    Get the gamma (topology radius) of the sparsecoder (SC) (AKA encoder)
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) gamma
 
 .. function:: Hierarchy.setPAlpha(self, l, alpha)
 

@@ -27,7 +27,7 @@ void ImageEncoder::initRandom(
 void ImageEncoder::initFromFile(
     const std::string &name
 ) {
-    StreamReader reader;
+    FileReader reader;
     reader.ins.open(name, std::ios::binary);
 
     enc.read(reader);
@@ -45,14 +45,14 @@ void ImageEncoder::initFromBuffer(
 void ImageEncoder::saveToFile(
     const std::string &name
 ) {
-    StreamWriter writer;
+    FileWriter writer;
     writer.outs.open(name, std::ios::binary);
 
     enc.write(writer);
 }
 
 std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
-    BufferWriter writer;
+    BufferWriter writer(enc.size());
 
     enc.write(writer);
 
@@ -60,11 +60,11 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 }
 
 void ImageEncoder::step(
-    const std::vector<std::vector<float> > &inputs,
+    const std::vector<std::vector<unsigned char> > &inputs,
     bool learnEnabled
 ) {
-    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::Array<float>*> cInputs(inputs.size());
+    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         cInputsBacking[i].resize(inputs[i].size());

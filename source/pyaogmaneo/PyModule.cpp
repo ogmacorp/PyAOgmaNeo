@@ -73,6 +73,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("initFromBuffer", &pyaon::Hierarchy::initFromBuffer)
         .def("saveToFile", &pyaon::Hierarchy::saveToFile)
         .def("serializeToBuffer", &pyaon::Hierarchy::serializeToBuffer)
+        .def("setStateFromBuffer", &pyaon::Hierarchy::setStateFromBuffer)
+        .def("serializeStateToBuffer", &pyaon::Hierarchy::serializeStateToBuffer)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
@@ -92,10 +94,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
         .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
-        .def("setSCMinError", &pyaon::Hierarchy::setSCMinError)
-        .def("getSCMinError", &pyaon::Hierarchy::getSCMinError)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
+        .def("setPTargetRange", &pyaon::Hierarchy::setPTargetRange)
+        .def("getPTargetRange", &pyaon::Hierarchy::getPTargetRange)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
         .def("setABeta", &pyaon::Hierarchy::setABeta)
@@ -127,7 +129,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def("initRandom", &pyaon::ImageEncoder::initRandom)
         .def("initFromFile", &pyaon::ImageEncoder::initFromFile)
-        .def("initFromBuffer", &pyaon::ImageEncoder::initFromFile)
+        .def("initFromBuffer", &pyaon::ImageEncoder::initFromBuffer)
         .def("saveToFile", &pyaon::ImageEncoder::saveToFile)
         .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
         .def("step", &pyaon::ImageEncoder::step,
@@ -141,7 +143,5 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
-        .def("getAlpha", &pyaon::ImageEncoder::getAlpha)
-        .def("setGamma", &pyaon::ImageEncoder::setGamma)
-        .def("getGamma", &pyaon::ImageEncoder::getGamma);
+        .def("getAlpha", &pyaon::ImageEncoder::getAlpha);
 }
