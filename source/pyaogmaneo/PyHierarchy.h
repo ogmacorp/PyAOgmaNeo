@@ -207,19 +207,6 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCTargetRange(
-        int l,
-        float targetRange
-    ) {
-        h.getSCLayer(l).targetRange = targetRange;
-    }
-
-    float getSCTargetRange(
-        int l
-    ) const {
-        return h.getSCLayer(l).targetRange;
-    }
-
     void setPAlpha(
         int l,
         int v,
@@ -237,25 +224,6 @@ public:
         assert(h.getPLayers(l)[v] != nullptr);
 
         return h.getPLayers(l)[v]->alpha;
-    }
-
-    void setPTargetRange(
-        int l,
-        int v,
-        float targetRange
-    ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        h.getPLayers(l)[v]->targetRange = targetRange;
-    }
-
-    float getPTargetRange(
-        int l,
-        int v
-    ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
