@@ -36,10 +36,10 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
 
 for i in range(len(lds)):
-    h.setSCAlpha(i, 0.05)
+    h.setSCAlpha(i, 0.5)
 
 # Present the wave sequence for some timesteps
-iters = 30000
+iters = 20000
 
 def wave(t):
     return float(t % 41 == 0)#np.sin(t * 0.002 * 2.0 * np.pi + 1.0) * 0.8 + np.sin(t * 0.01 * 2.0 * np.pi - 1.0) * 0.1 + np.sin(t * 0.02 * 2.0 * np.pi - 1.0) * 0.1
