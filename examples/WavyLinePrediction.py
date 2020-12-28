@@ -27,7 +27,7 @@ lds = []
 for i in range(9): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -49,6 +49,8 @@ for t in range(iters):
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
+
+    print(h.getHiddenCIs(0))
 
     # Print progress
     if t % 100 == 0:

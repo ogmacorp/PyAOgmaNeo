@@ -216,23 +216,6 @@ public:
         return h.getPLayers(l)[i][t].alpha;
     }
 
-    void setPTargetRange(
-        int l,
-        int i,
-        int t,
-        float targetRange
-    ) {
-        h.getPLayers(l)[i][t].targetRange = targetRange;
-    }
-
-    float getPTargetRange(
-        int l,
-        int i,
-        int t
-    ) const {
-        return h.getPLayers(l)[i][t].targetRange;
-    }
-
     void setAAlpha(
         int i,
         float alpha
