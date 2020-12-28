@@ -39,13 +39,17 @@ h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction,
 iters = 40000
 
 def wave(t):
-    return float(t % 121 == 0)#np.sin(t * 0.002 * 2.0 * np.pi + 1.0) * 0.8 + np.sin(t * 0.01 * 2.0 * np.pi - 1.0) * 0.1 + np.sin(t * 0.02 * 2.0 * np.pi - 1.0) * 0.1
+    return np.sin(t * 0.002 * 2.0 * np.pi + 1.0) * 0.8 + np.sin(t * 0.01 * 2.0 * np.pi - 1.0) * 0.1 + np.sin(t * 0.02 * 2.0 * np.pi - 1.0) * 0.1
 
 for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
     valueToEncodeBinned = int((valueToEncode - bounds[0]) / (bounds[1] - bounds[0]) * (inputColumnSize - 1) + 0.5)
+
+    # Randomly drop the sample
+    if np.random.rand() < 0.05:
+        valueToEncodeBinned = -1
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
