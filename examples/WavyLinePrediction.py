@@ -48,7 +48,7 @@ for t in range(iters):
     valueToEncodeBinned = int((valueToEncode - bounds[0]) / (bounds[1] - bounds[0]) * (inputColumnSize - 1) + 0.5)
 
     # Randomly drop the sample
-    if np.random.rand() < 0.05:
+    if np.random.rand() < 0.01:
         valueToEncodeBinned = -1
 
     # Step the hierarchy given the inputs (just one here)
