@@ -50,6 +50,8 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
 
+    print(h.getHiddenCIs(5))
+
     # Print progress
     if t % 100 == 0:
         print(t)
