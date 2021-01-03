@@ -36,7 +36,7 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 40000
+iters = 20000
 
 def wave(t):
     return float(t % 21 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 1.0) * 0.9 + np.sin(t * 0.03 * 2.0 * np.pi - 1.0) * 0.1
@@ -49,8 +49,6 @@ for t in range(iters):
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
-
-    print(h.getHiddenCIs(5))
 
     # Print progress
     if t % 100 == 0:
