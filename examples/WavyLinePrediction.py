@@ -27,7 +27,7 @@ lds = []
 for i in range(9): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -39,7 +39,7 @@ h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction,
 iters = 20000
 
 def wave(t):
-    return float(t % 21 == 0)#np.sin(t * 0.01 * 2.0 * np.pi - 1.0) * 0.9 + np.sin(t * 0.03 * 2.0 * np.pi - 1.0) * 0.1
+    return np.sin(t * 0.002 * 2.0 * np.pi + 1.0) * 0.8 + np.sin(t * 0.01 * 2.0 * np.pi - 1.0) * 0.1 + np.sin(t * 0.02 * 2.0 * np.pi - 1.0) * 0.1
 
 for t in range(iters):
     # The value to encode into the input column
@@ -64,7 +64,7 @@ for i in range(3):
 
 trgs = [] # True value
 
-for t2 in range(300):
+for t2 in range(3000):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
