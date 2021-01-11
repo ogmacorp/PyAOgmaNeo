@@ -69,18 +69,14 @@ def CSDRToIEEE(csdr):
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
 numInputColumns = 6
 inputColumnSize = 16
-maxRange = 10.0
-
-# The bounds of the scalar we are encoding (low, high)
-bounds = (-2.0, 2.0)
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(9): # Layers with exponential memory
+for i in range(2): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (3, 3, 8) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -89,16 +85,18 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=4) ], lds)
 
 for i in range(len(lds)):
-    h.setSCAlpha(i, 0.001)
+    h.setSCAlpha(i, 0.0)
 
 # Present the wave sequence for some timesteps
 iters = 50000
 
 def wave(t):
-    if t % 100 == 0:
+    return np.sin(t * 0.01 + 0.3)
+
+    if t % 50 == 0:
         return 100.0
 
-    return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.1
+    return 0.0#np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.1
 
 for t in range(iters):
     # The value to encode into the input column
@@ -110,7 +108,8 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    #print(h.getHiddenCIs(5))
+    if h.getUpdate(7):
+        print(h.getHiddenCIs(7))
 
     # Print progress
     if t % 100 == 0:
