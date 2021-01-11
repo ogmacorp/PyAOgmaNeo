@@ -82,16 +82,16 @@ for i in range(2): # Layers with exponential memory
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=4) ], lds)
+h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=2) ], lds)
 
 for i in range(len(lds)):
-    h.setSCAlpha(i, 0.0)
+    h.setSCAlpha(i, 0.05)
 
 # Present the wave sequence for some timesteps
 iters = 50000
 
 def wave(t):
-    return np.sin(t * 0.01 + 0.3)
+    return np.sin(t * 0.02 * 2.0 * np.pi + 0.3)
 
     if t % 50 == 0:
         return 100.0
