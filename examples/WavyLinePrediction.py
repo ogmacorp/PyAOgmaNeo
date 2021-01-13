@@ -78,20 +78,20 @@ for i in range(9): # Layers with exponential memory
 
     ld.hiddenSize = (3, 3, 16) # Size of the encoder (SparseCoder)
 
-    ld.ffRadius = 1
-    ld.pRadius = 1
-
     lds.append(ld)
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=2) ], lds)
+h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=4) ], lds)
+
+for i in range(len(lds)):
+    h.setSCAlpha(i, 0.1)
 
 # Present the wave sequence for some timesteps
-iters = 2000
+iters = 50000
 
 def wave(t):
-    return np.sin(t * 0.01 * 2.0 * np.pi + 0.5)
+    #return np.sin(t  * 2.0 * np.pi * 0.01 + 0.3)
 
     if t % 50 == 0:
         return 100.0

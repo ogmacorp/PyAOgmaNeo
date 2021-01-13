@@ -118,10 +118,10 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<int> getPredictionCIs(
+    std::vector<unsigned char> getPredictionCIs(
         int i
     ) const {
-        std::vector<int> predictions(h.getPredictionCIs(i).size());
+        std::vector<unsigned char> predictions(h.getPredictionCIs(i).size());
 
         for (int j = 0; j < predictions.size(); j++)
             predictions[j] = h.getPredictionCIs(i)[j];
@@ -135,10 +135,10 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getHiddenCIs(
+    std::vector<unsigned char> getHiddenCIs(
         int l
     ) {
-        std::vector<int> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
+        std::vector<unsigned char> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
             hiddenCIs[j] = h.getSCLayer(l).getHiddenCIs()[j];

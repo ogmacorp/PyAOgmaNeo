@@ -59,7 +59,7 @@ public:
     );
 
     void reconstruct(
-        const std::vector<int> &reconCIs
+        const std::vector<unsigned char> &reconCIs
     );
 
     int getNumVisibleLayers() const {
@@ -77,8 +77,8 @@ public:
         return reconstruction;
     }
 
-    std::vector<int> getHiddenCIs() const {
-        std::vector<int> hiddenCIs(enc.getHiddenCIs().size());
+    std::vector<unsigned char> getHiddenCIs() const {
+        std::vector<unsigned char> hiddenCIs(enc.getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
             hiddenCIs[j] = enc.getHiddenCIs()[j];
