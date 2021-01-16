@@ -229,23 +229,23 @@ public:
         return h.getPLayers(l)[v]->alpha;
     }
 
-    void setPTargetRange(
+    void setPGamma(
         int l,
         int v,
-        float targetRange
+        float gamma
     ) {
         assert(h.getPLayers(l)[v] != nullptr);
 
-        h.getPLayers(l)[v]->targetRange = targetRange;
+        h.getPLayers(l)[v]->gamma = gamma;
     }
 
-    float getPTargetRange(
+    float getPGamma(
         int l,
         int v
     ) const {
         assert(h.getPLayers(l)[v] != nullptr);
 
-        return h.getPLayers(l)[v]->targetRange;
+        return h.getPLayers(l)[v]->gamma;
     }
 
     void setAAlpha(
