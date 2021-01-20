@@ -132,7 +132,6 @@ class EnvRunner:
 
         for i in range(len(layerSizes)):
             ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
-            ld.numPriorities = 2
 
             ld.ffRadius = layerRadius
             ld.pRadius = layerRadius
