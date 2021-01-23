@@ -11,15 +11,64 @@
 import pyaogmaneo as pyaon
 import numpy as np
 import matplotlib.pyplot as plt
+import struct
 
 # Set the number of threads
 pyaon.setNumThreads(8)
 
-# This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-inputColumnSize = 32
+def fToCSDR(x, num_columns, cells_per_column, scale_factor=0.25):
+    csdr = []
 
-# The bounds of the scalar we are encoding (low, high)
-bounds = (-1.0, 1.0)
+    scale = 1.0
+
+    for i in range(num_columns):
+        s = (x / scale) % (1.0 if x > 0.0 else -1.0)
+
+        csdr.append(int((s * 0.5 + 0.5) * (cells_per_column - 1) + 0.5))
+
+        rec = scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
+        x -= rec
+
+        scale *= scale_factor
+
+    return csdr
+
+def CSDRToF(csdr, cells_per_column, scale_factor=0.25):
+    x = 0.0
+
+    scale = 1.0
+
+    for i in range(len(csdr)):
+        x += scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
+
+        scale *= scale_factor
+
+    return x
+
+# Converts an IEEE float to 8 columns with 16 cells each
+def IEEEToCSDR(x : float):
+    b = struct.pack("<f", x)
+
+    csdr = []
+
+    for i in range(4):
+        csdr.append(b[i] & 0x0f)
+        csdr.append((b[i] & 0xf0) >> 4)
+
+    return csdr
+
+# Reverse transform of IEEEToCSDR
+def CSDRToIEEE(csdr):
+    bs = []
+
+    for i in range(4):
+        bs.append(csdr[i * 2 + 0] | (csdr[i * 2 + 1] << 4))
+
+    return struct.unpack("<f", bytes(bs)) 
+
+# This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
+numInputColumns = 6
+inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
@@ -27,28 +76,37 @@ lds = []
 for i in range(9): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (3, 3, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(1, 1, inputColumnSize), type=pyaon.prediction, ffRadius=0) ], lds)
+h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=4) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 40000
+iters = 50000
 
 def wave(t):
-    return np.sin(t * 0.002 * 2.0 * np.pi + 1.0) * 0.8 + np.sin(t * 0.01 * 2.0 * np.pi - 1.0) * 0.1 + np.sin(t * 0.02 * 2.0 * np.pi - 1.0) * 0.1
+    #return np.sin(t  * 2.0 * np.pi * 0.01 + 0.3)
+
+    if t % 50 == 0:
+        return 100.0
+
+    return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.1
 
 for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
-    valueToEncodeBinned = int((valueToEncode - bounds[0]) / (bounds[1] - bounds[0]) * (inputColumnSize - 1) + 0.5)
+    #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
+    csdr = IEEEToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
-    h.step([ [ valueToEncodeBinned ] ], True) # True for enabling learning
+    h.step([ csdr ], True) # True for enabling learning
+
+    if h.getUpdate(0):
+        print(h.getHiddenCIs(0))
 
     # Print progress
     if t % 100 == 0:
@@ -57,10 +115,6 @@ for t in range(iters):
 # Recall the sequence
 ts = [] # Time step
 vs = [] # Predicted value
-units = []
-
-for i in range(3):
-    units.append([])
 
 trgs = [] # True value
 
@@ -70,25 +124,16 @@ for t2 in range(3000):
     # New, continued value for comparison to what the hierarchy predicts
     valueToEncode = wave(t) # Some wavy line
 
-    # Bin the value into the column and write into the input buffer. We are simply rounding to the nearest integer location to "bin" the scalar into the column
-    valueToEncodeBinned = int((valueToEncode - bounds[0]) / (bounds[1] - bounds[0]) * (inputColumnSize - 1) + 0.5)
-
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
-    predIndex = h.getPredictionCIs(0)[0] # First (only in this case) input layer prediction
-    
     # Decode value (de-bin)
-    value = predIndex / float(inputColumnSize - 1) * (bounds[1] - bounds[0]) + bounds[0]
+    #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
+    value = CSDRToIEEE(h.getPredictionCIs(0))
 
     # Append to plot data
     ts.append(t2)
     vs.append(value)
-
-    l = 0
-
-    for i in range(len(units)):
-        units[i].append(float(h.getHiddenCIs(l)[i]) / float(h.getHiddenSize(l)[2] - 1))
 
     trgs.append(valueToEncode)
 
