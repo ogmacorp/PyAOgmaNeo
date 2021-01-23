@@ -216,21 +216,21 @@ public:
         return h.getPLayers(l)[i][t].alpha;
     }
 
-    void setPTargetRange(
+    void setPTemperature(
         int l,
         int i,
         int t,
-        float targetRange
+        float temperature
     ) {
-        h.getPLayers(l)[i][t].targetRange = targetRange;
+        h.getPLayers(l)[i][t].temperature = temperature;
     }
 
-    float getPTargetRange(
+    float getPTemperature(
         int l,
         int i,
         int t
     ) const {
-        return h.getPLayers(l)[i][t].targetRange;
+        return h.getPLayers(l)[i][t].temperature;
     }
 
     void setAAlpha(
