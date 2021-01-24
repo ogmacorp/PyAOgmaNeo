@@ -90,7 +90,7 @@ iters = 50000
 def wave(t):
     #return np.sin(t  * 2.0 * np.pi * 0.01 + 0.3)
 
-    if t % 24 == 0:
+    if t % 100 == 0:
         return 100.0
 
     return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.1
