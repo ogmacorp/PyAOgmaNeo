@@ -199,17 +199,17 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCBeta(
+    void setSCTemperature(
         int l,
-        float beta
+        float temperature
     ) {
-        h.getSCLayer(l).beta = beta;
+        h.getSCLayer(l).temperature = temperature;
     }
 
-    float getSCBeta(
+    float getSCTemperature(
         int l
     ) const {
-        return h.getSCLayer(l).beta;
+        return h.getSCLayer(l).temperature;
     }
 
     void setPAlpha(
