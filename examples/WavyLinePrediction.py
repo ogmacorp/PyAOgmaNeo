@@ -105,9 +105,6 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    if h.getUpdate(0):
-        print(h.getHiddenCIs(0))
-
     # Print progress
     if t % 100 == 0:
         print(t)
