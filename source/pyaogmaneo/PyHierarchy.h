@@ -309,38 +309,21 @@ public:
         return h.getALayers()[v]->gamma;
     }
 
-    void setAMinSteps(
+    void setATemperature(
         int v,
-        int minSteps
+        float temperature
     ) {
         assert(h.getALayers()[v] != nullptr);
-
-        h.getALayers()[v]->minSteps = minSteps;
+        
+        h.getALayers()[v]->temperature = temperature;
     }
 
-    int getAMinSteps(
+    float getATemperature(
         int v
     ) const {
         assert(h.getALayers()[v] != nullptr);
         
-        return h.getALayers()[v]->minSteps;
-    }
-
-    void setAHistoryIters(
-        int v,
-        int historyIters
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-
-        h.getALayers()[v]->historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->historyIters;
+        return h.getALayers()[v]->temperature;
     }
 
     // Retrieve additional parameters on the SPH's structure
