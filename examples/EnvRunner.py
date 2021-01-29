@@ -19,7 +19,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (4, 4, 16) ], layerRadius=4, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=2 * [ (4, 4, 16) ], layerRadius=4, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
