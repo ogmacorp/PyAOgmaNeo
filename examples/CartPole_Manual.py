@@ -62,9 +62,6 @@ lds = []
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
     ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
 
-    ld.ffRadius = 2 # Sparse coder radius onto visible layers
-    ld.pRadius = 2 # Predictor radius onto sparse coder hidden layer (and feed back)
-
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
     ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
     
@@ -72,9 +69,16 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((3, 3, 16), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
+h.initRandom([ pyaon.IODesc((3, 3, 16)), pyaon.IODesc((1, 1, numActions)) ], lds)
+
+rewards = []
+
+for i in range(h.getNumLayers()):
+    rewards.append(h.getHiddenSize(i)[0] * h.getHiddenSize(i)[1] * h.getHiddenSize(i)[2] * [ 0 ])
 
 reward = 0.0
+
+action = 0
 
 for episode in range(1000):
     obs = env.reset()
@@ -83,10 +87,13 @@ for episode in range(1000):
     for t in range(500):
         csdr = se.encode(sigmoid(np.matrix(obs).T * 4.0))
 
-        h.step([ csdr, h.getPredictionCIs(1) ], True, reward)
+        h.step([ csdr, [ action ] ], rewards, True)
 
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column
+
+        if np.random.rand() < 0.02:
+            action = np.random.randint(0, numActions)
 
         obs, reward, done, info = env.step(action)
 
