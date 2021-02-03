@@ -316,6 +316,23 @@ public:
         return h.getALayers()[v]->temperature;
     }
 
+    void setAHistoryIters(
+        int v,
+        int historyIters
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->historyIters = historyIters;
+    }
+
+    int getAHistoryIters(
+        int v
+    ) const {
+        assert(h.getALayers()[v] != nullptr);
+        
+        return h.getALayers()[v]->historyIters;
+    }
+    
     // Retrieve additional parameters on the SPH's structure
     int getFFRadius(
         int l
