@@ -299,23 +299,6 @@ public:
         return h.getALayers()[v]->gamma;
     }
 
-    void setATemperature(
-        int v,
-        float temperature
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->temperature = temperature;
-    }
-
-    float getATemperature(
-        int v
-    ) const {
-        assert(h.getALayers()[v] != nullptr);
-        
-        return h.getALayers()[v]->temperature;
-    }
-
     void setAHistoryIters(
         int v,
         int historyIters
