@@ -69,12 +69,7 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((3, 3, 16)), pyaon.IODesc((1, 1, numActions)) ], lds)
-
-rewards = []
-
-for i in range(h.getNumLayers()):
-    rewards.append(h.getHiddenSize(i)[0] * h.getHiddenSize(i)[1] * h.getHiddenSize(i)[2] * [ 0 ])
+h.initRandom([ pyaon.IODesc((3, 3, 16), pyaon.none), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
 
 reward = 0.0
 
@@ -87,7 +82,7 @@ for episode in range(1000):
     for t in range(500):
         csdr = se.encode(sigmoid(np.matrix(obs).T * 4.0))
 
-        h.step([ csdr, [ action ] ], rewards, True)
+        h.step([ csdr, [ action ] ], True, reward)
 
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column
