@@ -108,8 +108,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getABeta", &pyaon::Hierarchy::getABeta)
         .def("setAGamma", &pyaon::Hierarchy::setAGamma)
         .def("getAGamma", &pyaon::Hierarchy::getAGamma)
-        .def("setATemperature", &pyaon::Hierarchy::setATemperature)
-        .def("getATemperature", &pyaon::Hierarchy::getATemperature)
         .def("getFFRadius", &pyaon::Hierarchy::getFFRadius)
         .def("getPRadius", &pyaon::Hierarchy::getPRadius)
         .def("getARadius", &pyaon::Hierarchy::getARadius)
