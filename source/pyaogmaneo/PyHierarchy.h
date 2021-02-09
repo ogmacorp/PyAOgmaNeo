@@ -207,19 +207,6 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCTemperature(
-        int l,
-        float temperature
-    ) {
-        h.getSCLayer(l).temperature = temperature;
-    }
-
-    float getSCTemperature(
-        int l
-    ) const {
-        return h.getSCLayer(l).temperature;
-    }
-
     void setPAlpha(
         int l,
         int v,
