@@ -87,9 +87,6 @@ for episode in range(1000):
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column
 
-        if np.random.rand() < 0.02:
-            action = np.random.randint(0, numActions)
-
         obs, reward, done, info = env.step(action)
 
         # Re-define reward so that it is 0 normally and then -1 if done
