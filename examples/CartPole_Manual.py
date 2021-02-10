@@ -91,7 +91,7 @@ for episode in range(1000):
 
         # Re-define reward so that it is 0 normally and then -1 if done
         if done:
-            reward = -1.0
+            reward = -100.0
 
             print("Episode {} finished after {} timesteps".format(episode + 1, t + 1))
 
