@@ -212,19 +212,6 @@ public:
         return h.getSCLayer(l).beta;
     }
 
-    void setSCTemperature(
-        int l,
-        float temperature
-    ) {
-        h.getSCLayer(l).temperature = temperature;
-    }
-
-    float getSCTemperature(
-        int l
-    ) const {
-        return h.getSCLayer(l).temperature;
-    }
-
     void setPAlpha(
         int l,
         int i,
@@ -240,23 +227,6 @@ public:
         int t
     ) const {
         return h.getPLayers(l)[i][t].alpha;
-    }
-
-    void setPTemperature(
-        int l,
-        int i,
-        int t,
-        float temperature
-    ) {
-        h.getPLayers(l)[i][t].temperature = temperature;
-    }
-
-    float getPTemperature(
-        int l,
-        int i,
-        int t
-    ) const {
-        return h.getPLayers(l)[i][t].temperature;
     }
 
     void setAAlpha(
