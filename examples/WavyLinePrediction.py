@@ -88,7 +88,7 @@ h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=4) 
 iters = 50000
 
 def wave(t):
-    #return np.sin(t  * 2.0 * np.pi * 0.01 + 0.3)
+    return np.sin(t  * 2.0 * np.pi * 0.01 + 0.3)
 
     if t % 100 == 0:
         return 100.0
