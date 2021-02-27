@@ -94,8 +94,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
         .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
-        .def("setSCBeta", &pyaon::Hierarchy::setSCBeta)
-        .def("getSCBeta", &pyaon::Hierarchy::getSCBeta)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
