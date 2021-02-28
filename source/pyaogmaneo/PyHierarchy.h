@@ -186,17 +186,30 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
-    void setSCThreshold(
+    void setSCAlpha(
         int l,
-        float threshold
+        float alpha
     ) {
-        h.getSCLayer(l).threshold = threshold;
+        h.getSCLayer(l).alpha = alpha;
     }
 
-    float getSCThreshold(
+    float getSCAlpha(
         int l
     ) {
-        return h.getSCLayer(l).threshold;
+        return h.getSCLayer(l).alpha;
+    }
+
+    void setSCBeta(
+        int l,
+        float beta
+    ) {
+        h.getSCLayer(l).beta = beta;
+    }
+
+    float getSCBeta(
+        int l
+    ) {
+        return h.getSCLayer(l).beta;
     }
 
     void setPAlpha(
