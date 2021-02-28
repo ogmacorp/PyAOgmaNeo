@@ -92,6 +92,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
+        .def("setSCThreshold", &pyaon::Hierarchy::setSCThreshold)
+        .def("getSCThreshold", &pyaon::Hierarchy::getSCThreshold)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)

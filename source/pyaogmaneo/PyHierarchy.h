@@ -186,6 +186,19 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
+    void setSCThreshold(
+        int l,
+        float threshold
+    ) {
+        h.getSCLayer(l).threshold = threshold;
+    }
+
+    float getSCThreshold(
+        int l
+    ) {
+        return h.getSCLayer(l).threshold;
+    }
+
     void setPAlpha(
         int l,
         int i,
