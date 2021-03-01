@@ -85,12 +85,12 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=4) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 50000
+iters = 100000
 
 def wave(t):
     #return np.sin(t  * 2.0 * np.pi * 0.01 + 0.3)
 
-    if t % 40 == 0:
+    if t % 10 == 0:
         return 100.0
 
     return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.1

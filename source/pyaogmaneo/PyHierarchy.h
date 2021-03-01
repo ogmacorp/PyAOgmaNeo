@@ -186,6 +186,19 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
+    void setSCAlpha(
+        int l,
+        float alpha
+    ) {
+        h.getSCLayer(l).alpha = alpha;
+    }
+
+    float getSCAlpha(
+        int l
+    ) {
+        return h.getSCLayer(l).alpha;
+    }
+
     void setPAlpha(
         int l,
         int i,
