@@ -210,6 +210,43 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
+    void setPAlpha(
+        int l,
+        int v,
+        float alpha
+    ) {
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        h.getPLayers(l)[v]->alpha = alpha;
+    }
+
+    float getPAlpha(
+        int l,
+        int v
+    ) const {
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        return h.getPLayers(l)[v]->alpha;
+    }
+
+    void setPTemperature(
+        int l,
+        int v,
+        float temperature
+    ) {
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        h.getPLayers(l)[v]->temperature = temperature;
+    }
+
+    float getPTemperature(
+        int l,
+        int v
+    ) const {
+        assert(h.getPLayers(l)[v] != nullptr);
+
+        return h.getPLayers(l)[v]->temperature;
+    }
     void setAAlpha(
         int v,
         float alpha
