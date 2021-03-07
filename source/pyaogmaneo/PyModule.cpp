@@ -30,39 +30,54 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
-            py::arg("ffRadius") = 2,
+            py::arg("hRadius") = 2,
+            py::arg("eRadius") = 2,
             py::arg("pRadius") = 2,
+            py::arg("fbRadius") = 2,
             py::arg("aRadius") = 2,
             py::arg("historyCapacity") = 32
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
-        .def_readwrite("ffRadius", &pyaon::IODesc::ffRadius)
+        .def_readwrite("hRadius", &pyaon::IODesc::hRadius)
+        .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
         .def_readwrite("pRadius", &pyaon::IODesc::pRadius)
+        .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius)
         .def_readwrite("aRadius", &pyaon::IODesc::aRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
+                std::tuple<int, int, int>,
+                int,
+                int,
                 int,
                 int,
                 int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("ffRadius") = 2,
+            py::arg("errorSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("hRadius") = 2,
+            py::arg("eRadius") = 2,
             py::arg("pRadius") = 2,
+            py::arg("fbRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
+        .def_readwrite("errorSize", &pyaon::LayerDesc::errorSize)
+        .def_readwrite("hRadius", &pyaon::LayerDesc::hRadius)
+        .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("pRadius", &pyaon::LayerDesc::pRadius)
+        .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
@@ -84,17 +99,20 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getUpdate", &pyaon::Hierarchy::getUpdate)
-        .def("getHiddenReconCIs", &pyaon::Hierarchy::getHiddenReconCIs)
-        .def("getHiddenErrorCIs", &pyaon::Hierarchy::getHiddenErrorCIs)
+        .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenReconCIs)
+        .def("getErrorCIs", &pyaon::Hierarchy::getHiddenErrorCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
+        .def("getErrorSize", &pyaon::Hierarchy::getErrorSize)
         .def("getTicks", &pyaon::Hierarchy::getTicks)
         .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
         .def("getNumSCVisibleLayers", &pyaon::Hierarchy::getNumSCVisibleLayers)
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
-        .def("setSCReconAlpha", &pyaon::Hierarchy::setSCReconAlpha)
-        .def("getSCReconAlpha", &pyaon::Hierarchy::getSCReconAlpha)
+        .def("setHAlpha", &pyaon::Hierarchy::setHAlpha)
+        .def("getHAlpha", &pyaon::Hierarchy::getHAlpha)
+        .def("setEAlpha", &pyaon::Hierarchy::setEAlpha)
+        .def("getEAlpha", &pyaon::Hierarchy::getEAlpha)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
@@ -107,8 +125,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
-        .def("getFFRadius", &pyaon::Hierarchy::getFFRadius)
+        .def("getHRadius", &pyaon::Hierarchy::getHRadius)
+        .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getPRadius", &pyaon::Hierarchy::getPRadius)
+        .def("getFBRadius", &pyaon::Hierarchy::getFBFadius)
         .def("getARadius", &pyaon::Hierarchy::getARadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 

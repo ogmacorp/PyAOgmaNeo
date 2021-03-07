@@ -22,8 +22,10 @@ struct IODesc {
 
     IOType type;
 
-    int ffRadius;
+    int hRadius;
+    int eRadius;
     int pRadius;
+    int fbRadius;
     int aRadius;
 
     int historyCapacity;
@@ -31,16 +33,20 @@ struct IODesc {
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
-        int ffRadius,
+        int hRadius,
+        int eRadius,
         int pRadius,
+        int fbRadius,
         int aRadius,
         int historyCapacity
     )
     :
     size(size),
     type(type),
-    ffRadius(ffRadius),
+    hRadius(hRadius),
+    eRadius(eRadius),
     pRadius(pRadius),
+    fbRadius(fbRadius),
     aRadius(aRadius),
     historyCapacity(historyCapacity)
     {}
@@ -48,24 +54,33 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
+    std::tuple<int, int, int> errorSize;
 
-    int ffRadius;
+    int hRadius;
+    int eRadius;
     int pRadius;
+    int fbRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int ffRadius,
+        const std::tuple<int, int, int> &errorSize,
+        int hRadius,
+        int eRadius,
         int pRadius,
+        int fbRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
-    ffRadius(ffRadius),
+    errorSize(errorSize),
+    hRadius(hRadius),
+    eRadius(eRadius),
     pRadius(pRadius),
+    fbRadius(fbRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -131,32 +146,40 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getHiddenReconCIs(
+    std::vector<int> getHiddenCIs(
         int l
     ) {
-        std::vector<int> hiddenCIs(h.getSCLayer(l).recon.getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getSCLayer(l).hidden.getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getSCLayer(l).recon.getHiddenCIs()[j];
+            hiddenCIs[j] = h.getSCLayer(l).hidden.getHiddenCIs()[j];
 
         return hiddenCIs;
     }
 
-    std::vector<int> getHiddenErrorCIs(
+    std::vector<int> getErrorCIs(
         int l
     ) {
-        std::vector<int> hiddenCIs(h.getSCLayer(l).error.getHiddenCIs().size());
+        std::vector<int> errorCIs(h.getSCLayer(l).error.getHiddenCIs().size());
 
-        for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getSCLayer(l).error.getHiddenCIs()[j];
+        for (int j = 0; j < errorCIs.size(); j++)
+            errorCIs[j] = h.getSCLayer(l).error.getHiddenCIs()[j];
 
-        return hiddenCIs;
+        return errorCIs;
     }
 
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
-        aon::Int3 size = h.getSCLayer(l).recon.getHiddenSize();
+        aon::Int3 size = h.getSCLayer(l).hidden.getHiddenSize();
+
+        return { size.x, size.y, size.z };
+    }
+
+    std::tuple<int, int, int> getErrorSize(
+        int l
+    ) {
+        aon::Int3 size = h.getSCLayer(l).error.getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -176,7 +199,7 @@ public:
     int getNumSCVisibleLayers(
         int l
     ) {
-        return h.getSCLayer(l).recon.getNumVisibleLayers();
+        return h.getSCLayer(l).hidden.getNumVisibleLayers();
     }
 
     int getNumInputs() const {
@@ -197,17 +220,30 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
-    void setSCReconAlpha(
+    void setHAlpha(
         int l,
         float alpha
     ) {
-        h.getSCLayer(l).recon.alpha = alpha;
+        h.getSCLayer(l).hidden.alpha = alpha;
     }
 
-    float getSCReconAlpha(
+    float getHAlpha(
         int l
     ) {
-        return h.getSCLayer(l).recon.alpha;
+        return h.getSCLayer(l).hidden.alpha;
+    }
+
+    void setEAlpha(
+        int l,
+        float alpha
+    ) {
+        h.getSCLayer(l).error.alpha = alpha;
+    }
+
+    float getEAlpha(
+        int l
+    ) {
+        return h.getSCLayer(l).error.alpha;
     }
 
     void setPAlpha(
@@ -313,10 +349,16 @@ public:
     }
 
     // Retrieve additional parameters on the SPH's structure
-    int getFFRadius(
+    int getHRadius(
         int l
     ) const {
-        return h.getSCLayer(l).recon.getVisibleLayerDesc(0).radius;
+        return h.getSCLayer(l).hidden.getVisibleLayerDesc(0).radius;
+    }
+
+    int getERadius(
+        int l
+    ) const {
+        return h.getSCLayer(l).error.getVisibleLayerDesc(0).radius;
     }
 
     int getPRadius(
@@ -324,6 +366,13 @@ public:
         int i
     ) const {
         return h.getPLayers(l)[i][0].getVisibleLayerDesc(0).radius;
+    }
+
+    int getFBRadius(
+        int l,
+        int i
+    ) const {
+        return h.getPLayers(l)[i][0].getVisibleLayerDesc(1).radius;
     }
 
     int getARadius(
