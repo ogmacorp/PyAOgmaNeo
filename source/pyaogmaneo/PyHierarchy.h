@@ -131,13 +131,24 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getHiddenCIs(
+    std::vector<int> getHiddenReconCIs(
         int l
     ) {
-        std::vector<int> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getSCLayer(l).recon.getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getSCLayer(l).getHiddenCIs()[j];
+            hiddenCIs[j] = h.getSCLayer(l).recon.getHiddenCIs()[j];
+
+        return hiddenCIs;
+    }
+
+    std::vector<int> getHiddenErrorCIs(
+        int l
+    ) {
+        std::vector<int> hiddenCIs(h.getSCLayer(l).error.getHiddenCIs().size());
+
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = h.getSCLayer(l).error.getHiddenCIs()[j];
 
         return hiddenCIs;
     }
@@ -145,7 +156,7 @@ public:
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
-        aon::Int3 size = h.getSCLayer(l).getHiddenSize();
+        aon::Int3 size = h.getSCLayer(l).recon.getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -165,7 +176,7 @@ public:
     int getNumSCVisibleLayers(
         int l
     ) {
-        return h.getSCLayer(l).getNumVisibleLayers();
+        return h.getSCLayer(l).recon.getNumVisibleLayers();
     }
 
     int getNumInputs() const {
@@ -186,30 +197,17 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
-    void setSCAlpha(
+    void setSCReconAlpha(
         int l,
         float alpha
     ) {
-        h.getSCLayer(l).alpha = alpha;
+        h.getSCLayer(l).recon.alpha = alpha;
     }
 
-    float getSCAlpha(
+    float getSCReconAlpha(
         int l
     ) {
-        return h.getSCLayer(l).alpha;
-    }
-
-    void setSCBeta(
-        int l,
-        float beta
-    ) {
-        h.getSCLayer(l).beta = beta;
-    }
-
-    float getSCBeta(
-        int l
-    ) {
-        return h.getSCLayer(l).beta;
+        return h.getSCLayer(l).recon.alpha;
     }
 
     void setPAlpha(
@@ -318,7 +316,7 @@ public:
     int getFFRadius(
         int l
     ) const {
-        return h.getSCLayer(l).getVisibleLayerDesc(0).radius;
+        return h.getSCLayer(l).recon.getVisibleLayerDesc(0).radius;
     }
 
     int getPRadius(
