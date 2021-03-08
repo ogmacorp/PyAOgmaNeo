@@ -118,8 +118,7 @@ public:
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
-        float reward,
-        bool mimic
+        float reward
     );
 
     int getNumLayers() const {
@@ -311,21 +310,21 @@ public:
         return h.getALayers()[i]->gamma;
     }
 
-    void setAMinSteps(
+    void setAQSteps(
         int i,
-        int minSteps
+        int qSteps
     ) {
         assert(h.getALayers()[i] != nullptr);
 
-        h.getALayers()[i]->minSteps = minSteps;
+        h.getALayers()[i]->qSteps = qSteps;
     }
 
-    int getAMinSteps(
+    int getAQSteps(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->minSteps;
+        return h.getALayers()[i]->qSteps;
     }
 
     void setAHistoryIters(
