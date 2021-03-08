@@ -24,7 +24,6 @@ void Hierarchy::initRandom(
             ioDescs[i].eRadius,
             ioDescs[i].pRadius,
             ioDescs[i].fbRadius,
-            ioDescs[i].aRadius,
             ioDescs[i].historyCapacity
         );
     }

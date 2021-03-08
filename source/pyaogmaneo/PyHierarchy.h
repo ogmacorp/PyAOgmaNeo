@@ -26,7 +26,6 @@ struct IODesc {
     int eRadius;
     int pRadius;
     int fbRadius;
-    int aRadius;
 
     int historyCapacity;
 
@@ -37,7 +36,6 @@ struct IODesc {
         int eRadius,
         int pRadius,
         int fbRadius,
-        int aRadius,
         int historyCapacity
     )
     :
@@ -47,7 +45,6 @@ struct IODesc {
     eRadius(eRadius),
     pRadius(pRadius),
     fbRadius(fbRadius),
-    aRadius(aRadius),
     historyCapacity(historyCapacity)
     {}
 };
@@ -373,12 +370,6 @@ public:
         int i
     ) const {
         return h.getPLayers(l)[i][0].getVisibleLayerDesc(1).radius;
-    }
-
-    int getARadius(
-        int i
-    ) const {
-        return h.getALayers()[i]->getVisibleLayerDesc(0).radius;
     }
 
     int getAHistoryCapacity(

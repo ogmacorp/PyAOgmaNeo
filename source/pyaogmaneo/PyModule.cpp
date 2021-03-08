@@ -31,7 +31,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
@@ -40,7 +39,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("eRadius") = 2,
             py::arg("pRadius") = 2,
             py::arg("fbRadius") = 2,
-            py::arg("aRadius") = 2,
             py::arg("historyCapacity") = 32
         )
         .def_readwrite("size", &pyaon::IODesc::size)
@@ -49,7 +47,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
         .def_readwrite("pRadius", &pyaon::IODesc::pRadius)
         .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius)
-        .def_readwrite("aRadius", &pyaon::IODesc::aRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
@@ -129,7 +126,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getPRadius", &pyaon::Hierarchy::getPRadius)
         .def("getFBRadius", &pyaon::Hierarchy::getFBRadius)
-        .def("getARadius", &pyaon::Hierarchy::getARadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
