@@ -99,8 +99,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getUpdate", &pyaon::Hierarchy::getUpdate)
-        .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenReconCIs)
-        .def("getErrorCIs", &pyaon::Hierarchy::getHiddenErrorCIs)
+        .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
+        .def("getErrorCIs", &pyaon::Hierarchy::getErrorCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
         .def("getErrorSize", &pyaon::Hierarchy::getErrorSize)
         .def("getTicks", &pyaon::Hierarchy::getTicks)
@@ -128,7 +128,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHRadius", &pyaon::Hierarchy::getHRadius)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getPRadius", &pyaon::Hierarchy::getPRadius)
-        .def("getFBRadius", &pyaon::Hierarchy::getFBFadius)
+        .def("getFBRadius", &pyaon::Hierarchy::getFBRadius)
         .def("getARadius", &pyaon::Hierarchy::getARadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
