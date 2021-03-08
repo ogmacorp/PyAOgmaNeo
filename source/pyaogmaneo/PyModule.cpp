@@ -39,7 +39,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("eRadius") = 2,
             py::arg("pRadius") = 2,
             py::arg("fbRadius") = 2,
-            py::arg("historyCapacity") = 32
+            py::arg("historyCapacity") = 128
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
