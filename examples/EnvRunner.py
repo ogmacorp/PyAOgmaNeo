@@ -131,10 +131,12 @@ class EnvRunner:
         lds = []
 
         for i in range(len(layerSizes)):
-            ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
+            ld = pyaon.LayerDesc(hiddenSize=layerSizes[i], errorSize=layerSizes[i])
 
-            ld.ffRadius = layerRadius
+            ld.hRadius = layerRadius
+            ld.eRadius = layerRadius
             ld.pRadius = layerRadius
+            ld.fbRadius = layerRadius
 
             lds.append(ld)
 
@@ -143,7 +145,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, layerRadius, 32))
+            ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, layerRadius, layerRadius, layerRadius, 32))
 
         self.h.initRandom(ioDescs, lds)
 
