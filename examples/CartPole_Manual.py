@@ -60,16 +60,13 @@ pyaon.setNumThreads(4)
 lds = []
 
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
-
-    ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
-    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
+    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16), errorSize=(4, 4, 16))
     
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((3, 3, 16), pyaon.none), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
+h.initRandom([ pyaon.IODesc((3, 3, 16), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
 
 reward = 0.0
 
