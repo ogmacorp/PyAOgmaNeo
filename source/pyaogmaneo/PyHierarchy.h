@@ -13,9 +13,8 @@
 
 namespace pyaon {
 enum IOType {
-    none = 0,
-    prediction = 1,
-    action = 2
+    prediction = 0,
+    action = 1
 };
 
 struct IODesc {
@@ -23,50 +22,62 @@ struct IODesc {
 
     IOType type;
 
-    int ffRadius;
+    int hRadius;
+    int eRadius;
     int pRadius;
-    int aRadius;
+    int fbRadius;
 
     int historyCapacity;
 
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
-        int ffRadius,
+        int hRadius,
+        int eRadius,
         int pRadius,
-        int aRadius,
+        int fbRadius,
         int historyCapacity
     )
     :
     size(size),
     type(type),
-    ffRadius(ffRadius),
+    hRadius(hRadius),
+    eRadius(eRadius),
     pRadius(pRadius),
-    aRadius(aRadius),
+    fbRadius(fbRadius),
     historyCapacity(historyCapacity)
     {}
 };
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
+    std::tuple<int, int, int> errorSize;
 
-    int ffRadius;
+    int hRadius;
+    int eRadius;
     int pRadius;
+    int fbRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int ffRadius,
+        const std::tuple<int, int, int> &errorSize,
+        int hRadius,
+        int eRadius,
         int pRadius,
+        int fbRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
-    ffRadius(ffRadius),
+    errorSize(errorSize),
+    hRadius(hRadius),
+    eRadius(eRadius),
     pRadius(pRadius),
+    fbRadius(fbRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -135,18 +146,37 @@ public:
     std::vector<int> getHiddenCIs(
         int l
     ) {
-        std::vector<int> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getSCLayer(l).hidden.getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getSCLayer(l).getHiddenCIs()[j];
+            hiddenCIs[j] = h.getSCLayer(l).hidden.getHiddenCIs()[j];
 
         return hiddenCIs;
+    }
+
+    std::vector<int> getErrorCIs(
+        int l
+    ) {
+        std::vector<int> errorCIs(h.getSCLayer(l).error.getHiddenCIs().size());
+
+        for (int j = 0; j < errorCIs.size(); j++)
+            errorCIs[j] = h.getSCLayer(l).error.getHiddenCIs()[j];
+
+        return errorCIs;
     }
 
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
-        aon::Int3 size = h.getSCLayer(l).getHiddenSize();
+        aon::Int3 size = h.getSCLayer(l).hidden.getHiddenSize();
+
+        return { size.x, size.y, size.z };
+    }
+
+    std::tuple<int, int, int> getErrorSize(
+        int l
+    ) {
+        aon::Int3 size = h.getSCLayer(l).error.getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -166,7 +196,7 @@ public:
     int getNumSCVisibleLayers(
         int l
     ) {
-        return h.getSCLayer(l).getNumVisibleLayers();
+        return h.getSCLayer(l).hidden.getNumVisibleLayers();
     }
 
     int getNumInputs() const {
@@ -181,83 +211,87 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    bool pLayerExists(
-        int l,
-        int v
-    ) const {
-        return h.getPLayers(l)[v] != nullptr;
-    }
-
     bool aLayerExists(
         int i
     ) const {
         return h.getALayers()[i] != nullptr;
     }
 
-    void setSCAlpha(
+    void setHAlpha(
         int l,
         float alpha
     ) {
-        h.getSCLayer(l).alpha = alpha;
+        h.getSCLayer(l).hidden.alpha = alpha;
     }
 
-    float getSCAlpha(
+    float getHAlpha(
         int l
-    ) const {
-        return h.getSCLayer(l).alpha;
+    ) {
+        return h.getSCLayer(l).hidden.alpha;
+    }
+
+    void setEAlpha(
+        int l,
+        float alpha
+    ) {
+        h.getSCLayer(l).error.alpha = alpha;
+    }
+
+    float getEAlpha(
+        int l
+    ) {
+        return h.getSCLayer(l).error.alpha;
     }
 
     void setPAlpha(
         int l,
-        int v,
+        int i,
+        int t,
         float alpha
     ) {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        h.getPLayers(l)[v]->alpha = alpha;
+        h.getPLayers(l)[i][t].alpha = alpha;
     }
 
     float getPAlpha(
         int l,
-        int v
+        int i,
+        int t
     ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-
-        return h.getPLayers(l)[v]->alpha;
+        return h.getPLayers(l)[i][t].alpha;
     }
 
     void setAAlpha(
-        int v,
+        int i,
         float alpha
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[v]->alpha = alpha;
+        h.getALayers()[i]->alpha = alpha;
     }
 
     float getAAlpha(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->alpha;
+        return h.getALayers()[i]->alpha;
     }
 
     void setABeta(
-        int v,
+        int i,
         float beta
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[v]->beta = beta;
+        h.getALayers()[i]->beta = beta;
     }
 
     float getABeta(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->beta;
+        return h.getALayers()[i]->beta;
     }
 
     void setAGamma(
@@ -270,71 +304,78 @@ public:
     }
 
     float getAGamma(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->gamma;
+        return h.getALayers()[i]->gamma;
     }
 
     void setAMinSteps(
-        int v,
+        int i,
         int minSteps
     ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->minSteps = minSteps;
+        assert(h.getALayers()[i] != nullptr);
+
+        h.getALayers()[i]->minSteps = minSteps;
     }
 
     int getAMinSteps(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->minSteps;
+        return h.getALayers()[i]->minSteps;
     }
 
     void setAHistoryIters(
-        int v,
+        int i,
         int historyIters
     ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->historyIters = historyIters;
+        assert(h.getALayers()[i] != nullptr);
+
+        h.getALayers()[i]->historyIters = historyIters;
     }
 
     int getAHistoryIters(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->historyIters;
+        return h.getALayers()[i]->historyIters;
     }
 
     // Retrieve additional parameters on the SPH's structure
-    int getFFRadius(
+    int getHRadius(
         int l
     ) const {
-        return h.getSCLayer(l).getVisibleLayerDesc(0).radius;
+        return h.getSCLayer(l).hidden.getVisibleLayerDesc(0).radius;
+    }
+
+    int getERadius(
+        int l
+    ) const {
+        return h.getSCLayer(l).error.getVisibleLayerDesc(0).radius;
     }
 
     int getPRadius(
         int l,
-        int v
+        int i
     ) const {
-        return h.getPLayers(l)[v]->getVisibleLayerDesc(0).radius;
+        return h.getPLayers(l)[i][0].getVisibleLayerDesc(0).radius;
     }
 
-    int getARadius(
-        int v
+    int getFBRadius(
+        int l,
+        int i
     ) const {
-        return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
+        return h.getPLayers(l)[i][0].getVisibleLayerDesc(1).radius;
     }
 
     int getAHistoryCapacity(
-        int v
+        int i
     ) const {
-        return h.getALayers()[v]->getHistoryCapacity();
+        return h.getALayers()[i]->getHistoryCapacity();
     }
 };
 } // namespace pyaon
