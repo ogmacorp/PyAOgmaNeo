@@ -24,8 +24,8 @@ struct IODesc {
 
     int hRadius;
     int eRadius;
-    int pRadius;
-    int fbRadius;
+    int dRadius;
+    int bRadius;
 
     int historyCapacity;
 
@@ -34,8 +34,8 @@ struct IODesc {
         IOType type,
         int hRadius,
         int eRadius,
-        int pRadius,
-        int fbRadius,
+        int dRadius,
+        int bRadius,
         int historyCapacity
     )
     :
@@ -43,8 +43,8 @@ struct IODesc {
     type(type),
     hRadius(hRadius),
     eRadius(eRadius),
-    pRadius(pRadius),
-    fbRadius(fbRadius),
+    dRadius(dRadius),
+    bRadius(bRadius),
     historyCapacity(historyCapacity)
     {}
 };
@@ -55,8 +55,8 @@ struct LayerDesc {
 
     int hRadius;
     int eRadius;
-    int pRadius;
-    int fbRadius;
+    int dRadius;
+    int bRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
@@ -66,8 +66,8 @@ struct LayerDesc {
         const std::tuple<int, int, int> &errorSize,
         int hRadius,
         int eRadius,
-        int pRadius,
-        int fbRadius,
+        int dRadius,
+        int bRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
@@ -76,8 +76,8 @@ struct LayerDesc {
     errorSize(errorSize),
     hRadius(hRadius),
     eRadius(eRadius),
-    pRadius(pRadius),
-    fbRadius(fbRadius),
+    dRadius(dRadius),
+    bRadius(bRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -146,10 +146,10 @@ public:
     std::vector<int> getHiddenCIs(
         int l
     ) {
-        std::vector<int> hiddenCIs(h.getSCLayer(l).hidden.getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getEncLayer(l).hidden.getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getSCLayer(l).hidden.getHiddenCIs()[j];
+            hiddenCIs[j] = h.getEncLayer(l).hidden.getHiddenCIs()[j];
 
         return hiddenCIs;
     }
@@ -157,10 +157,10 @@ public:
     std::vector<int> getErrorCIs(
         int l
     ) {
-        std::vector<int> errorCIs(h.getSCLayer(l).error.getHiddenCIs().size());
+        std::vector<int> errorCIs(h.getEncLayer(l).error.getHiddenCIs().size());
 
         for (int j = 0; j < errorCIs.size(); j++)
-            errorCIs[j] = h.getSCLayer(l).error.getHiddenCIs()[j];
+            errorCIs[j] = h.getEncLayer(l).error.getHiddenCIs()[j];
 
         return errorCIs;
     }
@@ -168,7 +168,7 @@ public:
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
-        aon::Int3 size = h.getSCLayer(l).hidden.getHiddenSize();
+        aon::Int3 size = h.getEncLayer(l).hidden.getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -176,7 +176,7 @@ public:
     std::tuple<int, int, int> getErrorSize(
         int l
     ) {
-        aon::Int3 size = h.getSCLayer(l).error.getHiddenSize();
+        aon::Int3 size = h.getEncLayer(l).error.getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -196,7 +196,7 @@ public:
     int getNumSCVisibleLayers(
         int l
     ) {
-        return h.getSCLayer(l).hidden.getNumVisibleLayers();
+        return h.getEncLayer(l).hidden.getNumVisibleLayers();
     }
 
     int getNumInputs() const {
@@ -217,81 +217,81 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
-    void setHAlpha(
+    void setHLR(
         int l,
-        float alpha
+        float lr
     ) {
-        h.getSCLayer(l).hidden.alpha = alpha;
+        h.getEncLayer(l).hidden.lr = lr;
     }
 
-    float getHAlpha(
+    float getHLR(
         int l
     ) {
-        return h.getSCLayer(l).hidden.alpha;
+        return h.getEncLayer(l).hidden.lr;
     }
 
-    void setEAlpha(
+    void setELR(
         int l,
-        float alpha
+        float lr
     ) {
-        h.getSCLayer(l).error.alpha = alpha;
+        h.getEncLayer(l).error.lr = lr;
     }
 
-    float getEAlpha(
+    float getELR(
         int l
     ) {
-        return h.getSCLayer(l).error.alpha;
+        return h.getEncLayer(l).error.lr;
     }
 
-    void setPAlpha(
+    void setDLR(
         int l,
         int i,
         int t,
-        float alpha
+        float lr
     ) {
-        h.getPLayers(l)[i][t].alpha = alpha;
+        h.getDLayers(l)[i][t].lr = lr;
     }
 
-    float getPAlpha(
+    float getDLR(
         int l,
         int i,
         int t
     ) const {
-        return h.getPLayers(l)[i][t].alpha;
+        return h.getDLayers(l)[i][t].lr;
     }
 
-    void setAAlpha(
+    void setAVLR(
         int i,
-        float alpha
+        float vlr
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->alpha = alpha;
+        h.getALayers()[i]->vlr = vlr;
     }
 
-    float getAAlpha(
+    float getAVLR(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->alpha;
+        return h.getALayers()[i]->vlr;
     }
 
-    void setABeta(
+    void setAALR(
         int i,
-        float beta
+        float alr
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->beta = beta;
+        h.getALayers()[i]->alr = alr;
     }
 
-    float getABeta(
+    float getAALR(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->beta;
+        return h.getALayers()[i]->alr;
     }
 
     void setAGamma(
@@ -349,27 +349,27 @@ public:
     int getHRadius(
         int l
     ) const {
-        return h.getSCLayer(l).hidden.getVisibleLayerDesc(0).radius;
+        return h.getEncLayer(l).hidden.getVisibleLayerDesc(0).radius;
     }
 
     int getERadius(
         int l
     ) const {
-        return h.getSCLayer(l).error.getVisibleLayerDesc(0).radius;
+        return h.getEncLayer(l).error.getVisibleLayerDesc(0).radius;
     }
 
-    int getPRadius(
+    int getDRadius(
         int l,
         int i
     ) const {
-        return h.getPLayers(l)[i][0].getVisibleLayerDesc(0).radius;
+        return h.getDLayers(l)[i][0].getVisibleLayerDesc(0).radius;
     }
 
-    int getFBRadius(
+    int getBRadius(
         int l,
         int i
     ) const {
-        return h.getPLayers(l)[i][0].getVisibleLayerDesc(1).radius;
+        return h.getDLayers(l)[i][0].getVisibleLayerDesc(1).radius;
     }
 
     int getAHistoryCapacity(
