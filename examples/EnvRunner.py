@@ -135,8 +135,8 @@ class EnvRunner:
 
             ld.hRadius = layerRadius
             ld.eRadius = layerRadius
-            ld.pRadius = layerRadius
-            ld.fbRadius = layerRadius
+            ld.dRadius = layerRadius
+            ld.bRadius = layerRadius
 
             lds.append(ld)
 
