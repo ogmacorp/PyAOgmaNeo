@@ -294,21 +294,21 @@ public:
         return h.getALayers()[i]->alr;
     }
 
-    void setAGamma(
+    void setADiscount(
         int v,
-        float gamma
+        float discount
     ) {
         assert(h.getALayers()[v] != nullptr);
         
-        h.getALayers()[v]->gamma = gamma;
+        h.getALayers()[v]->discount = discount;
     }
 
-    float getAGamma(
+    float getADiscount(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->gamma;
+        return h.getALayers()[i]->discount;
     }
 
     void setAMinSteps(
