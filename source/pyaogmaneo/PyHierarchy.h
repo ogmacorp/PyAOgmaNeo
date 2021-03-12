@@ -193,7 +193,7 @@ public:
         return h.getTicksPerUpdate(l);
     }
 
-    int getNumSCVisibleLayers(
+    int getNumEncVisibleLayers(
         int l
     ) {
         return h.getEncLayer(l).hidden.getNumVisibleLayers();
