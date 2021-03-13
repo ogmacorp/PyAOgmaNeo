@@ -15,8 +15,6 @@ if "--use_system_aogmaneo" in sys.argv:
     use_system_aogmaneo = True
     sys.argv.remove("--use_system_aogmaneo")
 
-use_system_aogmaneo = True # For dev, remove upon release
-
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[
@@ -78,7 +76,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="pyaogmaneo",
-    version="1.2.0",
+    version="1.2.1",
     description="Python bindings for the AOgmaNeo library",
     long_description='https://github.com/ogmacorp/PyAOgmaNeo',
     author='Ogma Intelligent Systems Corp',
