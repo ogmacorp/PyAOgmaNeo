@@ -20,7 +20,6 @@ void Hierarchy::initRandom(
         cIODescs[i] = aon::Hierarchy::IODesc(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
-            ioDescs[i].hRadius,
             ioDescs[i].eRadius,
             ioDescs[i].dRadius,
             ioDescs[i].bRadius,
@@ -33,8 +32,7 @@ void Hierarchy::initRandom(
     for (int l = 0; l < layerDescs.size(); l++) {
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
-            aon::Int3(std::get<0>(layerDescs[l].errorSize), std::get<1>(layerDescs[l].errorSize), std::get<2>(layerDescs[l].errorSize)),
-            layerDescs[l].hRadius,
+            layerDescs[l].errorHistorySize,
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
             layerDescs[l].bRadius,
