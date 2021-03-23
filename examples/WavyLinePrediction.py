@@ -82,7 +82,7 @@ for i in range(8): # Layers with exponential memory
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(2, 2, 16), type=pyaon.prediction, ffRadius=2) ], lds)
+h.initRandom([ pyaon.IODesc(size=(2, 2, 16), type=pyaon.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 50000

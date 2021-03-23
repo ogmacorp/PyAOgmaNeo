@@ -247,6 +247,7 @@ public:
 
         return h.getPLayers(l)[v]->temperature;
     }
+
     void setAAlpha(
         int v,
         float alpha
