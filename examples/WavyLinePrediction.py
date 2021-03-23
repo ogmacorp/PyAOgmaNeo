@@ -89,17 +89,14 @@ h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, hRadius=4) ]
 iters = 50000
 
 def wave(t):
-    if t % 100 == 0:
-        return 100.0
-
-    return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.1
+    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + np.random.randn() * 0.05
 
 for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
-    #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
-    csdr = IEEEToCSDR(float(valueToEncode))
+    csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
+    #csdr = IEEEToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
@@ -124,8 +121,8 @@ for t2 in range(3000):
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
-    value = CSDRToIEEE(h.getPredictionCIs(0))
+    value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) 
+    #value = CSDRToIEEE(h.getPredictionCIs(0))
 
     # Append to plot data
     ts.append(t2)
