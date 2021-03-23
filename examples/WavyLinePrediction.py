@@ -67,7 +67,7 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs)) 
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-numInputColumns = 6
+numInputColumns = 4
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
@@ -77,19 +77,18 @@ for i in range(8): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
-    ld.errorSize = (4, 4, 16)
 
     lds.append(ld)
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, hRadius=4) ], lds)
+h.initRandom([ pyaon.IODesc(size=(2, 2, 16), type=pyaon.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 50000
 
 def wave(t):
-    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + np.random.randn() * 0.05
+    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + np.random.randn() * 0.02
 
 for t in range(iters):
     # The value to encode into the input column
