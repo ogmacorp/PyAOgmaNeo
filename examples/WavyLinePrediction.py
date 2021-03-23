@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -67,46 +67,38 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs)) 
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-numInputColumns = 6
+numInputColumns = 4
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(9): # Layers with exponential memory
+for i in range(8): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (3, 3, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction, ffRadius=4) ], lds)
+h.initRandom([ pyaon.IODesc(size=(2, 2, 16), type=pyaon.prediction, ffRadius=2) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 50000
 
 def wave(t):
-    #return np.sin(t  * 2.0 * np.pi * 0.01 + 0.3)
-
-    if t % 50 == 0:
-        return 100.0
-
-    return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.1
+    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + np.random.randn() * 0.02
 
 for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
-    #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
-    csdr = IEEEToCSDR(float(valueToEncode))
+    csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
+    #csdr = IEEEToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
-
-    if h.getUpdate(7):
-        print(h.getHiddenCIs(7))
 
     # Print progress
     if t % 100 == 0:
@@ -128,8 +120,8 @@ for t2 in range(3000):
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
-    value = CSDRToIEEE(h.getPredictionCIs(0))
+    value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) 
+    #value = CSDRToIEEE(h.getPredictionCIs(0))
 
     # Append to plot data
     ts.append(t2)
