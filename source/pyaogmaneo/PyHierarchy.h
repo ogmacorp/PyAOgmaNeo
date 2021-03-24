@@ -229,23 +229,23 @@ public:
         return h.getPLayers(l)[v]->alpha;
     }
 
-    void setPTemperature(
+    void setPTargetRange(
         int l,
         int v,
-        float temperature
+        float targetRange
     ) {
         assert(h.getPLayers(l)[v] != nullptr);
 
-        h.getPLayers(l)[v]->temperature = temperature;
+        h.getPLayers(l)[v]->targetRange = targetRange;
     }
 
-    float getPTemperature(
+    float getPTargetRange(
         int l,
         int v
     ) const {
         assert(h.getPLayers(l)[v] != nullptr);
 
-        return h.getPLayers(l)[v]->temperature;
+        return h.getPLayers(l)[v]->targetRange;
     }
 
     void setAAlpha(
