@@ -67,16 +67,18 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs)) 
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-numInputColumns = 4
+numInputColumns = 2
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(8): # Layers with exponential memory
+for i in range(2): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
+
+    ld.temporalHorizon = 8
 
     lds.append(ld)
 
@@ -85,12 +87,19 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(2, 2, 16), type=pyaon.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 50000
+iters = 100000
 
 def wave(t):
-    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + np.random.randn() * 0.02
+    return np.sin(t * 0.1) * 0.5 + np.random.randn() * 0.03
 
-for t in range(iters):
+    if t % 100 == 0:
+        return 0.5
+
+    return 0.0
+
+t = 0.0
+
+for i in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
@@ -100,9 +109,11 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
+    t += np.random.rand()
+
     # Print progress
-    if t % 100 == 0:
-        print(t)
+    if i % 100 == 0:
+        print(i)
 
 # Recall the sequence
 ts = [] # Time step
@@ -110,11 +121,11 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(3000):
-    t = t2 + iters # Continue where previous sequence left off
-
+for i in range(3000):
     # New, continued value for comparison to what the hierarchy predicts
     valueToEncode = wave(t) # Some wavy line
+
+    t += np.random.rand()
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
@@ -124,7 +135,7 @@ for t2 in range(3000):
     #value = CSDRToIEEE(h.getPredictionCIs(0))
 
     # Append to plot data
-    ts.append(t2)
+    ts.append(i)
     vs.append(value)
 
     trgs.append(valueToEncode)
