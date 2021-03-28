@@ -67,42 +67,56 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs)) 
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-numInputColumns = 4
+numInputColumns = 3
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(8): # Layers with exponential memory
+for i in range(3): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (3, 3, 16) # Size of the encoder (SparseCoder)
+
+    ld.ticksPerUpdate = 4
+    ld.temporalHorizon = 4
 
     lds.append(ld)
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(2, 2, 16), type=pyaon.prediction) ], lds)
+h.initRandom([ pyaon.IODesc(size=(7, 7, inputColumnSize), type=pyaon.prediction, ffRadius=3) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 50000
+iters = 1000
 
 def wave(t):
-    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + np.random.randn() * 0.02
+    return np.sin(t * 0.3) * np.sin(t * 0.1 - 0.5) * 0.8
 
-for t in range(iters):
+    if t % 100 == 0:
+        return 0.5
+
+    return 0.0
+
+t = 0.0
+
+for i in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
     csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
     #csdr = IEEEToCSDR(float(valueToEncode))
 
+    csdr += (49 - len(csdr)) * [ 0 ]
+
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
+    t += np.random.rand() * 0.1 + 0.9
+
     # Print progress
-    if t % 100 == 0:
-        print(t)
+    if i % 100 == 0:
+        print(i)
 
 # Recall the sequence
 ts = [] # Time step
@@ -110,21 +124,21 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(3000):
-    t = t2 + iters # Continue where previous sequence left off
-
+for i in range(600):
     # New, continued value for comparison to what the hierarchy predicts
     valueToEncode = wave(t) # Some wavy line
+
+    t += np.random.rand() * 0.1 + 0.9
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) 
+    value = CSDRToF(h.getPredictionCIs(0)[:3], inputColumnSize) 
     #value = CSDRToIEEE(h.getPredictionCIs(0))
 
     # Append to plot data
-    ts.append(t2)
+    ts.append(i)
     vs.append(value)
 
     trgs.append(valueToEncode)
