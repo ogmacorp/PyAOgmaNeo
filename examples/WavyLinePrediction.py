@@ -105,7 +105,7 @@ for i in range(len(lds)):
     h.setELR(i, 0.1)
 
 # Present the wave sequence for some timesteps
-iters = 1000
+iters = 10000
 
 def wave(t):
     return np.sin(t * 0.3) * np.sin(t * 0.1 - 0.5) * 0.8
