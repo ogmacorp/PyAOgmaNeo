@@ -110,5 +110,15 @@ public:
     float getAlpha() const {
         return enc.alpha;
     }
+
+    void setGamma(
+        float gamma
+    ) {
+        enc.gamma = gamma;
+    }
+
+    float getGamma() const {
+        return enc.gamma;
+    }
 };
 } // namespace pyaon
