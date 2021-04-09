@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -109,6 +109,16 @@ public:
 
     float getLR() const {
         return enc.lr;
+    }
+
+    void setFalloff(
+        float falloff
+    ) {
+        enc.falloff = falloff;
+    }
+
+    float getFalloff() const {
+        return enc.falloff;
     }
 };
 } // namespace pyaon
