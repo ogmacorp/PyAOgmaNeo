@@ -51,22 +51,34 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-se = ScalarEncoder(4, 9, 16)
+res = 32
+
+se = ScalarEncoder(4, 9, res)
 
 # Set the number of threads
-pyaon.setNumThreads(4)
+pyaon.setNumThreads(8)
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16), errorSize=(4, 4, 16))
+for i in range(1): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
+    ld = pyaon.LayerDesc(hiddenSize=(3, 3, 32), errorSize=(3, 3, 32))
+
+    ld.hRadius = 1
+    ld.eRadius = 1
+    ld.dRadius = 1
+    ld.bRadius = 1
     
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((3, 3, 16), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
+h.initRandom([ pyaon.IODesc((3, 3, res), pyaon.prediction, hRadius=1, eRadius=1, dRadius=1, bRadius=1), pyaon.IODesc((1, 1, numActions), pyaon.action, hRadius=0, eRadius=0, dRadius=1, bRadius=1, historyCapacity=64) ], lds)
+
+h.setAVLR(1, 0.1)
+h.setAALR(1, 0.01)
+h.setADiscount(1, 0.99)
+h.setAHistoryIters(1, 16)
 
 reward = 0.0
 
