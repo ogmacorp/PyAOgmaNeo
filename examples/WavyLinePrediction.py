@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -67,73 +67,45 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs)) 
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-numInputColumns = 3
+numInputColumns = 6
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(3): # Layers with exponential memory
+for i in range(8): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (3, 3, 16) # Size of the encoder (SparseCoder)
-
-    ld.hRadius = 1
-    ld.eRadius = 1
-    ld.dRadius = 1
-    ld.bRadius = 1
-
-    ld.ticksPerUpdate = 4
-    ld.temporalHorizon = 4
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(7, 7, inputColumnSize), type=pyaon.prediction, hRadius=3, eRadius=3) ], lds)
-
-for i in range(len(lds)):
-    if i == 0:
-        for j in range(h.getNumInputs()):
-            h.setDLR(i, j, 0, 2.0)
-
-    else:
-        for j in range(h.getNumEncVisibleLayers(i)):
-            h.setDLR(i, 0, j, 2.0)
-
-    h.setHLR(i, 0.1)
-    h.setELR(i, 0.1)
+h.initRandom([ pyaon.IODesc(size=(2, 4, 16), type=pyaon.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 50000
 
 def wave(t):
-    return np.sin(t * 0.3) * np.sin(t * 0.1 - 0.5) * 0.8
+    if t % 50 == 0:
+        return 100.0
 
-    if t % 100 == 0:
-        return 0.5
+    return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.1
 
-    return 0.0
-
-t = 0.0
-
-for i in range(iters):
+for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
-    csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
-    #csdr = IEEEToCSDR(float(valueToEncode))
-
-    csdr += (49 - len(csdr)) * [ 0 ]
+    #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
+    csdr = IEEEToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    t += np.random.rand() * 0.1 + 0.9
-
     # Print progress
-    if i % 100 == 0:
-        print(i)
+    if t % 100 == 0:
+        print(t)
 
 # Recall the sequence
 ts = [] # Time step
@@ -141,21 +113,21 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for i in range(600):
+for t2 in range(3000):
+    t = t2 + iters # Continue where previous sequence left off
+
     # New, continued value for comparison to what the hierarchy predicts
     valueToEncode = wave(t) # Some wavy line
-
-    t += np.random.rand() * 0.1 + 0.9
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = CSDRToF(h.getPredictionCIs(0)[:3], inputColumnSize) 
-    #value = CSDRToIEEE(h.getPredictionCIs(0))
+    #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
+    value = CSDRToIEEE(h.getPredictionCIs(0))
 
     # Append to plot data
-    ts.append(i)
+    ts.append(t2)
     vs.append(value)
 
     trgs.append(valueToEncode)
