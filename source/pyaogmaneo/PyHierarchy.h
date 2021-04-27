@@ -108,7 +108,7 @@ public:
     std::vector<unsigned char> serializeStateToBuffer();
 
     void step(
-        const std::vector<std::vector<unsigned char> > &inputCIs,
+        const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
         float reward,
         bool mimic
@@ -118,10 +118,10 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<unsigned char> getPredictionCIs(
+    std::vector<int> getPredictionCIs(
         int i
     ) const {
-        std::vector<unsigned char> predictions(h.getPredictionCIs(i).size());
+        std::vector<int> predictions(h.getPredictionCIs(i).size());
 
         for (int j = 0; j < predictions.size(); j++)
             predictions[j] = h.getPredictionCIs(i)[j];
@@ -135,10 +135,10 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<unsigned char> getHiddenCIs(
+    std::vector<int> getHiddenCIs(
         int l
     ) {
-        std::vector<unsigned char> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
             hiddenCIs[j] = h.getSCLayer(l).getHiddenCIs()[j];

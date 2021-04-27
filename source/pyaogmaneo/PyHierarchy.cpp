@@ -96,15 +96,15 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 }
 
 void Hierarchy::step(
-    const std::vector<std::vector<unsigned char> > &inputCIs,
+    const std::vector<std::vector<int> > &inputCIs,
     bool learnEnabled,
     float reward,
     bool mimic
 ) {
     assert(inputCIs.size() == h.getInputSizes().size());
 
-    aon::Array<aon::ByteBuffer> cInputCIsBacking(inputCIs.size());
-    aon::Array<const aon::ByteBuffer*> cInputCIs(inputCIs.size());
+    aon::Array<aon::IntBuffer> cInputCIsBacking(inputCIs.size());
+    aon::Array<const aon::IntBuffer*> cInputCIs(inputCIs.size());
 
     for (int i = 0; i < inputCIs.size(); i++) {
         assert(inputCIs[i].size() == h.getInputSizes()[i].x * h.getInputSizes()[i].y);
