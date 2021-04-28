@@ -77,7 +77,6 @@ for i in range(8): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
-    ld.errorHistorySize = 32
 
     lds.append(ld)
 
