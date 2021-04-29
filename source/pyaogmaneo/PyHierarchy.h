@@ -22,26 +22,23 @@ struct IODesc {
 
     IOType type;
 
-    int eRadius;
-    int dRadius;
-    int bRadius;
+    int ffRadius;
+    int fbRadius;
 
     int historyCapacity;
 
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
-        int eRadius,
-        int dRadius,
-        int bRadius,
+        int ffRadius,
+        int fbRadius,
         int historyCapacity
     )
     :
     size(size),
     type(type),
-    eRadius(eRadius),
-    dRadius(dRadius),
-    bRadius(bRadius),
+    ffRadius(ffRadius),
+    fbRadius(fbRadius),
     historyCapacity(historyCapacity)
     {}
 };
@@ -49,28 +46,21 @@ struct IODesc {
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
-    int eRadius;
-    int dRadius;
-    int bRadius;
-
-    int ticksPerUpdate;
-    int temporalHorizon;
+    int ffRadius;
+    int rRadius;
+    int fbRadius;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int eRadius,
-        int dRadius,
-        int bRadius,
-        int ticksPerUpdate,
-        int temporalHorizon
+        int ffRadius,
+        int rRadius,
+        int fbRadius
     )
     :
     hiddenSize(hiddenSize),
-    eRadius(eRadius),
-    dRadius(dRadius),
-    bRadius(bRadius),
-    ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon)
+    ffRadius(ffRadius),
+    rRadius(rRadius),
+    fbRadius(fbRadius)
     {}
 };
 
@@ -128,12 +118,6 @@ public:
         return predictions;
     }
 
-    bool getUpdate(
-        int l
-    ) const {
-        return h.getUpdate(l);
-    }
-
     std::vector<int> getHiddenCIs(
         int l
     ) {
@@ -151,18 +135,6 @@ public:
         aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
-    }
-
-    int getTicks(
-        int l
-    ) const {
-        return h.getTicks(l);
-    }
-
-    int getTicksPerUpdate(
-        int l
-    ) const {
-        return h.getTicksPerUpdate(l);
     }
 
     int getNumEncVisibleLayers(
@@ -205,18 +177,16 @@ public:
     void setDLR(
         int l,
         int i,
-        int t,
         float lr
     ) {
-        h.getDLayers(l)[i][t].lr = lr;
+        h.getDLayers(l)[i].lr = lr;
     }
 
     float getDLR(
         int l,
-        int i,
-        int t
+        int i
     ) const {
-        return h.getDLayers(l)[i][t].lr;
+        return h.getDLayers(l)[i].lr;
     }
 
     void setAVLR(
@@ -271,24 +241,22 @@ public:
     }
 
     // Retrieve additional parameters on the SPH's structure
-    int getERadius(
+    int getFFRadius(
         int l
     ) const {
         return h.getELayer(l).getVisibleLayerDesc(0).radius;
     }
 
-    int getDRadius(
-        int l,
-        int i
+    int getRRadius(
+        int l
     ) const {
-        return h.getDLayers(l)[i][0].getVisibleLayerDesc(0).radius;
+        return h.getELayer(l).getVisibleLayerDesc(h.getELayer(l).getNumVisibleLayers() - 1).radius;
     }
 
-    int getBRadius(
-        int l,
-        int i
+    int getFBRadius(
+        int l
     ) const {
-        return h.getDLayers(l)[i][0].getVisibleLayerDesc(1).radius;
+        return h.getDLayers(l)[0].getVisibleLayerDesc(0).radius;
     }
 
     int getAHistoryCapacity(
