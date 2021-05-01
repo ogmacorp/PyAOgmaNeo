@@ -25,7 +25,6 @@ struct IODesc {
     int hRadius;
     int eRadius;
     int dRadius;
-    int bRadius;
 
     int historyCapacity;
 
@@ -35,7 +34,6 @@ struct IODesc {
         int hRadius,
         int eRadius,
         int dRadius,
-        int bRadius,
         int historyCapacity
     )
     :
@@ -44,7 +42,6 @@ struct IODesc {
     hRadius(hRadius),
     eRadius(eRadius),
     dRadius(dRadius),
-    bRadius(bRadius),
     historyCapacity(historyCapacity)
     {}
 };
@@ -56,7 +53,6 @@ struct LayerDesc {
     int hRadius;
     int eRadius;
     int dRadius;
-    int bRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
@@ -67,7 +63,6 @@ struct LayerDesc {
         int hRadius,
         int eRadius,
         int dRadius,
-        int bRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
@@ -77,7 +72,6 @@ struct LayerDesc {
     hRadius(hRadius),
     eRadius(eRadius),
     dRadius(dRadius),
-    bRadius(bRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -363,13 +357,6 @@ public:
         int i
     ) const {
         return h.getDLayers(l)[i][0].getVisibleLayerDesc(0).radius;
-    }
-
-    int getBRadius(
-        int l,
-        int i
-    ) const {
-        return h.getDLayers(l)[i][0].getVisibleLayerDesc(1).radius;
     }
 
     int getAHistoryCapacity(

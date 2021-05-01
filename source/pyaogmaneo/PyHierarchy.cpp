@@ -23,7 +23,6 @@ void Hierarchy::initRandom(
             ioDescs[i].hRadius,
             ioDescs[i].eRadius,
             ioDescs[i].dRadius,
-            ioDescs[i].bRadius,
             ioDescs[i].historyCapacity
         );
     }
@@ -37,7 +36,6 @@ void Hierarchy::initRandom(
             layerDescs[l].hRadius,
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
-            layerDescs[l].bRadius,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon
         );

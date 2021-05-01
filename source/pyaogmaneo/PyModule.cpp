@@ -30,7 +30,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
@@ -38,7 +37,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hRadius") = 2,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("bRadius") = 2,
             py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
@@ -46,14 +44,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("hRadius", &pyaon::IODesc::hRadius)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
         .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
-        .def_readwrite("bRadius", &pyaon::IODesc::bRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 std::tuple<int, int, int>,
-                int,
                 int,
                 int,
                 int,
@@ -65,7 +61,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hRadius") = 2,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("bRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
@@ -74,7 +69,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("hRadius", &pyaon::LayerDesc::hRadius)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
-        .def_readwrite("bRadius", &pyaon::LayerDesc::bRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
@@ -125,7 +119,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHRadius", &pyaon::Hierarchy::getHRadius)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius)
-        .def("getBRadius", &pyaon::Hierarchy::getBRadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
