@@ -61,8 +61,8 @@ pyaon.setNumThreads(8)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(1): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc(hiddenSize=(3, 3, 32), errorSize=(3, 3, 32))
+for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
+    ld = pyaon.LayerDesc(hiddenSize=(3, 3, 16), errorSize=(3, 3, 16))
 
     ld.hRadius = 1
     ld.eRadius = 1
@@ -75,7 +75,7 @@ for i in range(1): # Layers with exponential memory. Not much memory is needed f
 h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc((3, 3, res), pyaon.prediction, hRadius=1, eRadius=1, dRadius=1, bRadius=1), pyaon.IODesc((1, 1, numActions), pyaon.action, hRadius=0, eRadius=0, dRadius=1, bRadius=1, historyCapacity=64) ], lds)
 
-h.setAVLR(1, 0.1)
+h.setAVLR(1, 0.01)
 h.setAALR(1, 0.01)
 h.setADiscount(1, 0.99)
 h.setAHistoryIters(1, 16)
