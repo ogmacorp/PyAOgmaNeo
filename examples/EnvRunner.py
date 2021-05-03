@@ -143,7 +143,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, layerRadius, 32))
+            ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 

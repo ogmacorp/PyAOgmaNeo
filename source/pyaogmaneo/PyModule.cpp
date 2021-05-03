@@ -30,22 +30,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 pyaon::IOType,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::none,
             py::arg("ffRadius") = 2,
             py::arg("pRadius") = 2,
-            py::arg("aRadius") = 2,
-            py::arg("historyCapacity") = 32
+            py::arg("aRadius") = 2
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
         .def_readwrite("ffRadius", &pyaon::IODesc::ffRadius)
         .def_readwrite("pRadius", &pyaon::IODesc::pRadius)
-        .def_readwrite("aRadius", &pyaon::IODesc::aRadius)
-        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
+        .def_readwrite("aRadius", &pyaon::IODesc::aRadius);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
@@ -82,8 +79,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = false
+            py::arg("reward") = 0.0f
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
@@ -105,16 +101,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getPTemperature", &pyaon::Hierarchy::getPTemperature)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
-        .def("setABeta", &pyaon::Hierarchy::setABeta)
-        .def("getABeta", &pyaon::Hierarchy::getABeta)
         .def("setAGamma", &pyaon::Hierarchy::setAGamma)
         .def("getAGamma", &pyaon::Hierarchy::getAGamma)
-        .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
-        .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
+        .def("setATraceDecay", &pyaon::Hierarchy::setATraceDecay)
+        .def("getATraceDecay", &pyaon::Hierarchy::getATraceDecay)
+        .def("setAEpsilon", &pyaon::Hierarchy::setAEpsilon)
+        .def("getAEpsilon", &pyaon::Hierarchy::getAEpsilon)
         .def("getFFRadius", &pyaon::Hierarchy::getFFRadius)
         .def("getPRadius", &pyaon::Hierarchy::getPRadius)
-        .def("getARadius", &pyaon::Hierarchy::getARadius)
-        .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
+        .def("getARadius", &pyaon::Hierarchy::getARadius);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
@@ -126,7 +121,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("size", &pyaon::ImageEncoderVisibleLayerDesc::size)
         .def_readwrite("radius", &pyaon::ImageEncoderVisibleLayerDesc::radius);
-        
 
     py::class_<pyaon::ImageEncoder>(m, "ImageEncoder")
         .def(py::init<>())
@@ -146,5 +140,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
-        .def("getAlpha", &pyaon::ImageEncoder::getAlpha);
+        .def("getAlpha", &pyaon::ImageEncoder::getAlpha)
+        .def("setGamma", &pyaon::ImageEncoder::setGamma)
+        .def("getGamma", &pyaon::ImageEncoder::getGamma);
 }
