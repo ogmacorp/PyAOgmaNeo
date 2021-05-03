@@ -101,8 +101,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
         .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
         .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
-        .def("setPTemperature", &pyaon::Hierarchy::setPTemperature)
-        .def("getPTemperature", &pyaon::Hierarchy::getPTemperature)
         .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
         .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
         .def("setABeta", &pyaon::Hierarchy::setABeta)
