@@ -102,13 +102,23 @@ public:
 
     // Params
     void setLR(
-        float lr
+        float falloff
     ) {
-        enc.lr = lr;
+        enc.falloff = falloff;
     }
 
     float getLR() const {
-        return enc.lr;
+        return enc.falloff;
+    }
+
+    void setFalloff(
+        float falloff
+    ) {
+        enc.falloff = falloff;
+    }
+
+    float getFalloff() const {
+        return enc.falloff;
     }
 };
 } // namespace pyaon
