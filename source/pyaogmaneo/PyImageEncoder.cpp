@@ -88,3 +88,7 @@ void ImageEncoder::reconstruct(
 
     enc.reconstruct(&cReconCIsBacking);
 }
+
+void ImageEncoder::makeShared() {
+    enc.makeShared();
+}

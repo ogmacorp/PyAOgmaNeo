@@ -62,6 +62,8 @@ public:
         const std::vector<int> &reconCIs
     );
 
+    void makeShared();
+
     int getNumVisibleLayers() const {
         return enc.getNumVisibleLayers();
     }

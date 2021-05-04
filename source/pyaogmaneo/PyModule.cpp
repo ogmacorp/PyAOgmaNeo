@@ -144,6 +144,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("learnEnabled") = true
         )
         .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
+        .def("makeShared", &pyaon::ImageEncoder::makeShared)
         .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
         .def("getReconstruction", &pyaon::ImageEncoder::getReconstruction)
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
