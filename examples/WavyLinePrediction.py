@@ -73,11 +73,11 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(5): # Layers with exponential memory
+for i in range(2): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (3, 3, 16) # Size of the encoder (SparseCoder)
-    ld.rRadius = 1
+    ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
+    ld.rRadius = 2
 
     lds.append(ld)
 
