@@ -104,13 +104,13 @@ public:
 
     // Params
     void setLR(
-        float falloff
+        float lr
     ) {
-        enc.falloff = falloff;
+        enc.lr = lr;
     }
 
     float getLR() const {
-        return enc.falloff;
+        return enc.lr;
     }
 
     void setFalloff(
