@@ -19,6 +19,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("getNumThreads", &pyaon::getNumThreads);
 
     py::enum_<pyaon::IOType>(m, "IOType")
+        .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
         .value("action", pyaon::action)
         .export_values();
@@ -29,46 +30,40 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 pyaon::IOType,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
-            py::arg("hRadius") = 2,
-            py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
+            py::arg("ffRadius") = 2,
+            py::arg("fbRadius") = 2,
             py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
-        .def_readwrite("hRadius", &pyaon::IODesc::hRadius)
-        .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
+        .def_readwrite("ffRadius", &pyaon::IODesc::ffRadius)
+        .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
-                std::tuple<int, int, int>,
-                int,
+                std::tuple<int, int>,
                 int,
                 int,
                 int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("errorSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("hRadius") = 2,
-            py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
+            py::arg("clumpSize") = std::tuple<int, int>({ 4, 4 }),
+            py::arg("ffRadius") = 2,
+            py::arg("fbRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("errorSize", &pyaon::LayerDesc::errorSize)
-        .def_readwrite("hRadius", &pyaon::LayerDesc::hRadius)
-        .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
+        .def_readwrite("clumpSize", &pyaon::LayerDesc::clumpSize)
+        .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
+        .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
@@ -91,34 +86,31 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getUpdate", &pyaon::Hierarchy::getUpdate)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
-        .def("getErrorCIs", &pyaon::Hierarchy::getErrorCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
-        .def("getErrorSize", &pyaon::Hierarchy::getErrorSize)
         .def("getTicks", &pyaon::Hierarchy::getTicks)
         .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
         .def("getNumEncVisibleLayers", &pyaon::Hierarchy::getNumEncVisibleLayers)
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
-        .def("setHLR", &pyaon::Hierarchy::setHLR)
-        .def("getHLR", &pyaon::Hierarchy::getHLR)
-        .def("setELR", &pyaon::Hierarchy::setELR)
-        .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setDLR", &pyaon::Hierarchy::setDLR)
-        .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setAVLR", &pyaon::Hierarchy::setAVLR)
-        .def("getAVLR", &pyaon::Hierarchy::getAVLR)
-        .def("setAALR", &pyaon::Hierarchy::setAALR)
-        .def("getAALR", &pyaon::Hierarchy::getAALR)
-        .def("setADiscount", &pyaon::Hierarchy::setADiscount)
-        .def("getADiscount", &pyaon::Hierarchy::getADiscount)
+        .def("setSCAlpha", &pyaon::Hierarchy::setSCAlpha)
+        .def("getSCAlpha", &pyaon::Hierarchy::getSCAlpha)
+        .def("setPAlpha", &pyaon::Hierarchy::setPAlpha)
+        .def("getPAlpha", &pyaon::Hierarchy::getPAlpha)
+        .def("setPTemperature", &pyaon::Hierarchy::setPTemperature)
+        .def("getPTemperature", &pyaon::Hierarchy::getPTemperature)
+        .def("setAAlpha", &pyaon::Hierarchy::setAAlpha)
+        .def("getAAlpha", &pyaon::Hierarchy::getAAlpha)
+        .def("setABeta", &pyaon::Hierarchy::setABeta)
+        .def("getABeta", &pyaon::Hierarchy::getABeta)
+        .def("setAGamma", &pyaon::Hierarchy::setAGamma)
+        .def("getAGamma", &pyaon::Hierarchy::getAGamma)
         .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
         .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
-        .def("getHRadius", &pyaon::Hierarchy::getHRadius)
-        .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
+        .def("getFFRadius", &pyaon::Hierarchy::getFFRadius)
+        .def("getFBRadius", &pyaon::Hierarchy::getFBRadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
@@ -144,14 +136,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("learnEnabled") = true
         )
         .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
-        .def("makeShared", &pyaon::ImageEncoder::makeShared)
         .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
         .def("getReconstruction", &pyaon::ImageEncoder::getReconstruction)
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
-        .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
-        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
+        .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
+        .def("getAlpha", &pyaon::ImageEncoder::getAlpha)
+        .def("setGamma", &pyaon::ImageEncoder::setGamma)
+        .def("getGamma", &pyaon::ImageEncoder::getGamma);
 }

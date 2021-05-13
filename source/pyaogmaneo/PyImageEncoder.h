@@ -62,12 +62,6 @@ public:
         const std::vector<int> &reconCIs
     );
 
-    void reconstructActivations(
-        const std::vector<float> &reconActs
-    );
-
-    void makeShared();
-
     int getNumVisibleLayers() const {
         return enc.getNumVisibleLayers();
     }
@@ -107,24 +101,24 @@ public:
     }
 
     // Params
-    void setLR(
-        float lr
+    void setAlpha(
+        float alpha
     ) {
-        enc.lr = lr;
+        enc.alpha = alpha;
     }
 
-    float getLR() const {
-        return enc.lr;
+    float getAlpha() const {
+        return enc.alpha;
     }
 
-    void setFalloff(
-        float falloff
+    void setGamma(
+        float gamma
     ) {
-        enc.falloff = falloff;
+        enc.gamma = gamma;
     }
 
-    float getFalloff() const {
-        return enc.falloff;
+    float getGamma() const {
+        return enc.gamma;
     }
 };
 } // namespace pyaon
