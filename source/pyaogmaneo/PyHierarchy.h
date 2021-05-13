@@ -200,32 +200,6 @@ public:
         return h.getSCLayer(l).alpha;
     }
 
-    void setSCBeta(
-        int l,
-        float beta
-    ) {
-        h.getSCLayer(l).beta = beta;
-    }
-
-    float getSCBeta(
-        int l
-    ) {
-        return h.getSCLayer(l).beta;
-    }
-
-    void setSCVigilance(
-        int l,
-        float vigilance
-    ) {
-        h.getSCLayer(l).vigilance = vigilance;
-    }
-
-    float getSCVigilance(
-        int l
-    ) {
-        return h.getSCLayer(l).vigilance;
-    }
-
     void setPAlpha(
         int l,
         int v,
