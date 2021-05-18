@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -24,22 +24,23 @@ struct IODesc {
     IOType type;
 
     int ffRadius;
-    int pRadius;
-    int aRadius;
+    int fbRadius;
+
+    int historyCapacity;
 
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int ffRadius,
-        int pRadius,
-        int aRadius
+        int fbRadius,
+        int historyCapacity
     )
     :
     size(size),
     type(type),
     ffRadius(ffRadius),
-    pRadius(pRadius),
-    aRadius(aRadius)
+    fbRadius(fbRadius),
+    historyCapacity(historyCapacity)
     {}
 };
 
@@ -48,7 +49,7 @@ struct LayerDesc {
     int numPriorities;
 
     int ffRadius;
-    int pRadius;
+    int fbRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
@@ -57,7 +58,7 @@ struct LayerDesc {
         const std::tuple<int, int, int> &hiddenSize,
         int numPriorities,
         int ffRadius,
-        int pRadius,
+        int fbRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
@@ -65,7 +66,7 @@ struct LayerDesc {
     hiddenSize(hiddenSize),
     numPriorities(numPriorities),
     ffRadius(ffRadius),
-    pRadius(pRadius),
+    fbRadius(fbRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -106,7 +107,8 @@ public:
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
-        float reward
+        float reward,
+        bool mimic
     );
 
     int getNumLayers() const {
@@ -161,7 +163,7 @@ public:
         return h.getTicksPerUpdate(l);
     }
 
-    int getNumSCVisibleLayers(
+    int getNumEncVisibleLayers(
         int l
     ) {
         return h.getSCLayer(l).getNumVisibleLayers();
@@ -179,13 +181,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    bool pLayerExists(
-        int l,
-        int v
-    ) const {
-        return h.getPLayers(l)[v] != nullptr;
-    }
-
     bool aLayerExists(
         int i
     ) const {
@@ -201,7 +196,7 @@ public:
 
     float getSCAlpha(
         int l
-    ) const {
+    ) {
         return h.getSCLayer(l).alpha;
     }
 
@@ -238,26 +233,41 @@ public:
         int l,
         int v
     ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
-
         return h.getPLayers(l)[v]->temperature;
     }
 
     void setAAlpha(
-        int v,
+        int i,
         float alpha
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[v]->alpha = alpha;
+        h.getALayers()[i]->alpha = alpha;
     }
 
     float getAAlpha(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->alpha;
+        return h.getALayers()[i]->alpha;
+    }
+
+    void setABeta(
+        int i,
+        float beta
+    ) {
+        assert(h.getALayers()[i] != nullptr);
+        
+        h.getALayers()[i]->beta = beta;
+    }
+
+    float getABeta(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->beta;
     }
 
     void setAGamma(
@@ -270,47 +280,47 @@ public:
     }
 
     float getAGamma(
-        int v
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->gamma;
+        return h.getALayers()[i]->gamma;
     }
 
-    void setATraceDecay(
-        int v,
-        float traceDecay
+    void setAMinSteps(
+        int i,
+        int minSteps
     ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->traceDecay = traceDecay;
+        assert(h.getALayers()[i] != nullptr);
+
+        h.getALayers()[i]->minSteps = minSteps;
     }
 
-    float getATraceDecay(
-        int v
+    int getAMinSteps(
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->traceDecay;
+        return h.getALayers()[i]->minSteps;
     }
 
-    void setAEpsilon(
-        int v,
-        float epsilon
+    void setAHistoryIters(
+        int i,
+        int historyIters
     ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->epsilon = epsilon;
+        assert(h.getALayers()[i] != nullptr);
+
+        h.getALayers()[i]->historyIters = historyIters;
     }
 
-    float getAEpsilon(
-        int v
+    int getAHistoryIters(
+        int i
     ) const {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[v]->epsilon;
+        return h.getALayers()[i]->historyIters;
     }
-    
+
     // Retrieve additional parameters on the SPH's structure
     int getFFRadius(
         int l
@@ -318,17 +328,23 @@ public:
         return h.getSCLayer(l).getVisibleLayerDesc(0).radius;
     }
 
-    int getPRadius(
+    int getFBRadius(
         int l,
         int v
     ) const {
-        return h.getPLayers(l)[v]->getVisibleLayerDesc(0).radius;
+        if (h.getALayers()[v] == nullptr) {
+            assert(h.getPLayers(l)[v] != nullptr);
+
+            return h.getPLayers(l)[v]->getVisibleLayerDesc(0).radius;
+        }
+
+        return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
     }
 
-    int getARadius(
-        int v
+    int getAHistoryCapacity(
+        int i
     ) const {
-        return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
+        return h.getALayers()[i]->getHistoryCapacity();
     }
 };
 } // namespace pyaon

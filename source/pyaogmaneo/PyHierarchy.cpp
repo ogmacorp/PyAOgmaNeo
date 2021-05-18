@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -21,8 +21,8 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
             ioDescs[i].ffRadius,
-            ioDescs[i].pRadius,
-            ioDescs[i].aRadius
+            ioDescs[i].fbRadius,
+            ioDescs[i].historyCapacity
         );
     }
     
@@ -33,7 +33,7 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].numPriorities,
             layerDescs[l].ffRadius,
-            layerDescs[l].pRadius,
+            layerDescs[l].fbRadius,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon
         );
@@ -97,7 +97,8 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 void Hierarchy::step(
     const std::vector<std::vector<int> > &inputCIs,
     bool learnEnabled,
-    float reward
+    float reward,
+    bool mimic
 ) {
     assert(inputCIs.size() == h.getInputSizes().size());
 
@@ -115,5 +116,5 @@ void Hierarchy::step(
         cInputCIs[i] = &cInputCIsBacking[i];
     }
     
-    h.step(cInputCIs, learnEnabled, reward);
+    h.step(cInputCIs, learnEnabled, reward, mimic);
 }
