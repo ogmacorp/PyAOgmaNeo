@@ -63,7 +63,7 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
     ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
 
     ld.ffRadius = 2 # Sparse coder radius onto visible layers
-    ld.pRadius = 2 # Predictor radius onto sparse coder hidden layer (and feed back)
+    ld.fbRadius = 2 # Predictor radius onto sparse coder hidden layer (and feed back)
 
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
     ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
