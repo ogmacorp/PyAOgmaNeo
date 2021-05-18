@@ -45,29 +45,19 @@ def CSDRToF(csdr, cells_per_column, scale_factor=0.25):
 
     return x
 
-# Converts an IEEE float to 8 columns with 16 cells each
-def IEEEToCSDR(x : float):
-    b = struct.pack("<f", x)
+def Unorm8ToCSDR(x : float):
+    assert(x >= 0.0 and x <= 1.0)
 
-    csdr = []
+    i = int(x * 255.0 + 0.5) & 0xff
 
-    for i in range(4):
-        csdr.append(b[i] & 0x0f)
-        csdr.append((b[i] & 0xf0) >> 4)
-
-    return csdr
+    return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
 
 # Reverse transform of IEEEToCSDR
-def CSDRToIEEE(csdr):
-    bs = []
-
-    for i in range(4):
-        bs.append(csdr[i * 2 + 0] | (csdr[i * 2 + 1] << 4))
-
-    return struct.unpack("<f", bytes(bs)) 
+def CSDRToUnorm8(csdr):
+    return (csdr[0] | (csdr[1] << 4)) / 255.0
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-numInputColumns = 3
+numInputColumns = 2
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
@@ -76,47 +66,36 @@ lds = []
 for i in range(8): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (3, 3, 32) # Size of the encoder (SparseCoder)
-
-    ld.ticksPerUpdate = 2
-    ld.temporalHorizon = 2
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(7, 7, inputColumnSize), type=pyaon.prediction, ffRadius=3) ], lds)
+h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 50000
+iters = 10000
 
 def wave(t):
-    #return np.sin(t * 0.3) * np.sin(t * 0.1 - 0.5) * 0.8
-
     if t % 100 == 0:
-        return 0.5
+        return 1.0
 
-    return 0.0
+    return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.1 * 2.0 * np.pi - 0.5) * np.sin(t * 0.02 * 2.0 * np.pi)) * 0.5 + 0.5
 
-t = 0.0
-
-for i in range(iters):
+for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
-    csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
-    #csdr = IEEEToCSDR(float(valueToEncode))
-
-    csdr += (49 - len(csdr)) * [ 0 ]
+    #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
+    csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    t += 1#np.random.rand() * 0.1 + 0.9
-
     # Print progress
-    if i % 100 == 0:
-        print(i)
+    if t % 100 == 0:
+        print(t)
 
 # Recall the sequence
 ts = [] # Time step
@@ -124,21 +103,21 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for i in range(600):
+for t2 in range(3000):
+    t = t2 + iters # Continue where previous sequence left off
+
     # New, continued value for comparison to what the hierarchy predicts
     valueToEncode = wave(t) # Some wavy line
-
-    t += 1#np.random.rand() * 0.1 + 0.9
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = CSDRToF(h.getPredictionCIs(0)[:3], inputColumnSize) 
-    #value = CSDRToIEEE(h.getPredictionCIs(0))
+    #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
+    value = CSDRToUnorm8(h.getPredictionCIs(0))
 
     # Append to plot data
-    ts.append(i)
+    ts.append(t2)
     vs.append(value)
 
     trgs.append(valueToEncode)
