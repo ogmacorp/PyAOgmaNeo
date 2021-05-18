@@ -144,7 +144,5 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
-        .def("getAlpha", &pyaon::ImageEncoder::getAlpha)
-        .def("setGamma", &pyaon::ImageEncoder::setGamma)
-        .def("getGamma", &pyaon::ImageEncoder::getGamma);
+        .def("getAlpha", &pyaon::ImageEncoder::getAlpha);
 }
