@@ -132,10 +132,10 @@ public:
     std::vector<int> getHiddenCIs(
         int l
     ) {
-        std::vector<int> hiddenCIs(h.getSCLayer(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getSCLayer(l).getHiddenCIs()[j];
+            hiddenCIs[j] = h.getELayer(l).getHiddenCIs()[j];
 
         return hiddenCIs;
     }
@@ -143,7 +143,7 @@ public:
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
-        aon::Int3 size = h.getSCLayer(l).getHiddenSize();
+        aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -163,7 +163,7 @@ public:
     int getNumEncVisibleLayers(
         int l
     ) {
-        return h.getSCLayer(l).getNumVisibleLayers();
+        return h.getELayer(l).getNumVisibleLayers();
     }
 
     int getNumInputs() const {
@@ -184,117 +184,117 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
-    void setSCAlpha(
+    void setELR(
         int l,
-        float alpha
+        float lr
     ) {
-        h.getSCLayer(l).alpha = alpha;
+        h.getELayer(l).lr = lr;
     }
 
-    float getSCAlpha(
+    float getELR(
         int l
     ) {
-        return h.getSCLayer(l).alpha;
+        return h.getELayer(l).lr;
     }
 
-    void setSCGroupRadius(
+    void setEGroupRadius(
         int l,
         int groupRadius
     ) {
-        h.getSCLayer(l).groupRadius = groupRadius;
+        h.getELayer(l).groupRadius = groupRadius;
     }
 
-    int getSCGroupRadius(
+    int getEGroupRadius(
         int l
     ) {
-        return h.getSCLayer(l).groupRadius;
+        return h.getELayer(l).groupRadius;
     }
 
-    void setPAlpha(
+    void setDLR(
         int l,
         int v,
-        float alpha
+        float lr
     ) {
-        assert(h.getPLayers(l)[v] != nullptr);
+        assert(h.getDLayers(l)[v] != nullptr);
 
-        h.getPLayers(l)[v]->alpha = alpha;
+        h.getDLayers(l)[v]->lr = lr;
     }
 
-    float getPAlpha(
+    float getDLR(
         int l,
         int v
     ) const {
-        assert(h.getPLayers(l)[v] != nullptr);
+        assert(h.getDLayers(l)[v] != nullptr);
 
-        return h.getPLayers(l)[v]->alpha;
+        return h.getDLayers(l)[v]->lr;
     }
 
-    void setPTemperature(
+    void setDTemperature(
         int l,
         int v,
         float temperature
     ) {
-        assert(h.getPLayers(l)[v] != nullptr);
+        assert(h.getDLayers(l)[v] != nullptr);
 
-        h.getPLayers(l)[v]->temperature = temperature;
+        h.getDLayers(l)[v]->temperature = temperature;
     }
 
-    float getPTemperature(
+    float getDTemperature(
         int l,
         int v
     ) const {
-        return h.getPLayers(l)[v]->temperature;
+        return h.getDLayers(l)[v]->temperature;
     }
 
-    void setAAlpha(
+    void setAVLR(
         int i,
-        float alpha
+        float vlr
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->alpha = alpha;
+        h.getALayers()[i]->vlr = vlr;
     }
 
-    float getAAlpha(
+    float getAVLR(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->alpha;
+        return h.getALayers()[i]->vlr;
     }
 
-    void setABeta(
+    void setAALR(
         int i,
-        float beta
+        float alr
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->beta = beta;
+        h.getALayers()[i]->alr = alr;
     }
 
-    float getABeta(
+    float getAALR(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->beta;
+        return h.getALayers()[i]->alr;
     }
 
-    void setAGamma(
+    void setADiscount(
         int v,
-        float gamma
+        float discount
     ) {
         assert(h.getALayers()[v] != nullptr);
         
-        h.getALayers()[v]->gamma = gamma;
+        h.getALayers()[v]->discount = discount;
     }
 
-    float getAGamma(
+    float getADiscount(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->gamma;
+        return h.getALayers()[i]->discount;
     }
 
     void setATemperature(
@@ -349,20 +349,20 @@ public:
     }
 
     // Retrieve additional parameters on the SPH's structure
-    int getFFRadius(
+    int getERadius(
         int l
     ) const {
-        return h.getSCLayer(l).getVisibleLayerDesc(0).radius;
+        return h.getELayer(l).getVisibleLayerDesc(0).radius;
     }
 
-    int getFBRadius(
+    int getDRadius(
         int l,
         int v
     ) const {
         if (h.getALayers()[v] == nullptr) {
-            assert(h.getPLayers(l)[v] != nullptr);
+            assert(h.getDLayers(l)[v] != nullptr);
 
-            return h.getPLayers(l)[v]->getVisibleLayerDesc(0).radius;
+            return h.getDLayers(l)[v]->getVisibleLayerDesc(0).radius;
         }
 
         return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
