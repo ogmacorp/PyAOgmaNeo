@@ -62,10 +62,6 @@ public:
         const std::vector<int> &reconCIs
     );
 
-    void reconstructActivations(
-        const std::vector<float> &reconActs
-    );
-
     void makeShared();
 
     int getNumVisibleLayers() const {

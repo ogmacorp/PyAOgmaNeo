@@ -89,17 +89,6 @@ void ImageEncoder::reconstruct(
     enc.reconstruct(&cReconCIsBacking);
 }
 
-void ImageEncoder::reconstructActivations(
-    const std::vector<float> &reconActs
-) {
-    aon::FloatBuffer cReconActsBacking(reconActs.size());
-
-    for (int j = 0; j < reconActs.size(); j++)
-        cReconActsBacking[j] = reconActs[j];
-
-    enc.reconstruct(&cReconActsBacking);
-}
-
 void ImageEncoder::makeShared() {
     enc.makeShared();
 }
