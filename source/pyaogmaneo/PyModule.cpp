@@ -34,14 +34,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
-            py::arg("ffRadius") = 2,
-            py::arg("fbRadius") = 2,
+            py::arg("eRadius") = 2,
+            py::arg("dRadius") = 2,
             py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
-        .def_readwrite("ffRadius", &pyaon::IODesc::ffRadius)
-        .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius)
+        .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
+        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
@@ -53,14 +53,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("ffRadius") = 2,
-            py::arg("fbRadius") = 2,
+            py::arg("eRadius") = 2,
+            py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
-        .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius)
+        .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
+        .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 

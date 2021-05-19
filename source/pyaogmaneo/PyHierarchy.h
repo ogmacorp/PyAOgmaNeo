@@ -23,23 +23,23 @@ struct IODesc {
 
     IOType type;
 
-    int ffRadius;
-    int fbRadius;
+    int eRadius;
+    int dRadius;
 
     int historyCapacity;
 
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
-        int ffRadius,
-        int fbRadius,
+        int eRadius,
+        int dRadius,
         int historyCapacity
     )
     :
     size(size),
     type(type),
-    ffRadius(ffRadius),
-    fbRadius(fbRadius),
+    eRadius(eRadius),
+    dRadius(dRadius),
     historyCapacity(historyCapacity)
     {}
 };
@@ -47,23 +47,23 @@ struct IODesc {
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
-    int ffRadius;
-    int fbRadius;
+    int eRadius;
+    int dRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int ffRadius,
-        int fbRadius,
+        int eRadius,
+        int dRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
-    ffRadius(ffRadius),
-    fbRadius(fbRadius),
+    eRadius(eRadius),
+    dRadius(dRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
