@@ -101,14 +101,14 @@ public:
     }
 
     // Params
-    void setAlpha(
-        float alpha
+    void setLR(
+        float lr
     ) {
-        enc.alpha = alpha;
+        enc.lr = lr;
     }
 
-    float getAlpha() const {
-        return enc.alpha;
+    float getLR() const {
+        return enc.lr;
     }
 };
 } // namespace pyaon

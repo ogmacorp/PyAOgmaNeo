@@ -47,15 +47,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("numPriorities") = 3,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("numPriorities", &pyaon::LayerDesc::numPriorities)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
@@ -88,8 +91,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setEGroupRadius", &pyaon::Hierarchy::setEGroupRadius)
-        .def("getEGroupRadius", &pyaon::Hierarchy::getEGroupRadius)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setDTemperature", &pyaon::Hierarchy::setDTemperature)
@@ -133,6 +134,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
-        .def("setAlpha", &pyaon::ImageEncoder::setAlpha)
-        .def("getAlpha", &pyaon::ImageEncoder::getAlpha);
+        .def("setLR", &pyaon::ImageEncoder::setLR)
+        .def("getLR", &pyaon::ImageEncoder::getLR);
 }
