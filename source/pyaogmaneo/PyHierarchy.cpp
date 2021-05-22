@@ -21,8 +21,7 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
             ioDescs[i].eRadius,
-            ioDescs[i].dRadius,
-            ioDescs[i].historyCapacity
+            ioDescs[i].dRadius
         );
     }
     
@@ -96,8 +95,7 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 void Hierarchy::step(
     const std::vector<std::vector<int> > &inputCIs,
     bool learnEnabled,
-    float reward,
-    bool mimic
+    float reward
 ) {
     assert(inputCIs.size() == h.getInputSizes().size());
 
@@ -115,5 +113,5 @@ void Hierarchy::step(
         cInputCIs[i] = &cInputCIsBacking[i];
     }
     
-    h.step(cInputCIs, learnEnabled, reward, mimic);
+    h.step(cInputCIs, learnEnabled, reward);
 }
