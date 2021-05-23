@@ -287,23 +287,6 @@ public:
         return h.getALayers()[i]->discount;
     }
 
-    void setATemperature(
-        int v,
-        float temperature
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->temperature = temperature;
-    }
-
-    float getATemperature(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->temperature;
-    }
-
     void setAMinSteps(
         int i,
         int minSteps
