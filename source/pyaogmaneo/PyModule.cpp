@@ -29,17 +29,20 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 pyaon::IOType,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
             py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2
+            py::arg("dRadius") = 2,
+            py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius);
+        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
+        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
@@ -76,7 +79,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
-            py::arg("reward") = 0.0f
+            py::arg("reward") = 0.0f,
+            py::arg("mimic") = false
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
