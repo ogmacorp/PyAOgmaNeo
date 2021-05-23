@@ -236,21 +236,38 @@ public:
         return h.getDLayers(l)[v]->temperature;
     }
 
-    void setALR(
+    void setAVLR(
         int i,
-        float lr
+        float vlr
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->lr = lr;
+        h.getALayers()[i]->vlr = vlr;
     }
 
-    float getALR(
+    float getAVLR(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->lr;
+        return h.getALayers()[i]->vlr;
+    }
+
+    void setAALR(
+        int i,
+        float alr
+    ) {
+        assert(h.getALayers()[i] != nullptr);
+        
+        h.getALayers()[i]->alr = alr;
+    }
+
+    float getAALR(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->alr;
     }
 
     void setADiscount(
@@ -270,38 +287,55 @@ public:
         return h.getALayers()[i]->discount;
     }
 
-    void setATraceDecay(
+    void setATemperature(
         int v,
-        float traceDecay
+        float temperature
     ) {
         assert(h.getALayers()[v] != nullptr);
         
-        h.getALayers()[v]->traceDecay = traceDecay;
+        h.getALayers()[v]->temperature = temperature;
     }
 
-    float getATraceDecay(
+    float getATemperature(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->traceDecay;
+        return h.getALayers()[i]->temperature;
     }
 
-    void setAEpsilon(
-        int v,
-        float epsilon
+    void setAMinSteps(
+        int i,
+        int minSteps
     ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->epsilon = epsilon;
+        assert(h.getALayers()[i] != nullptr);
+
+        h.getALayers()[i]->minSteps = minSteps;
     }
 
-    float getAEpsilon(
+    int getAMinSteps(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->epsilon;
+        return h.getALayers()[i]->minSteps;
+    }
+
+    void setAHistoryIters(
+        int i,
+        int historyIters
+    ) {
+        assert(h.getALayers()[i] != nullptr);
+
+        h.getALayers()[i]->historyIters = historyIters;
+    }
+
+    int getAHistoryIters(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->historyIters;
     }
 
     // Retrieve additional parameters on the SPH's structure
@@ -322,6 +356,12 @@ public:
         }
 
         return h.getALayers()[v]->getVisibleLayerDesc(0).radius;
+    }
+
+    int getAHistoryCapacity(
+        int i
+    ) const {
+        return h.getALayers()[i]->getHistoryCapacity();
     }
 };
 } // namespace pyaon
