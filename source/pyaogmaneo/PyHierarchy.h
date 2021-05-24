@@ -214,23 +214,6 @@ public:
         return h.getDLayers(l)[v]->lr;
     }
 
-    void setDTemperature(
-        int l,
-        int v,
-        float temperature
-    ) {
-        assert(h.getDLayers(l)[v] != nullptr);
-
-        h.getDLayers(l)[v]->temperature = temperature;
-    }
-
-    float getDTemperature(
-        int l,
-        int v
-    ) const {
-        return h.getDLayers(l)[v]->temperature;
-    }
-
     void setALR(
         int i,
         float lr
