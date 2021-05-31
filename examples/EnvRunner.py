@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -19,7 +19,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=2 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=2 * [ (4, 4, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -131,9 +131,8 @@ class EnvRunner:
         lds = []
 
         for i in range(len(layerSizes)):
-            ld = pyaon.LayerDesc(hiddenSize=layerSizes[i], errorSize=layerSizes[i])
+            ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
 
-            ld.hRadius = layerRadius
             ld.eRadius = layerRadius
             ld.dRadius = layerRadius
 
@@ -144,7 +143,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, layerRadius, 64))
+            ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, 64))
 
         self.h.initRandom(ioDescs, lds)
 
