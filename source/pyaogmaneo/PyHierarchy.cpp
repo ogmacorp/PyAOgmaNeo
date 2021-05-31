@@ -22,7 +22,6 @@ void Hierarchy::initRandom(
             static_cast<aon::IOType>(ioDescs[i].type),
             ioDescs[i].eRadius,
             ioDescs[i].dRadius,
-            ioDescs[i].bRadius,
             ioDescs[i].historyCapacity
         );
     }
@@ -34,7 +33,6 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
-            layerDescs[l].bRadius,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon
         );
