@@ -117,6 +117,19 @@ public:
         return h.getNumLayers();
     }
 
+    void setImportance(
+        int i,
+        float importance
+    ) {
+        h.setImportance(i, importance);
+    }
+
+    float getImportance(
+        int i
+    ) const {
+        return h.getImportance(i);
+    }
+
     std::vector<int> getPredictionCIs(
         int i
     ) const {

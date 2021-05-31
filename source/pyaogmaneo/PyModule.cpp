@@ -85,6 +85,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("mimic") = false
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
+        .def("setImportance", &pyaon::Hierarchy::setImportance)
+        .def("getImportance", &pyaon::Hierarchy::getImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getUpdate", &pyaon::Hierarchy::getUpdate)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
