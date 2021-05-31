@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -101,9 +101,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getAALR", &pyaon::Hierarchy::getAALR)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
+        .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
+        .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
+        .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
+        .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius)
-        .def("getBRadius", &pyaon::Hierarchy::getBRadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
@@ -135,7 +138,5 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
-        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
+        .def("getLR", &pyaon::ImageEncoder::getLR);
 }

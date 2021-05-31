@@ -62,8 +62,6 @@ public:
         const std::vector<int> &reconCIs
     );
 
-    void makeShared();
-
     int getNumVisibleLayers() const {
         return enc.getNumVisibleLayers();
     }
@@ -111,16 +109,6 @@ public:
 
     float getLR() const {
         return enc.lr;
-    }
-
-    void setFalloff(
-        float falloff
-    ) {
-        enc.falloff = falloff;
-    }
-
-    float getFalloff() const {
-        return enc.falloff;
     }
 };
 } // namespace pyaon
