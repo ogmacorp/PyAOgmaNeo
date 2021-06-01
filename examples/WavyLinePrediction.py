@@ -12,6 +12,7 @@ import pyaogmaneo as pyaon
 import numpy as np
 import matplotlib.pyplot as plt
 import struct
+import time
 
 # Set the number of threads
 pyaon.setNumThreads(8)
@@ -75,10 +76,12 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 3000
+iters = 100000
 
 def wave(t):
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.1 * 2.0 * np.pi - 0.5) * np.sin(t * 0.02 * 2.0 * np.pi)) * 0.5 + 0.5
+
+total = 0.0
 
 for t in range(iters):
     # The value to encode into the input column
@@ -87,12 +90,20 @@ for t in range(iters):
     #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
     csdr = Unorm8ToCSDR(float(valueToEncode))
 
+    start = time.time()
+
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
+
+    end = time.time()
+
+    total += end - start
 
     # Print progress
     if t % 100 == 0:
         print(t)
+
+print("Total: " + str(total))
 
 # Recall the sequence
 ts = [] # Time step
@@ -106,8 +117,14 @@ for t2 in range(3000):
     # New, continued value for comparison to what the hierarchy predicts
     valueToEncode = wave(t) # Some wavy line
 
+    start = time.time()
+
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
+
+    end = time.time()
+
+    total += end - start
 
     # Decode value (de-bin)
     #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
