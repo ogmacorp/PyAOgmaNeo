@@ -12,15 +12,8 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
-enum IOType {
-    prediction = 0,
-    action = 1
-};
-
 struct IODesc {
     std::tuple<int, int, int> size;
-
-    IOType type;
 
     int eRadius;
     int dRadius;
@@ -29,14 +22,12 @@ struct IODesc {
 
     IODesc(
         const std::tuple<int, int, int> &size,
-        IOType type,
         int eRadius,
         int dRadius,
         int historyCapacity
     )
     :
     size(size),
-    type(type),
     eRadius(eRadius),
     dRadius(dRadius),
     historyCapacity(historyCapacity)
@@ -102,9 +93,8 @@ public:
 
     void step(
         const std::vector<std::vector<int> > &inputCIs,
-        bool learnEnabled,
-        float reward,
-        bool mimic
+        const std::vector<int> &topGoalCIs,
+        bool learnEnabled
     );
 
     int getNumLayers() const {
@@ -190,12 +180,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    bool aLayerExists(
-        int i
-    ) const {
-        return h.getALayers()[i] != nullptr;
-    }
-
     void setELR(
         int l,
         float lr
@@ -226,91 +210,6 @@ public:
         return h.getDLayers(l)[i][t].lr;
     }
 
-    void setAVLR(
-        int i,
-        float vlr
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->vlr = vlr;
-    }
-
-    float getAVLR(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->vlr;
-    }
-
-    void setAALR(
-        int i,
-        float alr
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->alr = alr;
-    }
-
-    float getAALR(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->alr;
-    }
-
-    void setADiscount(
-        int v,
-        float discount
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->discount = discount;
-    }
-
-    float getADiscount(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->discount;
-    }
-
-    void setAMinSteps(
-        int i,
-        int minSteps
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-
-        h.getALayers()[i]->minSteps = minSteps;
-    }
-
-    int getAMinSteps(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->minSteps;
-    }
-
-    void setAHistoryIters(
-        int i,
-        int historyIters
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-
-        h.getALayers()[i]->historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->historyIters;
-    }
-
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
@@ -323,12 +222,6 @@ public:
         int i
     ) const {
         return h.getDLayers(l)[i][0].getVisibleLayerDesc(0).radius;
-    }
-
-    int getAHistoryCapacity(
-        int i
-    ) const {
-        return h.getALayers()[i]->getHistoryCapacity();
     }
 };
 } // namespace pyaon
