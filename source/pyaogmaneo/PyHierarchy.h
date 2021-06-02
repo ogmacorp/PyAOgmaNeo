@@ -221,7 +221,7 @@ public:
         int l,
         int i
     ) const {
-        return h.getDLayers(l)[i][0].getVisibleLayerDesc(0).radius;
+        return h.getDLayers(l)[i][0].getVisibleLayerDesc().radius;
     }
 };
 } // namespace pyaon

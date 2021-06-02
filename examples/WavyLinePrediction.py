@@ -73,7 +73,7 @@ for i in range(8): # Layers with exponential memory
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
+h.initRandom([ pyaon.IODesc(size=(1, 2, 16)) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 100000
@@ -93,7 +93,7 @@ for t in range(iters):
     start = time.time()
 
     # Step the hierarchy given the inputs (just one here)
-    h.step([ csdr ], True) # True for enabling learning
+    h.step([ csdr ], h.getHiddenCIs(h.getNumLayers() - 1), True) # True for enabling learning
 
     end = time.time()
 
@@ -120,7 +120,7 @@ for t2 in range(3000):
     start = time.time()
 
     # Run off of own predictions with learning disabled
-    h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
+    h.step([ h.getPredictionCIs(0) ], h.getHiddenCIs(h.getNumLayers() - 1), False) # Learning disabled
 
     end = time.time()
 
