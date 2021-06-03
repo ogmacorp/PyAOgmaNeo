@@ -28,7 +28,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 128
+            py::arg("historyCapacity") = 3
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
@@ -41,17 +41,20 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
+            py::arg("historyCapacity") = 3,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
+        .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
