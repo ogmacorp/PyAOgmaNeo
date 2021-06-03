@@ -214,6 +214,23 @@ public:
         return h.getDLayers(l)[i][t].lr;
     }
 
+    void setDDecay(
+        int l,
+        int i,
+        int t,
+        float decay
+    ) {
+        h.getDLayers(l)[i][t].decay = decay;
+    }
+
+    float getDDecay(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getDLayers(l)[i][t].decay;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
