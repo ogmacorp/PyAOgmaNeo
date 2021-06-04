@@ -28,7 +28,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 3
+            py::arg("historyCapacity") = 2
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
@@ -47,7 +47,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 3,
+            py::arg("historyCapacity") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
@@ -88,8 +88,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setDDecay", &pyaon::Hierarchy::setDDecay)
-        .def("getDDecay", &pyaon::Hierarchy::getDDecay)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 
