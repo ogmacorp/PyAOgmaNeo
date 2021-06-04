@@ -122,6 +122,19 @@ public:
         return predictions;
     }
 
+    void setImportance(
+        int i,
+        float importance
+    ) {
+        h.setImportance(i, importance);
+    }
+
+    float getImportance(
+        int i
+    ) const {
+        return h.getImportance(i);
+    }
+
     bool getUpdate(
         int l
     ) const {
