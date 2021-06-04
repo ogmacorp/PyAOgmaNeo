@@ -22,62 +22,47 @@ struct IODesc {
 
     IOType type;
 
-    int hRadius;
     int eRadius;
     int dRadius;
-    int bRadius;
 
     int historyCapacity;
 
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
-        int hRadius,
         int eRadius,
         int dRadius,
-        int bRadius,
         int historyCapacity
     )
     :
     size(size),
     type(type),
-    hRadius(hRadius),
     eRadius(eRadius),
     dRadius(dRadius),
-    bRadius(bRadius),
     historyCapacity(historyCapacity)
     {}
 };
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
-    std::tuple<int, int, int> errorSize;
 
-    int hRadius;
     int eRadius;
     int dRadius;
-    int bRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::tuple<int, int, int> &errorSize,
-        int hRadius,
         int eRadius,
         int dRadius,
-        int bRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
-    errorSize(errorSize),
-    hRadius(hRadius),
     eRadius(eRadius),
     dRadius(dRadius),
-    bRadius(bRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -146,37 +131,18 @@ public:
     std::vector<int> getHiddenCIs(
         int l
     ) {
-        std::vector<int> hiddenCIs(h.getEncLayer(l).hidden.getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getEncLayer(l).hidden.getHiddenCIs()[j];
+            hiddenCIs[j] = h.getELayer(l).getHiddenCIs()[j];
 
         return hiddenCIs;
-    }
-
-    std::vector<int> getErrorCIs(
-        int l
-    ) {
-        std::vector<int> errorCIs(h.getEncLayer(l).error.getHiddenCIs().size());
-
-        for (int j = 0; j < errorCIs.size(); j++)
-            errorCIs[j] = h.getEncLayer(l).error.getHiddenCIs()[j];
-
-        return errorCIs;
     }
 
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
-        aon::Int3 size = h.getEncLayer(l).hidden.getHiddenSize();
-
-        return { size.x, size.y, size.z };
-    }
-
-    std::tuple<int, int, int> getErrorSize(
-        int l
-    ) {
-        aon::Int3 size = h.getEncLayer(l).error.getHiddenSize();
+        aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -196,7 +162,7 @@ public:
     int getNumEncVisibleLayers(
         int l
     ) {
-        return h.getEncLayer(l).hidden.getNumVisibleLayers();
+        return h.getELayer(l).getNumVisibleLayers();
     }
 
     int getNumInputs() const {
@@ -217,30 +183,17 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
-    void setHLR(
-        int l,
-        float lr
-    ) {
-        h.getEncLayer(l).hidden.lr = lr;
-    }
-
-    float getHLR(
-        int l
-    ) {
-        return h.getEncLayer(l).hidden.lr;
-    }
-
     void setELR(
         int l,
         float lr
     ) {
-        h.getEncLayer(l).error.lr = lr;
+        h.getELayer(l).lr = lr;
     }
 
     float getELR(
         int l
     ) {
-        return h.getEncLayer(l).error.lr;
+        return h.getELayer(l).lr;
     }
 
     void setDLR(
@@ -346,16 +299,10 @@ public:
     }
 
     // Retrieve additional parameters on the SPH's structure
-    int getHRadius(
-        int l
-    ) const {
-        return h.getEncLayer(l).hidden.getVisibleLayerDesc(0).radius;
-    }
-
     int getERadius(
         int l
     ) const {
-        return h.getEncLayer(l).error.getVisibleLayerDesc(0).radius;
+        return h.getELayer(l).getVisibleLayerDesc(0).radius;
     }
 
     int getDRadius(
@@ -363,13 +310,6 @@ public:
         int i
     ) const {
         return h.getDLayers(l)[i][0].getVisibleLayerDesc(0).radius;
-    }
-
-    int getBRadius(
-        int l,
-        int i
-    ) const {
-        return h.getDLayers(l)[i][0].getVisibleLayerDesc(1).radius;
     }
 
     int getAHistoryCapacity(
