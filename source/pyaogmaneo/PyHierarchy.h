@@ -49,6 +49,8 @@ struct LayerDesc {
     int eRadius;
     int dRadius;
 
+    int lRadius;
+
     int ticksPerUpdate;
     int temporalHorizon;
 
@@ -56,6 +58,7 @@ struct LayerDesc {
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
         int dRadius,
+        int lRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
@@ -63,6 +66,7 @@ struct LayerDesc {
     hiddenSize(hiddenSize),
     eRadius(eRadius),
     dRadius(dRadius),
+    lRadius(lRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -194,6 +198,19 @@ public:
         int i
     ) const {
         return h.getALayers()[i] != nullptr;
+    }
+
+    void setEExplainIters(
+        int l,
+        int explainIters
+    ) {
+        h.getELayer(l).explainIters = explainIters;
+    }
+
+    int getEExplainIters(
+        int l
+    ) {
+        return h.getELayer(l).explainIters;
     }
 
     void setELR(

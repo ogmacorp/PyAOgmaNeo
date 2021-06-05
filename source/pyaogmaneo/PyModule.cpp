@@ -49,17 +49,20 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
+            py::arg("lRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
+        .def_readwrite("lRadius", &pyaon::LayerDesc::lRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
@@ -91,6 +94,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
+        .def("setEExplainIters", &pyaon::Hierarchy::setEExplainIters)
+        .def("getEExplainIters", &pyaon::Hierarchy::getEExplainIters)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
