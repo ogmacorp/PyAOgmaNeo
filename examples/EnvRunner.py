@@ -18,6 +18,9 @@ from copy import copy
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
+inputTypePrediction = 0
+inputTypeAction = 1
+
 class EnvRunner:
     def __init__(self, env, layerSizes=2 * [ (4, 4, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
@@ -42,14 +45,14 @@ class EnvRunner:
 
         if type(self.env.observation_space) is gym.spaces.Discrete:
             self.inputSizes.append((1, 1, self.env.observation_space.n))
-            self.inputTypes.append(pyaon.prediction)
+            self.inputTypes.append(inputTypePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.observation_space) is gym.spaces.Box:
             if len(self.env.observation_space.shape) == 1 or len(self.env.observation_space.shape) == 0:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
                 self.inputSizes.append((squareSize, squareSize, obsResolution))
-                self.inputTypes.append(pyaon.prediction)
+                self.inputTypes.append(inputTypePrediction)
                 lows = list(self.env.observation_space.low)
                 highs = list(self.env.observation_space.high)
                 
@@ -90,7 +93,7 @@ class EnvRunner:
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
-            self.inputTypes.append(pyaon.prediction)
+            self.inputTypes.append(inputTypePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 1.0 ])
 
@@ -98,7 +101,7 @@ class EnvRunner:
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.actionIndices.append(len(self.inputSizes))
             self.inputSizes.append((1, 1, self.env.action_space.n))
-            self.inputTypes.append(pyaon.action)
+            self.inputTypes.append(inputTypeAction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.action_space) is gym.spaces.Box:
@@ -106,7 +109,7 @@ class EnvRunner:
                 if len(self.env.action_space.shape) == 2:
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
-                    self.inputTypes.append(pyaon.action)
+                    self.inputTypes.append(inputTypeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -117,7 +120,7 @@ class EnvRunner:
                     squareTotal = squareSize * squareSize
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((squareSize, squareSize, actionResolution))
-                    self.inputTypes.append(pyaon.action)
+                    self.inputTypes.append(inputTypeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -143,7 +146,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, 64))
+            ioDescs.append(pyaon.IODesc(self.inputSizes[i], layerRadius, layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -161,13 +164,22 @@ class EnvRunner:
 
             self.actions.append(startAct)
 
+        goalSize = self.h.getHiddenSize(self.h.getNumLayers() - 1)
+        self.goalSize = goalSize
+
+        self.goal = np.random.randint(0, goalSize[2], size=(goalSize[0] * goalSize[1],))
+
+        self.goalRewards = np.random.randn(goalSize[0] * goalSize[1], goalSize[2]) * 0.0001 - 11.0
+
+        self.goalLR = 0.01
+
     def _feedObservation(self, obs):
         self.inputs = []
 
         actionIndex = 0
 
         for i in range(len(self.inputSizes)):
-            if self.inputTypes[i] == pyaon.action:
+            if self.inputTypes[i] == inputTypeAction:
                 self.inputs.append(self.actions[actionIndex])
 
                 actionIndex += 1
@@ -206,13 +218,13 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.0, obsPreprocess=None):
+    def act(self, epsilon=0.03, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] == pyaon.action)
+            assert(self.inputTypes[index] == inputTypeAction)
 
             if self.inputLows[index][0] < self.inputHighs[index][0]:
                 feedAction = []
@@ -246,14 +258,23 @@ class EnvRunner:
         self._feedObservation(obs)
 
         r = reward * self.rewardScale + float(done) * self.terminalReward
+
+        # Update goal
+        indices = np.array(self.h.getHiddenCIs(self.h.getNumLayers() - 1), dtype=np.int)
+
+        indices = [ indices[i] + i * self.goalSize[2] for i in range(len(indices)) ]
+
+        self.goalRewards.ravel()[indices] += self.goalLR * (r - self.goalRewards.ravel()[indices])
+
+        self.goal = np.argmax(self.goalRewards, axis=1)
         
-        self.h.step(self.inputs, True, r)
+        self.h.step(self.inputs, self.goal.ravel().tolist(), True)
 
         # Retrieve actions
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] is pyaon.action)
+            assert(self.inputTypes[index] is inputTypeAction)
 
             self.actions[i] = list(self.h.getPredictionCIs(index))
         
