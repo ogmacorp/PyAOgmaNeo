@@ -22,7 +22,7 @@ inputTypePrediction = 0
 inputTypeAction = 1
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=2 * [ (4, 4, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -117,7 +117,6 @@ class EnvRunner:
                     self.inputHighs.append(highs)
                 else:
                     squareSize = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
-                    squareTotal = squareSize * squareSize
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((squareSize, squareSize, actionResolution))
                     self.inputTypes.append(inputTypeAction)
@@ -133,11 +132,14 @@ class EnvRunner:
 
         lds = []
 
+        histCap = 8
+
         for i in range(len(layerSizes)):
             ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
             ld.dRadius = layerRadius
+            ld.historyCapacity = histCap
 
             lds.append(ld)
 
@@ -146,7 +148,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(pyaon.IODesc(self.inputSizes[i], layerRadius, layerRadius))
+            ioDescs.append(pyaon.IODesc(self.inputSizes[i], layerRadius, layerRadius, histCap))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -159,7 +161,7 @@ class EnvRunner:
 
             startAct = []
 
-            for j in range(size):
+            for _ in range(size):
                 startAct.append(np.random.randint(0, self.inputSizes[index][2]))
 
             self.actions.append(startAct)
@@ -169,7 +171,7 @@ class EnvRunner:
 
         self.goal = np.random.randint(0, goalSize[2], size=(goalSize[0] * goalSize[1],))
 
-        self.goalRewards = np.random.randn(goalSize[0] * goalSize[1], goalSize[2]) * 0.0001 - 11.0
+        self.goalRewards = np.random.randn(goalSize[0] * goalSize[1], goalSize[2]) * 0.0001
 
         self.goalLR = 0.01
 
@@ -185,7 +187,7 @@ class EnvRunner:
                 actionIndex += 1
             elif i == self.imEncIndex:
                 # Format image
-                img = cv2.resize(obs, ( self.imageSizes[0][0], self.imageSizes[0][1] ))
+                img = cv2.resize(obs, (self.imageSizes[0][0], self.imageSizes[0][1]))
                 
                 img = np.swapaxes(img, 0, 1)
                 
@@ -260,7 +262,7 @@ class EnvRunner:
         r = reward * self.rewardScale + float(done) * self.terminalReward
 
         # Update goal
-        indices = np.array(self.h.getHiddenCIs(self.h.getNumLayers() - 1), dtype=np.int)
+        indices = np.array(self.h.getHiddenCIs(self.h.getNumLayers() - 1), dtype=np.int)#copy(self.goal)#
 
         indices = [ indices[i] + i * self.goalSize[2] for i in range(len(indices)) ]
 
