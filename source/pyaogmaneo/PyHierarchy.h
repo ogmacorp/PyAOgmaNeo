@@ -18,19 +18,15 @@ struct IODesc {
     int eRadius;
     int dRadius;
 
-    int historyCapacity;
-
     IODesc(
         const std::tuple<int, int, int> &size,
         int eRadius,
-        int dRadius,
-        int historyCapacity
+        int dRadius
     )
     :
     size(size),
     eRadius(eRadius),
-    dRadius(dRadius),
-    historyCapacity(historyCapacity)
+    dRadius(dRadius)
     {}
 };
 
@@ -40,8 +36,6 @@ struct LayerDesc {
     int eRadius;
     int dRadius;
 
-    int historyCapacity;
-
     int ticksPerUpdate;
     int temporalHorizon;
 
@@ -49,7 +43,6 @@ struct LayerDesc {
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
         int dRadius,
-        int historyCapacity,
         int ticksPerUpdate,
         int temporalHorizon
     )
@@ -57,7 +50,6 @@ struct LayerDesc {
     hiddenSize(hiddenSize),
     eRadius(eRadius),
     dRadius(dRadius),
-    historyCapacity(historyCapacity),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -212,6 +204,23 @@ public:
         int t
     ) const {
         return h.getDLayers(l)[i][t].lr;
+    }
+
+    void setDTraceDecay(
+        int l,
+        int i,
+        int t,
+        float traceDecay
+    ) {
+        h.getDLayers(l)[i][t].traceDecay = traceDecay;
+    }
+
+    float getDTraceDecay(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getDLayers(l)[i][t].traceDecay;
     }
 
     // Retrieve additional parameters on the SPH's structure
