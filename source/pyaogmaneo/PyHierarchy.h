@@ -39,27 +39,23 @@ struct LayerDesc {
 
     int eRadius;
     int dRadius;
+    int rRadius;
 
     int historyCapacity;
-
-    int ticksPerUpdate;
-    int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
         int dRadius,
-        int historyCapacity,
-        int ticksPerUpdate,
-        int temporalHorizon
+        int rRadius,
+        int historyCapacity
     )
     :
     hiddenSize(hiddenSize),
     eRadius(eRadius),
     dRadius(dRadius),
-    historyCapacity(historyCapacity),
-    ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon)
+    rRadius(rRadius),
+    historyCapacity(historyCapacity)
     {}
 };
 
@@ -118,6 +114,19 @@ public:
         return h.getImportance(i);
     }
 
+    void setRecurrence(
+        int l,
+        float importance
+    ) {
+        h.setImportance(l, importance);
+    }
+
+    float getRecurrence(
+        int l
+    ) const {
+        return h.getImportance(l);
+    }
+
     std::vector<int> getPredictionCIs(
         int i
     ) const {
@@ -127,12 +136,6 @@ public:
             predictions[j] = h.getPredictionCIs(i)[j];
 
         return predictions;
-    }
-
-    bool getUpdate(
-        int l
-    ) const {
-        return h.getUpdate(l);
     }
 
     std::vector<int> getHiddenCIs(
@@ -152,18 +155,6 @@ public:
         aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
-    }
-
-    int getTicks(
-        int l
-    ) const {
-        return h.getTicks(l);
-    }
-
-    int getTicksPerUpdate(
-        int l
-    ) const {
-        return h.getTicksPerUpdate(l);
     }
 
     int getNumEncVisibleLayers(
@@ -200,18 +191,16 @@ public:
     void setDLR(
         int l,
         int i,
-        int t,
         float lr
     ) {
-        h.getDLayers(l)[i][t].lr = lr;
+        h.getDLayers(l)[i].lr = lr;
     }
 
     float getDLR(
         int l,
-        int i,
-        int t
+        int i
     ) const {
-        return h.getDLayers(l)[i][t].lr;
+        return h.getDLayers(l)[i].lr;
     }
 
     // Retrieve additional parameters on the SPH's structure
@@ -225,7 +214,7 @@ public:
         int l,
         int i
     ) const {
-        return h.getDLayers(l)[i][0].getVisibleLayerDesc().radius;
+        return h.getDLayers(l)[i].getVisibleLayerDesc().radius;
     }
 };
 } // namespace pyaon
