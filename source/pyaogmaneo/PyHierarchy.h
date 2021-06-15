@@ -118,13 +118,13 @@ public:
         int l,
         float importance
     ) {
-        h.setImportance(l, importance);
+        h.setRecurrence(l, importance);
     }
 
     float getRecurrence(
         int l
     ) const {
-        return h.getImportance(l);
+        return h.getRecurrence(l);
     }
 
     std::vector<int> getPredictionCIs(

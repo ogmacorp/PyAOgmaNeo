@@ -80,6 +80,9 @@ h.initRandom([ pyaon.IODesc(size=(1, 2, 16), historyCapacity=16) ], lds)
 iters = 100000
 
 def wave(t):
+    if t % 10 == 0:
+        return 1.0
+    return 0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.1 * 2.0 * np.pi - 0.5) * np.sin(t * 0.02 * 2.0 * np.pi)) * 0.5 + 0.5
 
 total = 0.0
