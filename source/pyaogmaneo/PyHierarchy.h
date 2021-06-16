@@ -195,6 +195,21 @@ public:
         return h.getDLayers(l)[i].lr;
     }
 
+    void setDTraceDecay(
+        int l,
+        int i,
+        float traceDecay
+    ) {
+        h.getDLayers(l)[i].traceDecay = traceDecay;
+    }
+
+    float getDTraceDecay(
+        int l,
+        int i
+    ) const {
+        return h.getDLayers(l)[i].traceDecay;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
