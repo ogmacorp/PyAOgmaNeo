@@ -22,23 +22,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<
                 std::tuple<int, int, int>,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 4
+            py::arg("dRadius") = 2
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
-        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
+        .def_readwrite("dRadius", &pyaon::IODesc::dRadius);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
-                int,
                 int,
                 int,
                 int
@@ -46,14 +42,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("rRadius") = 2,
-            py::arg("historyCapacity") = 4
+            py::arg("rRadius") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
-        .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
-        .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity);
+        .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<>())
