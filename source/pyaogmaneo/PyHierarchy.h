@@ -214,6 +214,40 @@ public:
         return h.getDLayers(l)[i][t].lr;
     }
 
+    void setDDiscount(
+        int l,
+        int i,
+        int t,
+        float discount
+    ) {
+        h.getDLayers(l)[i][t].discount = discount;
+    }
+
+    float getDDiscount(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getDLayers(l)[i][t].discount;
+    }
+
+    void setDHistoryIters(
+        int l,
+        int i,
+        int t,
+        int historyIters
+    ) {
+        h.getDLayers(l)[i][t].historyIters = historyIters;
+    }
+
+    int getDHistoryIters(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getDLayers(l)[i][t].historyIters;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
