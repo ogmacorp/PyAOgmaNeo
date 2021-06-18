@@ -231,6 +231,23 @@ public:
         return h.getDLayers(l)[i][t].discount;
     }
 
+    void setDGenGoalNoise(
+        int l,
+        int i,
+        int t,
+        float genGoalNoise
+    ) {
+        h.getDLayers(l)[i][t].genGoalNoise = genGoalNoise;
+    }
+
+    float getDGenGoalNoise(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getDLayers(l)[i][t].genGoalNoise;
+    }
+
     void setDHistoryIters(
         int l,
         int i,
