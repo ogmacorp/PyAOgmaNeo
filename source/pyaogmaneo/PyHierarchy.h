@@ -248,6 +248,23 @@ public:
         return h.getDLayers(l)[i][t].genGoalNoise;
     }
 
+    void setDQSteps(
+        int l,
+        int i,
+        int t,
+        int qSteps
+    ) {
+        h.getDLayers(l)[i][t].qSteps = qSteps;
+    }
+
+    int getDQSteps(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getDLayers(l)[i][t].qSteps;
+    }
+
     void setDHistoryIters(
         int l,
         int i,
