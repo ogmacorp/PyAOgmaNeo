@@ -91,8 +91,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setERefractoryTicks", &pyaon::Hierarchy::setERefractoryTicks)
-        .def("getERefractoryTicks", &pyaon::Hierarchy::getERefractoryTicks)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)

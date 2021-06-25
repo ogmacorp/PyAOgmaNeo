@@ -196,19 +196,6 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setERefractoryTicks(
-        int l,
-        int refractoryTicks
-    ) {
-        h.getELayer(l).refractoryTicks = refractoryTicks;
-    }
-
-    int getERefractoryTicks(
-        int l
-    ) {
-        return h.getELayer(l).refractoryTicks;
-    }
-
     void setDLR(
         int l,
         int i,
