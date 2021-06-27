@@ -22,7 +22,7 @@ inputTypePrediction = 0
 inputTypeAction = 1
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=1 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=5 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -132,7 +132,7 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 32
+        histCap = 16
 
         for i in range(len(layerSizes)):
             ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
@@ -176,7 +176,7 @@ class EnvRunner:
 
         self.goalRewards = -np.random.randn(goalSize[0] * goalSize[1], goalSize[2]) * 0.0001 - 1.0
 
-        self.goalLR = 0.001
+        self.goalLR = 0.01
 
     def _feedObservation(self, obs):
         self.inputs = []
@@ -223,7 +223,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.05, obsPreprocess=None):
+    def act(self, epsilon=0.1, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
