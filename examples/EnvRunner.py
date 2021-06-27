@@ -22,7 +22,7 @@ inputTypePrediction = 0
 inputTypeAction = 1
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=4 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -141,6 +141,9 @@ class EnvRunner:
             ld.dRadius = layerRadius
             ld.historyCapacity = histCap
 
+            ld.ticksPerUpdate = 2
+            ld.temporalHorizon = 2
+
             lds.append(ld)
 
         self.h = pyaon.Hierarchy()
@@ -171,7 +174,7 @@ class EnvRunner:
 
         self.goal = np.random.randint(0, goalSize[2], size=(goalSize[0] * goalSize[1],))
 
-        self.goalRewards = np.random.randn(goalSize[0] * goalSize[1], goalSize[2]) * 0.0001
+        self.goalRewards = -np.random.randn(goalSize[0] * goalSize[1], goalSize[2]) * 0.0001 - 1.0
 
         self.goalLR = 0.01
 
@@ -220,7 +223,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.03, obsPreprocess=None):
+    def act(self, epsilon=0.05, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
@@ -262,14 +265,19 @@ class EnvRunner:
         r = reward * self.rewardScale + float(done) * self.terminalReward
 
         # Update goal
-        indices = np.array(self.h.getHiddenCIs(self.h.getNumLayers() - 1), dtype=np.int)#copy(self.goal)#
+        indices = copy(self.goal)#np.array(self.h.getHiddenCIs(self.h.getNumLayers() - 1), dtype=np.int)#
 
         indices = [ indices[i] + i * self.goalSize[2] for i in range(len(indices)) ]
 
         self.goalRewards.ravel()[indices] += self.goalLR * (r - self.goalRewards.ravel()[indices])
 
-        self.goal = np.argmax(self.goalRewards, axis=1)
+        if np.random.rand() < 0.01:
+            self.goal = np.argmax(self.goalRewards, axis=1)
         
+            mask = np.random.rand(self.goal.shape[0]) < 0.1
+
+            self.goal[mask] = np.random.randint(0, self.goalSize[2], self.goal.shape[0])[mask]
+
         self.h.step(self.inputs, self.goal.ravel().tolist(), True)
 
         # Retrieve actions
