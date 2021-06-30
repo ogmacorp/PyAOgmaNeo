@@ -36,7 +36,7 @@ def dense2csdr(d, dimz):
     #return csdr
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=2 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -146,7 +146,7 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 4
+        histCap = 8
 
         for i in range(len(layerSizes)):
             ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
@@ -174,7 +174,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            self.h.setImportance(index, 0.01)
+            #self.h.setImportance(index, 0.01)
 
             size = len(self.inputLows[index])
 
@@ -296,13 +296,16 @@ class EnvRunner:
         if self.h.getUpdate(self.h.getNumLayers() - 1):
             d = csdr2dense(self.h.getHiddenCIs(self.h.getNumLayers() - 1), self.goalSize[2])
 
-            q = np.dot(self.weights, d)
+            q = np.dot(self.weights, d) / len(self.h.getHiddenCIs(self.h.getNumLayers() - 1))
 
-            tdError = self.totalR + self.gamma * q - self.qPrev
+            #tdError = self.totalR + self.gamma * q - self.qPrev
+            targetQ = self.totalR + self.gamma * q
+
             self.totalR = 0.0
             self.g = 1.0
 
-            self.weights += self.goalLR * tdError * self.traces
+            #self.weights += self.goalLR * tdError * self.traces
+            self.weights += self.goalLR * (targetQ - self.weights) * self.traces
 
             self.traces = np.maximum(self.traces * self.traceDecay, d.reshape((1, -1)))
 
