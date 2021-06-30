@@ -36,7 +36,7 @@ def dense2csdr(d, dimz):
     #return csdr
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=2 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -194,6 +194,7 @@ class EnvRunner:
         self.traces = np.zeros((1, self.goalSize[0] * self.goalSize[1] * self.goalSize[2]))
 
         self.totalR = 0.0
+        self.g = 1.0
         self.goalLR = 0.01
         self.gamma = 0.99
         self.traceDecay = 0.98
@@ -284,7 +285,8 @@ class EnvRunner:
         self._feedObservation(obs)
 
         r = reward * self.rewardScale + float(done) * self.terminalReward
-        self.totalR = self.totalR * self.gamma + r
+        self.totalR += r * self.g
+        self.g *= self.gamma
 
         # Update goal
         self.goal = dense2csdr(self.weights.ravel(), self.goalSize[2])#np.argmax(self.weights.reshape((self.goalSize[0] * self.goalSize[1], self.goalSize[2])), axis=1)
@@ -298,6 +300,7 @@ class EnvRunner:
 
             tdError = self.totalR + self.gamma * q - self.qPrev
             self.totalR = 0.0
+            self.g = 1.0
 
             self.weights += self.goalLR * tdError * self.traces
 
