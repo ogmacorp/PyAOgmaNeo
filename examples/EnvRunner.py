@@ -30,12 +30,13 @@ def csdr2dense(csdr, dimz):
     return d
 
 def dense2csdr(d, dimz):
-    csdr = [ np.argmax(d[i * dimz : (i + 1) * dimz]) for i in range(d.shape[0] // dimz) ]
+    return np.argmax(d.reshape((len(d) // dimz, dimz)), axis=1)
+    #csdr = [ np.argmax(d[i * dimz : (i + 1) * dimz]) for i in range(len(d) // dimz) ]
 
-    return csdr
+    #return csdr
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=4 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=1 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -241,7 +242,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.05, obsPreprocess=None):
+    def act(self, epsilon=0.03, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
@@ -281,12 +282,12 @@ class EnvRunner:
         self._feedObservation(obs)
 
         r = reward * self.rewardScale + float(done) * self.terminalReward
-        self.totalR += r
+        self.totalR = self.totalR * self.gamma + r
 
         # Update goal
-        self.goal = np.argmax(self.weights.reshape((self.goalSize[0] * self.goalSize[1], self.goalSize[2])), axis=1)
+        self.goal = dense2csdr(self.weights.ravel(), self.goalSize[2])#np.argmax(self.weights.reshape((self.goalSize[0] * self.goalSize[1], self.goalSize[2])), axis=1)
 
-        self.h.step(self.inputs, self.goal.ravel().tolist(), True)
+        self.h.step(self.inputs, self.goal, True)
 
         if self.h.getUpdate(self.h.getNumLayers() - 1):
             d = csdr2dense(self.h.getHiddenCIs(self.h.getNumLayers() - 1), self.goalSize[2])
@@ -298,7 +299,7 @@ class EnvRunner:
 
             self.weights += self.goalLR * tdError * self.traces
 
-            self.traces = np.maximum(self.traces * self.traceDecay, d)
+            self.traces = np.maximum(self.traces * self.traceDecay, d.reshape((1, -1)))
 
             self.qPrev = q
 
