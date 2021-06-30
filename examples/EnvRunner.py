@@ -21,8 +21,21 @@ def sigmoid(x):
 inputTypePrediction = 0
 inputTypeAction = 1
 
+def csdr2dense(csdr, dimz):
+    d = np.zeros((len(csdr) * dimz,), dtype=np.int)
+
+    for i in range(len(csdr)):
+        d[i * dimz + csdr[i]] = 1
+
+    return d
+
+def dense2csdr(d, dimz):
+    csdr = [ np.argmax(d[i * dimz : (i + 1) * dimz]) for i in range(d.shape[0] // dimz) ]
+
+    return csdr
+
 class EnvRunner:
-    def __init__(self, env, layerSizes=8 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=4 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -132,7 +145,7 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 8
+        histCap = 4
 
         for i in range(len(layerSizes)):
             ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
@@ -174,9 +187,14 @@ class EnvRunner:
 
         self.goal = np.random.randint(0, goalSize[2], size=(goalSize[0] * goalSize[1],))
 
-        self.goalRewards = -np.random.randn(goalSize[0] * goalSize[1], goalSize[2]) * 0.0001 - 1.0
+        self.weights = np.random.randn(1, self.goalSize[0] * self.goalSize[1] * self.goalSize[2]) * 0.0001
+        self.traces = np.zeros((1, self.goalSize[0] * self.goalSize[1] * self.goalSize[2]))
 
+        self.totalR = 0.0
         self.goalLR = 0.01
+        self.gamma = 0.99
+        self.traceDecay = 0.98
+        self.qPrev = 0.0
 
     def _feedObservation(self, obs):
         self.inputs = []
@@ -263,22 +281,26 @@ class EnvRunner:
         self._feedObservation(obs)
 
         r = reward * self.rewardScale + float(done) * self.terminalReward
+        self.totalR += r
 
         # Update goal
-        indices = copy(self.goal)#np.array(self.h.getHiddenCIs(self.h.getNumLayers() - 1), dtype=np.int)#
-
-        indices = [ indices[i] + i * self.goalSize[2] for i in range(len(indices)) ]
-
-        self.goalRewards.ravel()[indices] += self.goalLR * (r - self.goalRewards.ravel()[indices])
-
-        if np.random.rand() < 0.01:
-            self.goal = np.argmax(self.goalRewards, axis=1)
-        
-            mask = np.random.rand(self.goal.shape[0]) < 0.1
-
-            self.goal[mask] = np.random.randint(0, self.goalSize[2], self.goal.shape[0])[mask]
+        self.goal = np.argmax(self.weights.reshape((self.goalSize[0] * self.goalSize[1], self.goalSize[2])), axis=1)
 
         self.h.step(self.inputs, self.goal.ravel().tolist(), True)
+
+        if self.h.getUpdate(self.h.getNumLayers() - 1):
+            d = csdr2dense(self.h.getHiddenCIs(self.h.getNumLayers() - 1), self.goalSize[2])
+
+            q = np.dot(self.weights, d)
+
+            tdError = self.totalR + self.gamma * q - self.qPrev
+            self.totalR = 0.0
+
+            self.weights += self.goalLR * tdError * self.traces
+
+            self.traces = np.maximum(self.traces * self.traceDecay, d)
+
+            self.qPrev = q
 
         # Retrieve actions
         for i in range(len(self.actionIndices)):
