@@ -92,6 +92,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setEExplainIters", &pyaon::Hierarchy::setEExplainIters)
         .def("getEExplainIters", &pyaon::Hierarchy::getEExplainIters)
+        .def("setEActRate", &pyaon::Hierarchy::setEActRate)
+        .def("getEActRate", &pyaon::Hierarchy::getEActRate)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)

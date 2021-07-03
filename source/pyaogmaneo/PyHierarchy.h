@@ -208,6 +208,19 @@ public:
         return h.getELayer(l).explainIters;
     }
 
+    void setEActRate(
+        int l,
+        float actRate
+    ) {
+        h.getELayer(l).actRate = actRate;
+    }
+
+    float getEActRate(
+        int l
+    ) {
+        return h.getELayer(l).actRate;
+    }
+
     void setELR(
         int l,
         float lr
