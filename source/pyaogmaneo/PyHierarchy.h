@@ -243,38 +243,21 @@ public:
         return h.getDLayers(l)[i][t].lr;
     }
 
-    void setAVLR(
+    void setALR(
         int i,
-        float vlr
+        float lr
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->vlr = vlr;
+        h.getALayers()[i]->lr = lr;
     }
 
-    float getAVLR(
+    float getALR(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->vlr;
-    }
-
-    void setAALR(
-        int i,
-        float alr
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->alr = alr;
-    }
-
-    float getAALR(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->alr;
+        return h.getALayers()[i]->lr;
     }
 
     void setADiscount(
@@ -294,38 +277,55 @@ public:
         return h.getALayers()[i]->discount;
     }
 
-    void setAMinSteps(
-        int i,
-        int minSteps
+    void setATraceDecay(
+        int v,
+        float traceDecay
     ) {
-        assert(h.getALayers()[i] != nullptr);
-
-        h.getALayers()[i]->minSteps = minSteps;
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->traceDecay = traceDecay;
     }
 
-    int getAMinSteps(
+    float getATraceDecay(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->minSteps;
+        return h.getALayers()[i]->traceDecay;
     }
 
-    void setAHistoryIters(
-        int i,
-        int historyIters
+    void setATraceTemp(
+        int v,
+        float traceTemp
     ) {
-        assert(h.getALayers()[i] != nullptr);
-
-        h.getALayers()[i]->historyIters = historyIters;
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->traceTemp = traceTemp;
     }
 
-    int getAHistoryIters(
+    float getATraceTemp(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->historyIters;
+        return h.getALayers()[i]->traceTemp;
+    }
+
+    void setAEpsilon(
+        int v,
+        float epsilon
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->epsilon = epsilon;
+    }
+
+    float getAEpsilon(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->epsilon;
     }
 
     // Retrieve additional parameters on the SPH's structure
