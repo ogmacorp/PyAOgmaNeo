@@ -28,20 +28,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 pyaon::IOType,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
             py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 128
+            py::arg("dRadius") = 2
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
-        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
+        .def_readwrite("dRadius", &pyaon::IODesc::dRadius);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
@@ -78,8 +75,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = false
+            py::arg("reward") = 0.0f
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("setImportance", &pyaon::Hierarchy::setImportance)
@@ -100,19 +96,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setAVLR", &pyaon::Hierarchy::setAVLR)
-        .def("getAVLR", &pyaon::Hierarchy::getAVLR)
-        .def("setAALR", &pyaon::Hierarchy::setAALR)
-        .def("getAALR", &pyaon::Hierarchy::getAALR)
+        .def("setALR", &pyaon::Hierarchy::setALR)
+        .def("getALR", &pyaon::Hierarchy::getALR)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
-        .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
-        .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
-        .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
-        .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
+        .def("setATraceDecay", &pyaon::Hierarchy::setATraceDecay)
+        .def("getATraceDecay", &pyaon::Hierarchy::getATraceDecay)
+        .def("setATraceTemp", &pyaon::Hierarchy::setATraceTemp)
+        .def("getATraceTemp", &pyaon::Hierarchy::getATraceTemp)
+        .def("setAEpsilon", &pyaon::Hierarchy::setAEpsilon)
+        .def("getAEpsilon", &pyaon::Hierarchy::getAEpsilon)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
-        .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
+        .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<

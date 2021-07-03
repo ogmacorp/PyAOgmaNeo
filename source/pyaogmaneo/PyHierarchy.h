@@ -25,21 +25,17 @@ struct IODesc {
     int eRadius;
     int dRadius;
 
-    int historyCapacity;
-
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int eRadius,
-        int dRadius,
-        int historyCapacity
+        int dRadius
     )
     :
     size(size),
     type(type),
     eRadius(eRadius),
-    dRadius(dRadius),
-    historyCapacity(historyCapacity)
+    dRadius(dRadius)
     {}
 };
 
@@ -107,8 +103,7 @@ public:
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
-        float reward,
-        bool mimic
+        float reward
     );
 
     int getNumLayers() const {
@@ -340,12 +335,6 @@ public:
         int i
     ) const {
         return h.getDLayers(l)[i][0].getVisibleLayerDesc(0).radius;
-    }
-
-    int getAHistoryCapacity(
-        int i
-    ) const {
-        return h.getALayers()[i]->getHistoryCapacity();
     }
 };
 } // namespace pyaon
