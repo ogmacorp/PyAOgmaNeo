@@ -298,14 +298,14 @@ class EnvRunner:
 
             q = np.dot(self.weights, d) / len(self.h.getHiddenCIs(self.h.getNumLayers() - 1))
 
-            #tdError = self.totalR + self.gamma * q - self.qPrev
-            targetQ = self.totalR + self.gamma * q
+            tdError = self.totalR + self.gamma * q - self.qPrev
+            #targetQ = self.totalR + self.gamma * q
 
             self.totalR = 0.0
             self.g = 1.0
 
-            #self.weights += self.goalLR * tdError * self.traces
-            self.weights += self.goalLR * (targetQ - self.weights) * self.traces
+            self.weights += self.goalLR * tdError * self.traces
+            #self.weights += self.goalLR * (targetQ - self.weights) * self.traces
 
             self.traces = np.maximum(self.traces * self.traceDecay, d.reshape((1, -1)))
 
