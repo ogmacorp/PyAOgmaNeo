@@ -195,7 +195,7 @@ class EnvRunner:
 
         self.totalR = 0.0
         self.g = 1.0
-        self.goalLR = 0.03
+        self.goalLR = 0.2
         self.gamma = 0.99
         self.traceDecay = 0.98
         self.qPrev = 0.0
