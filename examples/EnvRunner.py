@@ -146,7 +146,7 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 16
+        histCap = 8
 
         for i in range(len(layerSizes)):
             ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
@@ -174,7 +174,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            self.h.setImportance(index, 0.01)
+            #self.h.setImportance(index, 0.01)
 
             size = len(self.inputLows[index])
 
