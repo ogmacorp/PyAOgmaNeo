@@ -22,7 +22,7 @@ inputTypePrediction = 0
 inputTypeAction = 1
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=5 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=1 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -172,7 +172,7 @@ class EnvRunner:
             self.actions.append(startAct)
 
         self.adapter = pyaon.RLAdapter()
-        self.adapter.initRandom(self.h.getTopHiddenSize(), layerRadius)
+        self.adapter.initRandom(self.h.getTopHiddenSize())
 
         self.totalR = 0.0
         self.g = 1.0
@@ -267,11 +267,10 @@ class EnvRunner:
 
         self.h.step(self.inputs, self.adapter.getGoalCIs(), True)
 
-        if self.h.getTopUpdate():
-            self.adapter.step(self.h.getTopHiddenCIs(), self.totalR, True)
+        self.adapter.step(self.h.getTopHiddenCIs(), self.totalR, True)
 
-            self.totalR = 0.0
-            self.g = 1.0
+        self.totalR = 0.0
+        self.g = 1.0
             
         # Retrieve actions
         for i in range(len(self.actionIndices)):
