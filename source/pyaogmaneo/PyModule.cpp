@@ -11,6 +11,7 @@
 
 #include "PyHierarchy.h"
 #include "PyImageEncoder.h"
+#include "PyRLAdapter.h"
 
 namespace py = pybind11;
 
@@ -73,6 +74,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("learnEnabled") = true
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
+        .def("getTopHiddenCIs", &pyaon::Hierarchy::getTopHiddenCIs)
         .def("setImportance", &pyaon::Hierarchy::setImportance)
         .def("getImportance", &pyaon::Hierarchy::getImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
@@ -121,4 +123,26 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR);
+
+    py::class_<pyaon::RLAdapter>(m, "RLAdapter")
+        .def(py::init<>())
+        .def("initRandom", &pyaon::RLAdapter::initRandom)
+        .def("initFromFile", &pyaon::RLAdapter::initFromFile)
+        .def("initFromBuffer", &pyaon::RLAdapter::initFromBuffer)
+        .def("saveToFile", &pyaon::RLAdapter::saveToFile)
+        .def("serializeToBuffer", &pyaon::RLAdapter::serializeToBuffer)
+        .def("step", &pyaon::RLAdapter::step,
+            py::arg("hiddenCIs"),
+            py::arg("reward"),
+            py::arg("learnEnabled") = true
+        )
+        .def("getGoalCIs", &pyaon::RLAdapter::getGoalCIs)
+        .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
+        .def("getRadius", &pyaon::RLAdapter::getRadius)
+        .def("setLR", &pyaon::RLAdapter::setLR)
+        .def("getLR", &pyaon::RLAdapter::getLR)
+        .def("setDiscount", &pyaon::RLAdapter::setDiscount)
+        .def("getDiscount", &pyaon::RLAdapter::getDiscount)
+        .def("setTraceDecay", &pyaon::RLAdapter::setTraceDecay)
+        .def("getTraceDecay", &pyaon::RLAdapter::getTraceDecay);
 }

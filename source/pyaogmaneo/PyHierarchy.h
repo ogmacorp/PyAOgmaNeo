@@ -105,6 +105,15 @@ public:
         return h.getNumLayers();
     }
 
+    std::vector<int> getTopHiddenCIs() const {
+        std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
+
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = h.getTopHiddenCIs()[j];
+
+        return hiddenCIs;
+    }
+
     void setImportance(
         int i,
         float importance
