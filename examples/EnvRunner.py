@@ -172,7 +172,10 @@ class EnvRunner:
             self.actions.append(startAct)
 
         self.adapter = pyaon.RLAdapter()
-        self.adapter.initRandom(self.h.getHiddenSize(), layerRadius)
+        self.adapter.initRandom(self.h.getTopHiddenSize(), layerRadius)
+
+        self.totalR = 0.0
+        self.g = 1.0
 
     def _feedObservation(self, obs):
         self.inputs = []
@@ -260,32 +263,16 @@ class EnvRunner:
 
         r = reward * self.rewardScale + float(done) * self.terminalReward
         self.totalR += r * self.g
-        self.g *= self.gamma
+        self.g *= self.adapter.getDiscount()
 
-        # Get goal
-        self.goal = dense2csdr(self.weights.ravel(), self.goalSize[2])#np.argmax(self.weights.reshape((self.goalSize[0] * self.goalSize[1], self.goalSize[2])), axis=1)
+        self.h.step(self.inputs, self.adapter.getGoalCIs(), True)
 
-        self.h.step(self.inputs, self.goal, True)
-
-        if self.h.getUpdate(self.h.getNumLayers() - 1):
-            d = csdr2dense(self.h.getHiddenCIs(self.h.getNumLayers() - 1), self.goalSize[2])
-
-            q = np.dot(self.weights, d) / len(self.h.getHiddenCIs(self.h.getNumLayers() - 1))
-
-            #tdError = self.totalR + self.g * q - self.qPrev
-            targetQ = self.totalR + self.g * q
+        if self.h.getTopUpdate():
+            self.adapter.step(self.h.getTopHiddenCIs(), self.totalR, True)
 
             self.totalR = 0.0
             self.g = 1.0
-
-            #self.weights += self.goalLR * tdError * self.traces
-            self.weights += self.goalLR * (targetQ - self.weights) * self.traces
-
-            self.traces = np.maximum(self.traces * self.traceDecay, d.reshape((1, -1)))
-            #self.traces += (1.0 - self.traceDecay) * (d.reshape((1, -1)) - self.traces)
-
-            self.qPrev = q
-
+            
         # Retrieve actions
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
