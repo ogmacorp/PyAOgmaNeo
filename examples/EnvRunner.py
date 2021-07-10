@@ -195,7 +195,7 @@ class EnvRunner:
 
         self.totalR = 0.0
         self.g = 1.0
-        self.goalLR = 0.05
+        self.goalLR = 0.2
         self.gamma = 0.99
         self.traceDecay = 0.98
         self.qPrev = 0.0
@@ -245,7 +245,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.03, obsPreprocess=None):
+    def act(self, epsilon=0.05, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
@@ -288,7 +288,7 @@ class EnvRunner:
         self.totalR += r * self.g
         self.g *= self.gamma
 
-        # Update goal
+        # Get goal
         self.goal = dense2csdr(self.weights.ravel(), self.goalSize[2])#np.argmax(self.weights.reshape((self.goalSize[0] * self.goalSize[1], self.goalSize[2])), axis=1)
 
         self.h.step(self.inputs, self.goal, True)
@@ -298,8 +298,8 @@ class EnvRunner:
 
             q = np.dot(self.weights, d) / len(self.h.getHiddenCIs(self.h.getNumLayers() - 1))
 
-            #tdError = self.totalR + self.gamma * q - self.qPrev
-            targetQ = self.totalR + self.gamma * q
+            #tdError = self.totalR + self.g * q - self.qPrev
+            targetQ = self.totalR + self.g * q
 
             self.totalR = 0.0
             self.g = 1.0
@@ -308,6 +308,7 @@ class EnvRunner:
             self.weights += self.goalLR * (targetQ - self.weights) * self.traces
 
             self.traces = np.maximum(self.traces * self.traceDecay, d.reshape((1, -1)))
+            #self.traces += (1.0 - self.traceDecay) * (d.reshape((1, -1)) - self.traces)
 
             self.qPrev = q
 
