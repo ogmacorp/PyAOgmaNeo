@@ -21,20 +21,6 @@ def sigmoid(x):
 inputTypePrediction = 0
 inputTypeAction = 1
 
-def csdr2dense(csdr, dimz):
-    d = np.zeros((len(csdr) * dimz,))
-
-    for i in range(len(csdr)):
-        d[i * dimz + csdr[i]] = 1.0
-
-    return d
-
-def dense2csdr(d, dimz):
-    return np.argmax(d.reshape((len(d) // dimz, dimz)), axis=1)
-    #csdr = [ np.argmax(d[i * dimz : (i + 1) * dimz]) for i in range(len(d) // dimz) ]
-
-    #return csdr
-
 class EnvRunner:
     def __init__(self, env, layerSizes=5 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
@@ -185,20 +171,7 @@ class EnvRunner:
 
             self.actions.append(startAct)
 
-        goalSize = self.h.getHiddenSize(self.h.getNumLayers() - 1)
-        self.goalSize = goalSize
-
-        self.goal = np.random.randint(0, goalSize[2], size=(goalSize[0] * goalSize[1],))
-
-        self.weights = np.random.randn(1, self.goalSize[0] * self.goalSize[1] * self.goalSize[2]) * 0.0001
-        self.traces = np.zeros((1, self.goalSize[0] * self.goalSize[1] * self.goalSize[2]))
-
-        self.totalR = 0.0
-        self.g = 1.0
-        self.goalLR = 0.2
-        self.gamma = 0.99
-        self.traceDecay = 0.98
-        self.qPrev = 0.0
+        self.adapter = pyaon.RLAdapter(
 
     def _feedObservation(self, obs):
         self.inputs = []

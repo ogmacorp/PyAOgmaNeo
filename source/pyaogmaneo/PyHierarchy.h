@@ -114,6 +114,12 @@ public:
         return hiddenCIs;
     }
 
+    std::tuple<int, int, int> getTopHiddenSize() const {
+        aon::Int3 size = h.getTopHiddenSize();
+
+        return { size.x, size.y, size.z };
+    }
+
     void setImportance(
         int i,
         float importance
