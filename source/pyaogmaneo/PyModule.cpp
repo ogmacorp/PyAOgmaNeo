@@ -76,6 +76,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getTopHiddenCIs", &pyaon::Hierarchy::getTopHiddenCIs)
         .def("getTopHiddenSize", &pyaon::Hierarchy::getTopHiddenSize)
+        .def("getTopUpdate", &pyaon::Hierarchy::getTopUpdate)
         .def("setImportance", &pyaon::Hierarchy::setImportance)
         .def("getImportance", &pyaon::Hierarchy::getImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)

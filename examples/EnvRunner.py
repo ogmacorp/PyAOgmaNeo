@@ -171,7 +171,8 @@ class EnvRunner:
 
             self.actions.append(startAct)
 
-        self.adapter = pyaon.RLAdapter(
+        self.adapter = pyaon.RLAdapter()
+        self.adapter.initRandom(self.h.getHiddenSize(), layerRadius)
 
     def _feedObservation(self, obs):
         self.inputs = []

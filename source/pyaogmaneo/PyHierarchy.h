@@ -119,6 +119,10 @@ public:
 
         return { size.x, size.y, size.z };
     }
+    
+    bool getTopUpdate() const {
+        return h.getTopUpdate();
+    }
 
     void setImportance(
         int i,
