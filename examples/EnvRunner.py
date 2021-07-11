@@ -174,8 +174,6 @@ class EnvRunner:
         self.adapter = pyaon.RLAdapter()
         self.adapter.initRandom(self.h.getTopHiddenSize())
 
-        self.rSum = 0.0
-
     def _feedObservation(self, obs):
         self.inputs = []
 
@@ -261,14 +259,10 @@ class EnvRunner:
         self._feedObservation(obs)
 
         r = reward * self.rewardScale + float(done) * self.terminalReward
-        self.rSum += r
 
         self.h.step(self.inputs, self.adapter.getGoalCIs(), True)
 
-        if self.h.getTopUpdate():
-            self.adapter.step(self.h.getTopHiddenCIs(), self.rSum, True)
-
-            self.rSum = 0.0
+        self.adapter.step(self.h.getTopHiddenCIs(), r, True)
 
         # Retrieve actions
         for i in range(len(self.actionIndices)):
