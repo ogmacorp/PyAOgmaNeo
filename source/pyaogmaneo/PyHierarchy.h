@@ -219,18 +219,16 @@ public:
     void setDLR(
         int l,
         int i,
-        int t,
         float lr
     ) {
-        h.getDLayers(l)[i][t].lr = lr;
+        h.getDLayers(l)[i].lr = lr;
     }
 
     float getDLR(
         int l,
-        int i,
-        int t
+        int i
     ) const {
-        return h.getDLayers(l)[i][t].lr;
+        return h.getDLayers(l)[i].lr;
     }
 
     // Retrieve additional parameters on the SPH's structure
@@ -244,7 +242,7 @@ public:
         int l,
         int i
     ) const {
-        return h.getDLayers(l)[i][0].getVisibleLayerDesc().radius;
+        return h.getDLayers(l)[i].getVisibleLayerDesc().radius;
     }
 };
 } // namespace pyaon
