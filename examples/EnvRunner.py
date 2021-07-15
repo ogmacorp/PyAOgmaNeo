@@ -172,7 +172,7 @@ class EnvRunner:
             self.actions.append(startAct)
 
         self.adapter = pyaon.RLAdapter()
-        self.adapter.initRandom(self.h.getTopHiddenSize())
+        self.adapter.initRandom(self.h.getTopHiddenSize(), layerRadius)
 
         self.adapter.setLR(0.01)
         self.adapter.setDiscount(0.99)

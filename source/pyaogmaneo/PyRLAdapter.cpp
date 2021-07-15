@@ -11,9 +11,10 @@
 using namespace pyaon;
 
 void RLAdapter::initRandom(
-    const std::tuple<int, int, int> &hiddenSize
+    const std::tuple<int, int, int> &hiddenSize,
+    int radius
 ) {
-    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)));
+    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), radius);
 }
 
 void RLAdapter::initFromFile(

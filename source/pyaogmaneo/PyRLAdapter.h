@@ -20,7 +20,8 @@ public:
     RLAdapter() {}
 
     void initRandom(
-        const std::tuple<int, int, int> &hiddenSize
+        const std::tuple<int, int, int> &hiddenSize,
+        int radius
     );
 
     void initFromFile(
@@ -56,6 +57,10 @@ public:
         aon::Int3 size = adapter.getHiddenSize();
 
         return { size.x, size.y, size.z };
+    }
+
+    int getRadius() const {
+        return adapter.getRadius();
     }
 
     // Params
