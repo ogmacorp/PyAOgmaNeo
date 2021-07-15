@@ -22,7 +22,7 @@ for episode in range(10000):
 
     # Timesteps
     for t in range(500):
-        done, _ = runner.act(epsilon=pow(0.99, episode)) # Step the environment and agent
+        done, _ = runner.act() # Step the environment and agent
 
         if done:
             print("Episode {} finished after {} timesteps".format(episode + 1, t + 1))
