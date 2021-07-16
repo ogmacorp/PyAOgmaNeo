@@ -18,6 +18,7 @@ import numpy as np
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
+# An example of a pre-encoder. This one is just random projection
 class ScalarEncoder:
     def __init__(self, num_scalars, num_columns, cells_per_column, lower_bound=0.0, upper_bound=1.0):
         self.num_scalars = num_scalars
@@ -51,7 +52,7 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-res = 32
+res = 16
 
 se = ScalarEncoder(4, 9, res)
 
@@ -73,6 +74,7 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
 h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc((3, 3, res), pyaon.prediction, eRadius=1, dRadius=1), pyaon.IODesc((1, 1, numActions), pyaon.action, eRadius=0, dRadius=1, historyCapacity=64) ], lds)
 
+# Set some parameters for the actor IO layer (index 1)
 h.setAVLR(1, 0.01)
 h.setAALR(1, 0.01)
 h.setADiscount(1, 0.99)
