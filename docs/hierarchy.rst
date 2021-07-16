@@ -3,7 +3,7 @@ Hierarchy
 
 .. class:: pyaogmaneo.Hierarchy
 
-The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when used for reinforcement learning. This is the main piece of any PyAOgmaNeo project
+The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when used for reinforcement learning. This is the main component of any PyAOgmaNeo project
 
 .. function:: Hierarchy.__init__(self):
 
@@ -71,7 +71,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     Get a prediction for a given input layer index. If the IODesc for this index is of type action, it will return the action instead
 
-    :param i: (int32) index of the input layer. Will error if input layer is of type "none" (see IODesc)
+    :param i: (int32) index of the input layer
     :rtype: (IntBuffer) integer buffer containing predictions
 
 .. function:: Hierarchy.getUpdate(self, l)
@@ -115,26 +115,19 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :rtype: (int32) number of input layers
 
-.. function:: Hierarchy.getNumPLayers(self, l)
+.. function:: Hierarchy.getNumDLayers(self, l)
 
-    Get the number of predictor (top down) sub-layers at a given layer
+    Get the number of decoder (top down) sub-layers at a given layer
 
     :param l: (int32) index of the layer. Must be greater than 0 as the first layer does not have regular predictors
     :rtype: (int32) number of input layers
 
-.. function:: Hierarchy.getNumSCVisibleLayers(self, l)
+.. function:: Hierarchy.getNumEVisibleLayers(self, l)
 
-    Get the number of visible (sub) layers of a sparse coder (SC), AKA encoder. This will be equal to Hierarchy.getTicksPerUpdate(l) for all l except for 0, where it will be equal to Hierarchy.getNumInputLayers()
+    Get the number of visible (sub) layers of a encoder. This will be equal to Hierarchy.getTicksPerUpdate(l) for all l except for 0, where it will be equal to Hierarchy.getNumInputLayers()
 
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
-
-.. function:: Hierarchy.pLayerExists(self, i)
-
-    Determine whether there is a predictor at the i-th input layer. This will be True if the IODesc at index i was of type typePrediction during initialization
-
-    :param i: (int32) index of the input layer
-    :rtype: (boolean) True if exists, False otherwise
 
 .. function:: Hierarchy.aLayerExists(self, i)
 
@@ -143,89 +136,75 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param i: (int32) index of the input layer
     :rtype: (boolean) True if exists, False otherwise
 
-.. function:: Hierarchy.setSCAlpha(self, l, alpha)
+.. function:: Hierarchy.setELR(self, l, lr)
 
-    Set the alpha (learning rate) of a sparse coder (SC) (AKA encoder)
-
-    :param l: (int32) index of the layer
-    :param alpha: (float32) value to set
-
-.. function:: Hierarchy.getSCAlpha(self, l)
-
-    Get the alpha (learning rate) of a sparse coder (SC) (AKA encoder)
+    Set the learning rate of a encoder (E)
 
     :param l: (int32) index of the layer
-    :rtype: (float32) alpha
+    :param lr: (float32) value to set
 
-.. function:: Hierarchy.setSCGamma(self, l, gamma)
+.. function:: Hierarchy.getELR(self, l)
 
-    Set the gamma (topology radius) of the sparsecoder (SC) (AKA encoder)
-
-    :param l: (int32) index of the layer
-    :param gamma: (float32) value to set
-
-.. function:: Hierarchy.getSCGamma(self, l)
-
-    Get the gamma (topology radius) of the sparsecoder (SC) (AKA encoder)
+    Get the learning rate of a encoder (E)
 
     :param l: (int32) index of the layer
-    :rtype: (float32) gamma
+    :rtype: (float32) lr
 
-.. function:: Hierarchy.setPAlpha(self, l, alpha)
+.. function:: Hierarchy.setDLR(self, l, lr)
 
-    Set the alpha (learning rate) of a predictor (P) (AKA decoder)
+    Set the learning rate of a decoder (D)
 
     :param l: (int32) index of the layer. This function is used for predictors above the first layer, so l > 0
-    :param alpha: (float32) value to set
+    :param lr: (float32) value to set
 
-.. function:: Hierarchy.getPAlpha(self, l)
+.. function:: Hierarchy.getDAlpha(self, l)
 
-    Get the alpha (learning rate) of a predictor (P) (AKA decoder)
+    Get the learning rate of a decoder (D)
 
     :param l: (int32) index of the layer. This function is used for predictors above the first layer, so l > 0
-    :rtype: (float32) alpha
+    :rtype: (float32) lr
 
-.. function:: Hierarchy.setAAlpha(self, i, alpha)
+.. function:: Hierarchy.setAVLR(self, i, vlr)
 
-    Set the alpha (value learning rate) of an action layer (A) at the bottom of the hierarchy (input layer)
-
-    :param i: (int32) index of the input layer
-    :param alpha: (float32) value to set
-
-.. function:: Hierarchy.getAAlpha(self, i)
-
-    Get the alpha (value learning rate) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Set the value learning rate of an action layer (A) at the bottom of the hierarchy (input layer)
 
     :param i: (int32) index of the input layer
-    :rtype: (float32) alpha
+    :param vlr: (float32) value to set
 
-.. function:: Hierarchy.setABeta(self, i, beta)
+.. function:: Hierarchy.getAVLR(self, i)
 
-    Set the beta (action learning rate) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Get the value learning rate of an action layer (A) at the bottom of the hierarchy (input layer)
 
     :param i: (int32) index of the input layer
-    :param beta: (float32) value to set
+    :rtype: (float32) vlr
+
+.. function:: Hierarchy.setAALR(self, i, alr)
+
+    Set the action learning rate of an action layer (A) at the bottom of the hierarchy (input layer)
+
+    :param i: (int32) index of the input layer
+    :param alr: (float32) value to set
 
 .. function:: Hierarchy.getABeta(self, i)
 
-    Get the beta (action learning rate) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Get the action learning rate of an action layer (A) at the bottom of the hierarchy (input layer)
 
     :param i: (int32) index of the input layer
-    :rtype: (float32) beta
+    :rtype: (float32) alr
 
-.. function:: Hierarchy.setAGamma(self, i, gamma)
+.. function:: Hierarchy.setADiscount(self, i, discount)
 
-    Set the gamma (discount factor) of an action layer (A) at the bottom of the hierarchy (input layer)
-
-    :param i: (int32) index of the input layer
-    :param gamma: (float32) value to set
-
-.. function:: Hierarchy.getAGamma(self, i)
-
-    Get the gamma (discount factor) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Set the discount factor of an action layer (A) at the bottom of the hierarchy (input layer)
 
     :param i: (int32) index of the input layer
-    :rtype: (float32) gamma
+    :param discount: (float32) value to set
+
+.. function:: Hierarchy.getADiscount(self, i)
+
+    Get the discount factor of an action layer (A) at the bottom of the hierarchy (input layer)
+
+    :param i: (int32) index of the input layer
+    :rtype: (float32) discount
     
 .. function:: Hierarchy.setAMinSteps(self, i, minSteps)
 
@@ -255,27 +234,20 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param i: (int32) index of the input layer
     :rtype: (int32) historyIters
 
-.. function:: Hierarchy.getFFRadius(self, l)
+.. function:: Hierarchy.getERadius(self, l)
 
-    Get the feed forward (FF) radius of a layer
+    Get the feed forward encoder radius of a layer
 
     :param l: (int32) index of the layer
-    :rtype: (int32) FF radius
+    :rtype: (int32) encoder radius
 
-.. function:: Hierarchy.getPRadius(self, l, v)
+.. function:: Hierarchy.getDRadius(self, l, v)
 
-    Get the predictor (P) radius of a layer
+    Get the decoder (D) radius of a layer
 
     :param l: (int32) index of the layer
     :param v: (int32) index of the input layer 
     :rtype: (int32) P radius
-
-.. function:: Hierarchy.getARadius(self, v)
-
-    Get the actor (A) radius of a layer
-
-    :param v: (int32) index of the input layer 
-    :rtype: (int32) A radius
 
 .. function:: Hierarchy.getAHistoryCapacity(self, v)
 

@@ -87,26 +87,14 @@ It is implemented as a bunch of 1D SOMs.
 
     :rtype: (Int3) the CSDR size
 
-.. function:: ImageEncoder.setAlpha(self, alpha)
+.. function:: ImageEncoder.setLR(self, lr)
 
-    Set the alpha (learning rate)
+    Set the learning rate
 
-    :param alpha: (float32) value to set
+    :param lr: (float32) value to set
 
-.. function:: ImageEncoder.getAlpha(self)
+.. function:: ImageEncoder.getLR(self)
 
-    Get the alpha (learning rate)
+    Get the learning rate
 
-    :rtype: (float32) alpha
-
-.. function:: ImageEncoder.setGamma(self, gamma)
-
-    Set the gamma (topology radius)
-
-    :param gamma: (float32) value to set
-
-.. function:: ImageEncoder.getGamma(self)
-
-    Get the gamma (topology radius)
-
-    :rtype: (float32) gamma
+    :rtype: (float32) lr

@@ -18,6 +18,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("setNumThreads", &pyaon::setNumThreads);
     m.def("getNumThreads", &pyaon::getNumThreads);
 
+    m.def("setGlobalState", &pyaon::setGlobalState);
+    m.def("getGlobalState", &pyaon::getGlobalState);
+
     py::enum_<pyaon::IOType>(m, "IOType")
         .value("prediction", pyaon::prediction)
         .value("action", pyaon::action)
@@ -35,7 +38,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("type") = pyaon::prediction,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 128
+            py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
@@ -87,7 +90,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
         .def("getTicks", &pyaon::Hierarchy::getTicks)
         .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
-        .def("getNumEncVisibleLayers", &pyaon::Hierarchy::getNumEncVisibleLayers)
+        .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
