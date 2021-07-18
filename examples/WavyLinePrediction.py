@@ -65,9 +65,9 @@ lds = []
 
 for i in range(8): # Layers with exponential memory
     ld = pyaon.LayerDesc()
-    ld.numPriorities = 5
+    ld.numPriorities = 3
 
-    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -79,7 +79,7 @@ h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 iters = 50000
 
 def wave(t):
-    if t % 100 == 0:
+    if t % 50 == 0:
         return 1.0
     return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.1 * 2.0 * np.pi - 0.5) * np.sin(t * 0.02 * 2.0 * np.pi)) * 0.5 + 0.5
