@@ -18,6 +18,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("setNumThreads", &pyaon::setNumThreads);
     m.def("getNumThreads", &pyaon::getNumThreads);
 
+    m.def("setGlobalState", &pyaon::setGlobalState);
+    m.def("getGlobalState", &pyaon::getGlobalState);
+
     py::enum_<pyaon::IOType>(m, "IOType")
         .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
@@ -91,7 +94,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
         .def("getTicks", &pyaon::Hierarchy::getTicks)
         .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
-        .def("getNumEncVisibleLayers", &pyaon::Hierarchy::getNumEncVisibleLayers)
+        .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
@@ -99,6 +102,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDScale", &pyaon::Hierarchy::setDScale)
+        .def("getDScale", &pyaon::Hierarchy::getDScale)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)

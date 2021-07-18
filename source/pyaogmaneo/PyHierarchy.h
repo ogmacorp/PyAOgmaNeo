@@ -176,7 +176,7 @@ public:
         return h.getTicksPerUpdate(l);
     }
 
-    int getNumEncVisibleLayers(
+    int getNumEVisibleLayers(
         int l
     ) {
         return h.getELayer(l).getNumVisibleLayers();
@@ -230,6 +230,25 @@ public:
         assert(h.getDLayers(l)[v] != nullptr);
 
         return h.getDLayers(l)[v]->lr;
+    }
+
+    void setDScale(
+        int l,
+        int v,
+        float scale
+    ) {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        h.getDLayers(l)[v]->scale = scale;
+    }
+
+    float getDScale(
+        int l,
+        int v
+    ) const {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        return h.getDLayers(l)[v]->scale;
     }
 
     void setAVLR(
