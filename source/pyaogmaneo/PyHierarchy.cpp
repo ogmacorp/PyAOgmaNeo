@@ -102,8 +102,8 @@ void Hierarchy::step(
 ) {
     assert(inputCIs.size() == h.getInputSizes().size());
 
-    aon::Array<aon::IntBuffer> cInputCIsBacking(inputCIs.size());
-    aon::Array<const aon::IntBuffer*> cInputCIs(inputCIs.size());
+    aon::Array<aon::ByteBuffer> cInputCIsBacking(inputCIs.size());
+    aon::Array<const aon::ByteBuffer*> cInputCIs(inputCIs.size());
 
     for (int i = 0; i < inputCIs.size(); i++) {
         assert(inputCIs[i].size() == h.getInputSizes()[i].x * h.getInputSizes()[i].y);

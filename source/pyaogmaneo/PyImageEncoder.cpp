@@ -81,7 +81,7 @@ void ImageEncoder::step(
 void ImageEncoder::reconstruct(
     const std::vector<int> &reconCIs
 ) {
-    aon::IntBuffer cReconCIsBacking(reconCIs.size());
+    aon::ByteBuffer cReconCIsBacking(reconCIs.size());
 
     for (int j = 0; j < reconCIs.size(); j++)
         cReconCIsBacking[j] = reconCIs[j];
