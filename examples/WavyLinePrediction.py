@@ -76,7 +76,7 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 50000
+iters = 100000
 
 def wave(t):
     if (t // 40) % 2 == 0:
@@ -85,11 +85,13 @@ def wave(t):
 
 rt = 0
 for t in range(iters):
-    if np.random.rand() < 0.8:
-        rt += 1
+    rt += 1
 
-    if np.random.rand() < 0.2:
-        rt += 1
+    #if np.random.rand() < 0.1:
+    #    rt -= 1
+
+    #if np.random.rand() < 0.1:
+    #    rt += 1
 
     # The value to encode into the input column
     valueToEncode = wave(rt) # Some wavy line
