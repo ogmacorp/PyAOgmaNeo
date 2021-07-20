@@ -57,7 +57,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("numPriorities") = 3,
+            py::arg("numPriorities") = 5,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
