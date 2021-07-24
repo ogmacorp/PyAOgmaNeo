@@ -19,7 +19,7 @@ def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=4 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=3 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -42,14 +42,14 @@ class EnvRunner:
 
         if type(self.env.observation_space) is gym.spaces.Discrete:
             self.inputSizes.append((1, 1, self.env.observation_space.n))
-            self.inputTypes.append(pyaon.prediction)
+            self.inputTypes.append(pyaon.none)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.observation_space) is gym.spaces.Box:
             if len(self.env.observation_space.shape) == 1 or len(self.env.observation_space.shape) == 0:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
                 self.inputSizes.append((squareSize, squareSize, obsResolution))
-                self.inputTypes.append(pyaon.prediction)
+                self.inputTypes.append(pyaon.none)
                 lows = list(self.env.observation_space.low)
                 highs = list(self.env.observation_space.high)
                 
@@ -90,7 +90,7 @@ class EnvRunner:
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
-            self.inputTypes.append(pyaon.prediction)
+            self.inputTypes.append(pyaon.none)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 1.0 ])
 
