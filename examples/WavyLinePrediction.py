@@ -66,7 +66,7 @@ lds = []
 for i in range(8): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (3, 3, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -78,20 +78,14 @@ h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 iters = 100000
 
 def wave(t):
+    if t % 50 == 0:
+        return 1.0
+    return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi - 0.5) * np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
-rt = 0
 for t in range(iters):
-    rt += 1
-
-    #if np.random.rand() < 0.1:
-    #    rt -= 1
-
-    #if np.random.rand() < 0.1:
-    #    rt += 1
-
     # The value to encode into the input column
-    valueToEncode = wave(rt) # Some wavy line
+    valueToEncode = wave(t) # Some wavy line
 
     #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
     csdr = Unorm8ToCSDR(float(valueToEncode))
