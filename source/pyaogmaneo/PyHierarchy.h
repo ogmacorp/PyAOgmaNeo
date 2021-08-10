@@ -198,12 +198,12 @@ public:
 
     void setELR(
         int l,
-        float lr
+        int lr
     ) {
         h.getELayer(l).lr = lr;
     }
 
-    float getELR(
+    int getELR(
         int l
     ) {
         return h.getELayer(l).lr;
@@ -213,12 +213,12 @@ public:
         int l,
         int i,
         int t,
-        float lr
+        int lr
     ) {
         h.getDLayers(l)[i][t].lr = lr;
     }
 
-    float getDLR(
+    int getDLR(
         int l,
         int i,
         int t
