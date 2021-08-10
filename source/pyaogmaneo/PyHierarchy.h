@@ -45,6 +45,7 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
+    int numPriorities;
 
     int ffRadius;
     int rRadius;
@@ -52,12 +53,14 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
+        int numPriorities,
         int ffRadius,
         int rRadius,
         int fbRadius
     )
     :
     hiddenSize(hiddenSize),
+    numPriorities(numPriorities),
     ffRadius(ffRadius),
     rRadius(rRadius),
     fbRadius(fbRadius)
@@ -161,30 +164,17 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
-    void setEWLR(
+    void setELR(
         int l,
-        float wlr
+        float lr
     ) {
-        h.getELayer(l).wlr = wlr;
+        h.getELayer(l).lr = lr;
     }
 
-    float getEWLR(
+    float getELR(
         int l
     ) {
-        return h.getELayer(l).wlr;
-    }
-
-    void setEBLR(
-        int l,
-        float blr
-    ) {
-        h.getELayer(l).blr = blr;
-    }
-
-    float getEBLR(
-        int l
-    ) {
-        return h.getELayer(l).blr;
+        return h.getELayer(l).lr;
     }
 
     void setDLR(

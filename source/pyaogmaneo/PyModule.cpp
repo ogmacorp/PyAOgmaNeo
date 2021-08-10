@@ -48,14 +48,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("numPriorities") = 3,
             py::arg("ffRadius") = 2,
             py::arg("rRadius") = 2,
             py::arg("fbRadius") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("numPriorities", &pyaon::LayerDesc::numPriorities)
         .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
         .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
         .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius);
@@ -83,10 +86,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
-        .def("setEWLR", &pyaon::Hierarchy::setEWLR)
-        .def("getEWLR", &pyaon::Hierarchy::getEWLR)
-        .def("setEBLR", &pyaon::Hierarchy::setEBLR)
-        .def("getEBLR", &pyaon::Hierarchy::getEBLR)
+        .def("setELR", &pyaon::Hierarchy::setELR)
+        .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
