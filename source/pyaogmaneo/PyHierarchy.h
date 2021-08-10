@@ -209,6 +209,19 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setEMargin(
+        int l,
+        int margin
+    ) {
+        h.getELayer(l).margin = margin;
+    }
+
+    int getEMargin(
+        int l
+    ) {
+        return h.getELayer(l).margin;
+    }
+
     void setDLR(
         int l,
         int i,
@@ -224,6 +237,23 @@ public:
         int t
     ) const {
         return h.getDLayers(l)[i][t].lr;
+    }
+
+    void setDMargin(
+        int l,
+        int i,
+        int t,
+        int margin
+    ) {
+        h.getDLayers(l)[i][t].margin = margin;
+    }
+
+    int getDMargin(
+        int l,
+        int i,
+        int t
+    ) const {
+        return h.getDLayers(l)[i][t].margin;
     }
 
     void setAVLR(
