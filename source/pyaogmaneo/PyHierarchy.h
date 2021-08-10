@@ -198,12 +198,12 @@ public:
 
     void setELR(
         int l,
-        int lr
+        float lr
     ) {
         h.getELayer(l).lr = lr;
     }
 
-    int getELR(
+    float getELR(
         int l
     ) {
         return h.getELayer(l).lr;
@@ -211,12 +211,12 @@ public:
 
     void setEMargin(
         int l,
-        int margin
+        float margin
     ) {
         h.getELayer(l).margin = margin;
     }
 
-    int getEMargin(
+    float getEMargin(
         int l
     ) {
         return h.getELayer(l).margin;
@@ -226,12 +226,12 @@ public:
         int l,
         int i,
         int t,
-        int lr
+        float lr
     ) {
         h.getDLayers(l)[i][t].lr = lr;
     }
 
-    int getDLR(
+    float getDLR(
         int l,
         int i,
         int t
@@ -243,12 +243,12 @@ public:
         int l,
         int i,
         int t,
-        int margin
+        float margin
     ) {
         h.getDLayers(l)[i][t].margin = margin;
     }
 
-    int getDMargin(
+    float getDMargin(
         int l,
         int i,
         int t
