@@ -79,15 +79,12 @@ h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 iters = 100000
 
 def wave(t):
-    if t % 50 == 0:
+    if t % 20 == 0:
         return 1.0
     return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi - 0.5) * np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
-rt = 0
 for t in range(iters):
-    rt += 1
-
     #if np.random.rand() < 0.1:
     #    rt -= 1
 
@@ -95,14 +92,14 @@ for t in range(iters):
     #    rt += 1
 
     # The value to encode into the input column
-    valueToEncode = wave(rt) # Some wavy line
+    valueToEncode = wave(t) # Some wavy line
 
     #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
     csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
-    print(h.getHiddenCIs(0))
+    #print(h.getHiddenCIs(0))
 
     # Print progress
     if t % 100 == 0:
