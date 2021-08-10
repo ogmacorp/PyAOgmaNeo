@@ -76,13 +76,13 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 
 for i in range(len(lds)):
-    h.setRecurrence(i, 1.0)
+    h.setRecurrence(i, 0.25)
 
 # Present the wave sequence for some timesteps
 iters = 100000
 
 def wave(t):
-    if t % 50 == 0:
+    if t % 20 == 0:
         return 1.0
     return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi - 0.5) * np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
