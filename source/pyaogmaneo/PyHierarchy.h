@@ -209,19 +209,6 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setEScale(
-        int l,
-        float scale
-    ) {
-        h.getELayer(l).scale = scale;
-    }
-
-    float getEScale(
-        int l
-    ) {
-        return h.getELayer(l).scale;
-    }
-
     void setDLR(
         int l,
         int i,
@@ -237,23 +224,6 @@ public:
         int t
     ) const {
         return h.getDLayers(l)[i][t].lr;
-    }
-
-    void setDScale(
-        int l,
-        int i,
-        int t,
-        float scale
-    ) {
-        h.getDLayers(l)[i][t].scale = scale;
-    }
-
-    float getDScale(
-        int l,
-        int i,
-        int t
-    ) const {
-        return h.getDLayers(l)[i][t].scale;
     }
 
     void setAVLR(
