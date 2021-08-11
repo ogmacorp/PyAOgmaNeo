@@ -269,6 +269,40 @@ public:
         return h.getALayers()[i]->discount;
     }
 
+    void setAMinSteps(
+        int i,
+        int minSteps
+    ) {
+        assert(h.getALayers()[i] != nullptr);
+
+        h.getALayers()[i]->minSteps = minSteps;
+    }
+
+    int getAMinSteps(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->minSteps;
+    }
+
+    void setAHistoryIters(
+        int i,
+        int historyIters
+    ) {
+        assert(h.getALayers()[i] != nullptr);
+
+        h.getALayers()[i]->historyIters = historyIters;
+    }
+
+    int getAHistoryIters(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->historyIters;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getFFRadius(
         int l
