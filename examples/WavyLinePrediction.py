@@ -65,7 +65,6 @@ lds = []
 
 for i in range(2): # Layers with exponential memory
     ld = pyaon.LayerDesc()
-    ld.numPriorities = 3
 
     ld.hiddenSize = (3, 3, 32) # Size of the encoder (SparseCoder)
 
@@ -76,27 +75,16 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 
 for i in range(len(lds)):
-<<<<<<< HEAD
-    h.setRecurrence(i, 0.25)
-=======
-    h.setRecurrence(i, 0.5)
->>>>>>> recurrent3
+    h.setRecurrence(i, 1.0)
 
 # Present the wave sequence for some timesteps
 iters = 100000
 
 def wave(t):
-<<<<<<< HEAD
-    if t % 20 == 0:
+    if t % 100 == 0:
         return 1.0
     return 0.0
-    return np.sin(t * 0.05 * 2.0 * np.pi - 0.5) * np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
-=======
-    #if t % 50 == 0:
-    #    return 1.0
-    #return 0.0
     return np.sin(t * 0.02 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
->>>>>>> recurrent3
 
 for t in range(iters):
     #if np.random.rand() < 0.1:
@@ -124,7 +112,7 @@ ts = [] # Time step
 vs = [] # Predicted value
 v2s = [] # Column states
 
-numTrack = 3
+numTrack = 0
 
 for i in range(numTrack):
     v2s.append([])
