@@ -107,6 +107,32 @@ public:
         return h.getNumLayers();
     }
 
+    void setImportance(
+        int i,
+        float importance
+    ) {
+        h.setImportance(i, importance);
+    }
+
+    float getImportance(
+        int i
+    ) const {
+        return h.getImportance(i);
+    }
+
+    void setRecurrence(
+        int l,
+        float recurrence
+    ) {
+        h.setRecurrence(l, recurrence);
+    }
+
+    float getRecurrence(
+        int l
+    ) const {
+        return h.getRecurrence(l);
+    }
+
     std::vector<int> getPredictionCIs(
         int i
     ) const {
