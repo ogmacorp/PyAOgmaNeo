@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -14,12 +14,24 @@
 #include <fstream>
 
 namespace pyaon {
-inline void setNumThreads(int numThreads) {
+inline void setNumThreads(
+    int numThreads
+) {
     aon::setNumThreads(numThreads);
 }
 
 inline int getNumThreads() {
     return aon::getNumThreads();
+}
+
+inline void setGlobalState(
+    unsigned int globalState
+) {
+    aon::globalState = globalState;
+}
+
+inline unsigned int getGlobalState() {
+    return aon::globalState;
 }
 
 class FileReader : public aon::StreamReader {
