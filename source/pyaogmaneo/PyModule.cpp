@@ -38,7 +38,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("type") = pyaon::prediction,
             py::arg("ffRadius") = 2,
             py::arg("fbRadius") = 2,
-            py::arg("historyCapacity") = 128
+            py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
