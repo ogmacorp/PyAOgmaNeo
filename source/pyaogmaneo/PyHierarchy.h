@@ -248,6 +248,23 @@ public:
         return h.getALayers()[i]->discount;
     }
 
+    void setAActionGap(
+        int v,
+        float actionGap
+    ) {
+        assert(h.getALayers()[v] != nullptr);
+        
+        h.getALayers()[v]->actionGap = actionGap;
+    }
+
+    float getAActionGap(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->actionGap;
+    }
+
     void setAQSteps(
         int i,
         int qSteps

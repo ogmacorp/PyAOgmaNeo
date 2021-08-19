@@ -94,6 +94,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getALR", &pyaon::Hierarchy::getALR)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
+        .def("setAActionGap", &pyaon::Hierarchy::setAActionGap)
+        .def("getAActionGap", &pyaon::Hierarchy::getAActionGap)
         .def("setAQSteps", &pyaon::Hierarchy::setAQSteps)
         .def("getAQSteps", &pyaon::Hierarchy::getAQSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)

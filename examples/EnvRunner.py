@@ -151,6 +151,10 @@ class EnvRunner:
         for i in range(len(layerSizes)):
             self.h.setRecurrence(i, 0.1)
 
+        for i in range(len(ioDescs)):
+            if ioDescs[i].type == pyaon.action:
+                self.h.setAActionGap(i, 0.1)
+
         self.actions = []
 
         for i in range(len(self.actionIndices)):
