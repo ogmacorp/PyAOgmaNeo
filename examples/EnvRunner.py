@@ -153,7 +153,7 @@ class EnvRunner:
 
         for i in range(len(ioDescs)):
             if ioDescs[i].type == pyaon.action:
-                self.h.setAActionGap(i, 0.1)
+                self.h.setAActionGap(i, 0.0)
 
         self.actions = []
 
