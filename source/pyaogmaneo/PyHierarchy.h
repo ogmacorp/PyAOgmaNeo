@@ -45,7 +45,7 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
-    int numPriorities;
+    std::tuple<int, int> clumpSize;
 
     int ffRadius;
     int rRadius;
@@ -53,14 +53,14 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int numPriorities,
+        const std::tuple<int, int> &clumpSize,
         int ffRadius,
         int rRadius,
         int fbRadius
     )
     :
     hiddenSize(hiddenSize),
-    numPriorities(numPriorities),
+    clumpSize(clumpSize),
     ffRadius(ffRadius),
     rRadius(rRadius),
     fbRadius(fbRadius)

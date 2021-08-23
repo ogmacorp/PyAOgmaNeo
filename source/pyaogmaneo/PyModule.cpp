@@ -46,19 +46,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
-                int,
+                std::tuple<int, int>,
                 int,
                 int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("numPriorities") = 5,
+            py::arg("clumpSize") = std::tuple<int, int>({ 2, 2 }),
             py::arg("ffRadius") = 2,
             py::arg("rRadius") = 2,
             py::arg("fbRadius") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("numPriorities", &pyaon::LayerDesc::numPriorities)
+        .def_readwrite("clumpSize", &pyaon::LayerDesc::clumpSize)
         .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
         .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
         .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius);

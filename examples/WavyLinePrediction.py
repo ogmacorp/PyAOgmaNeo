@@ -66,7 +66,7 @@ lds = []
 for i in range(2): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (3, 3, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (2, 2, 32) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -75,7 +75,7 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 
 for i in range(len(lds)):
-    h.setRecurrence(i, 1.0)
+    h.setRecurrence(i, 0.5)
 
 # Present the wave sequence for some timesteps
 iters = 100000
@@ -101,7 +101,6 @@ for t in range(iters):
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
-    #print(h.getHiddenCIs(0))
 
     # Print progress
     if t % 100 == 0:
