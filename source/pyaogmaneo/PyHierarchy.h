@@ -186,17 +186,17 @@ public:
         return h.getALayers()[i] != nullptr;
     }
 
-    void setEWLR(
+    void setESLR(
         int l,
-        float wlr
+        float slr
     ) {
-        h.getELayer(l).wlr = wlr;
+        h.getELayer(l).slr = slr;
     }
 
-    float getEWLR(
+    float getESLR(
         int l
     ) {
-        return h.getELayer(l).wlr;
+        return h.getELayer(l).slr;
     }
 
     void setEBLR(
