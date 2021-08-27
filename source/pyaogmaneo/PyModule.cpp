@@ -18,6 +18,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("setNumThreads", &pyaon::setNumThreads);
     m.def("getNumThreads", &pyaon::getNumThreads);
 
+    m.def("setGlobalState", &pyaon::setGlobalState);
+    m.def("getGlobalState", &pyaon::getGlobalState);
+
     py::enum_<pyaon::IOType>(m, "IOType")
         .value("prediction", pyaon::prediction)
         .value("action", pyaon::action)
@@ -88,6 +91,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
+        .def("setEOverboost", &pyaon::Hierarchy::setEOverboost)
+        .def("getEOverboost", &pyaon::Hierarchy::getEOverboost)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setALR", &pyaon::Hierarchy::setALR)
