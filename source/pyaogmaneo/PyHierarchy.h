@@ -261,12 +261,12 @@ public:
     }
 
     void setADiscount(
-        int v,
+        int i,
         float discount
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[v]->discount = discount;
+        h.getALayers()[i]->discount = discount;
     }
 
     float getADiscount(
