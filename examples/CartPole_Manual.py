@@ -52,7 +52,7 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-res = 16
+res = 32
 
 se = ScalarEncoder(4, 9, res)
 
