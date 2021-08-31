@@ -209,19 +209,6 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setEMargin(
-        int l,
-        float margin
-    ) {
-        h.getELayer(l).margin = margin;
-    }
-
-    float getEMargin(
-        int l
-    ) {
-        return h.getELayer(l).margin;
-    }
-
     void setDLR(
         int l,
         int i,
@@ -237,23 +224,6 @@ public:
         int t
     ) const {
         return h.getDLayers(l)[i][t].lr;
-    }
-
-    void setDMargin(
-        int l,
-        int i,
-        int t,
-        float margin
-    ) {
-        h.getDLayers(l)[i][t].margin = margin;
-    }
-
-    float getDMargin(
-        int l,
-        int i,
-        int t
-    ) const {
-        return h.getDLayers(l)[i][t].margin;
     }
 
     void setAVLR(
@@ -305,40 +275,6 @@ public:
         assert(h.getALayers()[i] != nullptr);
         
         return h.getALayers()[i]->discount;
-    }
-
-    void setAMinSteps(
-        int i,
-        int minSteps
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-
-        h.getALayers()[i]->minSteps = minSteps;
-    }
-
-    int getAMinSteps(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->minSteps;
-    }
-
-    void setAHistoryIters(
-        int i,
-        int historyIters
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-
-        h.getALayers()[i]->historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->historyIters;
     }
 
     // Retrieve additional parameters on the SPH's structure
