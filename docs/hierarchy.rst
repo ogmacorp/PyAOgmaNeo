@@ -59,7 +59,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param inputCIs: ([IntBuffer]) list of input integer buffers representing the CSDRs of the dimensions described in the initialization
     :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
     :param reward: (float32) reward signal, if action input layers (pyaogmaneo.IODesc type set to typeAction) are present this will be used to update those to maximize reward. Defaults to 0.0
-    :param mimic: If true, sets the actors (action generators for reinforcement learning) to behave like regular predictors. This is useful for imitation learning followed by reinforcement learning
+    :param mimic: If true, sets the actors (action generators for reinforcement learning) to behave like regular decoders (prediction). This is useful for imitation learning followed by reinforcement learning
 
 .. function:: Hierarchy.getNumLayers(self)
 
@@ -119,7 +119,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     Get the number of decoder (top down) sub-layers at a given layer
 
-    :param l: (int32) index of the layer. Must be greater than 0 as the first layer does not have regular predictors
+    :param l: (int32) index of the layer. Must be greater than 0 as the first layer does not have regular decoders
     :rtype: (int32) number of input layers
 
 .. function:: Hierarchy.getNumEVisibleLayers(self, l)
@@ -154,14 +154,14 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     Set the learning rate of a decoder (D)
 
-    :param l: (int32) index of the layer. This function is used for predictors above the first layer, so l > 0
+    :param l: (int32) index of the layer
     :param lr: (float32) value to set
 
-.. function:: Hierarchy.getDAlpha(self, l)
+.. function:: Hierarchy.getDLR(self, l)
 
     Get the learning rate of a decoder (D)
 
-    :param l: (int32) index of the layer. This function is used for predictors above the first layer, so l > 0
+    :param l: (int32) index of the layer
     :rtype: (float32) lr
 
 .. function:: Hierarchy.setAVLR(self, i, vlr)
@@ -185,7 +185,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param i: (int32) index of the input layer
     :param alr: (float32) value to set
 
-.. function:: Hierarchy.getABeta(self, i)
+.. function:: Hierarchy.getAALR(self, i)
 
     Get the action learning rate of an action layer (A) at the bottom of the hierarchy (input layer)
 

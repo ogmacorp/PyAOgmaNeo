@@ -16,10 +16,10 @@ import os
 from copy import copy
 
 def sigmoid(x):
-    return 1.0 / (1.0 + np.exp(-x))
+    return np.tanh(x) * 0.5 + 0.5
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=2 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=3 * [ (4, 4, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         pyaon.setNumThreads(nThreads)
@@ -32,7 +32,6 @@ class EnvRunner:
         self.inputHighs = []
         self.inputTypes = []
         self.imageSizes = []
-        self.imgsPrev = []
         self.actionIndices = []
 
         self.rewardScale = rewardScale
@@ -82,8 +81,6 @@ class EnvRunner:
                 vld = pyaon.ImageEncoderVisibleLayerDesc((self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
 
                 vlds.append(vld)
-
-                self.imgsPrev.append(np.zeros(self.imageSizes[i]))
 
             self.imEnc = pyaon.ImageEncoder()
             self.imEnc.initRandom(hiddenSize, vlds)
@@ -179,10 +176,6 @@ class EnvRunner:
                 
                 img = np.swapaxes(img, 0, 1)
                 
-                #delta = img - self.imgsPrev[0]
- 
-                self.imgsPrev[0] = copy(img)
-
                 # Encode image
                 self.imEnc.step([ img.ravel().tolist() ], True)
 
@@ -208,7 +201,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.05, obsPreprocess=None):
+    def act(self, epsilon=0.0, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):

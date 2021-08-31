@@ -4,7 +4,7 @@ Image Encoder
 .. class:: pyaogmaneo.ImageEncoder
 
 The ImageEncoder is a pre-encoder used to convert images to CSDRs. Sometimes, it can also be used for non-image inputs, but images are the primary intended use.
-It is implemented as a bunch of 1D SOMs.
+It is implemented as a bunch of 1D Self-Organizing Maps (SOMs).
 
 .. function:: ImageEncoder.__init__(self):
 

@@ -16,9 +16,9 @@ import numpy as np
 
 # Squashing function
 def sigmoid(x):
-    return 1.0 / (1.0 + np.exp(-x))
+    return np.tanh(x) * 0.5 + 0.5
 
-# An example of a pre-encoder. This one is just random projection
+# An example of a pre-encoder. This one is just random projection. It's not very good, but will do for this task
 class ScalarEncoder:
     def __init__(self, num_scalars, num_columns, cells_per_column, lower_bound=0.0, upper_bound=1.0):
         self.num_scalars = num_scalars
@@ -62,22 +62,23 @@ pyaon.setNumThreads(8)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc(hiddenSize=(3, 3, 16))
+for i in range(3): # Layers with exponential memory. Not much memory is needed for Cart-Pole
+    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
 
-    ld.eRadius = 1
-    ld.dRadius = 1
+    ld.eRadius = 2
+    ld.dRadius = 2
     
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((3, 3, res), pyaon.prediction, eRadius=1, dRadius=1), pyaon.IODesc((1, 1, numActions), pyaon.action, eRadius=0, dRadius=1, historyCapacity=64) ], lds)
+h.initRandom([ pyaon.IODesc((3, 3, res), pyaon.prediction, eRadius=2, dRadius=2), pyaon.IODesc((1, 1, numActions), pyaon.action, eRadius=0, dRadius=2, historyCapacity=64) ], lds)
 
 # Set some parameters for the actor IO layer (index 1)
 h.setAVLR(1, 0.01)
 h.setAALR(1, 0.01)
 h.setADiscount(1, 0.99)
+h.setAMinSteps(1, 16)
 h.setAHistoryIters(1, 16)
 
 reward = 0.0

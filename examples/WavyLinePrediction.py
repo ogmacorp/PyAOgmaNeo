@@ -16,35 +16,6 @@ import struct
 # Set the number of threads
 pyaon.setNumThreads(8)
 
-def fToCSDR(x, num_columns, cells_per_column, scale_factor=0.25):
-    csdr = []
-
-    scale = 1.0
-
-    for i in range(num_columns):
-        s = (x / scale) % (1.0 if x > 0.0 else -1.0)
-
-        csdr.append(int((s * 0.5 + 0.5) * (cells_per_column - 1) + 0.5))
-
-        rec = scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
-        x -= rec
-
-        scale *= scale_factor
-
-    return csdr
-
-def CSDRToF(csdr, cells_per_column, scale_factor=0.25):
-    x = 0.0
-
-    scale = 1.0
-
-    for i in range(len(csdr)):
-        x += scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
-
-        scale *= scale_factor
-
-    return x
-
 def Unorm8ToCSDR(x : float):
     assert(x >= 0.0 and x <= 1.0)
 
@@ -63,10 +34,10 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(9): # Layers with exponential memory
+for i in range(4): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (3, 3, 16) # Size of the encoder (width, length, column size)
 
     lds.append(ld)
 
@@ -75,19 +46,15 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 300000
+iters = 1000
 
 def wave(t):
-    if t % 400 == 0:
-        return 1.0
-    return 0.0
-    return min(1.0, max(0.0, np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.5 + 0.5 + np.random.randn() * 0.05))
+    return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
 for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
-    #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
     csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
@@ -113,7 +80,6 @@ for t2 in range(3000):
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
     value = CSDRToUnorm8(h.getPredictionCIs(0))
 
     # Append to plot data
@@ -127,9 +93,6 @@ for t2 in range(3000):
 
 # Show plot
 plt.plot(ts, vs, ts, trgs)
-
-#for i in range(len(units)):
-#    plt.plot(ts, units[i])
 
 plt.show()
 
