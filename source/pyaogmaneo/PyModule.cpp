@@ -91,8 +91,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("aLayerExists", &pyaon::Hierarchy::aLayerExists)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setEOverboost", &pyaon::Hierarchy::setEOverboost)
-        .def("getEOverboost", &pyaon::Hierarchy::getEOverboost)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setALR", &pyaon::Hierarchy::setALR)

@@ -199,19 +199,6 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setEOverboost(
-        int l,
-        float overboost
-    ) {
-        h.getELayer(l).overboost = overboost;
-    }
-
-    float getEOverboost(
-        int l
-    ) {
-        return h.getELayer(l).overboost;
-    }
-
     void setDLR(
         int l,
         int i,
