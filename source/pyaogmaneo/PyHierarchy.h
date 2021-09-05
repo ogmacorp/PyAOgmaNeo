@@ -199,6 +199,19 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setEFalloff(
+        int l,
+        float falloff
+    ) {
+        h.getELayer(l).falloff = falloff;
+    }
+
+    float getEFalloff(
+        int l
+    ) {
+        return h.getELayer(l).falloff;
+    }
+
     void setDLR(
         int l,
         int i,
