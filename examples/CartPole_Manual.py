@@ -99,7 +99,7 @@ for episode in range(1000):
 
         obs, reward, done, info = env.step(action)
 
-        # Re-define reward so that it is 0 normally and then -1 if done
+        # Re-define reward so that it is 0 normally and then -100 if done
         if done:
             reward = -100.0
 

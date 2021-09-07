@@ -16,6 +16,7 @@ import struct
 # Set the number of threads
 pyaon.setNumThreads(8)
 
+# Simple encoder for values in [0, 1] to 2 columns of size 16
 def Unorm8ToCSDR(x : float):
     assert(x >= 0.0 and x <= 1.0)
 
@@ -23,11 +24,11 @@ def Unorm8ToCSDR(x : float):
 
     return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
 
-# Reverse transform of IEEEToCSDR
+# Reverse transform of Unorm8ToCSDR
 def CSDRToUnorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
-# This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
+# Encoding shape - a single value encoded with Unorm8ToCSDR
 numInputColumns = 2
 inputColumnSize = 16
 
@@ -49,9 +50,6 @@ h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
 iters = 10000
 
 def wave(t):
-    if t % 10 == 0:
-        return 1.0
-    return 0.0
     return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
 for t in range(iters):
@@ -62,8 +60,6 @@ for t in range(iters):
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
-
-    print(h.getHiddenCIs(0))
 
     # Print progress
     if t % 100 == 0:
