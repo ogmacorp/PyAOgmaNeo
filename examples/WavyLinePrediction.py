@@ -34,7 +34,7 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(1): # Layers with exponential memory
+for i in range(5): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     ld.hiddenSize = (5, 5, 16) # Size of the encoder (width, length, column size)
