@@ -102,8 +102,7 @@ public:
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
-        float reward,
-        bool mimic
+        float reward
     );
 
     int getNumLayers() const {
@@ -231,38 +230,21 @@ public:
         return h.getDLayers(l)[i].lr;
     }
 
-    void setAVLR(
+    void setALR(
         int i,
-        float vlr
+        float lr
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->vlr = vlr;
+        h.getALayers()[i]->lr = lr;
     }
 
-    float getAVLR(
+    float getALR(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->vlr;
-    }
-
-    void setAALR(
-        int i,
-        float alr
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->alr = alr;
-    }
-
-    float getAALR(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->alr;
+        return h.getALayers()[i]->lr;
     }
 
     void setADiscount(
@@ -282,21 +264,38 @@ public:
         return h.getALayers()[i]->discount;
     }
 
-    void setAMinSteps(
+    void setAActionGap(
         int i,
-        int minSteps
+        float actionGap
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->minSteps = minSteps;
+        h.getALayers()[i]->actionGap = actionGap;
     }
 
-    int getAMinSteps(
+    float getAActionGap(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->minSteps;
+        return h.getALayers()[i]->actionGap;
+    }
+
+    void setAQSteps(
+        int i,
+        int qSteps
+    ) {
+        assert(h.getALayers()[i] != nullptr);
+        
+        h.getALayers()[i]->qSteps = qSteps;
+    }
+
+    int getAQSteps(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->qSteps;
     }
 
     void setAHistoryIters(
