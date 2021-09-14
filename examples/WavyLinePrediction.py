@@ -8,13 +8,13 @@
 
 # -*- coding: utf-8 -*-
 
-import pyaogmaneo as pyaon
+import pyaogmaneo as neo
 import numpy as np
 import matplotlib.pyplot as plt
 import struct
 
 # Set the number of threads
-pyaon.setNumThreads(8)
+neo.setNumThreads(8)
 
 # Simple encoder for values in [0, 1] to 2 columns of size 16
 def Unorm8ToCSDR(x : float):
@@ -36,18 +36,18 @@ inputColumnSize = 16
 lds = []
 
 for i in range(5): # Layers with exponential memory
-    ld = pyaon.LayerDesc()
+    ld = neo.LayerDesc()
 
     ld.hiddenSize = (5, 5, 16) # Size of the encoder (width, length, column size)
 
     lds.append(ld)
 
 # Create the hierarchy
-h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
+h = neo.Hierarchy()
+h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 1000
 
 def wave(t):
     return np.sin(t * 0.1 * 2.0 * np.pi + 0.5) * 0.5 + 0.5

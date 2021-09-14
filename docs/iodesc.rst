@@ -35,6 +35,6 @@ Describes a single input/output channel for a hierarchy
 
     Maximum number of history samples (credit assignment horizon) an actor can have
 
-.. function:: IODesc.__init__(self, size=(4, 4, 16), type=pyaogmaneo.prediction, eRadius=2, dRadius=2, aRadius=2, historyCapacity=64)
+.. function:: IODesc.__init__(self, size=(4, 4, 16), type=pyaogmaneo.prediction, eRadius=2, dRadius=2, historyCapacity=64)
 
     Initialize to given values

@@ -25,4 +25,4 @@ Additional helper functions ("utils")
 
    Gets the global random number generator state
 
-   :rtype: (int32) state
+   :rtype: (uint32) state

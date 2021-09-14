@@ -10,7 +10,7 @@
 
 # Simple Cart-Pole example
 
-import pyaogmaneo as pyaon
+import pyaogmaneo as neo
 import gym
 import numpy as np
 
@@ -26,7 +26,7 @@ class ScalarEncoder:
 
         self.protos = []
 
-        for i in range(num_columns):
+        for _ in range(num_columns):
             self.protos.append(np.random.rand(cells_per_column, num_scalars) * (upper_bound - lower_bound) + lower_bound)
 
     def encode(self, scalars):
@@ -52,18 +52,18 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-res = 32
+res = 32 # Resolution (column size) of encoding
 
 se = ScalarEncoder(4, 9, res)
 
 # Set the number of threads
-pyaon.setNumThreads(8)
+neo.setNumThreads(8)
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
 for i in range(3): # Layers with exponential memory. Not much memory is needed for Cart-Pole
-    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
+    ld = neo.LayerDesc(hiddenSize=(4, 4, 16))
 
     ld.eRadius = 2
     ld.dRadius = 2
@@ -71,8 +71,8 @@ for i in range(3): # Layers with exponential memory. Not much memory is needed f
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((3, 3, res), pyaon.prediction, eRadius=2, dRadius=2), pyaon.IODesc((1, 1, numActions), pyaon.action, eRadius=0, dRadius=2, historyCapacity=64) ], lds)
+h = neo.Hierarchy()
+h.initRandom([ neo.IODesc((3, 3, res), neo.prediction, eRadius=2, dRadius=2), neo.IODesc((1, 1, numActions), neo.action, eRadius=0, dRadius=2, historyCapacity=64) ], lds)
 
 # Set some parameters for the actor IO layer (index 1)
 h.setAVLR(1, 0.01)

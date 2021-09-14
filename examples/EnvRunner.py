@@ -8,7 +8,7 @@
 
 # -*- coding: utf-8 -*-
 
-import pyaogmaneo as pyaon
+import pyaogmaneo as neo
 import numpy as np
 import gym
 import cv2
@@ -19,10 +19,10 @@ def sigmoid(x):
     return np.tanh(x) * 0.5 + 0.5
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=2 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=2 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
-        pyaon.setNumThreads(nThreads)
+        neo.setNumThreads(nThreads)
 
         self.imEnc = None
         self.imEncIndex = -1
@@ -41,14 +41,14 @@ class EnvRunner:
 
         if type(self.env.observation_space) is gym.spaces.Discrete:
             self.inputSizes.append((1, 1, self.env.observation_space.n))
-            self.inputTypes.append(pyaon.prediction)
+            self.inputTypes.append(neo.prediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.observation_space) is gym.spaces.Box:
             if len(self.env.observation_space.shape) == 1 or len(self.env.observation_space.shape) == 0:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
                 self.inputSizes.append((squareSize, squareSize, obsResolution))
-                self.inputTypes.append(pyaon.prediction)
+                self.inputTypes.append(neo.prediction)
                 lows = list(self.env.observation_space.low)
                 highs = list(self.env.observation_space.high)
                 
@@ -78,16 +78,16 @@ class EnvRunner:
             vlds = []
 
             for i in range(len(self.imageSizes)):
-                vld = pyaon.ImageEncoderVisibleLayerDesc((self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
+                vld = neo.ImageEncoderVisibleLayerDesc((self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
 
                 vlds.append(vld)
 
-            self.imEnc = pyaon.ImageEncoder()
+            self.imEnc = neo.ImageEncoder()
             self.imEnc.initRandom(hiddenSize, vlds)
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
-            self.inputTypes.append(pyaon.prediction)
+            self.inputTypes.append(neo.prediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 1.0 ])
 
@@ -95,7 +95,7 @@ class EnvRunner:
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.actionIndices.append(len(self.inputSizes))
             self.inputSizes.append((1, 1, self.env.action_space.n))
-            self.inputTypes.append(pyaon.action)
+            self.inputTypes.append(neo.action)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.action_space) is gym.spaces.Box:
@@ -103,7 +103,7 @@ class EnvRunner:
                 if len(self.env.action_space.shape) == 2:
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
-                    self.inputTypes.append(pyaon.action)
+                    self.inputTypes.append(neo.action)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -111,10 +111,9 @@ class EnvRunner:
                     self.inputHighs.append(highs)
                 else:
                     squareSize = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
-                    squareTotal = squareSize * squareSize
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((squareSize, squareSize, actionResolution))
-                    self.inputTypes.append(pyaon.action)
+                    self.inputTypes.append(neo.action)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -128,19 +127,19 @@ class EnvRunner:
         lds = []
 
         for i in range(len(layerSizes)):
-            ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
+            ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
             ld.dRadius = layerRadius
 
             lds.append(ld)
 
-        self.h = pyaon.Hierarchy()
+        self.h = neo.Hierarchy()
 
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(pyaon.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -155,7 +154,7 @@ class EnvRunner:
 
             startAct = []
 
-            for j in range(size):
+            for _ in range(size):
                 startAct.append(np.random.randint(0, self.inputSizes[index][2]))
 
             self.actions.append(startAct)
@@ -166,13 +165,13 @@ class EnvRunner:
         actionIndex = 0
 
         for i in range(len(self.inputSizes)):
-            if self.inputTypes[i] == pyaon.action:
+            if self.inputTypes[i] == neo.action:
                 self.inputs.append(self.actions[actionIndex])
 
                 actionIndex += 1
             elif i == self.imEncIndex:
                 # Format image
-                img = cv2.resize(obs, ( self.imageSizes[0][0], self.imageSizes[0][1] ))
+                img = cv2.resize(obs, (self.imageSizes[0][0], self.imageSizes[0][1]))
                 
                 img = np.swapaxes(img, 0, 1)
                 
@@ -207,7 +206,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] == pyaon.action)
+            assert(self.inputTypes[index] == neo.action)
 
             if self.inputLows[index][0] < self.inputHighs[index][0]:
                 feedAction = []
@@ -248,7 +247,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] is pyaon.action)
+            assert(self.inputTypes[index] is neo.action)
 
             self.actions[i] = list(self.h.getPredictionCIs(index))
         

@@ -16,7 +16,7 @@ The CartPole example is a simple test on the Gym CartPole environment. It uses E
 CartPole Manual example
 ********************************************
 
-The CartPole example is a simple test on the Gym CartPole environment. It does not EnvRunner, and creates the hierarchy manually.
+The CartPole example is a simple test on the Gym CartPole environment. It does not use EnvRunner, and creates the hierarchy manually.
 
 WavyLinePrediction example
 ********************************************
