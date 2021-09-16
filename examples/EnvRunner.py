@@ -8,7 +8,7 @@
 
 # -*- coding: utf-8 -*-
 
-import pyaogmaneo as pyaon
+import pyaogmaneo as neo
 import numpy as np
 import gym
 import cv2
@@ -25,7 +25,7 @@ class EnvRunner:
     def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
-        pyaon.setNumThreads(nThreads)
+        neo.setNumThreads(nThreads)
 
         self.imEnc = None
         self.imEncIndex = -1
@@ -82,13 +82,13 @@ class EnvRunner:
             vlds = []
 
             for i in range(len(self.imageSizes)):
-                vld = pyaon.ImageEncoderVisibleLayerDesc((self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
+                vld = neo.ImageEncoderVisibleLayerDesc((self.imageSizes[i][0], self.imageSizes[i][1], self.imageSizes[i][2]), imageRadius)
 
                 vlds.append(vld)
 
                 self.imgsPrev.append(np.zeros(self.imageSizes[i]))
 
-            self.imEnc = pyaon.ImageEncoder()
+            self.imEnc = neo.ImageEncoder()
             self.imEnc.initRandom(hiddenSize, vlds)
 
             self.imEncIndex = len(self.inputSizes)
@@ -135,7 +135,7 @@ class EnvRunner:
         histCap = 8
 
         for i in range(len(layerSizes)):
-            ld = pyaon.LayerDesc(hiddenSize=layerSizes[i])
+            ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
             ld.dRadius = layerRadius
@@ -146,12 +146,12 @@ class EnvRunner:
 
             lds.append(ld)
 
-        self.h = pyaon.Hierarchy()
+        self.h = neo.Hierarchy()
 
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(pyaon.IODesc(self.inputSizes[i], layerRadius, layerRadius, histCap))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], layerRadius, layerRadius, histCap))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -171,12 +171,12 @@ class EnvRunner:
 
             self.actions.append(startAct)
 
-        self.adapter = pyaon.RLAdapter()
+        self.adapter = neo.RLAdapter()
         self.adapter.initRandom(self.h.getTopHiddenSize(), layerRadius)
 
-        self.adapter.setLR(0.001)
-        self.adapter.setDiscount(0.99)
-        self.adapter.setTraceDecay(0.98)
+        #self.adapter.setLR(0.01)
+        #self.adapter.setDiscount(0.99)
+        #self.adapter.setTraceDecay(0.98)
 
     def _feedObservation(self, obs):
         self.inputs = []
@@ -223,7 +223,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.05, obsPreprocess=None):
+    def act(self, epsilon=0.1, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
