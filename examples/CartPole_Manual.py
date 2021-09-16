@@ -10,14 +10,15 @@
 
 # Simple Cart-Pole example
 
-import pyaogmaneo as pyaon
+import pyaogmaneo as neo
 import gym
 import numpy as np
 
 # Squashing function
 def sigmoid(x):
-    return 1.0 / (1.0 + np.exp(-x))
+    return np.tanh(x) * 0.5 + 0.5
 
+# An example of a pre-encoder. This one is just random projection. It's not very good, but will do for this task
 class ScalarEncoder:
     def __init__(self, num_scalars, num_columns, cells_per_column, lower_bound=0.0, upper_bound=1.0):
         self.num_scalars = num_scalars
@@ -25,7 +26,7 @@ class ScalarEncoder:
 
         self.protos = []
 
-        for i in range(num_columns):
+        for _ in range(num_columns):
             self.protos.append(np.random.rand(cells_per_column, num_scalars) * (upper_bound - lower_bound) + lower_bound)
 
     def encode(self, scalars):
@@ -51,31 +52,33 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-res = 32
+res = 32 # Resolution (column size) of encoding
 
 se = ScalarEncoder(4, 9, res)
 
 # Set the number of threads
-pyaon.setNumThreads(8)
+neo.setNumThreads(8)
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc(hiddenSize=(3, 3, 16))
+for i in range(3): # Layers with exponential memory. Not much memory is needed for Cart-Pole
+    ld = neo.LayerDesc(hiddenSize=(4, 4, 16))
 
-    ld.eRadius = 1
-    ld.dRadius = 1
+    ld.eRadius = 2
+    ld.dRadius = 2
     
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((3, 3, res), pyaon.prediction, eRadius=1, dRadius=1), pyaon.IODesc((1, 1, numActions), pyaon.action, eRadius=0, dRadius=1, historyCapacity=64) ], lds)
+h = neo.Hierarchy()
+h.initRandom([ neo.IODesc((3, 3, res), neo.prediction, eRadius=2, dRadius=2), neo.IODesc((1, 1, numActions), neo.action, eRadius=0, dRadius=2, historyCapacity=64) ], lds)
 
+# Set some parameters for the actor IO layer (index 1)
 h.setAVLR(1, 0.01)
 h.setAALR(1, 0.01)
 h.setADiscount(1, 0.99)
+h.setAMinSteps(1, 16)
 h.setAHistoryIters(1, 16)
 
 reward = 0.0
@@ -96,7 +99,7 @@ for episode in range(1000):
 
         obs, reward, done, info = env.step(action)
 
-        # Re-define reward so that it is 0 normally and then -1 if done
+        # Re-define reward so that it is 0 normally and then -100 if done
         if done:
             reward = -100.0
 
