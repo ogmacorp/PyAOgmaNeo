@@ -99,6 +99,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getEFalloff", &pyaon::Hierarchy::getEFalloff)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDRange", &pyaon::Hierarchy::setDRange)
+        .def("getDRange", &pyaon::Hierarchy::getDRange)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)

@@ -235,6 +235,25 @@ public:
         return h.getDLayers(l)[v]->lr;
     }
 
+    void setDRange(
+        int l,
+        int v,
+        float range
+    ) {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        h.getDLayers(l)[v]->range = range;
+    }
+
+    float getDRange(
+        int l,
+        int v
+    ) const {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        return h.getDLayers(l)[v]->range;
+    }
+
     void setAVLR(
         int i,
         float vlr
