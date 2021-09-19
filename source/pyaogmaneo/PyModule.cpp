@@ -22,6 +22,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("getGlobalState", &pyaon::getGlobalState);
 
     py::enum_<pyaon::IOType>(m, "IOType")
+        .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
         .value("action", pyaon::action)
         .export_values();

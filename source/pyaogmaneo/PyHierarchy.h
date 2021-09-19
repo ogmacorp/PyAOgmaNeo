@@ -13,8 +13,9 @@
 
 namespace pyaon {
 enum IOType {
-    prediction = 0,
-    action = 1
+    none = 0,
+    prediction = 1,
+    action = 2
 };
 
 struct IODesc {
@@ -217,17 +218,21 @@ public:
 
     void setDLR(
         int l,
-        int i,
+        int v,
         float lr
     ) {
-        h.getDLayers(l)[i].lr = lr;
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        h.getDLayers(l)[v]->lr = lr;
     }
 
     float getDLR(
         int l,
-        int i
+        int v
     ) const {
-        return h.getDLayers(l)[i].lr;
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        return h.getDLayers(l)[v]->lr;
     }
 
     void setAVLR(
@@ -331,7 +336,7 @@ public:
     int getFBRadius(
         int l
     ) const {
-        return h.getDLayers(l)[0].getVisibleLayerDesc(0).radius;
+        return h.getDLayers(l)[0]->getVisibleLayerDesc(0).radius;
     }
 
     int getAHistoryCapacity(

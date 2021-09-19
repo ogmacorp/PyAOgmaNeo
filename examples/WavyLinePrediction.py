@@ -78,12 +78,9 @@ for i in range(len(lds)):
     h.setRecurrence(i, 0.5)
 
 # Present the wave sequence for some timesteps
-iters = 100000
+iters = 10000
 
 def wave(t):
-    if t % 50 == 0:
-        return 1.0
-    return 0.0
     return np.sin(t * 0.02 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
 for t in range(iters):
