@@ -96,7 +96,8 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 void Hierarchy::step(
     const std::vector<std::vector<int> > &inputCIs,
     bool learnEnabled,
-    float reward
+    float reward,
+    bool mimic
 ) {
     assert(inputCIs.size() == h.getInputSizes().size());
 
@@ -114,5 +115,5 @@ void Hierarchy::step(
         cInputCIs[i] = &cInputCIsBacking[i];
     }
     
-    h.step(cInputCIs, learnEnabled, reward);
+    h.step(cInputCIs, learnEnabled, reward, mimic);
 }

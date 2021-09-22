@@ -103,7 +103,8 @@ public:
     void step(
         const std::vector<std::vector<int> > &inputCIs,
         bool learnEnabled,
-        float reward
+        float reward,
+        bool mimic
     );
 
     int getNumLayers() const {
@@ -254,30 +255,47 @@ public:
         return h.getDLayers(l)[v]->range;
     }
 
-    void setALR(
+    void setAVLR(
         int i,
-        float lr
+        float vlr
     ) {
         assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[i]->lr = lr;
+        h.getALayers()[i]->vlr = vlr;
     }
 
-    float getALR(
+    float getAVLR(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->lr;
+        return h.getALayers()[i]->vlr;
+    }
+
+    void setAALR(
+        int i,
+        float alr
+    ) {
+        assert(h.getALayers()[i] != nullptr);
+        
+        h.getALayers()[i]->alr = alr;
+    }
+
+    float getAALR(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->alr;
     }
 
     void setADiscount(
-        int v,
+        int i,
         float discount
     ) {
-        assert(h.getALayers()[v] != nullptr);
+        assert(h.getALayers()[i] != nullptr);
         
-        h.getALayers()[v]->discount = discount;
+        h.getALayers()[i]->discount = discount;
     }
 
     float getADiscount(
@@ -288,37 +306,21 @@ public:
         return h.getALayers()[i]->discount;
     }
 
-    void setAActionGap(
-        int v,
-        float actionGap
-    ) {
-        assert(h.getALayers()[v] != nullptr);
-        
-        h.getALayers()[v]->actionGap = actionGap;
-    }
-
-    float getAActionGap(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->actionGap;
-    }
-    void setAQSteps(
+    void setAMinSteps(
         int i,
-        int qSteps
+        int minSteps
     ) {
         assert(h.getALayers()[i] != nullptr);
-
-        h.getALayers()[i]->qSteps = qSteps;
+        
+        h.getALayers()[i]->minSteps = minSteps;
     }
 
-    int getAQSteps(
+    int getAMinSteps(
         int i
     ) const {
         assert(h.getALayers()[i] != nullptr);
         
-        return h.getALayers()[i]->qSteps;
+        return h.getALayers()[i]->minSteps;
     }
 
     void setAHistoryIters(
@@ -326,7 +328,7 @@ public:
         int historyIters
     ) {
         assert(h.getALayers()[i] != nullptr);
-
+        
         h.getALayers()[i]->historyIters = historyIters;
     }
 
