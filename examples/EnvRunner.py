@@ -22,7 +22,7 @@ inputTypePrediction = 0
 inputTypeAction = 1
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=4 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -132,7 +132,7 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 8
+        histCap = 16
 
         for i in range(len(layerSizes)):
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
@@ -141,8 +141,8 @@ class EnvRunner:
             ld.dRadius = layerRadius
             ld.historyCapacity = histCap
 
-            ld.ticksPerUpdate = 4
-            ld.temporalHorizon = 4
+            ld.ticksPerUpdate = 8
+            ld.temporalHorizon = 8
 
             lds.append(ld)
 
