@@ -59,7 +59,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param inputCIs: ([IntBuffer]) list of input integer buffers representing the CSDRs of the dimensions described in the initialization
     :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
     :param reward: (float32) reward signal, if action input layers (pyaogmaneo.IODesc type set to typeAction) are present this will be used to update those to maximize reward. Defaults to 0.0
-    :param mimic: If true, sets the actors (action generators for reinforcement learning) to behave like regular decoders (prediction). This is useful for imitation learning followed by reinforcement learning
+    :param mimic: (boolean) If true, sets the actors (action generators for reinforcement learning) to behave like regular decoders (prediction). This is useful for imitation learning followed by reinforcement learning
 
 .. function:: Hierarchy.getNumLayers(self)
 
@@ -233,6 +233,20 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param i: (int32) index of the input layer
     :rtype: (int32) historyIters
+
+.. function:: Hierarchy.setAExplore(self, i, explore)
+
+    Set whether to explore (automatic boltzmann exploration) or not (deterministic) on an action layer (A) at the bottom of the hierarchy (input layer)
+
+    :param i: (int32) index of the input layer
+    :param explore: (boolean) value to set
+
+.. function:: Hierarchy.getAExplore(self, i)
+
+    Get whether to explore (automatic boltzmann exploration) or not (deterministic) on an action layer (A) at the bottom of the hierarchy (input layer)
+
+    :param i: (int32) index of the input layer
+    :rtype: (boolean) explore
 
 .. function:: Hierarchy.getERadius(self, l)
 

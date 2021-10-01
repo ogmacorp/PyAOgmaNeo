@@ -311,6 +311,23 @@ public:
         return h.getALayers()[i]->historyIters;
     }
 
+    void setAExplore(
+        int i,
+        bool explore
+    ) {
+        assert(h.getALayers()[i] != nullptr);
+        
+        h.getALayers()[i]->explore = explore;
+    }
+
+    bool getAExplore(
+        int i
+    ) const {
+        assert(h.getALayers()[i] != nullptr);
+        
+        return h.getALayers()[i]->explore;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l

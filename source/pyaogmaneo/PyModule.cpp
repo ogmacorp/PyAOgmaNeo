@@ -108,6 +108,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
+        .def("setAExplore", &pyaon::Hierarchy::setAExplore)
+        .def("getAExplore", &pyaon::Hierarchy::getAExplore)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
