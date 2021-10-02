@@ -101,7 +101,7 @@ public:
     std::vector<unsigned char> serializeStateToBuffer();
 
     void step(
-        const std::vector<std::vector<int> > &inputCIs,
+        const std::vector<std::vector<int>> &inputCIs,
         bool learnEnabled,
         float reward,
         bool mimic
