@@ -20,8 +20,7 @@ public:
     RLAdapter() {}
 
     void initRandom(
-        const std::tuple<int, int, int> &hiddenSize,
-        int radius
+        const std::tuple<int, int, int> &hiddenSize
     );
 
     void initFromFile(
@@ -59,10 +58,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    int getRadius() const {
-        return adapter.getRadius();
-    }
-
     // Params
     void setLR(
         float lr
@@ -72,16 +67,6 @@ public:
 
     float getLR() const {
         return adapter.lr;
-    }
-
-    void setDiscount(
-        float discount
-    ) {
-        adapter.discount = discount;
-    }
-
-    float getDiscount() const {
-        return adapter.discount;
     }
 
     void setTraceDecay(
