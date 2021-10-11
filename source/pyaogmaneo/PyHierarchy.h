@@ -45,7 +45,6 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
-    std::tuple<int, int> clumpSize;
 
     int ffRadius;
     int rRadius;
@@ -55,7 +54,6 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::tuple<int, int> &clumpSize,
         int ffRadius,
         int rRadius,
         int fbRadius,
@@ -63,7 +61,6 @@ struct LayerDesc {
     )
     :
     hiddenSize(hiddenSize),
-    clumpSize(clumpSize),
     ffRadius(ffRadius),
     rRadius(rRadius),
     fbRadius(fbRadius),
@@ -204,6 +201,19 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    void setETraceDecay(
+        int l,
+        float traceDecay
+    ) {
+        h.getELayer(l).traceDecay = traceDecay;
+    }
+
+    float getETraceDecay(
+        int l
+    ) {
+        return h.getELayer(l).traceDecay;
+    }
+
     void setELR(
         int l,
         float lr
@@ -215,19 +225,6 @@ public:
         int l
     ) {
         return h.getELayer(l).lr;
-    }
-
-    void setEFalloff(
-        int l,
-        float falloff
-    ) {
-        h.getELayer(l).falloff = falloff;
-    }
-
-    float getEFalloff(
-        int l
-    ) {
-        return h.getELayer(l).falloff;
     }
 
     void setDLR(

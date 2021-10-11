@@ -49,21 +49,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
-                std::tuple<int, int>,
                 int,
                 int,
                 int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("clumpSize") = std::tuple<int, int>({ 2, 2 }),
             py::arg("ffRadius") = 2,
-            py::arg("rRadius") = 2,
+            py::arg("rRadius") = -1,
             py::arg("fbRadius") = 2,
             py::arg("historyCapacity") = 32
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("clumpSize", &pyaon::LayerDesc::clumpSize)
         .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
         .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
         .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius)
@@ -96,10 +93,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumEncVisibleLayers", &pyaon::Hierarchy::getNumEncVisibleLayers)
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
+        .def("setETraceDecay", &pyaon::Hierarchy::setETraceDecay)
+        .def("getETraceDecay", &pyaon::Hierarchy::getETraceDecay)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setEFalloff", &pyaon::Hierarchy::setEFalloff)
-        .def("getEFalloff", &pyaon::Hierarchy::getEFalloff)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setDDiscount", &pyaon::Hierarchy::setDDiscount)
