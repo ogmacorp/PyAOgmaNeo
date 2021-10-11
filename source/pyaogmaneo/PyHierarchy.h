@@ -161,6 +161,23 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    std::vector<int> getTopHiddenCIs() {
+        std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
+
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = h.getTopHiddenCIs()[j];
+
+        return hiddenCIs;
+    }
+
+    std::tuple<int, int, int> getTopHiddenSize(
+        int l
+    ) {
+        aon::Int3 size = h.getTopHiddenSize();
+
+        return { size.x, size.y, size.z };
+    }
+
     int getNumEncVisibleLayers(
         int l
     ) {
