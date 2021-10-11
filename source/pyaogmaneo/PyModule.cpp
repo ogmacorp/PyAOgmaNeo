@@ -31,22 +31,26 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 pyaon::IOType,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
             py::arg("ffRadius") = 2,
-            py::arg("fbRadius") = 2
+            py::arg("fbRadius") = 2,
+            py::arg("historyCapacity") = 32
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
         .def_readwrite("ffRadius", &pyaon::IODesc::ffRadius)
-        .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius);
+        .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius)
+        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 std::tuple<int, int>,
+                int,
                 int,
                 int,
                 int
@@ -55,13 +59,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("clumpSize") = std::tuple<int, int>({ 2, 2 }),
             py::arg("ffRadius") = 2,
             py::arg("rRadius") = 2,
-            py::arg("fbRadius") = 2
+            py::arg("fbRadius") = 2,
+            py::arg("historyCapacity") = 32
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("clumpSize", &pyaon::LayerDesc::clumpSize)
         .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
         .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
-        .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius);
+        .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius)
+        .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<>())
@@ -96,8 +102,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getEFalloff", &pyaon::Hierarchy::getEFalloff)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setDTR", &pyaon::Hierarchy::setDTR)
-        .def("getDTR", &pyaon::Hierarchy::getDTR)
+        .def("setDDiscount", &pyaon::Hierarchy::setDDiscount)
+        .def("getDDiscount", &pyaon::Hierarchy::getDDiscount)
+        .def("setDGenGoalNoise", &pyaon::Hierarchy::setDGenGoalNoise)
+        .def("getDGenGoalNoise", &pyaon::Hierarchy::getDGenGoalNoise)
+        .def("setDHistoryIters", &pyaon::Hierarchy::setDHistoryIters)
+        .def("getDHistoryIters", &pyaon::Hierarchy::getDHistoryIters)
         .def("getFFRadius", &pyaon::Hierarchy::getFFRadius)
         .def("getRRadius", &pyaon::Hierarchy::getRRadius)
         .def("getFBRadius", &pyaon::Hierarchy::getFBRadius);

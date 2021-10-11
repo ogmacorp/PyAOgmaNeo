@@ -25,17 +25,21 @@ struct IODesc {
     int ffRadius;
     int fbRadius;
 
+    int historyCapacity;
+
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int ffRadius,
-        int fbRadius
+        int fbRadius,
+        int historyCapacity
     )
     :
     size(size),
     type(type),
     ffRadius(ffRadius),
-    fbRadius(fbRadius)
+    fbRadius(fbRadius),
+    historyCapacity(historyCapacity)
     {}
 };
 
@@ -47,19 +51,23 @@ struct LayerDesc {
     int rRadius;
     int fbRadius;
 
+    int historyCapacity;
+
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
         const std::tuple<int, int> &clumpSize,
         int ffRadius,
         int rRadius,
-        int fbRadius
+        int fbRadius,
+        int historyCapacity
     )
     :
     hiddenSize(hiddenSize),
     clumpSize(clumpSize),
     ffRadius(ffRadius),
     rRadius(rRadius),
-    fbRadius(fbRadius)
+    fbRadius(fbRadius),
+    historyCapacity(historyCapacity)
     {}
 };
 
@@ -241,23 +249,80 @@ public:
         return h.getDLayers(l)[v]->lr;
     }
 
-    void setDTR(
+    void setDDiscount(
         int l,
         int v,
-        float tr
+        float discount
     ) {
         assert(h.getDLayers(l)[v] != nullptr);
 
-        h.getDLayers(l)[v]->tr = tr;
+        h.getDLayers(l)[v]->discount = discount;
     }
 
-    float getDTR(
+    float getDDiscount(
         int l,
         int v
     ) const {
         assert(h.getDLayers(l)[v] != nullptr);
 
-        return h.getDLayers(l)[v]->tr;
+        return h.getDLayers(l)[v]->discount;
+    }
+
+    void setDGenGoalNoise(
+        int l,
+        int v,
+        float genGoalNoise
+    ) {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        h.getDLayers(l)[v]->genGoalNoise = genGoalNoise;
+    }
+
+    float getDGenGoalNoise(
+        int l,
+        int v
+    ) const {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        return h.getDLayers(l)[v]->genGoalNoise;
+    }
+
+    void setDQSteps(
+        int l,
+        int v,
+        int qSteps
+    ) {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        h.getDLayers(l)[v]->qSteps = qSteps;
+    }
+
+    int getDQSteps(
+        int l,
+        int v
+    ) const {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        return h.getDLayers(l)[v]->qSteps;
+    }
+
+    void setDHistoryIters(
+        int l,
+        int v,
+        int historyIters
+    ) {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        h.getDLayers(l)[v]->historyIters = historyIters;
+    }
+
+    int getDHistoryIters(
+        int l,
+        int v
+    ) const {
+        assert(h.getDLayers(l)[v] != nullptr);
+
+        return h.getDLayers(l)[v]->historyIters;
     }
 
     // Retrieve additional parameters on the SPH's structure

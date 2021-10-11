@@ -33,7 +33,8 @@ void Hierarchy::initRandom(
             aon::Int2(std::get<0>(layerDescs[l].clumpSize), std::get<1>(layerDescs[l].clumpSize)),
             layerDescs[l].ffRadius,
             layerDescs[l].rRadius,
-            layerDescs[l].fbRadius
+            layerDescs[l].fbRadius,
+            layerDescs[l].historyCapacity
         );
     }
 
