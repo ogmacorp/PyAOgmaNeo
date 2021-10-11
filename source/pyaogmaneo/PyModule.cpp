@@ -24,7 +24,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::enum_<pyaon::IOType>(m, "IOType")
         .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
-        .value("action", pyaon::action)
         .export_values();
 
     py::class_<pyaon::IODesc>(m, "IODesc")
@@ -32,20 +31,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 pyaon::IOType,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
             py::arg("ffRadius") = 2,
-            py::arg("fbRadius") = 2,
-            py::arg("historyCapacity") = 64
+            py::arg("fbRadius") = 2
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
         .def_readwrite("ffRadius", &pyaon::IODesc::ffRadius)
-        .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius)
-        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
+        .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
@@ -78,9 +74,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeStateToBuffer", &pyaon::Hierarchy::serializeStateToBuffer)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
-            py::arg("learnEnabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = false
+            py::arg("topGoalCIs"),
+            py::arg("learnEnabled") = true
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("setImportance", &pyaon::Hierarchy::setImportance)
@@ -100,24 +95,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getEFalloff", &pyaon::Hierarchy::getEFalloff)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setDRange", &pyaon::Hierarchy::setDRange)
-        .def("getDRange", &pyaon::Hierarchy::getDRange)
-        .def("setAVLR", &pyaon::Hierarchy::setAVLR)
-        .def("getAVLR", &pyaon::Hierarchy::getAVLR)
-        .def("setAALR", &pyaon::Hierarchy::setAALR)
-        .def("getAALR", &pyaon::Hierarchy::getAALR)
-        .def("setADiscount", &pyaon::Hierarchy::setADiscount)
-        .def("getADiscount", &pyaon::Hierarchy::getADiscount)
-        .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
-        .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
-        .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
-        .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
-        .def("setAExplore", &pyaon::Hierarchy::setAExplore)
-        .def("getAExplore", &pyaon::Hierarchy::getAExplore)
+        .def("setDTR", &pyaon::Hierarchy::setDTR)
+        .def("getDTR", &pyaon::Hierarchy::getDTR)
         .def("getFFRadius", &pyaon::Hierarchy::getFFRadius)
         .def("getRRadius", &pyaon::Hierarchy::getRRadius)
-        .def("getFBRadius", &pyaon::Hierarchy::getFBRadius)
-        .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
+        .def("getFBRadius", &pyaon::Hierarchy::getFBRadius);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<

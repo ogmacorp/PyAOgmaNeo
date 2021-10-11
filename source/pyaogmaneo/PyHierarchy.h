@@ -14,8 +14,7 @@
 namespace pyaon {
 enum IOType {
     none = 0,
-    prediction = 1,
-    action = 2
+    prediction = 1
 };
 
 struct IODesc {
@@ -26,21 +25,17 @@ struct IODesc {
     int ffRadius;
     int fbRadius;
 
-    int historyCapacity;
-
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int ffRadius,
-        int fbRadius,
-        int historyCapacity
+        int fbRadius
     )
     :
     size(size),
     type(type),
     ffRadius(ffRadius),
-    fbRadius(fbRadius),
-    historyCapacity(historyCapacity)
+    fbRadius(fbRadius)
     {}
 };
 
@@ -102,9 +97,8 @@ public:
 
     void step(
         const std::vector<std::vector<int> > &inputCIs,
-        bool learnEnabled,
-        float reward,
-        bool mimic
+        const std::vector<int> &topGoalCIs,
+        bool learnEnabled
     );
 
     int getNumLayers() const {
@@ -185,12 +179,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    bool aLayerExists(
-        int i
-    ) const {
-        return h.getALayers()[i] != nullptr;
-    }
-
     void setELR(
         int l,
         float lr
@@ -236,125 +224,23 @@ public:
         return h.getDLayers(l)[v]->lr;
     }
 
-    void setDRange(
+    void setDTR(
         int l,
         int v,
-        float range
+        float tr
     ) {
         assert(h.getDLayers(l)[v] != nullptr);
 
-        h.getDLayers(l)[v]->range = range;
+        h.getDLayers(l)[v]->tr = tr;
     }
 
-    float getDRange(
+    float getDTR(
         int l,
         int v
     ) const {
         assert(h.getDLayers(l)[v] != nullptr);
 
-        return h.getDLayers(l)[v]->range;
-    }
-
-    void setAVLR(
-        int i,
-        float vlr
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->vlr = vlr;
-    }
-
-    float getAVLR(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->vlr;
-    }
-
-    void setAALR(
-        int i,
-        float alr
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->alr = alr;
-    }
-
-    float getAALR(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->alr;
-    }
-
-    void setADiscount(
-        int i,
-        float discount
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->discount = discount;
-    }
-
-    float getADiscount(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->discount;
-    }
-
-    void setAMinSteps(
-        int i,
-        int minSteps
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->minSteps = minSteps;
-    }
-
-    int getAMinSteps(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->minSteps;
-    }
-
-    void setAHistoryIters(
-        int i,
-        int historyIters
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->historyIters;
-    }
-
-    void setAExplore(
-        int i,
-        bool explore
-    ) {
-        assert(h.getALayers()[i] != nullptr);
-        
-        h.getALayers()[i]->explore = explore;
-    }
-
-    bool getAExplore(
-        int i
-    ) const {
-        assert(h.getALayers()[i] != nullptr);
-        
-        return h.getALayers()[i]->explore;
+        return h.getDLayers(l)[v]->tr;
     }
 
     // Retrieve additional parameters on the SPH's structure
@@ -373,13 +259,7 @@ public:
     int getFBRadius(
         int l
     ) const {
-        return h.getDLayers(l)[0]->getVisibleLayerDesc(0).radius;
-    }
-
-    int getAHistoryCapacity(
-        int i
-    ) const {
-        return h.getALayers()[i]->getHistoryCapacity();
+        return h.getDLayers(l)[0]->getVisibleLayerDesc().radius;
     }
 };
 } // namespace pyaon
