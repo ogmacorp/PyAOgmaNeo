@@ -29,7 +29,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 8
+            py::arg("historyCapacity") = 32
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
@@ -48,7 +48,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 8,
+            py::arg("historyCapacity") = 32,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
