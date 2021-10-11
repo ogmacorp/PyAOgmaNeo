@@ -92,6 +92,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDDiscount", &pyaon::Hierarchy::setDDiscount)
+        .def("getDDiscount", &pyaon::Hierarchy::getDDiscount)
+        .def("setDGenGoalNoise", &pyaon::Hierarchy::setDGenGoalNoise)
+        .def("getDGenGoalNoise", &pyaon::Hierarchy::getDGenGoalNoise)
+        .def("setDHistoryIters", &pyaon::Hierarchy::setDHistoryIters)
+        .def("getDHistoryIters", &pyaon::Hierarchy::getDHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 
