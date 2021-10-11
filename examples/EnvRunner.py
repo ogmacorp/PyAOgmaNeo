@@ -141,8 +141,8 @@ class EnvRunner:
             ld.dRadius = layerRadius
             ld.historyCapacity = histCap
 
-            ld.ticksPerUpdate = 4
-            ld.temporalHorizon = 4
+            ld.ticksPerUpdate = 2
+            ld.temporalHorizon = 2
 
             lds.append(ld)
 
