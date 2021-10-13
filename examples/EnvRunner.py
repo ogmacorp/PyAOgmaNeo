@@ -134,7 +134,7 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 8
+        histCap = 4
 
         for i in range(len(layerSizes)):
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
@@ -143,8 +143,8 @@ class EnvRunner:
             ld.dRadius = layerRadius
             ld.historyCapacity = histCap
 
-            ld.ticksPerUpdate = 2
-            ld.temporalHorizon = 2
+            ld.ticksPerUpdate = 4
+            ld.temporalHorizon = 4
 
             lds.append(ld)
 
@@ -174,7 +174,7 @@ class EnvRunner:
             self.actions.append(startAct)
 
         self.adapter = neo.RLAdapter()
-        self.adapter.init(self.h.getTopHiddenSize(), 1000)
+        self.adapter.initRandom(self.h.getTopHiddenSize())
 
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
@@ -271,8 +271,7 @@ class EnvRunner:
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
-        if self.h.getTopUpdate():
-            self.adapter.step(self.h.getTopHiddenCIs(), self.averageReward, True)
+        self.adapter.step(self.h.getTopHiddenCIs(), r, True)
 
         self.h.step(self.inputs, self.adapter.getGoalCIs(), True)
 
