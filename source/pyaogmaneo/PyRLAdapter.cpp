@@ -10,10 +10,11 @@
 
 using namespace pyaon;
 
-void RLAdapter::initRandom(
-    const std::tuple<int, int, int> &hiddenSize
+void RLAdapter::init(
+    const std::tuple<int, int, int> &hiddenSize,
+    int maxSamples
 ) {
-    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)));
+    adapter.init(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), maxSamples);
 }
 
 void RLAdapter::initFromFile(

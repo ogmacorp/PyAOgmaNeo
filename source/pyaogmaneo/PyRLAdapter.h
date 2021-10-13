@@ -19,8 +19,9 @@ private:
 public:
     RLAdapter() {}
 
-    void initRandom(
-        const std::tuple<int, int, int> &hiddenSize
+    void init(
+        const std::tuple<int, int, int> &hiddenSize,
+        int maxSamples
     );
 
     void initFromFile(

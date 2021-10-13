@@ -19,6 +19,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("setNumThreads", &pyaon::setNumThreads);
     m.def("getNumThreads", &pyaon::getNumThreads);
 
+    m.def("setGlobalState", &pyaon::setGlobalState);
+    m.def("getGlobalState", &pyaon::getGlobalState);
+
     py::class_<pyaon::IODesc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
@@ -128,7 +131,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<pyaon::RLAdapter>(m, "RLAdapter")
         .def(py::init<>())
-        .def("initRandom", &pyaon::RLAdapter::initRandom)
+        .def("init", &pyaon::RLAdapter::init)
         .def("initFromFile", &pyaon::RLAdapter::initFromFile)
         .def("initFromBuffer", &pyaon::RLAdapter::initFromBuffer)
         .def("saveToFile", &pyaon::RLAdapter::saveToFile)

@@ -14,6 +14,7 @@ import gym
 import cv2
 import os
 from copy import copy
+import time
 
 def sigmoid(x):
     return np.tanh(x) * 0.5 + 0.5
@@ -22,10 +23,11 @@ inputTypePrediction = 0
 inputTypeAction = 1
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=2 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         neo.setNumThreads(nThreads)
+        neo.setGlobalState(int(time.time()))
 
         self.imEnc = None
         self.imEncIndex = -1
@@ -172,7 +174,10 @@ class EnvRunner:
             self.actions.append(startAct)
 
         self.adapter = neo.RLAdapter()
-        self.adapter.initRandom(self.h.getTopHiddenSize())
+        self.adapter.init(self.h.getTopHiddenSize(), 1000)
+
+        self.averageReward = -1.0
+        self.averageRewardDecay = 0.01
 
         #self.adapter.setLR(0.01)
         #self.adapter.setDiscount(0.99)
@@ -223,7 +228,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.03, obsPreprocess=None):
+    def act(self, epsilon=0.05, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
@@ -264,7 +269,10 @@ class EnvRunner:
 
         r = reward * self.rewardScale + float(done) * self.terminalReward
 
-        self.adapter.step(self.h.getTopHiddenCIs(), r, True)
+        self.averageReward += self.averageRewardDecay * (r - self.averageReward)
+
+        if self.h.getTopUpdate():
+            self.adapter.step(self.h.getTopHiddenCIs(), self.averageReward, True)
 
         self.h.step(self.inputs, self.adapter.getGoalCIs(), True)
 
