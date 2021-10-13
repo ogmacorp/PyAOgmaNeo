@@ -131,7 +131,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<pyaon::RLAdapter>(m, "RLAdapter")
         .def(py::init<>())
-        .def("init", &pyaon::RLAdapter::init)
+        .def("initRandom", &pyaon::RLAdapter::initRandom)
         .def("initFromFile", &pyaon::RLAdapter::initFromFile)
         .def("initFromBuffer", &pyaon::RLAdapter::initFromBuffer)
         .def("saveToFile", &pyaon::RLAdapter::saveToFile)
@@ -144,5 +144,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getGoalCIs", &pyaon::RLAdapter::getGoalCIs)
         .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
         .def("setLR", &pyaon::RLAdapter::setLR)
-        .def("getLR", &pyaon::RLAdapter::getLR);
+        .def("getLR", &pyaon::RLAdapter::getLR)
+        .def("setDiscount", &pyaon::RLAdapter::setDiscount)
+        .def("getDiscount", &pyaon::RLAdapter::getDiscount)
+        .def("setTraceDecay", &pyaon::RLAdapter::setTraceDecay)
+        .def("getTraceDecay", &pyaon::RLAdapter::getTraceDecay);
 }
