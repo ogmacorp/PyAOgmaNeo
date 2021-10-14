@@ -147,5 +147,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getGoalCIs", &pyaon::RLAdapter::getGoalCIs)
         .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
         .def("setLR", &pyaon::RLAdapter::setLR)
-        .def("getLR", &pyaon::RLAdapter::getLR);
+        .def("getLR", &pyaon::RLAdapter::getLR)
+        .def("setDiscount", &pyaon::RLAdapter::setDiscount)
+        .def("getDiscount", &pyaon::RLAdapter::getDiscount)
+        .def("setTraceDecay", &pyaon::RLAdapter::setTraceDecay)
+        .def("getTraceDecay", &pyaon::RLAdapter::getTraceDecay);
 }

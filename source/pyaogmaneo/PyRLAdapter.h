@@ -68,5 +68,25 @@ public:
     float getLR() const {
         return adapter.lr;
     }
+
+    void setDiscount(
+        float discount
+    ) {
+        adapter.discount = discount;
+    }
+
+    float getDiscount() const {
+        return adapter.discount;
+    }
+
+    void setTraceDecay(
+        float traceDecay
+    ) {
+        adapter.traceDecay = traceDecay;
+    }
+
+    float getTraceDecay() const {
+        return adapter.traceDecay;
+    }
 };
 } // namespace pyaon
