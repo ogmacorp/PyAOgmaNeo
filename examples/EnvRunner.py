@@ -134,7 +134,7 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 4
+        histCap = 8
 
         for i in range(len(layerSizes)):
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
