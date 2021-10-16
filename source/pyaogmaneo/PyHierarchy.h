@@ -52,6 +52,7 @@ struct LayerDesc {
     )
     :
     hiddenSize(hiddenSize),
+    concatSize(concatSize),
     eRadius(eRadius),
     cRadius(cRadius),
     dRadius(dRadius),
