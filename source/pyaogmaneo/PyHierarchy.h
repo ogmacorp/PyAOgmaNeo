@@ -18,46 +18,43 @@ struct IODesc {
     int eRadius;
     int dRadius;
 
-    int historyCapacity;
-
     IODesc(
         const std::tuple<int, int, int> &size,
         int eRadius,
-        int dRadius,
-        int historyCapacity
+        int dRadius
     )
     :
     size(size),
     eRadius(eRadius),
-    dRadius(dRadius),
-    historyCapacity(historyCapacity)
+    dRadius(dRadius)
     {}
 };
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
+    std::tuple<int, int, int> concatSize;
 
     int eRadius;
+    int cRadius;
     int dRadius;
-
-    int historyCapacity;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
+        const std::tuple<int, int, int> &concatSize,
         int eRadius,
+        int cRadius,
         int dRadius,
-        int historyCapacity,
         int ticksPerUpdate,
         int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
     eRadius(eRadius),
+    cRadius(cRadius),
     dRadius(dRadius),
-    historyCapacity(historyCapacity),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -216,6 +213,19 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setCLR(
+        int l,
+        float lr
+    ) {
+        h.getCLayer(l).lr = lr;
+    }
+
+    float getCLR(
+        int l
+    ) {
+        return h.getCLayer(l).lr;
+    }
+
     void setDLR(
         int l,
         int i,
@@ -242,7 +252,7 @@ public:
         int l,
         int i
     ) const {
-        return h.getDLayers(l)[i].getVisibleLayerDesc().radius;
+        return h.getDLayers(l)[i].getVisibleLayerDesc(0).radius;
     }
 };
 } // namespace pyaon

@@ -26,21 +26,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<
                 std::tuple<int, int, int>,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 8
+            py::arg("dRadius") = 2
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
-        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
+        .def_readwrite("dRadius", &pyaon::IODesc::dRadius);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
+                std::tuple<int, int, int>,
                 std::tuple<int, int, int>,
                 int,
                 int,
@@ -49,16 +47,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("concatSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
+            py::arg("cRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 8,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("concatSize", &pyaon::LayerDesc::concatSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
+        .def_readwrite("cRadius", &pyaon::LayerDesc::cRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
-        .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
@@ -93,6 +93,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
+        .def("setCLR", &pyaon::Hierarchy::setCLR)
+        .def("getCLR", &pyaon::Hierarchy::getCLR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
