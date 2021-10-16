@@ -134,14 +134,12 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 8
-
         for i in range(len(layerSizes)):
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
+            ld.cRadius = layerRadius
             ld.dRadius = layerRadius
-            ld.historyCapacity = histCap
 
             ld.ticksPerUpdate = 4
             ld.temporalHorizon = 4
@@ -153,7 +151,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(neo.IODesc(self.inputSizes[i], layerRadius, layerRadius, histCap))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], layerRadius, layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 
