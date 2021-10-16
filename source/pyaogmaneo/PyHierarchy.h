@@ -96,7 +96,7 @@ public:
     std::vector<unsigned char> serializeStateToBuffer();
 
     void step(
-        const std::vector<std::vector<int> > &inputCIs,
+        const std::vector<std::vector<int>> &inputCIs,
         const std::vector<int> &topGoalCIs,
         bool learnEnabled
     );

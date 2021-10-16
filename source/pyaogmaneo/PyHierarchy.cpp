@@ -94,7 +94,7 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 }
 
 void Hierarchy::step(
-    const std::vector<std::vector<int> > &inputCIs,
+    const std::vector<std::vector<int>> &inputCIs,
     const std::vector<int> &topGoalCIs,
     bool learnEnabled
 ) {
