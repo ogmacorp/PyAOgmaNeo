@@ -12,6 +12,7 @@ import pyaogmaneo as pyaon
 import numpy as np
 import matplotlib.pyplot as plt
 import struct
+import time
 
 # Set the number of threads
 pyaon.setNumThreads(8)
@@ -66,52 +67,47 @@ lds = []
 for i in range(2): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
-    ld.hiddenSize = (2, 2, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
 # Create the hierarchy
 h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(1, 2, 16), type=pyaon.prediction) ], lds)
-
-for i in range(len(lds)):
-    h.setRecurrence(i, 0.5)
+h.initRandom([ pyaon.IODesc(size=(1, 2, 16)) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 10000
 
 def wave(t):
-    return np.sin(t * 0.02 * 2.0 * np.pi - 0.5) * np.sin(t * 0.04 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
+    return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
+
+total = 0.0
 
 for t in range(iters):
-    #if np.random.rand() < 0.1:
-    #    rt -= 1
-
-    #if np.random.rand() < 0.1:
-    #    rt += 1
-
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
     #csdr = fToCSDR(valueToEncode, numInputColumns, inputColumnSize)
     csdr = Unorm8ToCSDR(float(valueToEncode))
 
+    start = time.time()
+
     # Step the hierarchy given the inputs (just one here)
-    h.step([ csdr ], True) # True for enabling learning
+    h.step([ csdr ], h.getHiddenCIs(h.getNumLayers() - 1), True) # True for enabling learning
+
+    end = time.time()
+
+    total += end - start
 
     # Print progress
     if t % 100 == 0:
         print(t)
 
+print("Total: " + str(total))
+
 # Recall the sequence
 ts = [] # Time step
 vs = [] # Predicted value
-v2s = [] # Column states
-
-numTrack = 0
-
-for i in range(numTrack):
-    v2s.append([])
 
 trgs = [] # True value
 
@@ -121,8 +117,14 @@ for t2 in range(3000):
     # New, continued value for comparison to what the hierarchy predicts
     valueToEncode = wave(t) # Some wavy line
 
+    start = time.time()
+
     # Run off of own predictions with learning disabled
-    h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
+    h.step([ h.getPredictionCIs(0) ], h.getHiddenCIs(h.getNumLayers() - 1), False) # Learning disabled
+
+    end = time.time()
+
+    total += end - start
 
     # Decode value (de-bin)
     #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
@@ -132,9 +134,6 @@ for t2 in range(3000):
     ts.append(t2)
     vs.append(value)
 
-    for i in range(numTrack):
-        v2s[i].append(h.getHiddenCIs(0)[i] / float(lds[0].hiddenSize[2] - 1))
-
     trgs.append(valueToEncode)
 
     # Show predicted value
@@ -143,8 +142,8 @@ for t2 in range(3000):
 # Show plot
 plt.plot(ts, vs, ts, trgs)
 
-for i in range(numTrack):
-    plt.plot(ts, v2s[i])
+#for i in range(len(units)):
+#    plt.plot(ts, units[i])
 
 plt.show()
 

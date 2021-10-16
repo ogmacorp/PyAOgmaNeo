@@ -201,19 +201,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setETraceDecay(
-        int l,
-        float traceDecay
-    ) {
-        h.getELayer(l).traceDecay = traceDecay;
-    }
-
-    float getETraceDecay(
-        int l
-    ) {
-        return h.getELayer(l).traceDecay;
-    }
-
     void setELR(
         int l,
         float lr

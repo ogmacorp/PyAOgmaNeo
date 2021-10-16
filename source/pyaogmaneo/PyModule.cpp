@@ -93,8 +93,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumEncVisibleLayers", &pyaon::Hierarchy::getNumEncVisibleLayers)
         .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
-        .def("setETraceDecay", &pyaon::Hierarchy::setETraceDecay)
-        .def("getETraceDecay", &pyaon::Hierarchy::getETraceDecay)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
