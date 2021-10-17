@@ -175,9 +175,7 @@ public:
         return hiddenCIs;
     }
 
-    std::tuple<int, int, int> getTopHiddenSize(
-        int l
-    ) {
+    std::tuple<int, int, int> getTopHiddenSize() {
         aon::Int3 size = h.getTopHiddenSize();
 
         return { size.x, size.y, size.z };
