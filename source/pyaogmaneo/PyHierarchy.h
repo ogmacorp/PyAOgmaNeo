@@ -250,63 +250,6 @@ public:
         return h.getDLayers(l)[v]->discount;
     }
 
-    void setDGenGoalNoise(
-        int l,
-        int v,
-        float genGoalNoise
-    ) {
-        assert(h.getDLayers(l)[v] != nullptr);
-
-        h.getDLayers(l)[v]->genGoalNoise = genGoalNoise;
-    }
-
-    float getDGenGoalNoise(
-        int l,
-        int v
-    ) const {
-        assert(h.getDLayers(l)[v] != nullptr);
-
-        return h.getDLayers(l)[v]->genGoalNoise;
-    }
-
-    void setDQSteps(
-        int l,
-        int v,
-        int qSteps
-    ) {
-        assert(h.getDLayers(l)[v] != nullptr);
-
-        h.getDLayers(l)[v]->qSteps = qSteps;
-    }
-
-    int getDQSteps(
-        int l,
-        int v
-    ) const {
-        assert(h.getDLayers(l)[v] != nullptr);
-
-        return h.getDLayers(l)[v]->qSteps;
-    }
-
-    void setDHistoryIters(
-        int l,
-        int v,
-        int historyIters
-    ) {
-        assert(h.getDLayers(l)[v] != nullptr);
-
-        h.getDLayers(l)[v]->historyIters = historyIters;
-    }
-
-    int getDHistoryIters(
-        int l,
-        int v
-    ) const {
-        assert(h.getDLayers(l)[v] != nullptr);
-
-        return h.getDLayers(l)[v]->historyIters;
-    }
-
     // Retrieve additional parameters on the SPH's structure
     int getFFRadius(
         int l
