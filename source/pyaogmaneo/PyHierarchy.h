@@ -12,8 +12,16 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
+const int hierarchyMagic = 54398714;
+
+enum IOType {
+    none = 0,
+    prediction = 1
+};
+
 struct IODesc {
     std::tuple<int, int, int> size;
+    IOType type;
 
     int eRadius;
     int dRadius;
@@ -22,16 +30,20 @@ struct IODesc {
 
     IODesc(
         const std::tuple<int, int, int> &size,
+        IOType type,
         int eRadius,
         int dRadius,
         int historyCapacity
     )
     :
     size(size),
+    type(type),
     eRadius(eRadius),
     dRadius(dRadius),
     historyCapacity(historyCapacity)
     {}
+
+    bool checkInRange() const;
 };
 
 struct LayerDesc {
@@ -61,14 +73,23 @@ struct LayerDesc {
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
+
+    bool checkInRange() const;
 };
 
 class Hierarchy {
 private:
+    bool initialized;
+
+    void initCheck() const;
+
     aon::Hierarchy h;
 
 public:
-    Hierarchy() {}
+    Hierarchy() 
+    :
+    initialized(false)
+    {}
 
     void initRandom(
         const std::vector<IODesc> &ioDescs,
@@ -96,16 +117,20 @@ public:
     std::vector<unsigned char> serializeStateToBuffer();
 
     void step(
-        const std::vector<std::vector<int> > &inputCIs,
+        const std::vector<std::vector<int>> &inputCIs,
         const std::vector<int> &topGoalCIs,
         bool learnEnabled
     );
 
     int getNumLayers() const {
+        initCheck();
+
         return h.getNumLayers();
     }
 
     std::vector<int> getTopHiddenCIs() const {
+        initCheck();
+
         std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
@@ -115,12 +140,16 @@ public:
     }
 
     std::tuple<int, int, int> getTopHiddenSize() const {
+        initCheck();
+
         aon::Int3 size = h.getTopHiddenSize();
 
         return { size.x, size.y, size.z };
     }
     
     bool getTopUpdate() const {
+        initCheck();
+
         return h.getTopUpdate();
     }
 
@@ -128,35 +157,36 @@ public:
         int i,
         float importance
     ) {
+        initCheck();
+
         h.setImportance(i, importance);
     }
 
     float getImportance(
         int i
     ) const {
+        initCheck();
+
         return h.getImportance(i);
     }
 
     std::vector<int> getPredictionCIs(
         int i
-    ) const {
-        std::vector<int> predictions(h.getPredictionCIs(i).size());
-
-        for (int j = 0; j < predictions.size(); j++)
-            predictions[j] = h.getPredictionCIs(i)[j];
-
-        return predictions;
-    }
+    ) const;
 
     bool getUpdate(
         int l
     ) const {
+        initCheck();
+
         return h.getUpdate(l);
     }
 
     std::vector<int> getHiddenCIs(
         int l
     ) {
+        initCheck();
+
         std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
@@ -168,6 +198,8 @@ public:
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
+        initCheck();
+
         aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
@@ -176,28 +208,38 @@ public:
     int getTicks(
         int l
     ) const {
+        initCheck();
+
         return h.getTicks(l);
     }
 
     int getTicksPerUpdate(
         int l
     ) const {
+        initCheck();
+
         return h.getTicksPerUpdate(l);
     }
 
     int getNumEVisibleLayers(
         int l
     ) {
+        initCheck();
+
         return h.getELayer(l).getNumVisibleLayers();
     }
 
     int getNumInputs() const {
+        initCheck();
+
         return h.getInputSizes().size();
     }
 
     std::tuple<int, int, int> getInputSize(
         int i
     ) const {
+        initCheck();
+
         aon::Int3 size = h.getInputSizes()[i];
 
         return { size.x, size.y, size.z };
@@ -207,12 +249,26 @@ public:
         int l,
         float lr
     ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (lr < 0.0f) {
+            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
+            abort();
+        }
+
         h.getELayer(l).lr = lr;
     }
 
     float getELR(
         int l
     ) {
+        initCheck();
+
         return h.getELayer(l).lr;
     }
 
@@ -221,6 +277,23 @@ public:
         int i,
         float lr
     ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getInputSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (lr < 0.0f) {
+            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
+            abort();
+        }
+
         h.getDLayers(l)[i].lr = lr;
     }
 
@@ -228,6 +301,8 @@ public:
         int l,
         int i
     ) const {
+        initCheck();
+
         return h.getDLayers(l)[i].lr;
     }
 
@@ -235,6 +310,8 @@ public:
     int getERadius(
         int l
     ) const {
+        initCheck();
+
         return h.getELayer(l).getVisibleLayerDesc(0).radius;
     }
 
@@ -242,6 +319,8 @@ public:
         int l,
         int i
     ) const {
+        initCheck();
+
         return h.getDLayers(l)[i].getVisibleLayerDesc().radius;
     }
 };

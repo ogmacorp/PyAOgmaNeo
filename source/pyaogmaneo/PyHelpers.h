@@ -12,6 +12,7 @@
 #include <tuple>
 #include <vector>
 #include <fstream>
+#include <iostream>
 
 namespace pyaon {
 inline void setNumThreads(

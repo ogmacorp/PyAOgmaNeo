@@ -12,12 +12,21 @@
 #include <aogmaneo/RLAdapter.h>
 
 namespace pyaon {
+const int rlAdapterMagic = 834903;
+
 class RLAdapter {
 private:
+    bool initialized;
+
+    void initCheck() const;
+
     aon::RLAdapter adapter;
 
 public:
-    RLAdapter() {}
+    RLAdapter()
+    :
+    initialized(false)
+    {}
 
     void initRandom(
         const std::tuple<int, int, int> &hiddenSize

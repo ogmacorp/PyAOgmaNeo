@@ -22,6 +22,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("setGlobalState", &pyaon::setGlobalState);
     m.def("getGlobalState", &pyaon::getGlobalState);
 
+    py::enum_<pyaon::IOType>(m, "IOType")
+        .value("none", pyaon::none)
+        .value("prediction", pyaon::prediction)
+        .export_values();
+
     py::class_<pyaon::IODesc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,

@@ -12,6 +12,8 @@
 #include <aogmaneo/ImageEncoder.h>
 
 namespace pyaon {
+const int imageEncoderMagic = 128833;
+
 struct ImageEncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;
 
@@ -25,14 +27,23 @@ struct ImageEncoderVisibleLayerDesc {
     size(size),
     radius(radius)
     {}
+
+    bool checkInRange() const;
 };
 
 class ImageEncoder {
 private:
+    bool initialized;
+
+    void initCheck() const;
+
     aon::ImageEncoder enc;
 
 public:
-    ImageEncoder() {}
+    ImageEncoder() 
+    :
+    initialized(false)
+    {}
 
     void initRandom(
         const std::tuple<int, int, int> &hiddenSize,
@@ -54,7 +65,7 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<unsigned char> > &inputs,
+        const std::vector<std::vector<unsigned char>> &inputs,
         bool learnEnabled
     );
 
@@ -63,12 +74,21 @@ public:
     );
 
     int getNumVisibleLayers() const {
+        initCheck();
+
         return enc.getNumVisibleLayers();
     }
 
     std::vector<unsigned char> getReconstruction(
         int i
     ) const {
+        initCheck();
+
+        if (i < 0 || i >= enc.getNumVisibleLayers()) {
+            std::cerr << "Cannot get reconstruction at index " << i << " - out of bounds [0, " << enc.getNumVisibleLayers() << "]" << std::endl;
+            abort();
+        }
+
         std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
@@ -78,6 +98,8 @@ public:
     }
 
     std::vector<int> getHiddenCIs() const {
+        initCheck();
+
         std::vector<int> hiddenCIs(enc.getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
@@ -87,6 +109,8 @@ public:
     }
 
     std::tuple<int, int, int> getHiddenSize() const {
+        initCheck();
+
         aon::Int3 size = enc.getHiddenSize();
 
         return { size.x, size.y, size.z };
@@ -95,6 +119,8 @@ public:
     std::tuple<int, int, int> getVisibleSize(
         int i
     ) const {
+        initCheck();
+
         aon::Int3 size = enc.getVisibleLayerDesc(i).size;
 
         return { size.x, size.y, size.z };
@@ -104,20 +130,38 @@ public:
     void setLR(
         float lr
     ) {
+        initCheck();
+
+        if (lr < 0.0f) {
+            std::cerr << "Error: ImageEncoder LR must be >= 0.0" << std::endl;
+            abort();
+        }
+
         enc.lr = lr;
     }
 
     float getLR() const {
+        initCheck();
+
         return enc.lr;
     }
 
     void setFalloff(
         float falloff
     ) {
+        initCheck();
+
+        if (falloff < 0.0f) {
+            std::cerr << "Error: ImageEncoder falloff must be >= 0.0" << std::endl;
+            abort();
+        }
+
         enc.falloff = falloff;
     }
 
     float getFalloff() const {
+        initCheck();
+
         return enc.falloff;
     }
 };
