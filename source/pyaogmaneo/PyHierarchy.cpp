@@ -147,6 +147,8 @@ void Hierarchy::initRandom(
     }
 
     h.initRandom(cIODescs, cLayerDescs);
+    
+    initialized = true;
 }
 
 void Hierarchy::initFromFile(
@@ -280,10 +282,21 @@ void Hierarchy::step(
         cInputCIs[i] = &cInputCIsBacking[i];
     }
 
+    if (topGoalCIs.size() != h.getTopHiddenCIs().size()) {
+        std::cerr << "Incorrect number of topGoalCIs passed to step! Received " << topGoalCIs.size() << ", need " << h.getTopHiddenCIs().size() << std::endl;
+        abort();
+    }
+
     aon::IntBuffer cTopGoalCIs(topGoalCIs.size());
 
-    for (int i = 0; i < topGoalCIs.size(); i++)
+    for (int i = 0; i < topGoalCIs.size(); i++) {
+        if (topGoalCIs[i] < 0 || topGoalCIs[i] >= h.getTopHiddenSize().z) {
+            std::cerr << "Error: topGoalCIs has an out-of-bounds column index (" << topGoalCIs[i] << ") at column index " << i << ". It must be in the range [0, " << (h.getTopHiddenSize().z - 1) << "]" << std::endl;
+            abort();
+        }
+
         cTopGoalCIs[i] = topGoalCIs[i];
+    }
     
     h.step(cInputCIs, &cTopGoalCIs, learnEnabled);
 }
