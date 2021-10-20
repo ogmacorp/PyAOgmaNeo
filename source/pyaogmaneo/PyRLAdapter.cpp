@@ -131,6 +131,7 @@ void RLAdapter::step(
         }
 
         cHiddenCIs[j] = hiddenCIs[j];
+    }
 
     adapter.step(&cHiddenCIs, reward, learnEnabled);
 }
