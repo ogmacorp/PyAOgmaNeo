@@ -10,6 +10,13 @@
 
 using namespace pyaon;
 
+void ImageEncoder::initCheck() const {
+    if (!initialized) {
+        std::cerr << "Attempted to use the ImageEncoder uninitialized!" << std::endl;
+        abort();
+    }
+}
+
 void ImageEncoder::initRandom(
     const std::tuple<int, int, int> &hiddenSize,
     const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
