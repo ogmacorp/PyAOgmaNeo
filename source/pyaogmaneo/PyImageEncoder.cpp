@@ -10,6 +10,30 @@
 
 using namespace pyaon;
 
+bool ImageEncoderVisibleLayerDesc::checkInRange() const {
+    if (std::get<0>(size)) {
+        std::cerr << "Error: size[0] < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (std::get<1>(size)) {
+        std::cerr << "Error: size[1] < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (std::get<2>(size)) {
+        std::cerr << "Error: size[2] < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (radius < 0) {
+        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 void ImageEncoder::initCheck() const {
     if (!initialized) {
         std::cerr << "Attempted to use the ImageEncoder uninitialized!" << std::endl;
