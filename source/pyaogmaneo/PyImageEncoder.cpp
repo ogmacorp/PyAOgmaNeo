@@ -138,7 +138,7 @@ void ImageEncoder::saveToFile(
 std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
     initCheck();
 
-    BufferWriter writer(enc.size());
+    BufferWriter writer(enc.size() + sizeof(int));
 
     writer.write(&imageEncoderMagic, sizeof(int));
 

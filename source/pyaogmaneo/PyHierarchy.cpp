@@ -205,7 +205,7 @@ void Hierarchy::saveToFile(
 std::vector<unsigned char> Hierarchy::serializeToBuffer() {
     initCheck();
 
-    BufferWriter writer(h.size());
+    BufferWriter writer(h.size() + sizeof(int));
 
     writer.write(&hierarchyMagic, sizeof(int));
 
@@ -236,7 +236,7 @@ void Hierarchy::setStateFromBuffer(
 std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
     initCheck();
 
-    BufferWriter writer(h.stateSize());
+    BufferWriter writer(h.stateSize() + sizeof(int));
 
     writer.write(&hierarchyMagic, sizeof(int));
 

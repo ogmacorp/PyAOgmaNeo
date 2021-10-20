@@ -101,7 +101,7 @@ void RLAdapter::saveToFile(
 std::vector<unsigned char> RLAdapter::serializeToBuffer() {
     initCheck();
 
-    BufferWriter writer(adapter.size());
+    BufferWriter writer(adapter.size() + sizeof(int));
 
     writer.write(&rlAdapterMagic, sizeof(int));
 
