@@ -129,10 +129,10 @@ public:
     std::vector<int> getOutputCIs() const {
         initCheck();
 
-        std::vector<int> outputCIs(enc.getHiddenCIs().size());
+        std::vector<int> outputCIs(enc.getOutputCIs().size());
 
         for (int j = 0; j < outputCIs.size(); j++)
-            outputCIs[j] = enc.getHiddenCIs()[j];
+            outputCIs[j] = enc.getOutputCIs()[j];
 
         return outputCIs;
     }
