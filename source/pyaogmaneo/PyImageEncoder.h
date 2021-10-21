@@ -126,10 +126,29 @@ public:
         return hiddenCIs;
     }
 
+    std::vector<int> getOutputCIs() const {
+        initCheck();
+
+        std::vector<int> outputCIs(enc.getHiddenCIs().size());
+
+        for (int j = 0; j < outputCIs.size(); j++)
+            outputCIs[j] = enc.getHiddenCIs()[j];
+
+        return outputCIs;
+    }
+
     std::tuple<int, int, int> getHiddenSize() const {
         initCheck();
 
         aon::Int3 size = enc.getHiddenSize();
+
+        return { size.x, size.y, size.z };
+    }
+
+    std::tuple<int, int, int> getOutputSize() const {
+        initCheck();
+
+        aon::Int3 size = enc.getOutputSize();
 
         return { size.x, size.y, size.z };
     }
