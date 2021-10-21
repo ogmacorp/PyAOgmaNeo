@@ -123,7 +123,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("radius") = 4
+            py::arg("radius") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::ImageEncoderHigherLayerDesc::hiddenSize)
         .def_readwrite("radius", &pyaon::ImageEncoderHigherLayerDesc::radius);
