@@ -220,8 +220,8 @@ void ImageEncoder::reconstruct(
 ) {
     initCheck();
 
-    if (reconCIs.size() != enc.getHiddenCIs().size()) {
-        std::cerr << "Error: reconCIs must match the hiddenSize of the ImageEncoder!" << std::endl;
+    if (reconCIs.size() != enc.getOutputCIs().size()) {
+        std::cerr << "Error: reconCIs must match the outputSize of the ImageEncoder!" << std::endl;
         abort();
     }
 
