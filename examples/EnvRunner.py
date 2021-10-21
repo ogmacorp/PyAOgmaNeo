@@ -19,11 +19,11 @@ import time
 def sigmoid(x):
     return np.tanh(x) * 0.5 + 0.5
 
-inputTypePrediction = 0
-inputTypeAction = 1
+inputTypeNone = neo.none
+inputTypePrediction = neo.prediction
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=1 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -47,14 +47,14 @@ class EnvRunner:
 
         if type(self.env.observation_space) is gym.spaces.Discrete:
             self.inputSizes.append((1, 1, self.env.observation_space.n))
-            self.inputTypes.append(inputTypePrediction)
+            self.inputTypes.append(inputTypeNone)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.observation_space) is gym.spaces.Box:
             if len(self.env.observation_space.shape) == 1 or len(self.env.observation_space.shape) == 0:
                 squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
                 self.inputSizes.append((squareSize, squareSize, obsResolution))
-                self.inputTypes.append(inputTypePrediction)
+                self.inputTypes.append(inputTypeNone)
                 lows = list(self.env.observation_space.low)
                 highs = list(self.env.observation_space.high)
                 
@@ -95,7 +95,7 @@ class EnvRunner:
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
-            self.inputTypes.append(inputTypePrediction)
+            self.inputTypes.append(inputTypeNone)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 1.0 ])
 
@@ -103,7 +103,7 @@ class EnvRunner:
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.actionIndices.append(len(self.inputSizes))
             self.inputSizes.append((1, 1, self.env.action_space.n))
-            self.inputTypes.append(inputTypeAction)
+            self.inputTypes.append(inputTypePrediction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.action_space) is gym.spaces.Box:
@@ -111,7 +111,7 @@ class EnvRunner:
                 if len(self.env.action_space.shape) == 2:
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
-                    self.inputTypes.append(inputTypeAction)
+                    self.inputTypes.append(inputTypePrediction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -121,7 +121,7 @@ class EnvRunner:
                     squareSize = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((squareSize, squareSize, actionResolution))
-                    self.inputTypes.append(inputTypeAction)
+                    self.inputTypes.append(inputTypePrediction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -153,7 +153,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(neo.IODesc(self.inputSizes[i], layerRadius, layerRadius, histCap))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, histCap))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -189,7 +189,7 @@ class EnvRunner:
         actionIndex = 0
 
         for i in range(len(self.inputSizes)):
-            if self.inputTypes[i] == inputTypeAction:
+            if self.inputTypes[i] == inputTypePrediction:
                 self.inputs.append(self.actions[actionIndex])
 
                 actionIndex += 1
@@ -234,7 +234,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] == inputTypeAction)
+            assert(self.inputTypes[index] == inputTypePrediction)
 
             if self.inputLows[index][0] < self.inputHighs[index][0]:
                 feedAction = []
@@ -279,7 +279,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] is inputTypeAction)
+            assert(self.inputTypes[index] == inputTypePrediction)
 
             self.actions[i] = list(self.h.getPredictionCIs(index))
         

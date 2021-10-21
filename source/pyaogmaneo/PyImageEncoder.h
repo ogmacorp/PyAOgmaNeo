@@ -31,6 +31,23 @@ struct ImageEncoderVisibleLayerDesc {
     bool checkInRange() const;
 };
 
+struct ImageEncoderHigherLayerDesc {
+    std::tuple<int, int, int> hiddenSize;
+
+    int radius;
+
+    ImageEncoderHigherLayerDesc(
+        const std::tuple<int, int, int> &hiddenSize,
+        int radius
+    )
+    : 
+    hiddenSize(hiddenSize),
+    radius(radius)
+    {}
+
+    bool checkInRange() const;
+};
+
 class ImageEncoder {
 private:
     bool initialized;
@@ -47,7 +64,8 @@ public:
 
     void initRandom(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
+        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
+        const std::vector<ImageEncoderHigherLayerDesc> &higherLayerDescs
     );
 
     void initFromFile(
@@ -163,6 +181,28 @@ public:
         initCheck();
 
         return enc.falloff;
+    }
+
+    void setHigherLR(
+        int l,
+        float lr
+    ) {
+        initCheck();
+
+        if (lr < 0.0f) {
+            std::cerr << "Error: ImageEncoder higher LR must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        enc.getHigherLayer(l).lr = lr;
+    }
+
+    float getHigherLR(
+        int l
+    ) const {
+        initCheck();
+
+        return enc.getHigherLayer(l).lr;
     }
 };
 } // namespace pyaon

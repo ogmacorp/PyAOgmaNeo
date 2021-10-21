@@ -34,6 +34,30 @@ bool ImageEncoderVisibleLayerDesc::checkInRange() const {
     return true;
 }
 
+bool ImageEncoderHigherLayerDesc::checkInRange() const {
+    if (std::get<0>(hiddenSize) < 0) {
+        std::cerr << "Error: hiddenSize[0] < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (std::get<1>(hiddenSize) < 0) {
+        std::cerr << "Error: hiddenSize[1] < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (std::get<2>(hiddenSize) < 0) {
+        std::cerr << "Error: hiddenSize[2] < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (radius < 0) {
+        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 void ImageEncoder::initCheck() const {
     if (!initialized) {
         std::cerr << "Attempted to use the ImageEncoder uninitialized!" << std::endl;
@@ -43,7 +67,8 @@ void ImageEncoder::initCheck() const {
 
 void ImageEncoder::initRandom(
     const std::tuple<int, int, int> &hiddenSize,
-    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
+    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
+    const std::vector<ImageEncoderHigherLayerDesc> &higherLayerDescs
 ) {
     bool allInRange = true;
 
@@ -74,12 +99,24 @@ void ImageEncoder::initRandom(
         allInRange = false;
     }
 
+    aon::Array<aon::ImageEncoder::HigherLayerDesc> cHigherLayerDescs(higherLayerDescs.size());
+
+    for (int l = 0; l < higherLayerDescs.size(); l++) {
+        if (!higherLayerDescs[l].checkInRange()) {
+            std::cerr << " - at higherLayerDescs[" << l << "]" << std::endl;
+            allInRange = false;
+        }
+
+        cHigherLayerDescs[l].hiddenSize = aon::Int3(std::get<0>(higherLayerDescs[l].hiddenSize), std::get<1>(higherLayerDescs[l].hiddenSize), std::get<2>(higherLayerDescs[l].hiddenSize));
+        cHigherLayerDescs[l].radius = higherLayerDescs[l].radius;
+    }
+
     if (!allInRange) {
         std::cerr << " - ImageEncoder: Some parameters out of range!" << std::endl;
         abort();
     }
 
-    enc.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), cVisibleLayerDescs);
+    enc.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), cVisibleLayerDescs, cHigherLayerDescs);
 
     initialized = true;
 }
