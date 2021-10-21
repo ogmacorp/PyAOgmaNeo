@@ -117,6 +117,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("size", &pyaon::ImageEncoderVisibleLayerDesc::size)
         .def_readwrite("radius", &pyaon::ImageEncoderVisibleLayerDesc::radius);
         
+    py::class_<pyaon::ImageEncoderHigherLayerDesc>(m, "ImageEncoderHigherLayerDesc")
+        .def(py::init<
+                std::tuple<int, int, int>,
+                int
+            >(),
+            py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("radius") = 4
+        )
+        .def_readwrite("hiddenSize", &pyaon::ImageEncoderHigherLayerDesc::hiddenSize)
+        .def_readwrite("radius", &pyaon::ImageEncoderHigherLayerDesc::radius);
+
     py::class_<pyaon::ImageEncoder>(m, "ImageEncoder")
         .def(py::init<>())
         .def("initRandom", &pyaon::ImageEncoder::initRandom)
