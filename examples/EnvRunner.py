@@ -21,6 +21,7 @@ def sigmoid(x):
 
 inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
+inputTypeAction = neo.action
 
 class EnvRunner:
     def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
@@ -103,7 +104,7 @@ class EnvRunner:
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.actionIndices.append(len(self.inputSizes))
             self.inputSizes.append((1, 1, self.env.action_space.n))
-            self.inputTypes.append(inputTypePrediction)
+            self.inputTypes.append(inputTypeAction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
         elif type(self.env.action_space) is gym.spaces.Box:
@@ -111,7 +112,7 @@ class EnvRunner:
                 if len(self.env.action_space.shape) == 2:
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], actionResolution))
-                    self.inputTypes.append(inputTypePrediction)
+                    self.inputTypes.append(inputTypeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -121,7 +122,7 @@ class EnvRunner:
                     squareSize = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
                     self.actionIndices.append(len(self.inputSizes))
                     self.inputSizes.append((squareSize, squareSize, actionResolution))
-                    self.inputTypes.append(inputTypePrediction)
+                    self.inputTypes.append(inputTypeAction)
                     lows = list(self.env.action_space.low)
                     highs = list(self.env.action_space.high)
 
@@ -134,17 +135,11 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 8
-
         for i in range(len(layerSizes)):
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
             ld.dRadius = layerRadius
-            ld.historyCapacity = histCap
-
-            ld.ticksPerUpdate = 4
-            ld.temporalHorizon = 4
 
             lds.append(ld)
 
@@ -153,7 +148,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, histCap))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -173,9 +168,6 @@ class EnvRunner:
 
             self.actions.append(startAct)
 
-        self.adapter = neo.RLAdapter()
-        self.adapter.initRandom(self.h.getTopHiddenSize())
-
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
 
@@ -189,7 +181,7 @@ class EnvRunner:
         actionIndex = 0
 
         for i in range(len(self.inputSizes)):
-            if self.inputTypes[i] == inputTypePrediction:
+            if self.inputTypes[i] == inputTypeAction:
                 self.inputs.append(self.actions[actionIndex])
 
                 actionIndex += 1
@@ -228,13 +220,13 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.05, obsPreprocess=None):
+    def act(self, epsilon=0.0, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] == inputTypePrediction)
+            assert(self.inputTypes[index] == inputTypeAction)
 
             if self.inputLows[index][0] < self.inputHighs[index][0]:
                 feedAction = []
@@ -271,15 +263,13 @@ class EnvRunner:
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
-        self.adapter.step(self.h.getTopHiddenCIs(), r, True)
-
-        self.h.step(self.inputs, self.adapter.getGoalCIs(), True)
+        self.h.step(self.inputs, True, r)
 
         # Retrieve actions
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            assert(self.inputTypes[index] == inputTypePrediction)
+            assert(self.inputTypes[index] == inputTypeAction)
 
             self.actions[i] = list(self.h.getPredictionCIs(index))
         
