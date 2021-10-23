@@ -95,7 +95,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getTicks", &pyaon::Hierarchy::getTicks)
         .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
-        .def("getNumInputs", &pyaon::Hierarchy::getNumInputs)
+        .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getInputSize", &pyaon::Hierarchy::getInputSize)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)

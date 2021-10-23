@@ -227,7 +227,7 @@ public:
         return h.getELayer(l).getNumVisibleLayers();
     }
 
-    int getNumInputs() const {
+    int getNumIO() const {
         initCheck();
 
         return h.getIOSizes().size();
@@ -471,8 +471,8 @@ public:
             abort();
         }
 
-        if (minSteps < 0) {
-            std::cerr << "Error: AMinSteps must be >= 0" << std::endl;
+        if (minSteps < 1) {
+            std::cerr << "Error: AMinSteps must be >= 1" << std::endl;
             abort();
         }
 
