@@ -53,6 +53,8 @@ public:
     );
 
     std::vector<int> getGoalCIs() const {
+        initCheck();
+
         std::vector<int> goalCIs(adapter.getGoalCIs().size());
 
         for (int j = 0; j < goalCIs.size(); j++)
@@ -62,6 +64,8 @@ public:
     }
 
     std::tuple<int, int, int> getHiddenSize() const {
+        initCheck();
+
         aon::Int3 size = adapter.getHiddenSize();
 
         return { size.x, size.y, size.z };
@@ -71,30 +75,57 @@ public:
     void setLR(
         float lr
     ) {
+        initCheck();
+
+        if (lr < 0.0f) {
+            std::cerr << "Error: RLAdapter LR must be >= 0.0" << std::endl;
+            abort();
+        }
+
         adapter.lr = lr;
     }
 
     float getLR() const {
+        initCheck();
+
         return adapter.lr;
     }
 
     void setDiscount(
         float discount
     ) {
+        initCheck();
+
+        if (discount < 0.0f || discount >= 1.0f) {
+            std::cerr << "Error: RLAdapter discount must be in [0.0, 1.0)" << std::endl;
+            abort();
+        }
+
         adapter.discount = discount;
     }
 
     float getDiscount() const {
+        initCheck();
+
         return adapter.discount;
     }
 
     void setTraceDecay(
         float traceDecay
     ) {
+        initCheck();
+
+        if (traceDecay < 0.0f || traceDecay >= 1.0f) {
+            std::cerr << "Error: RLAdapter traceDecay must be in [0.0, 1.0)" << std::endl;
+            abort();
+        }
+
         adapter.traceDecay = traceDecay;
     }
 
     float getTraceDecay() const {
+        initCheck();
+
         return adapter.traceDecay;
     }
 };
