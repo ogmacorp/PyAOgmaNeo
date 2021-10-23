@@ -229,10 +229,10 @@ public:
         return h.getELayer(l).getNumVisibleLayers();
     }
 
-    int getNumInputs() const {
+    int getNumIO() const {
         initCheck();
 
-        return h.getInputSizes().size();
+        return h.getIOSizes().size();
     }
 
     std::tuple<int, int, int> getInputSize(
@@ -240,7 +240,7 @@ public:
     ) const {
         initCheck();
 
-        aon::Int3 size = h.getInputSizes()[i];
+        aon::Int3 size = h.getIOSizes()[i];
 
         return { size.x, size.y, size.z };
     }
@@ -284,7 +284,7 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getInputSizes().size()) {
+        if (i < 0 || i >= h.getIOSizes().size()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }

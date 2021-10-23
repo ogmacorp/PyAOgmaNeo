@@ -97,6 +97,12 @@ public:
         return enc.getNumVisibleLayers();
     }
 
+    int getNumHigherLayers() const {
+        initCheck();
+
+        return enc.getNumHigherLayers();
+    }
+
     std::vector<unsigned char> getReconstruction(
         int i
     ) const {
@@ -208,6 +214,11 @@ public:
     ) {
         initCheck();
 
+        if (l < 0 || l > enc.getNumHigherLayers()) {
+            std::cerr << "Error: " << l << " is not a valid higher layer index!" << std::endl;
+            abort();
+        }
+
         if (lr < 0.0f) {
             std::cerr << "Error: ImageEncoder higher LR must be >= 0.0" << std::endl;
             abort();
@@ -220,6 +231,11 @@ public:
         int l
     ) const {
         initCheck();
+
+        if (l < 0 || l > enc.getNumHigherLayers()) {
+            std::cerr << "Error: " << l << " is not a valid higher layer index!" << std::endl;
+            abort();
+        }
 
         return enc.getHigherLayer(l).lr;
     }
