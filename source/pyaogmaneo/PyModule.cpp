@@ -11,7 +11,6 @@
 
 #include "PyHierarchy.h"
 #include "PyImageEncoder.h"
-#include "PyRLAdapter.h"
 
 namespace py = pybind11;
 
@@ -25,6 +24,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::enum_<pyaon::IOType>(m, "IOType")
         .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
+        .value("action", pyaon::action)
         .export_values();
 
     py::class_<pyaon::IODesc>(m, "IODesc")

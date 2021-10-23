@@ -16,7 +16,8 @@ const int hierarchyMagic = 54398714;
 
 enum IOType {
     none = 0,
-    prediction = 1
+    prediction = 1,
+    action = 2
 };
 
 struct IODesc {
@@ -52,8 +53,6 @@ struct LayerDesc {
     int eRadius;
     int dRadius;
 
-    int historyCapacity;
-
     int ticksPerUpdate;
     int temporalHorizon;
 
@@ -61,7 +60,6 @@ struct LayerDesc {
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
         int dRadius,
-        int historyCapacity,
         int ticksPerUpdate,
         int temporalHorizon
     )
@@ -69,7 +67,6 @@ struct LayerDesc {
     hiddenSize(hiddenSize),
     eRadius(eRadius),
     dRadius(dRadius),
-    historyCapacity(historyCapacity),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}

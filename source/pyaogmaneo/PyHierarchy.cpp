@@ -70,11 +70,6 @@ bool LayerDesc::checkInRange() const {
         return false;
     }
 
-    if (historyCapacity < 2) {
-        std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
-        return false;
-    }
-
     if (ticksPerUpdate < 1) {
         std::cerr << "Error: ticksPerUpdate < 1 is not allowed!" << std::endl;
         return false;
@@ -135,7 +130,6 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
-            layerDescs[l].historyCapacity,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon
         );
