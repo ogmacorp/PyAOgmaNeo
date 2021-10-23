@@ -26,6 +26,8 @@ class CMakeExtension(Extension):
             "source/pyaogmaneo/PyHierarchy.cpp",
             "source/pyaogmaneo/PyImageEncoder.h",
             "source/pyaogmaneo/PyImageEncoder.cpp",
+            "source/pyaogmaneo/PyRLAdapter.h",
+            "source/pyaogmaneo/PyRLAdapter.cpp",
             "source/pyaogmaneo/PyModule.cpp",
             ])
         self.sourcedir = os.path.abspath(sourcedir)
@@ -78,7 +80,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="pyaogmaneo",
-    version="1.3.5",
+    version="1.4.0",
     description="Python bindings for the AOgmaNeo library",
     long_description='https://github.com/ogmacorp/PyAOgmaNeo',
     author='Ogma Intelligent Systems Corp',
