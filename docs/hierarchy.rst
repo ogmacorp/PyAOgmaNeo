@@ -115,6 +115,12 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :rtype: (int32) number of IO layers
 
+.. function:: Hierarchy.getIOSizes(self)
+
+    Get the sizes of all IO layers
+
+    :rtype: ([(int32, int32, int32)]) list of sizes of the IO layers
+
 .. function:: Hierarchy.getNumDLayers(self, l)
 
     Get the number of decoder (top down) sub-layers at a given layer
@@ -129,9 +135,16 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
+.. function:: Hierarchy.dLayerExists(self, i)
+
+    Determine whether there is a decoder at the i-th IO layer. This will be True if the IODesc at index i was of type prediction during initialization
+
+    :param i: (int32) index of the IO layer
+    :rtype: (boolean) True if exists, False otherwise
+
 .. function:: Hierarchy.aLayerExists(self, i)
 
-    Determine whether there is a actor at the i-th IO layer. This will be True if the IODesc at index i was of type typeAction during initialization
+    Determine whether there is a actor at the i-th IO layer. This will be True if the IODesc at index i was of type action during initialization
 
     :param i: (int32) index of the IO layer
     :rtype: (boolean) True if exists, False otherwise
