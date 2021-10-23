@@ -24,7 +24,7 @@ inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=2 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -170,10 +170,6 @@ class EnvRunner:
 
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
-
-        #self.adapter.setLR(0.01)
-        #self.adapter.setDiscount(0.99)
-        #self.adapter.setTraceDecay(0.98)
 
     def _feedObservation(self, obs):
         self.inputs = []

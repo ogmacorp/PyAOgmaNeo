@@ -16,6 +16,7 @@ It was originally intended for Arduino devices, hence the A in the name. However
     layerdesc
     hierarchy
     imageencodervisiblelayerdesc
+    imageencoderhigherlayerdesc
     imageencoder
 
 Search

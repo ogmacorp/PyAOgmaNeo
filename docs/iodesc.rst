@@ -13,6 +13,8 @@ Describes a single input/output channel for a hierarchy
 
     Type of input/output layer. Can be:
 
+        pyaogmaneo.none: Neither a prediction nor an action will be generated
+
         pyaogmaneo.prediction: A prediction of the next timestep of values will be generated
 
         pyaogmaneo.action: An action will be generated (for use with reinforcement learning)

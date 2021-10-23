@@ -72,7 +72,7 @@ for i in range(3): # Layers with exponential memory. Not much memory is needed f
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = neo.Hierarchy()
-h.initRandom([ neo.IODesc((3, 3, res), neo.prediction, eRadius=2, dRadius=2), neo.IODesc((1, 1, numActions), neo.action, eRadius=0, dRadius=2, historyCapacity=64) ], lds)
+h.initRandom([ neo.IODesc((3, 3, res), neo.none, eRadius=2, dRadius=2), neo.IODesc((1, 1, numActions), neo.action, eRadius=0, dRadius=2, historyCapacity=64) ], lds)
 
 # Set some parameters for the actor IO layer (index 1)
 h.setAVLR(1, 0.01)
