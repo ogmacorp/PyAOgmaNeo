@@ -50,7 +50,8 @@ public:
     void step(
         const std::vector<int> &hiddenCIs,
         float reward,
-        bool learnEnabled
+        bool learnEnabled,
+        bool stateUpdate
     );
 
     std::vector<int> getGoalCIs() const {
@@ -73,23 +74,42 @@ public:
     }
 
     // Params
-    void setLR(
-        float lr
+    void setGLR(
+        float glr
     ) {
         initCheck();
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: RLAdapter LR must be >= 0.0" << std::endl;
+        if (glr < 0.0f) {
+            std::cerr << "Error: RLAdapter GLR must be >= 0.0" << std::endl;
             abort();
         }
 
-        adapter.lr = lr;
+        adapter.glr = glr;
     }
 
-    float getLR() const {
+    float getGLR() const {
         initCheck();
 
-        return adapter.lr;
+        return adapter.glr;
+    }
+
+    void setVLR(
+        float vlr
+    ) {
+        initCheck();
+
+        if (vlr < 0.0f) {
+            std::cerr << "Error: RLAdapter VLR must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        adapter.vlr = vlr;
+    }
+
+    float getVLR() const {
+        initCheck();
+
+        return adapter.vlr;
     }
 
     void setFalloff(

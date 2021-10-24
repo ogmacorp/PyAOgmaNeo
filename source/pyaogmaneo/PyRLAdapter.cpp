@@ -119,7 +119,8 @@ std::vector<unsigned char> RLAdapter::serializeToBuffer() {
 void RLAdapter::step(
     const std::vector<int> &hiddenCIs,
     float reward,
-    bool learnEnabled
+    bool learnEnabled,
+    bool stateUpdate
 ) {
     initCheck();
 
@@ -139,5 +140,5 @@ void RLAdapter::step(
         cHiddenCIs[j] = hiddenCIs[j];
     }
 
-    adapter.step(&cHiddenCIs, reward, learnEnabled);
+    adapter.step(&cHiddenCIs, reward, learnEnabled, stateUpdate);
 }
