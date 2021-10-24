@@ -18,7 +18,8 @@ void RLAdapter::initCheck() const {
 }
 
 void RLAdapter::initRandom(
-    const std::tuple<int, int, int> &hiddenSize
+    const std::tuple<int, int, int> &hiddenSize,
+    int numGoals
 ) {
     bool allInRange = true;
 
@@ -37,12 +38,17 @@ void RLAdapter::initRandom(
         allInRange = false;
     }
 
+    if (numGoals < 0) {
+        std::cerr << "Error: numGoals < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
     if (!allInRange) {
         std::cerr << " - RLAdapter: Some parameters out of range!" << std::endl;
         abort();
     }
 
-    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)));
+    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), numGoals);
 
     initialized = true;
 }

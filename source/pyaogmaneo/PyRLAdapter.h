@@ -29,7 +29,8 @@ public:
     {}
 
     void initRandom(
-        const std::tuple<int, int, int> &hiddenSize
+        const std::tuple<int, int, int> &hiddenSize,
+        int numGoals
     );
 
     void initFromFile(
@@ -89,6 +90,25 @@ public:
         initCheck();
 
         return adapter.lr;
+    }
+
+    void setFalloff(
+        float falloff
+    ) {
+        initCheck();
+
+        if (falloff < 0.0f) {
+            std::cerr << "Error: RLAdapter Falloff must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        adapter.falloff = falloff;
+    }
+
+    float getFalloff() const {
+        initCheck();
+
+        return adapter.falloff;
     }
 
     void setDiscount(

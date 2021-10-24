@@ -171,6 +171,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
         .def("setLR", &pyaon::RLAdapter::setLR)
         .def("getLR", &pyaon::RLAdapter::getLR)
+        .def("setFalloff", &pyaon::RLAdapter::setFalloff)
+        .def("getFalloff", &pyaon::RLAdapter::getFalloff)
         .def("setDiscount", &pyaon::RLAdapter::setDiscount)
         .def("getDiscount", &pyaon::RLAdapter::getDiscount)
         .def("setTraceDecay", &pyaon::RLAdapter::setTraceDecay)
