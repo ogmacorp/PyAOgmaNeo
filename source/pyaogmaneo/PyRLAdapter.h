@@ -50,8 +50,7 @@ public:
     void step(
         const std::vector<int> &hiddenCIs,
         float reward,
-        bool learnEnabled,
-        bool stateUpdate
+        bool learnEnabled
     );
 
     std::vector<int> getGoalCIs() const {
@@ -74,99 +73,23 @@ public:
     }
 
     // Params
-    void setGLR(
-        float glr
+    void setLR(
+        float lr
     ) {
         initCheck();
 
-        if (glr < 0.0f) {
+        if (lr < 0.0f) {
             std::cerr << "Error: RLAdapter GLR must be >= 0.0" << std::endl;
             abort();
         }
 
-        adapter.glr = glr;
+        adapter.lr = lr;
     }
 
-    float getGLR() const {
+    float getLR() const {
         initCheck();
 
-        return adapter.glr;
-    }
-
-    void setVLR(
-        float vlr
-    ) {
-        initCheck();
-
-        if (vlr < 0.0f) {
-            std::cerr << "Error: RLAdapter VLR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        adapter.vlr = vlr;
-    }
-
-    float getVLR() const {
-        initCheck();
-
-        return adapter.vlr;
-    }
-
-    void setFalloff(
-        float falloff
-    ) {
-        initCheck();
-
-        if (falloff < 0.0f) {
-            std::cerr << "Error: RLAdapter Falloff must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        adapter.falloff = falloff;
-    }
-
-    float getFalloff() const {
-        initCheck();
-
-        return adapter.falloff;
-    }
-
-    void setDiscount(
-        float discount
-    ) {
-        initCheck();
-
-        if (discount < 0.0f || discount >= 1.0f) {
-            std::cerr << "Error: RLAdapter discount must be in [0.0, 1.0)" << std::endl;
-            abort();
-        }
-
-        adapter.discount = discount;
-    }
-
-    float getDiscount() const {
-        initCheck();
-
-        return adapter.discount;
-    }
-
-    void setTraceDecay(
-        float traceDecay
-    ) {
-        initCheck();
-
-        if (traceDecay < 0.0f || traceDecay >= 1.0f) {
-            std::cerr << "Error: RLAdapter traceDecay must be in [0.0, 1.0)" << std::endl;
-            abort();
-        }
-
-        adapter.traceDecay = traceDecay;
-    }
-
-    float getTraceDecay() const {
-        initCheck();
-
-        return adapter.traceDecay;
+        return adapter.lr;
     }
 };
 } // namespace pyaon

@@ -165,19 +165,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::RLAdapter::step,
             py::arg("hiddenCIs"),
             py::arg("reward"),
-            py::arg("learnEnabled") = true,
-            py::arg("stateUpdate") = true
+            py::arg("learnEnabled") = true
         )
         .def("getGoalCIs", &pyaon::RLAdapter::getGoalCIs)
         .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
-        .def("setGLR", &pyaon::RLAdapter::setGLR)
-        .def("getGLR", &pyaon::RLAdapter::getGLR)
-        .def("setVLR", &pyaon::RLAdapter::setVLR)
-        .def("getVLR", &pyaon::RLAdapter::getVLR)
-        .def("setFalloff", &pyaon::RLAdapter::setFalloff)
-        .def("getFalloff", &pyaon::RLAdapter::getFalloff)
-        .def("setDiscount", &pyaon::RLAdapter::setDiscount)
-        .def("getDiscount", &pyaon::RLAdapter::getDiscount)
-        .def("setTraceDecay", &pyaon::RLAdapter::setTraceDecay)
-        .def("getTraceDecay", &pyaon::RLAdapter::getTraceDecay);
+        .def("setLR", &pyaon::RLAdapter::setLR)
+        .def("getLR", &pyaon::RLAdapter::getLR);
 }

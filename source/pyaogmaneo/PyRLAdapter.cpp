@@ -38,17 +38,12 @@ void RLAdapter::initRandom(
         allInRange = false;
     }
 
-    if (numGoals < 0) {
-        std::cerr << "Error: numGoals < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
     if (!allInRange) {
         std::cerr << " - RLAdapter: Some parameters out of range!" << std::endl;
         abort();
     }
 
-    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), numGoals);
+    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)));
 
     initialized = true;
 }
@@ -119,8 +114,7 @@ std::vector<unsigned char> RLAdapter::serializeToBuffer() {
 void RLAdapter::step(
     const std::vector<int> &hiddenCIs,
     float reward,
-    bool learnEnabled,
-    bool stateUpdate
+    bool learnEnabled
 ) {
     initCheck();
 
@@ -140,5 +134,5 @@ void RLAdapter::step(
         cHiddenCIs[j] = hiddenCIs[j];
     }
 
-    adapter.step(&cHiddenCIs, reward, learnEnabled, stateUpdate);
+    adapter.step(&cHiddenCIs, reward, learnEnabled);
 }
