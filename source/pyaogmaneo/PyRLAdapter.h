@@ -29,8 +29,7 @@ public:
     {}
 
     void initRandom(
-        const std::tuple<int, int, int> &hiddenSize,
-        int numGoals
+        const std::tuple<int, int, int> &hiddenSize
     );
 
     void initFromFile(
@@ -79,7 +78,7 @@ public:
         initCheck();
 
         if (lr < 0.0f) {
-            std::cerr << "Error: RLAdapter GLR must be >= 0.0" << std::endl;
+            std::cerr << "Error: RLAdapter LR must be >= 0.0" << std::endl;
             abort();
         }
 

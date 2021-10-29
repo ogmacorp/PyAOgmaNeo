@@ -18,8 +18,7 @@ void RLAdapter::initCheck() const {
 }
 
 void RLAdapter::initRandom(
-    const std::tuple<int, int, int> &hiddenSize,
-    int numGoals
+    const std::tuple<int, int, int> &hiddenSize
 ) {
     bool allInRange = true;
 
