@@ -83,7 +83,7 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<unsigned char>> &inputs,
+        const std::vector<std::vector<float>> &inputs,
         bool learnEnabled
     );
 
@@ -103,7 +103,7 @@ public:
         return enc.getNumHigherLayers();
     }
 
-    std::vector<unsigned char> getReconstruction(
+    std::vector<float> getReconstruction(
         int i
     ) const {
         initCheck();
@@ -113,7 +113,7 @@ public:
             abort();
         }
 
-        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
+        std::vector<float> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
