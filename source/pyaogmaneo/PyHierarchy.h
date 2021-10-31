@@ -235,7 +235,7 @@ public:
         return h.getIOSizes().size();
     }
 
-    std::tuple<int, int, int> getInputSize(
+    std::tuple<int, int, int> getIOSize(
         int i
     ) const {
         initCheck();
