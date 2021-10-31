@@ -28,6 +28,8 @@ class CMakeExtension(Extension):
             "source/pyaogmaneo/PyImageEncoder.cpp",
             "source/pyaogmaneo/PyRLAdapter.h",
             "source/pyaogmaneo/PyRLAdapter.cpp",
+            "source/pyaogmaneo/PyStateAdapter.h",
+            "source/pyaogmaneo/PyStateAdapter.cpp",
             "source/pyaogmaneo/PyModule.cpp",
             ])
         self.sourcedir = os.path.abspath(sourcedir)

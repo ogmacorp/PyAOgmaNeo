@@ -117,7 +117,7 @@ void RLAdapter::step(
 ) {
     initCheck();
 
-    if (hiddenCIs.size() != adapter.getGoalCIs().size()) {
+    if (hiddenCIs.size() != adapter.getProgCIs().size()) {
         std::cerr << "Error: Incorrect hiddenCIs size passed to RLAdapter!" << std::endl;
         abort();
     }

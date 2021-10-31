@@ -247,7 +247,7 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 
 void Hierarchy::step(
     const std::vector<std::vector<int>> &inputCIs,
-    const std::vector<int> &topGoalCIs,
+    const std::vector<int> &topProgCIs,
     bool learnEnabled
 ) {
     initCheck();
@@ -282,23 +282,23 @@ void Hierarchy::step(
         cInputCIs[i] = &cInputCIsBacking[i];
     }
 
-    if (topGoalCIs.size() != h.getTopHiddenCIs().size()) {
-        std::cerr << "Incorrect number of topGoalCIs passed to step! Received " << topGoalCIs.size() << ", need " << h.getTopHiddenCIs().size() << std::endl;
+    if (topProgCIs.size() != h.getTopHiddenCIs().size()) {
+        std::cerr << "Incorrect number of topProgCIs passed to step! Received " << topProgCIs.size() << ", need " << h.getTopHiddenCIs().size() << std::endl;
         abort();
     }
 
-    aon::IntBuffer cTopGoalCIs(topGoalCIs.size());
+    aon::IntBuffer cTopProgCIs(topProgCIs.size());
 
-    for (int i = 0; i < topGoalCIs.size(); i++) {
-        if (topGoalCIs[i] < 0 || topGoalCIs[i] >= h.getTopHiddenSize().z) {
-            std::cerr << "Error: topGoalCIs has an out-of-bounds column index (" << topGoalCIs[i] << ") at column index " << i << ". It must be in the range [0, " << (h.getTopHiddenSize().z - 1) << "]" << std::endl;
+    for (int i = 0; i < topProgCIs.size(); i++) {
+        if (topProgCIs[i] < 0 || topProgCIs[i] >= h.getTopHiddenSize().z) {
+            std::cerr << "Error: topProgCIs has an out-of-bounds column index (" << topProgCIs[i] << ") at column index " << i << ". It must be in the range [0, " << (h.getTopHiddenSize().z - 1) << "]" << std::endl;
             abort();
         }
 
-        cTopGoalCIs[i] = topGoalCIs[i];
+        cTopProgCIs[i] = topProgCIs[i];
     }
     
-    h.step(cInputCIs, &cTopGoalCIs, learnEnabled);
+    h.step(cInputCIs, &cTopProgCIs, learnEnabled);
 }
 
 std::vector<int> Hierarchy::getPredictionCIs(

@@ -118,7 +118,7 @@ public:
 
     void step(
         const std::vector<std::vector<int>> &inputCIs,
-        const std::vector<int> &topGoalCIs,
+        const std::vector<int> &topProgCIs,
         bool learnEnabled
     );
 
