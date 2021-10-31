@@ -55,10 +55,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
+            py::arg("rRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("historyCapacity") = 8,
             py::arg("ticksPerUpdate") = 2,
@@ -66,6 +68,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
+        .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
@@ -181,8 +184,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("saveToFile", &pyaon::StateAdapter::saveToFile)
         .def("serializeToBuffer", &pyaon::StateAdapter::serializeToBuffer)
         .def("step", &pyaon::StateAdapter::step,
-            py::arg("hiddenCIs"),
             py::arg("goalCIs"),
+            py::arg("hiddenCIs"),
             py::arg("learnEnabled") = true
         )
         .def("getProgCIs", &pyaon::StateAdapter::getProgCIs)

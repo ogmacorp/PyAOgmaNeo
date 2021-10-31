@@ -11,83 +11,102 @@
 using namespace pyaon;
 
 bool IODesc::checkInRange() const {
+    bool allInRange = true;
+
     if (std::get<0>(size) < 0) {
         std::cerr << "Error: size[0] < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (std::get<1>(size) < 0) {
         std::cerr << "Error: size[1] < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (std::get<2>(size) < 0) {
         std::cerr << "Error: size[2] < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (eRadius < 0) {
         std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (dRadius < 0) {
         std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (historyCapacity < 2) {
         std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
+    }
+
+    if (!allInRange) {
+        std::cerr << " - IODesc: Some parameters out of range!" << std::endl;
+        abort();
     }
 
     return true;
 }
 
 bool LayerDesc::checkInRange() const {
+    bool allInRange = true;
+
     if (std::get<0>(hiddenSize) < 0) {
         std::cerr << "Error: hiddenSize[0] < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (std::get<1>(hiddenSize) < 0) {
         std::cerr << "Error: hiddenSize[1] < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (std::get<2>(hiddenSize) < 0) {
         std::cerr << "Error: hiddenSize[2] < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (eRadius < 0) {
         std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
+    }
+
+    if (rRadius < 0) {
+        std::cerr << "Error: rRadius < 0 is not allowed!" << std::endl;
+        allInRange = false;
     }
 
     if (dRadius < 0) {
         std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (historyCapacity < 2) {
         std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (ticksPerUpdate < 1) {
         std::cerr << "Error: ticksPerUpdate < 1 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (temporalHorizon < 1) {
         std::cerr << "Error: temporalHorizon < 1 is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
     }
 
     if (temporalHorizon < ticksPerUpdate) {
         std::cerr << "Error: temporalHorizon < ticksPerUpdate is not allowed!" << std::endl;
-        return false;
+        allInRange = false;
+    }
+
+    if (!allInRange) {
+        std::cerr << " - LayerDesc: Some parameters out of range!" << std::endl;
+        abort();
     }
 
     return true;
@@ -134,6 +153,7 @@ void Hierarchy::initRandom(
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].eRadius,
+            layerDescs[l].rRadius,
             layerDescs[l].dRadius,
             layerDescs[l].historyCapacity,
             layerDescs[l].ticksPerUpdate,
