@@ -160,8 +160,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
-        .def("getFalloff", &pyaon::ImageEncoder::getFalloff)
         .def("setHigherLR", &pyaon::ImageEncoder::setHigherLR)
         .def("getHigherLR", &pyaon::ImageEncoder::getHigherLR);
 }
