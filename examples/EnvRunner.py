@@ -273,7 +273,7 @@ class EnvRunner:
 
         self.adapter.step(self.h.getTopHiddenCIs(), r, True)
 
-        self.h.step(self.inputs, self.adapter.getGoalCIs(), True)
+        self.h.step(self.inputs, self.adapter.getProgCIs(), True)
 
         # Retrieve actions
         for i in range(len(self.actionIndices)):
