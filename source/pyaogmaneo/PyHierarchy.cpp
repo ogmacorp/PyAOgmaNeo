@@ -74,11 +74,6 @@ bool LayerDesc::checkInRange() const {
         allInRange = false;
     }
 
-    if (rRadius < 0) {
-        std::cerr << "Error: rRadius < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
     if (dRadius < 0) {
         std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
         allInRange = false;
