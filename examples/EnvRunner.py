@@ -271,7 +271,7 @@ class EnvRunner:
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
-        self.adapter.step(self.h.getTopHiddenCIs(), r, True)
+        self.adapter.step(self.h.getTopHiddenCIs(), self.averageReward, True)
 
         self.h.step(self.inputs, self.adapter.getProgCIs(), True)
 
