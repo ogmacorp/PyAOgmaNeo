@@ -140,7 +140,6 @@ class EnvRunner:
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
-            ld.rRadius = -1
             ld.dRadius = layerRadius
             ld.historyCapacity = histCap
 
