@@ -61,8 +61,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("historyCapacity") = 8,
-            py::arg("ticksPerUpdate") = 1,
-            py::arg("temporalHorizon") = 1
+            py::arg("ticksPerUpdate") = 2,
+            py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
