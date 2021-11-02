@@ -38,11 +38,6 @@ bool IODesc::checkInRange() const {
         allInRange = false;
     }
 
-    if (historyCapacity < 2) {
-        std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
     if (!allInRange) {
         std::cerr << " - IODesc: Some parameters out of range!" << std::endl;
         abort();
@@ -76,11 +71,6 @@ bool LayerDesc::checkInRange() const {
 
     if (dRadius < 0) {
         std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (historyCapacity < 2) {
-        std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
         allInRange = false;
     }
 
@@ -132,8 +122,7 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
             ioDescs[i].eRadius,
-            ioDescs[i].dRadius,
-            ioDescs[i].historyCapacity
+            ioDescs[i].dRadius
         );
     }
     
@@ -149,7 +138,6 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
-            layerDescs[l].historyCapacity,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon
         );
