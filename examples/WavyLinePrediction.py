@@ -64,10 +64,13 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory
+for i in range(6): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
+
+    ld.ticksPerUpdate = 2
+    ld.temporalHorizon = 2
 
     lds.append(ld)
 
@@ -76,7 +79,7 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 2, 16)) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 100000
+iters = 10000
 
 def wave(t):
     if t % 10 == 0:
@@ -96,7 +99,7 @@ for t in range(iters):
     start = time.time()
 
     # Step the hierarchy given the inputs (just one here)
-    h.step([ csdr ], h.getHiddenCIs(h.getNumLayers() - 1), True) # True for enabling learning
+    h.step([ csdr ], h.getTopHiddenCIs(), True) # True for enabling learning
 
     end = time.time()
 
@@ -123,7 +126,7 @@ for t2 in range(3000):
     start = time.time()
 
     # Run off of own predictions with learning disabled
-    h.step([ h.getPredictionCIs(0) ], h.getHiddenCIs(h.getNumLayers() - 1), False) # Learning disabled
+    h.step([ h.getPredictionCIs(0) ], h.getTopHiddenCIs(), False) # Learning disabled
 
     end = time.time()
 
