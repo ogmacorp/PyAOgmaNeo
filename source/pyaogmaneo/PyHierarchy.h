@@ -159,6 +159,11 @@ public:
     ) {
         initCheck();
 
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
         h.setImportance(i, importance);
     }
 
@@ -166,6 +171,11 @@ public:
         int i
     ) const {
         initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid layer index!" << std::endl;
+            abort();
+        }
 
         return h.getImportance(i);
     }
