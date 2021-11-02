@@ -48,19 +48,25 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
+                std::tuple<int, int, int>,
+                int,
                 int,
                 int,
                 int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("concatSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
+            py::arg("cRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("concatSize", &pyaon::LayerDesc::concatSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
+        .def_readwrite("cRadius", &pyaon::LayerDesc::cRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);

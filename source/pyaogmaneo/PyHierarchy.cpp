@@ -64,8 +64,28 @@ bool LayerDesc::checkInRange() const {
         allInRange = false;
     }
 
+    if (std::get<0>(concatSize) < 0) {
+        std::cerr << "Error: concatSize[0] < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (std::get<1>(concatSize) < 0) {
+        std::cerr << "Error: concatSize[1] < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (std::get<2>(concatSize) < 0) {
+        std::cerr << "Error: concatSize[2] < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
     if (eRadius < 0) {
         std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (cRadius < 0) {
+        std::cerr << "Error: cRadius < 0 is not allowed!" << std::endl;
         allInRange = false;
     }
 
@@ -136,7 +156,9 @@ void Hierarchy::initRandom(
 
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
+            aon::Int3(std::get<0>(layerDescs[l].concatSize), std::get<1>(layerDescs[l].concatSize), std::get<2>(layerDescs[l].concatSize)),
             layerDescs[l].eRadius,
+            layerDescs[l].cRadius,
             layerDescs[l].dRadius,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon
