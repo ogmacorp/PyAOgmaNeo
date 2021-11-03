@@ -229,7 +229,7 @@ void ImageEncoder::reconstruct(
 
     for (int j = 0; j < reconCIs.size(); j++) {
         if (reconCIs[j] < 0 || reconCIs[j] >= enc.getOutputSize().z) {
-            std::cerr << "Recon CSDR (reconCIs) has an out-of-bounds column index (" << reconCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (enc.getHiddenSize().z - 1) << "]" << std::endl;
+            std::cerr << "Recon CSDR (reconCIs) has an out-of-bounds column index (" << reconCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (enc.getOutputSize().z - 1) << "]" << std::endl;
             abort();
         }
 
