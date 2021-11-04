@@ -82,9 +82,6 @@ h.initRandom([ pyaon.IODesc(size=(1, 2, 16)) ], lds)
 iters = 10000
 
 def wave(t):
-    if t % 10 == 0:
-        return 1.0
-    return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
 
 total = 0.0
@@ -100,6 +97,7 @@ for t in range(iters):
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], h.getTopHiddenCIs(), True) # True for enabling learning
+    print(h.getHiddenCIs(0))
 
     end = time.time()
 
