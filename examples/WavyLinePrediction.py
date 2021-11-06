@@ -15,7 +15,7 @@ import struct
 import time
 
 # Set the number of threads
-pyaon.setNumThreads(8)
+pyaon.setNumThreads(1)
 
 def fToCSDR(x, num_columns, cells_per_column, scale_factor=0.25):
     csdr = []
@@ -64,13 +64,13 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(6): # Layers with exponential memory
+for i in range(1): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
 
     ld.ticksPerUpdate = 2
-    ld.temporalHorizon = 2
+    ld.temporalHorizon = 8
 
     lds.append(ld)
 
@@ -115,7 +115,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(3000):
+for t2 in range(300):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
