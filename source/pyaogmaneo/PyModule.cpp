@@ -56,7 +56,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("concatSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("combSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
             py::arg("cRadius") = 2,
             py::arg("dRadius") = 2,
@@ -64,7 +64,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("concatSize", &pyaon::LayerDesc::concatSize)
+        .def_readwrite("combSize", &pyaon::LayerDesc::combSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("cRadius", &pyaon::LayerDesc::cRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
