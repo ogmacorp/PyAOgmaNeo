@@ -151,7 +151,7 @@ public:
         return h.getTopUpdate();
     }
 
-    void setImportance(
+    void setInputImportance(
         int i,
         float importance
     ) {
@@ -162,10 +162,10 @@ public:
             abort();
         }
 
-        h.setImportance(i, importance);
+        h.setInputImportance(i, importance);
     }
 
-    float getImportance(
+    float getInputImportance(
         int i
     ) const {
         initCheck();
@@ -175,7 +175,7 @@ public:
             abort();
         }
 
-        return h.getImportance(i);
+        return h.getInputImportance(i);
     }
 
     std::vector<int> getPredictionCIs(
