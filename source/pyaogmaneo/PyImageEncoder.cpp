@@ -185,7 +185,7 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 }
 
 void ImageEncoder::step(
-    const std::vector<std::vector<float>> &inputs,
+    const std::vector<std::vector<unsigned char>> &inputs,
     bool learnEnabled
 ) {
     initCheck();
@@ -195,8 +195,8 @@ void ImageEncoder::step(
         abort();
     }
 
-    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::FloatBuffer*> cInputs(inputs.size());
+    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         if (inputs[i].size() != enc.getVisibleLayer(i).reconstruction.size()) {
@@ -229,7 +229,7 @@ void ImageEncoder::reconstruct(
 
     for (int j = 0; j < reconCIs.size(); j++) {
         if (reconCIs[j] < 0 || reconCIs[j] >= enc.getOutputSize().z) {
-            std::cerr << "Recon CSDR (reconCIs) has an out-of-bounds column index (" << reconCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (enc.getHiddenSize().z - 1) << "]" << std::endl;
+            std::cerr << "Recon CSDR (reconCIs) has an out-of-bounds column index (" << reconCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (enc.getOutputSize().z - 1) << "]" << std::endl;
             abort();
         }
 

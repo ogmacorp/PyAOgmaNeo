@@ -83,7 +83,7 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<float>> &inputs,
+        const std::vector<std::vector<unsigned char>> &inputs,
         bool learnEnabled
     );
 
@@ -103,7 +103,7 @@ public:
         return enc.getNumHigherLayers();
     }
 
-    std::vector<float> getReconstruction(
+    std::vector<unsigned char> getReconstruction(
         int i
     ) const {
         initCheck();
@@ -113,7 +113,7 @@ public:
             abort();
         }
 
-        std::vector<float> reconstruction(enc.getReconstruction(i).size());
+        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
@@ -187,6 +187,25 @@ public:
         initCheck();
 
         return enc.lr;
+    }
+
+    void setFalloff(
+        float falloff
+    ) {
+        initCheck();
+
+        if (falloff < 0.0f) {
+            std::cerr << "Error: ImageEncoder falloff must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        enc.falloff = falloff;
+    }
+
+    float getFalloff() const {
+        initCheck();
+
+        return enc.falloff;
     }
 
     void setHigherLR(
