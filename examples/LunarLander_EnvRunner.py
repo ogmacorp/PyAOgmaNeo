@@ -15,7 +15,7 @@ from EnvRunner import EnvRunner # EnvRunner automatically creates an OgmaNeo2 hi
 
 env = gym.make('LunarLander-v2')
 
-runner = EnvRunner(env, terminalReward=0.0, rewardScale=1.0)
+runner = EnvRunner(env, terminalReward=0.0, rewardScale=0.01)
 
 averageReward = 0.0
 maxReward = 0.0
