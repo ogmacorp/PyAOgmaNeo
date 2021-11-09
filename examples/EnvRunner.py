@@ -23,7 +23,7 @@ inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=4 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -134,14 +134,11 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 8
-
         for i in range(len(layerSizes)):
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
             ld.dRadius = layerRadius
-            ld.historyCapacity = histCap
 
             ld.ticksPerUpdate = 4
             ld.temporalHorizon = 4
@@ -153,7 +150,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, histCap))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -267,11 +264,11 @@ class EnvRunner:
 
         self._feedObservation(obs)
 
-        r = np.tanh(reward * self.rewardScale + float(done) * self.terminalReward)
+        r = reward * self.rewardScale + float(done) * self.terminalReward
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
-        self.adapter.step(self.h.getTopHiddenCIs(), self.averageReward, True)
+        self.adapter.step(self.averageReward, self.h.getTopHiddenCIs(), True)
 
         self.h.step(self.inputs, self.adapter.getProgCIs(), True)
 
