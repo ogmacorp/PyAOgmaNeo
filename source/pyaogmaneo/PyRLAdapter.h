@@ -47,8 +47,8 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<int> &hiddenCIs,
         float reward,
+        const std::vector<int> &hiddenCIs,
         bool learnEnabled
     );
 

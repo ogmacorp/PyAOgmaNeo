@@ -134,17 +134,14 @@ class EnvRunner:
 
         lds = []
 
-        histCap = 8
-
         for i in range(len(layerSizes)):
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
             ld.dRadius = layerRadius
-            ld.historyCapacity = histCap
 
-            ld.ticksPerUpdate = 4
-            ld.temporalHorizon = 4
+            ld.ticksPerUpdate = 2
+            ld.temporalHorizon = 2
 
             lds.append(ld)
 
@@ -153,7 +150,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, histCap))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -267,11 +264,11 @@ class EnvRunner:
 
         self._feedObservation(obs)
 
-        r = np.tanh(reward * self.rewardScale + float(done) * self.terminalReward)
+        r = reward * self.rewardScale + float(done) * self.terminalReward
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
-        self.adapter.step(self.h.getTopHiddenCIs(), self.averageReward, True)
+        self.adapter.step(r, self.h.getTopHiddenCIs(), True)
 
         self.h.step(self.inputs, self.adapter.getProgCIs(), True)
 
