@@ -157,6 +157,11 @@ public:
     ) {
         initCheck();
 
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
         h.setImportance(i, importance);
     }
 
@@ -164,6 +169,11 @@ public:
         int i
     ) const {
         initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
 
         return h.getImportance(i);
     }
@@ -177,6 +187,11 @@ public:
     ) const {
         initCheck();
 
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
         return h.getUpdate(l);
     }
 
@@ -184,6 +199,11 @@ public:
         int l
     ) {
         initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
 
         std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
 
@@ -198,6 +218,11 @@ public:
     ) {
         initCheck();
 
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
         aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
@@ -208,6 +233,11 @@ public:
     ) const {
         initCheck();
 
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
         return h.getTicks(l);
     }
 
@@ -216,6 +246,11 @@ public:
     ) const {
         initCheck();
 
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
         return h.getTicksPerUpdate(l);
     }
 
@@ -223,6 +258,11 @@ public:
         int l
     ) {
         initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
 
         return h.getELayer(l).getNumVisibleLayers();
     }
@@ -237,6 +277,11 @@ public:
         int i
     ) const {
         initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
 
         aon::Int3 size = h.getIOSizes()[i];
 
