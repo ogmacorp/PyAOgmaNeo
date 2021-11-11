@@ -337,7 +337,7 @@ public:
             abort();
         }
 
-        if (l == 0 && !h.dLayerExists(i)) {
+        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
             std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
             abort();
         }
@@ -366,7 +366,7 @@ public:
             abort();
         }
 
-        if (l == 0 && !h.dLayerExists(i)) {
+        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
             std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
             abort();
         }
@@ -385,7 +385,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -408,7 +408,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -427,7 +427,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -450,7 +450,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -469,7 +469,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -492,7 +492,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -511,7 +511,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -534,7 +534,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i)) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -553,7 +553,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -576,7 +576,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i)) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -595,7 +595,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -613,7 +613,7 @@ public:
             abort();
         }
 
-        if (!h.aLayerExists(i)) {
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
             std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
             abort();
         }
@@ -646,7 +646,7 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::prediction) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
