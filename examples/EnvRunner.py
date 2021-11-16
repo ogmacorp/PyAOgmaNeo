@@ -138,10 +138,8 @@ class EnvRunner:
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
             ld.eRadius = layerRadius
+            ld.rRadius = layerRadius
             ld.dRadius = layerRadius
-
-            ld.ticksPerUpdate = 4
-            ld.temporalHorizon = 4
 
             lds.append(ld)
 
