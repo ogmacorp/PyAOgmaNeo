@@ -47,6 +47,7 @@ struct LayerDesc {
     std::tuple<int, int, int> combSize;
 
     int eRadius;
+    int rRadius;
     int cRadius;
     int dRadius;
 
@@ -57,19 +58,17 @@ struct LayerDesc {
         const std::tuple<int, int, int> &hiddenSize,
         const std::tuple<int, int, int> &combSize,
         int eRadius,
+        int rRadius,
         int cRadius,
-        int dRadius,
-        int ticksPerUpdate,
-        int temporalHorizon
+        int dRadius
     )
     :
     hiddenSize(hiddenSize),
     combSize(combSize),
     eRadius(eRadius),
+    rRadius(rRadius),
     cRadius(cRadius),
-    dRadius(dRadius),
-    ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon)
+    dRadius(dRadius)
     {}
 
     bool checkInRange() const;
@@ -144,12 +143,6 @@ public:
 
         return { size.x, size.y, size.z };
     }
-    
-    bool getTopUpdate() const {
-        initCheck();
-
-        return h.getTopUpdate();
-    }
 
     void setInputImportance(
         int i,
@@ -178,22 +171,72 @@ public:
         return h.getInputImportance(i);
     }
 
-    std::vector<int> getPredictionCIs(
-        int i
-    ) const;
+    void setRecurrentImportance(
+        int l,
+        float importance
+    ) {
+        initCheck();
 
-    bool getUpdate(
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0) {
+            if (h.getELayer(l).getNumVisibleLayers() == h.getIOSizes().size()) {
+                std::cerr << "Error: layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+        else {
+            if (h.getELayer(l).getNumVisibleLayers() == 1) {
+                std::cerr << "Error: layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+
+        h.setRecurrentImportance(l, importance);
+    }
+
+    float getRecurrentImportance(
         int l
     ) const {
         initCheck();
 
-        return h.getUpdate(l);
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0) {
+            if (h.getELayer(l).getNumVisibleLayers() == h.getIOSizes().size()) {
+                std::cerr << "Error: layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+        else {
+            if (h.getELayer(l).getNumVisibleLayers() == 1) {
+                std::cerr << "Error: layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+
+        return h.getRecurrentImportance(l);
     }
+
+    std::vector<int> getPredictionCIs(
+        int i
+    ) const;
 
     std::vector<int> getHiddenCIs(
         int l
     ) {
         initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
 
         std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
 
@@ -208,31 +251,25 @@ public:
     ) {
         initCheck();
 
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
         aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
-    }
-
-    int getTicks(
-        int l
-    ) const {
-        initCheck();
-
-        return h.getTicks(l);
-    }
-
-    int getTicksPerUpdate(
-        int l
-    ) const {
-        initCheck();
-
-        return h.getTicksPerUpdate(l);
     }
 
     int getNumEVisibleLayers(
         int l
     ) {
         initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
 
         return h.getELayer(l).getNumVisibleLayers();
     }
@@ -247,6 +284,11 @@ public:
         int i
     ) const {
         initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
 
         aon::Int3 size = h.getIOSizes()[i];
 
@@ -276,6 +318,11 @@ public:
         int l
     ) {
         initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
 
         return h.getELayer(l).lr;
     }
@@ -311,16 +358,62 @@ public:
     ) const {
         initCheck();
 
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
         return h.getDLayers(l)[i].lr;
     }
 
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= (l == 0 ? h.getIOSizes().size() : 1)) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+        }
+
+        return h.getELayer(l).getVisibleLayerDesc(i).radius;
+    }
+
+    int getRRadius(
         int l
     ) const {
         initCheck();
 
-        return h.getELayer(l).getVisibleLayerDesc(0).radius;
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0) {
+            if (h.getELayer(l).getNumVisibleLayers() == h.getIOSizes().size()) {
+                std::cerr << "Error: layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+        else {
+            if (h.getELayer(l).getNumVisibleLayers() == 1) {
+                std::cerr << "Error: layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+
+        return h.getELayer(l).getVisibleLayerDesc(1).radius;
     }
 
     int getDRadius(
@@ -328,6 +421,16 @@ public:
         int i
     ) const {
         initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
 
         return h.getDLayers(l)[i].getVisibleLayerDesc(0).radius;
     }

@@ -84,6 +84,11 @@ bool LayerDesc::checkInRange() const {
         allInRange = false;
     }
 
+    if (rRadius < -1) {
+        std::cerr << "Error: rRadius < -1 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
     if (cRadius < 0) {
         std::cerr << "Error: cRadius < 0 is not allowed!" << std::endl;
         allInRange = false;
@@ -91,21 +96,6 @@ bool LayerDesc::checkInRange() const {
 
     if (dRadius < 0) {
         std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (ticksPerUpdate < 1) {
-        std::cerr << "Error: ticksPerUpdate < 1 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (temporalHorizon < 1) {
-        std::cerr << "Error: temporalHorizon < 1 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (temporalHorizon < ticksPerUpdate) {
-        std::cerr << "Error: temporalHorizon < ticksPerUpdate is not allowed!" << std::endl;
         allInRange = false;
     }
 
@@ -158,10 +148,9 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             aon::Int3(std::get<0>(layerDescs[l].combSize), std::get<1>(layerDescs[l].combSize), std::get<2>(layerDescs[l].combSize)),
             layerDescs[l].eRadius,
+            layerDescs[l].rRadius,
             layerDescs[l].cRadius,
-            layerDescs[l].dRadius,
-            layerDescs[l].ticksPerUpdate,
-            layerDescs[l].temporalHorizon
+            layerDescs[l].dRadius
         );
     }
 
