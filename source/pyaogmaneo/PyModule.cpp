@@ -164,14 +164,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("saveToFile", &pyaon::RLAdapter::saveToFile)
         .def("serializeToBuffer", &pyaon::RLAdapter::serializeToBuffer)
         .def("step", &pyaon::RLAdapter::step,
-            py::arg("hiddenCIs"),
             py::arg("reward"),
+            py::arg("hiddenCIs"),
             py::arg("learnEnabled") = true
         )
         .def("getProgCIs", &pyaon::RLAdapter::getProgCIs)
         .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
         .def("setLR", &pyaon::RLAdapter::setLR)
-        .def("getLR", &pyaon::RLAdapter::getLR);
+        .def("getLR", &pyaon::RLAdapter::getLR)
+        .def("setDiscount", &pyaon::RLAdapter::setDiscount)
+        .def("getDiscount", &pyaon::RLAdapter::getDiscount)
+        .def("setHistoryIters", &pyaon::RLAdapter::setHistoryIters)
+        .def("getHistoryIters", &pyaon::RLAdapter::getHistoryIters);
 
     py::class_<pyaon::StateAdapter>(m, "StateAdapter")
         .def(py::init<>())
