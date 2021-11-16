@@ -156,5 +156,5 @@ void StateAdapter::step(
         cGoalCIs[j] = goalCIs[j];
     }
 
-    adapter.step(&cHiddenCIs, &cGoalCIs, learnEnabled);
+    adapter.step(&cGoalCIs, &cHiddenCIs, learnEnabled);
 }
