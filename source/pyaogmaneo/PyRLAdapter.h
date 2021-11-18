@@ -29,7 +29,9 @@ public:
     {}
 
     void initRandom(
-        const std::tuple<int, int, int> &hiddenSize
+        const std::tuple<int, int, int> &hiddenSize,
+        int radius,
+        int historyCapacity
     );
 
     void initFromFile(
@@ -55,12 +57,12 @@ public:
     std::vector<int> getProgCIs() const {
         initCheck();
 
-        std::vector<int> goalCIs(adapter.getProgCIs().size());
+        std::vector<int> progCIs(adapter.getProgCIs().size());
 
-        for (int j = 0; j < goalCIs.size(); j++)
-            goalCIs[j] = adapter.getProgCIs()[j];
+        for (int j = 0; j < progCIs.size(); j++)
+            progCIs[j] = adapter.getProgCIs()[j];
 
-        return goalCIs;
+        return progCIs;
     }
 
     std::tuple<int, int, int> getHiddenSize() const {
@@ -89,6 +91,44 @@ public:
         initCheck();
 
         return adapter.lr;
+    }
+
+    void setDiscount(
+        float discount
+    ) {
+        initCheck();
+
+        if (discount < 0.0f || discount >= 1.0f) {
+            std::cerr << "Error: RLAdapter Discount must be >= 0.0 and < 1.0" << std::endl;
+            abort();
+        }
+
+        adapter.discount = discount;
+    }
+
+    float getDiscount() const {
+        initCheck();
+
+        return adapter.discount;
+    }
+
+    void setHistoryIters(
+        int historyIters
+    ) {
+        initCheck();
+
+        if (historyIters < 1) {
+            std::cerr << "Error: RLAdapter HistoryIters must be >= 1" << std::endl;
+            abort();
+        }
+
+        adapter.historyIters = historyIters;
+    }
+
+    int getHistoryIters() const {
+        initCheck();
+
+        return adapter.historyIters;
     }
 };
 } // namespace pyaon
