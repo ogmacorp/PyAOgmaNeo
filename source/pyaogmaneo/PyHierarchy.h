@@ -288,6 +288,38 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    void setEExplainIters(
+        int l,
+        int explainIters
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (explainIters < 1) {
+            std::cerr << "Error: EExplainIters must be > 0" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).explainIters = explainIters;
+    }
+
+    int getEExplainIters(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).explainIters;
+    }
+
     void setELR(
         int l,
         float lr
