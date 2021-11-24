@@ -26,17 +26,21 @@ struct IODesc {
     int eRadius;
     int dRadius;
 
+    int historyCapacity;
+
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int eRadius,
-        int dRadius
+        int dRadius,
+        int historyCapacity
     )
     :
     size(size),
     type(type),
     eRadius(eRadius),
-    dRadius(dRadius)
+    dRadius(dRadius),
+    historyCapacity(historyCapacity)
     {}
 
     bool checkInRange() const;
@@ -49,17 +53,21 @@ struct LayerDesc {
     int rRadius;
     int dRadius;
 
+    int historyCapacity;
+
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
         int rRadius,
-        int dRadius
+        int dRadius,
+        int historyCapacity
     )
     :
     hiddenSize(hiddenSize),
     eRadius(eRadius),
     rRadius(rRadius),
-    dRadius(dRadius)
+    dRadius(dRadius),
+    historyCapacity(historyCapacity)
     {}
 
     bool checkInRange() const;
@@ -423,7 +431,7 @@ public:
             abort();
         }
 
-        return h.getDLayers(l)[i].getVisibleLayerDesc(0).radius;
+        return h.getDLayers(l)[i].getVisibleLayerDesc().radius;
     }
 };
 } // namespace pyaon
