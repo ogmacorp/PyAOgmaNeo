@@ -171,11 +171,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getProgCIs", &pyaon::RLAdapter::getProgCIs)
         .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
         .def("setLR", &pyaon::RLAdapter::setLR)
-        .def("getLR", &pyaon::RLAdapter::getLR)
-        .def("setDiscount", &pyaon::RLAdapter::setDiscount)
-        .def("getDiscount", &pyaon::RLAdapter::getDiscount)
-        .def("setHistoryIters", &pyaon::RLAdapter::setHistoryIters)
-        .def("getHistoryIters", &pyaon::RLAdapter::getHistoryIters);
+        .def("getLR", &pyaon::RLAdapter::getLR);
 
     py::class_<pyaon::StateAdapter>(m, "StateAdapter")
         .def(py::init<>())
