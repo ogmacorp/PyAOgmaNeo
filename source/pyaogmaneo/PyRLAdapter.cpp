@@ -18,7 +18,9 @@ void RLAdapter::initCheck() const {
 }
 
 void RLAdapter::initRandom(
-    const std::tuple<int, int, int> &hiddenSize
+    const std::tuple<int, int, int> &hiddenSize,
+    int radius,
+    int historyCapacity
 ) {
     bool allInRange = true;
 
@@ -37,12 +39,22 @@ void RLAdapter::initRandom(
         allInRange = false;
     }
 
+    if (radius < 0) {
+        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (historyCapacity < 2) {
+        std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
     if (!allInRange) {
         std::cerr << " - RLAdapter: Some parameters out of range!" << std::endl;
         abort();
     }
 
-    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)));
+    adapter.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), radius, historyCapacity);
 
     initialized = true;
 }
