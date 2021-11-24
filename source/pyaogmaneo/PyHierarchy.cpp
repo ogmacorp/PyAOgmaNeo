@@ -64,21 +64,6 @@ bool LayerDesc::checkInRange() const {
         allInRange = false;
     }
 
-    if (std::get<0>(combSize) < 0) {
-        std::cerr << "Error: combSize[0] < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (std::get<1>(combSize) < 0) {
-        std::cerr << "Error: combSize[1] < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (std::get<2>(combSize) < 0) {
-        std::cerr << "Error: combSize[2] < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
     if (eRadius < 0) {
         std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
         allInRange = false;
@@ -86,11 +71,6 @@ bool LayerDesc::checkInRange() const {
 
     if (rRadius < -1) {
         std::cerr << "Error: rRadius < -1 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (cRadius < 0) {
-        std::cerr << "Error: cRadius < 0 is not allowed!" << std::endl;
         allInRange = false;
     }
 
@@ -146,10 +126,8 @@ void Hierarchy::initRandom(
 
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
-            aon::Int3(std::get<0>(layerDescs[l].combSize), std::get<1>(layerDescs[l].combSize), std::get<2>(layerDescs[l].combSize)),
             layerDescs[l].eRadius,
             layerDescs[l].rRadius,
-            layerDescs[l].cRadius,
             layerDescs[l].dRadius
         );
     }

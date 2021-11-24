@@ -44,30 +44,21 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
-    std::tuple<int, int, int> combSize;
 
     int eRadius;
     int rRadius;
-    int cRadius;
     int dRadius;
-
-    int ticksPerUpdate;
-    int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::tuple<int, int, int> &combSize,
         int eRadius,
         int rRadius,
-        int cRadius,
         int dRadius
     )
     :
     hiddenSize(hiddenSize),
-    combSize(combSize),
     eRadius(eRadius),
     rRadius(rRadius),
-    cRadius(cRadius),
     dRadius(dRadius)
     {}
 
