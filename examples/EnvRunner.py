@@ -176,6 +176,9 @@ class EnvRunner:
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
 
+        self.rewardAccum = 0.0
+        self.rewardCount = 0
+
         #self.adapter.setLR(0.01)
         #self.adapter.setDiscount(0.99)
         #self.adapter.setTraceDecay(0.98)
@@ -268,7 +271,14 @@ class EnvRunner:
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
-        self.adapter.step(self.averageReward, self.h.getTopHiddenCIs(), True)
+        self.rewardAccum += r * pow(self.adapter.getDiscount(), self.rewardCount)
+        self.rewardCount += 1
+
+        if self.h.getTopUpdate():
+            self.adapter.step(self.rewardAccum, self.h.getTopHiddenCIs(), True)
+
+            self.rewardAccum = 0.0
+            self.rewardCount = 0
 
         self.h.step(self.inputs, self.adapter.getProgCIs(), True)
 
