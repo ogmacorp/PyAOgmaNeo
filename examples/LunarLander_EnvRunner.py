@@ -15,7 +15,7 @@ from EnvRunner import EnvRunner # EnvRunner automatically creates an OgmaNeo2 hi
 
 env = gym.make('LunarLander-v2')
 
-runner = EnvRunner(env, terminalReward=0.0, rewardScale=0.01)
+runner = EnvRunner(env, terminalReward=0.0, rewardScale=0.1)
 
 averageReward = 0.0
 maxReward = 0.0
@@ -27,7 +27,7 @@ for episode in range(5000):
 
     # Timesteps
     for t in range(10000):
-        done, reward = runner.act() # Step the environment and agent
+        done, reward = runner.act(pow(0.995, episode)) # Step the environment and agent
 
         totalReward += reward
 

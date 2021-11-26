@@ -171,7 +171,7 @@ class EnvRunner:
             self.actions.append(startAct)
 
         self.adapter = neo.RLAdapter()
-        self.adapter.initRandom(self.h.getTopHiddenSize(), 2, 128)
+        self.adapter.initRandom(self.h.getTopHiddenSize())
 
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
