@@ -27,7 +27,7 @@ for episode in range(5000):
 
     # Timesteps
     for t in range(10000):
-        done, reward = runner.act(pow(0.995, episode)) # Step the environment and agent
+        done, reward = runner.act(max(0.03, pow(0.997, episode))) # Step the environment and agent
 
         totalReward += reward
 
