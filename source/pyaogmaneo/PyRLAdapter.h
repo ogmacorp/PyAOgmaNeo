@@ -29,9 +29,7 @@ public:
     {}
 
     void initRandom(
-        const std::tuple<int, int, int> &hiddenSize,
-        int radius,
-        int historyCapacity
+        const std::tuple<int, int, int> &hiddenSize
     );
 
     void initFromFile(
@@ -91,44 +89,6 @@ public:
         initCheck();
 
         return adapter.lr;
-    }
-
-    void setDiscount(
-        float discount
-    ) {
-        initCheck();
-
-        if (discount < 0.0f || discount >= 1.0f) {
-            std::cerr << "Error: RLAdapter Discount must be >= 0.0 and < 1.0" << std::endl;
-            abort();
-        }
-
-        adapter.discount = discount;
-    }
-
-    float getDiscount() const {
-        initCheck();
-
-        return adapter.discount;
-    }
-
-    void setHistoryIters(
-        int historyIters
-    ) {
-        initCheck();
-
-        if (historyIters < 1) {
-            std::cerr << "Error: RLAdapter HistoryIters must be >= 1" << std::endl;
-            abort();
-        }
-
-        adapter.historyIters = historyIters;
-    }
-
-    int getHistoryIters() const {
-        initCheck();
-
-        return adapter.historyIters;
     }
 };
 } // namespace pyaon
