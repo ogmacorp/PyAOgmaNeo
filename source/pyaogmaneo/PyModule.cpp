@@ -55,10 +55,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
+            py::arg("lRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("historyCapacity") = 8,
             py::arg("ticksPerUpdate") = 2,
@@ -66,6 +68,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
+        .def_readwrite("lRadius", &pyaon::LayerDesc::lRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
@@ -118,17 +121,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("size", &pyaon::ImageEncoderVisibleLayerDesc::size)
         .def_readwrite("radius", &pyaon::ImageEncoderVisibleLayerDesc::radius);
         
-    py::class_<pyaon::ImageEncoderHigherLayerDesc>(m, "ImageEncoderHigherLayerDesc")
-        .def(py::init<
-                std::tuple<int, int, int>,
-                int
-            >(),
-            py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("radius") = 2
-        )
-        .def_readwrite("hiddenSize", &pyaon::ImageEncoderHigherLayerDesc::hiddenSize)
-        .def_readwrite("radius", &pyaon::ImageEncoderHigherLayerDesc::radius);
-
     py::class_<pyaon::ImageEncoder>(m, "ImageEncoder")
         .def(py::init<>())
         .def("initRandom", &pyaon::ImageEncoder::initRandom)
@@ -142,19 +134,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
         .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
-        .def("getNumHigherLayers", &pyaon::ImageEncoder::getNumHigherLayers)
         .def("getReconstruction", &pyaon::ImageEncoder::getReconstruction)
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
-        .def("getOutputCIs", &pyaon::ImageEncoder::getOutputCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
-        .def("getOutputSize", &pyaon::ImageEncoder::getOutputSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR)
         .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
-        .def("getFalloff", &pyaon::ImageEncoder::getFalloff)
-        .def("setHigherLR", &pyaon::ImageEncoder::setHigherLR)
-        .def("getHigherLR", &pyaon::ImageEncoder::getHigherLR);
+        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
 
     py::class_<pyaon::RLAdapter>(m, "RLAdapter")
         .def(py::init<>())
