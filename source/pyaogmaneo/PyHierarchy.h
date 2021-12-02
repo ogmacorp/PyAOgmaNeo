@@ -50,7 +50,6 @@ struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
     int eRadius;
-    int lRadius;
     int dRadius;
 
     int historyCapacity;
@@ -61,7 +60,6 @@ struct LayerDesc {
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
-        int lRadius,
         int dRadius,
         int historyCapacity,
         int ticksPerUpdate,
@@ -70,7 +68,6 @@ struct LayerDesc {
     :
     hiddenSize(hiddenSize),
     eRadius(eRadius),
-    lRadius(lRadius),
     dRadius(dRadius),
     historyCapacity(historyCapacity),
     ticksPerUpdate(ticksPerUpdate),
