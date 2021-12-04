@@ -74,6 +74,11 @@ bool LayerDesc::checkInRange() const {
         allInRange = false;
     }
 
+    if (lRadius < 0) {
+        std::cerr << "Error: lRadius < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
     if (dRadius < 0) {
         std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
         allInRange = false;
@@ -148,6 +153,7 @@ void Hierarchy::initRandom(
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].eRadius,
+            layerDescs[l].lRadius,
             layerDescs[l].dRadius,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon,

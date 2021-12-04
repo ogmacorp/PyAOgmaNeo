@@ -55,10 +55,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
+            py::arg("lRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("historyCapacity") = 8,
             py::arg("ticksPerUpdate") = 2,
@@ -66,6 +68,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
+        .def_readwrite("lRadius", &pyaon::LayerDesc::lRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
