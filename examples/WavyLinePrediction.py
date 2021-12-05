@@ -95,6 +95,8 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], h.getHiddenCIs(h.getNumLayers() - 1), True) # True for enabling learning
 
+    print(h.getTopHiddenCIs())
+
     end = time.time()
 
     total += end - start
