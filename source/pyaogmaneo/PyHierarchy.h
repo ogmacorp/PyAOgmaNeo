@@ -369,6 +369,50 @@ public:
         return h.getDLayers(l)[i].lr;
     }
 
+    void setDIters(
+        int l,
+        int i,
+        int iters
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (iters < 0) {
+            std::cerr << "Error: DIters must be >= 0" << std::endl;
+            abort();
+        }
+
+        h.getDLayers(l)[i].iters = iters;
+    }
+
+    int getDIters(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayers(l)[i].iters;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
