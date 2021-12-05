@@ -53,28 +53,28 @@ struct LayerDesc {
     int lRadius;
     int dRadius;
 
-    int historyCapacity;
-
     int ticksPerUpdate;
     int temporalHorizon;
+
+    int historyCapacity;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
         int lRadius,
         int dRadius,
-        int historyCapacity,
         int ticksPerUpdate,
-        int temporalHorizon
+        int temporalHorizon,
+        int historyCapacity
     )
     :
     hiddenSize(hiddenSize),
     eRadius(eRadius),
     lRadius(lRadius),
     dRadius(dRadius),
-    historyCapacity(historyCapacity),
     ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon)
+    temporalHorizon(temporalHorizon),
+    historyCapacity(historyCapacity)
     {}
 
     bool checkInRange() const;
