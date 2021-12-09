@@ -323,7 +323,7 @@ public:
     ) const {
         initCheck();
 
-        return h.getDLayers(l)[i].getVisibleLayerDesc(0).radius;
+        return h.getDLayers(l)[i].getVisibleLayerDesc().radius;
     }
 };
 } // namespace pyaon
