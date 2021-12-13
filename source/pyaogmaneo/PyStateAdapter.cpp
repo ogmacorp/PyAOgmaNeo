@@ -145,7 +145,7 @@ void StateAdapter::step(
         cHiddenCIs[j] = hiddenCIs[j];
     }
 
-    aon::IntBuffer cGoalCIs(hiddenCIs.size());
+    aon::IntBuffer cGoalCIs(goalCIs.size());
 
     for (int j = 0; j < goalCIs.size(); j++) {
         if (goalCIs[j] < 0 || goalCIs[j] >= adapter.getHiddenSize().z) {
@@ -156,5 +156,5 @@ void StateAdapter::step(
         cGoalCIs[j] = goalCIs[j];
     }
 
-    adapter.step(&cHiddenCIs, &cGoalCIs, learnEnabled);
+    adapter.step(&cGoalCIs, &cHiddenCIs, learnEnabled);
 }
