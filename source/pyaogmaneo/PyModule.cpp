@@ -12,7 +12,6 @@
 #include "PyHierarchy.h"
 #include "PyImageEncoder.h"
 #include "PyRLAdapter.h"
-#include "PyStateAdapter.h"
 
 namespace py = pybind11;
 
@@ -172,25 +171,4 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
         .def("setLR", &pyaon::RLAdapter::setLR)
         .def("getLR", &pyaon::RLAdapter::getLR);
-
-    py::class_<pyaon::StateAdapter>(m, "StateAdapter")
-        .def(py::init<>())
-        .def("initRandom", &pyaon::StateAdapter::initRandom)
-        .def("initFromFile", &pyaon::StateAdapter::initFromFile)
-        .def("initFromBuffer", &pyaon::StateAdapter::initFromBuffer)
-        .def("saveToFile", &pyaon::StateAdapter::saveToFile)
-        .def("serializeToBuffer", &pyaon::StateAdapter::serializeToBuffer)
-        .def("step", &pyaon::StateAdapter::step,
-            py::arg("goalCIs"),
-            py::arg("hiddenCIs"),
-            py::arg("learnEnabled") = true
-        )
-        .def("getProgCIs", &pyaon::StateAdapter::getProgCIs)
-        .def("getHiddenSize", &pyaon::StateAdapter::getHiddenSize)
-        .def("setLR", &pyaon::StateAdapter::setLR)
-        .def("getLR", &pyaon::StateAdapter::getLR)
-        .def("setDiscount", &pyaon::StateAdapter::setDiscount)
-        .def("getDiscount", &pyaon::StateAdapter::getDiscount)
-        .def("setHistoryIters", &pyaon::StateAdapter::setHistoryIters)
-        .def("getHistoryIters", &pyaon::StateAdapter::getHistoryIters);
 }
