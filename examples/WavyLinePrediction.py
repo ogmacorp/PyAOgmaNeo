@@ -64,7 +64,7 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(4): # Layers with exponential memory
+for i in range(5): # Layers with exponential memory
     ld = pyaon.LayerDesc()
 
     ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
@@ -116,7 +116,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(3000):
+for t2 in range(300):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
