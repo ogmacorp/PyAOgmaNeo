@@ -76,7 +76,7 @@ h = pyaon.Hierarchy()
 h.initRandom([ pyaon.IODesc(size=(1, 2, 16)) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 1000
 
 def wave(t):
     if t % 10 == 0:
