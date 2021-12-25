@@ -107,6 +107,37 @@ bool LayerDesc::checkInRange() const {
     return true;
 }
 
+bool GDesc::checkInRange() const {
+    bool allInRange = true;
+
+    if (std::get<0>(size) < 0) {
+        std::cerr << "Error: size[0] < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (std::get<1>(size) < 0) {
+        std::cerr << "Error: size[1] < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (std::get<2>(size) < 0) {
+        std::cerr << "Error: size[2] < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (radius < 0) {
+        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (!allInRange) {
+        std::cerr << " - GDesc: Some parameters out of range!" << std::endl;
+        abort();
+    }
+
+    return true;
+}
+
 void Hierarchy::initCheck() const {
     if (!initialized) {
         std::cerr << "Attempted to use the hierarchy uninitialized!" << std::endl;
@@ -116,11 +147,12 @@ void Hierarchy::initCheck() const {
 
 void Hierarchy::initRandom(
     const std::vector<IODesc> &ioDescs,
+    const std::vector<GDesc> &gDescs,
     const std::vector<LayerDesc> &layerDescs
 ) {
-    aon::Array<aon::Hierarchy::IODesc> cIODescs(ioDescs.size());
-
     bool allInRange = true;
+
+    aon::Array<aon::Hierarchy::IODesc> cIODescs(ioDescs.size());
 
     for (int i = 0; i < ioDescs.size(); i++) {
         if(!ioDescs[i].checkInRange()) {
@@ -137,6 +169,20 @@ void Hierarchy::initRandom(
         );
     }
     
+    aon::Array<aon::Hierarchy::GDesc> cGDescs(gDescs.size());
+
+    for (int i = 0; i < ioDescs.size(); i++) {
+        if(!gDescs[i].checkInRange()) {
+            std::cerr << " - at gDesc[" << i << "]" << std::endl;
+            allInRange = false;
+        }
+
+        cGDescs[i] = aon::Hierarchy::GDesc(
+            aon::Int3(std::get<0>(gDescs[i].size), std::get<1>(gDescs[i].size), std::get<2>(gDescs[i].size)),
+            gDescs[i].radius
+        );
+    }
+
     aon::Array<aon::Hierarchy::LayerDesc> cLayerDescs(layerDescs.size());
 
     for (int l = 0; l < layerDescs.size(); l++) {
@@ -160,7 +206,7 @@ void Hierarchy::initRandom(
         abort();
     }
 
-    h.initRandom(cIODescs, cLayerDescs);
+    h.initRandom(cIODescs, cGDescs, cLayerDescs);
     
     initialized = true;
 }
@@ -261,13 +307,24 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 
 void Hierarchy::step(
     const std::vector<std::vector<int>> &inputCIs,
-    const std::vector<int> &topProgCIs,
+    const std::vector<std::vector<int>> &goalCIs,
+    const std::vector<std::vector<int>> &actualCIs,
     bool learnEnabled
 ) {
     initCheck();
 
     if (inputCIs.size() != h.getIOSizes().size()) {
         std::cerr << "Incorrect number of inputCIs passed to step! Received " << inputCIs.size() << ", need " << h.getIOSizes().size() << std::endl;
+        abort();
+    }
+
+    if (goalCIs.size() != h.getNumGVisibleLayers()) {
+        std::cerr << "Incorrect number of goalCIs passed to step! Received " << goalCIs.size() << ", need " << h.getNumGVisibleLayers() << std::endl;
+        abort();
+    }
+
+    if (actualCIs.size() != h.getNumGVisibleLayers()) {
+        std::cerr << "Incorrect number of actualCIs passed to step! Received " << actualCIs.size() << ", need " << h.getNumGVisibleLayers() << std::endl;
         abort();
     }
 
@@ -278,7 +335,7 @@ void Hierarchy::step(
         int numColumns = h.getIOSizes()[i].x * h.getIOSizes()[i].y;
 
         if (inputCIs[i].size() != numColumns) {
-            std::cerr << "Incorrect CSDR size at index " << i << " - expected " << numColumns << " columns, got " << inputCIs[i].size() << std::endl;
+            std::cerr << "Incorrect input CSDR size at index " << i << " - expected " << numColumns << " columns, got " << inputCIs[i].size() << std::endl;
             abort();
         }
 
@@ -296,23 +353,57 @@ void Hierarchy::step(
         cInputCIs[i] = &cInputCIsBacking[i];
     }
 
-    if (topProgCIs.size() != h.getTopHiddenCIs().size()) {
-        std::cerr << "Incorrect number of topProgCIs passed to step! Received " << topProgCIs.size() << ", need " << h.getTopHiddenCIs().size() << std::endl;
-        abort();
-    }
+    aon::Array<aon::IntBuffer> cGoalCIsBacking(goalCIs.size());
+    aon::Array<const aon::IntBuffer*> cGoalCIs(goalCIs.size());
 
-    aon::IntBuffer cTopProgCIs(topProgCIs.size());
+    for (int i = 0; i < goalCIs.size(); i++) {
+        int numColumns = h.getGLayer(0).getVisibleLayerDesc(i).size.x * h.getGLayer(0).getVisibleLayerDesc(i).size.y;
 
-    for (int i = 0; i < topProgCIs.size(); i++) {
-        if (topProgCIs[i] < 0 || topProgCIs[i] >= h.getTopHiddenSize().z) {
-            std::cerr << "Error: topProgCIs has an out-of-bounds column index (" << topProgCIs[i] << ") at column index " << i << ". It must be in the range [0, " << (h.getTopHiddenSize().z - 1) << "]" << std::endl;
+        if (goalCIs[i].size() != numColumns) {
+            std::cerr << "Incorrect goal CSDR size at index " << i << " - expected " << numColumns << " columns, got " << goalCIs[i].size() << std::endl;
             abort();
         }
 
-        cTopProgCIs[i] = topProgCIs[i];
+        cGoalCIsBacking[i].resize(goalCIs[i].size());
+
+        for (int j = 0; j < goalCIs[i].size(); j++) {
+            if (goalCIs[i][j] < 0 || goalCIs[i][j] >= h.getGLayer(0).getVisibleLayerDesc(i).size.z) {
+                std::cerr << "Goal CSDR at input index " << i << " has an out-of-bounds column index (" << goalCIs[i][j] << ") at column index " << j << ". It must be in the range [0, " << (h.getGLayer(0).getVisibleLayerDesc(i).size.z - 1) << "]" << std::endl;
+                abort();
+            }
+
+            cGoalCIsBacking[i][j] = goalCIs[i][j];
+        }
+
+        cGoalCIs[i] = &cGoalCIsBacking[i];
     }
     
-    h.step(cInputCIs, &cTopProgCIs, learnEnabled);
+    aon::Array<aon::IntBuffer> cActualCIsBacking(actualCIs.size());
+    aon::Array<const aon::IntBuffer*> cActualCIs(actualCIs.size());
+
+    for (int i = 0; i < actualCIs.size(); i++) {
+        int numColumns = h.getGLayer(0).getVisibleLayerDesc(i).size.x * h.getGLayer(0).getVisibleLayerDesc(i).size.y;
+
+        if (actualCIs[i].size() != numColumns) {
+            std::cerr << "Incorrect actual CSDR size at index " << i << " - expected " << numColumns << " columns, got " << actualCIs[i].size() << std::endl;
+            abort();
+        }
+
+        cActualCIsBacking[i].resize(actualCIs[i].size());
+
+        for (int j = 0; j < actualCIs[i].size(); j++) {
+            if (actualCIs[i][j] < 0 || actualCIs[i][j] >= h.getGLayer(0).getVisibleLayerDesc(i).size.z) {
+                std::cerr << "Actual CSDR at input index " << i << " has an out-of-bounds column index (" << actualCIs[i][j] << ") at column index " << j << ". It must be in the range [0, " << (h.getGLayer(0).getVisibleLayerDesc(i).size.z - 1) << "]" << std::endl;
+                abort();
+            }
+
+            cActualCIsBacking[i][j] = actualCIs[i][j];
+        }
+
+        cActualCIs[i] = &cActualCIsBacking[i];
+    }
+    
+    h.step(cInputCIs, cGoalCIs, cActualCIs, learnEnabled);
 }
 
 std::vector<int> Hierarchy::getPredictionCIs(

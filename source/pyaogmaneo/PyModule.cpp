@@ -70,6 +70,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
+    py::class_<pyaon::GDesc>(m, "GDesc")
+        .def(py::init<
+                std::tuple<int, int, int>,
+                int
+            >(),
+            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("radius") = 2
+        )
+        .def_readwrite("size", &pyaon::IODesc::size)
+        .def_readwrite("radius", &pyaon::IODesc::radius);
+
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<>())
         .def("initRandom", &pyaon::Hierarchy::initRandom)
@@ -81,7 +92,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeStateToBuffer", &pyaon::Hierarchy::serializeStateToBuffer)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
-            py::arg("topProgCIs"),
+            py::arg("goalCIs"),
+            py::arg("actualCIs"),
             py::arg("learnEnabled") = true
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
@@ -98,6 +110,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
+        .def("getNumGVisibleLayers", &pyaon::Hierarchy::getNumGVisibleLayers)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)

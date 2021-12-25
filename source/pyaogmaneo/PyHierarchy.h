@@ -77,6 +77,23 @@ struct LayerDesc {
     bool checkInRange() const;
 };
 
+struct GDesc {
+    std::tuple<int, int, int> size;
+
+    int radius;
+
+    GDesc(
+        const std::tuple<int, int, int> &size,
+        int radius
+    )
+    :
+    size(size),
+    radius(radius)
+    {}
+
+    bool checkInRange() const;
+};
+
 class Hierarchy {
 private:
     bool initialized;
@@ -93,6 +110,7 @@ public:
 
     void initRandom(
         const std::vector<IODesc> &ioDescs,
+        const std::vector<GDesc> &gDescs,
         const std::vector<LayerDesc> &layerDescs
     );
 
@@ -118,7 +136,8 @@ public:
 
     void step(
         const std::vector<std::vector<int>> &inputCIs,
-        const std::vector<int> &topProgCIs,
+        const std::vector<std::vector<int>> &goalCIs,
+        const std::vector<std::vector<int>> &actualCIs,
         bool learnEnabled
     );
 
@@ -273,6 +292,19 @@ public:
         initCheck();
 
         return h.getIOSizes().size();
+    }
+
+    int getNumGVisibleLayers(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getGLayer(l).getNumVisibleLayers();
     }
 
     std::tuple<int, int, int> getIOSize(
