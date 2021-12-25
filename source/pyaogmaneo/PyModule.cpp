@@ -78,8 +78,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("radius") = 2
         )
-        .def_readwrite("size", &pyaon::IODesc::size)
-        .def_readwrite("radius", &pyaon::IODesc::radius);
+        .def_readwrite("size", &pyaon::GDesc::size)
+        .def_readwrite("radius", &pyaon::GDesc::radius);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<>())
