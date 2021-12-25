@@ -171,7 +171,7 @@ void Hierarchy::initRandom(
     
     aon::Array<aon::Hierarchy::GDesc> cGDescs(gDescs.size());
 
-    for (int i = 0; i < ioDescs.size(); i++) {
+    for (int i = 0; i < gDescs.size(); i++) {
         if(!gDescs[i].checkInRange()) {
             std::cerr << " - at gDesc[" << i << "]" << std::endl;
             allInRange = false;
