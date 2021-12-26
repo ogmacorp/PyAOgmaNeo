@@ -8,14 +8,14 @@
 
 # -*- coding: utf-8 -*-
 
-import pyaogmaneo as pyaon
+import pyaogmaneo as neo
 import numpy as np
 import matplotlib.pyplot as plt
 import struct
 import time
 
 # Set the number of threads
-pyaon.setNumThreads(8)
+neo.setNumThreads(8)
 
 def fToCSDR(x, num_columns, cells_per_column, scale_factor=0.25):
     csdr = []
@@ -64,22 +64,22 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(5): # Layers with exponential memory
-    ld = pyaon.LayerDesc()
+for i in range(4): # Layers with exponential memory
+    ld = neo.LayerDesc()
 
     ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
 # Create the hierarchy
-h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc(size=(1, 2, 16)) ], lds)
+h = neo.Hierarchy()
+h.initRandom([ neo.IODesc(size=(1, 2, 16)) ], [ neo.GDesc(size=(1, 1, 16)) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 1000
+iters = 2000
 
 def wave(t):
-    if t % 10 == 0:
+    if t % 5 == 0:
         return 1.0
     return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
@@ -96,9 +96,9 @@ for t in range(iters):
     start = time.time()
 
     # Step the hierarchy given the inputs (just one here)
-    h.step([ csdr ], h.getHiddenCIs(h.getNumLayers() - 1), True) # True for enabling learning
+    h.step([ csdr ], [ [ 0 ] ], [ [ 0 ] ], True) # True for enabling learning
 
-    print(h.getTopHiddenCIs())
+    print(h.getHiddenCIs(0))
 
     end = time.time()
 
@@ -125,7 +125,7 @@ for t2 in range(300):
     start = time.time()
 
     # Run off of own predictions with learning disabled
-    h.step([ h.getPredictionCIs(0) ], h.getHiddenCIs(h.getNumLayers() - 1), False) # Learning disabled
+    h.step([ h.getPredictionCIs(0) ], [ [ 0 ] ], [ [ 0 ] ], False) # Learning disabled
 
     end = time.time()
 
