@@ -69,6 +69,11 @@ bool LayerDesc::checkInRange() const {
         allInRange = false;
     }
 
+    if (gHiddenSizeZ < 0) {
+        std::cerr << "Error: gHiddenSizeZ < 0 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
     if (eRadius < 0) {
         std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
         allInRange = false;
@@ -193,6 +198,7 @@ void Hierarchy::initRandom(
 
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
+            layerDescs[l].gHiddenSizeZ,
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
             layerDescs[l].historyCapacity,

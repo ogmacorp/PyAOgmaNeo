@@ -64,7 +64,7 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(4): # Layers with exponential memory
+for i in range(6): # Layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (5, 5, 16) # Size of the encoder (SparseCoder)
@@ -79,7 +79,7 @@ h.initRandom([ neo.IODesc(size=(1, 2, 16)) ], [ neo.GDesc(size=(1, 1, 16)) ], ld
 iters = 2000
 
 def wave(t):
-    if t % 5 == 0:
+    if t % 20 == 0:
         return 1.0
     return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
