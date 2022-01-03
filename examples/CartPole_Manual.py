@@ -52,7 +52,7 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-res = 32 # Resolution (column size) of encoding
+res = 16 # Resolution (column size) of encoding
 
 se = ScalarEncoder(4, 9, res)
 
@@ -63,7 +63,7 @@ neo.setNumThreads(8)
 lds = []
 
 for i in range(3): # Layers with exponential memory. Not much memory is needed for Cart-Pole
-    ld = neo.LayerDesc(hiddenSize=(4, 4, 16))
+    ld = neo.LayerDesc(hiddenSize=(5, 5, 16))
 
     ld.eRadius = 2
     ld.dRadius = 2
@@ -72,30 +72,31 @@ for i in range(3): # Layers with exponential memory. Not much memory is needed f
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
 h = neo.Hierarchy()
-h.initRandom([ neo.IODesc((3, 3, res), neo.prediction, eRadius=2, dRadius=2), neo.IODesc((1, 1, numActions), neo.action, eRadius=0, dRadius=2, historyCapacity=64) ], lds)
-
-# Set some parameters for the actor IO layer (index 1)
-h.setAVLR(1, 0.01)
-h.setAALR(1, 0.01)
-h.setADiscount(1, 0.99)
-h.setAMinSteps(1, 16)
-h.setAHistoryIters(1, 16)
+h.initRandom([ neo.IODesc((3, 3, res)), neo.IODesc((1, 1, numActions)) ], [ neo.GDesc((3, 3, res)) ], lds)
 
 reward = 0.0
 
 action = 0
 
-for episode in range(1000):
+csdr_goal = 9 * [ 0 ]
+
+for episode in range(10000):
     obs = env.reset()
+
+    if episode == 0:
+        csdr_goal = se.encode(sigmoid(np.matrix(obs).T * 4.0))
 
     # Timesteps
     for t in range(500):
         csdr = se.encode(sigmoid(np.matrix(obs).T * 4.0))
 
-        h.step([ csdr, [ action ] ], True, reward)
+        h.step([ csdr, [ action ] ], [ csdr_goal ], [ csdr ], True)
 
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column
+
+        if np.random.rand() < 0.05:
+            action = np.random.randint(0, numActions)
 
         obs, reward, done, info = env.step(action)
 
