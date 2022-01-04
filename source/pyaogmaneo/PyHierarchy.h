@@ -401,6 +401,182 @@ public:
         return h.getDLayers(l)[i].lr;
     }
 
+    void setDDecay(
+        int l,
+        int i,
+        float decay
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (decay < 0.0f) {
+            std::cerr << "Error: DDecay must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getDLayers(l)[i].decay = decay;
+    }
+
+    float getDDecay(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayers(l)[i].decay;
+    }
+
+    void setDDiscount(
+        int l,
+        int i,
+        float discount
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (discount < 0.0f || discount >= 1.0f) {
+            std::cerr << "Error: DDiscount must be >= 0.0 and < 1.0" << std::endl;
+            abort();
+        }
+
+        h.getDLayers(l)[i].discount = discount;
+    }
+
+    float getDDiscount(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayers(l)[i].discount;
+    }
+
+    void setDHistoryIters(
+        int l,
+        int i,
+        int historyIters
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (historyIters < 0) {
+            std::cerr << "Error: DHistoryIters must be >= 0" << std::endl;
+            abort();
+        }
+
+        h.getDLayers(l)[i].historyIters = historyIters;
+    }
+
+    int getDHistoryIters(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayers(l)[i].historyIters;
+    }
+
+    void setDMaxSteps(
+        int l,
+        int i,
+        int maxSteps
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (maxSteps < 0) {
+            std::cerr << "Error: DMaxSteps must be >= 0" << std::endl;
+            abort();
+        }
+
+        h.getDLayers(l)[i].historyIters = maxSteps;
+    }
+
+    int getDMaxSteps(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayers(l)[i].maxSteps;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
