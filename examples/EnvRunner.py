@@ -274,15 +274,15 @@ class EnvRunner:
 
         target = np.tanh(self.averageReward) * 0.5 + 0.5
 
-        rimg = self.adapter.getVisibleSize(0)[0] * [ int(0) ]
-        grimg = self.adapter.getVisibleSize(0)[0] * [ int(0) ]
+        rimg = self.adapter.getVisibleSize(0)[2] * [ 0.0 ]
+        grimg = self.adapter.getVisibleSize(0)[2] * [ 0.0 ]
 
         for i in range(len(rimg)):
             delta = target - float(i) / float(len(rimg))
-            gdelta = target - float(i - 3) / float(len(rimg))
+            gdelta = target - float(i - 1) / float(len(rimg))
 
-            rimg[i] = int(np.exp(-delta * delta * self.falloff) * 255.0)
-            grimg[i] = int(np.exp(-gdelta * gdelta * self.falloff) * 255.0)
+            rimg[i] = np.exp(-delta * delta * self.falloff)
+            grimg[i] = np.exp(-gdelta * gdelta * self.falloff)
 
         self.adapter.step([ rimg ], True)
 
