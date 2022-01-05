@@ -23,7 +23,7 @@ inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=3 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), gSize=(5, 5, 16), rewardSize=64, imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -152,7 +152,7 @@ class EnvRunner:
         for i in range(len(self.inputSizes)):
             ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
 
-        gDescs = [ neo.GDesc(lds[-1].hiddenSize) ]
+        gDescs = [ neo.GDesc(gSize, layerRadius) ]
 
         self.h.initRandom(ioDescs, gDescs, lds)
 
@@ -172,8 +172,10 @@ class EnvRunner:
 
             self.actions.append(startAct)
 
-        self.adapter = neo.RLAdapter()
-        self.adapter.initRandom(self.h.getTopHiddenSize())
+        self.adapter = neo.ImageEncoder()
+        self.adapter.initRandom(gSize, [ neo.ImageEncoderVisibleLayerDesc((1, 1, rewardSize), 0) ], [])
+
+        self.falloff = 32.0
 
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
@@ -270,9 +272,27 @@ class EnvRunner:
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
-        self.adapter.step(r, self.h.getTopHiddenCIs(), True)
+        target = np.tanh(self.averageReward) * 0.5 + 0.5
 
-        self.h.step(self.inputs, [ self.adapter.getProgCIs() ], [ self.h.getTopHiddenCIs() ], True)
+        rimg = self.adapter.getVisibleSize(0)[0] * [ int(0) ]
+        grimg = self.adapter.getVisibleSize(0)[0] * [ int(0) ]
+
+        for i in range(len(rimg)):
+            delta = target - float(i) / float(len(rimg))
+            gdelta = target - float(i - 3) / float(len(rimg))
+
+            rimg[i] = int(np.exp(-delta * delta * self.falloff) * 255.0)
+            grimg[i] = int(np.exp(-gdelta * gdelta * self.falloff) * 255.0)
+
+        self.adapter.step([ rimg ], True)
+
+        actual = self.adapter.getHiddenCIs()
+
+        self.adapter.step([ grimg ], True)
+
+        goal = self.adapter.getHiddenCIs()
+
+        self.h.step(self.inputs, [ goal ], [ actual ], True)
 
         # Retrieve actions
         for i in range(len(self.actionIndices)):
