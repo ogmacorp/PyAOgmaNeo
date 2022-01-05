@@ -45,19 +45,6 @@ else()
     endif()
 endif()
 
-FetchContent_Declare(
-    pybind11
-    GIT_REPOSITORY https://github.com/pybind/pybind11
-    GIT_TAG origin/master 
-)
-
-FetchContent_GetProperties(pybind11)
-
-if(NOT pybind11_POPULATED)
-    FetchContent_Populate(pybind11)
-    add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
-endif()
-
 include_directories(${AOgmaNeo_SOURCE_DIR}/source)
 
 find_package(OpenMP REQUIRED)
