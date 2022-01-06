@@ -11,10 +11,12 @@ It was originally intended for Arduino devices, hence the A in the name. However
     overview
     installation
     examples
+    helpers
     iodesc
     layerdesc
     hierarchy
     imageencodervisiblelayerdesc
+    imageencoderhigherlayerdesc
     imageencoder
 
 Search

@@ -4,18 +4,19 @@ Image Encoder
 .. class:: pyaogmaneo.ImageEncoder
 
 The ImageEncoder is a pre-encoder used to convert images to CSDRs. Sometimes, it can also be used for non-image inputs, but images are the primary intended use.
-It is implemented as a bunch of 1D SOMs.
+It is implemented as a bunch of 1D Self-Organizing Maps (SOMs), with optional "Higher layers" (regular encoders) stacked on top for hierarchical encoding.
 
 .. function:: ImageEncoder.__init__(self):
 
     Does nothing.
 
-.. function:: ImageEncoder.initRandom(self, hiddenSize, visibleLayerDescs)
+.. function:: ImageEncoder.initRandom(self, hiddenSize, visibleLayerDescs, higherLayerDescs)
 
     Initialize an image encoder of given structure.
 
     :param hiddenSize: (Int3) size of the output (hidden) layer that will be generated.
     :param visibleLayerDescs: ([ImageEncoderVisibleLayerDesc]) list of ImageEncoderVisibleLayerDesc describing each input (visible) layer
+    :param higherLayerDescs: ([ImageEncoderHigherLayerDesc]) list of ImageEncoderHigherLayerDesc describing each higher layer. Leave empty if only a single layer is desired for the who ImageEncoder
 
 .. function:: ImageEncoder.initFromFile(self, name)
 
@@ -77,7 +78,7 @@ It is implemented as a bunch of 1D SOMs.
 
 .. function:: ImageEncoder.getHiddenCIs(self)
 
-    Get the hidden encoded state (output CSDR)
+    Get the hidden encoded state (hidden CSDR)
 
     :rtype: (IntBuffer) the CSDR
 
@@ -87,26 +88,52 @@ It is implemented as a bunch of 1D SOMs.
 
     :rtype: (Int3) the CSDR size
 
-.. function:: ImageEncoder.setAlpha(self, alpha)
+.. function:: ImageEncoder.getOutputCIs(self)
 
-    Set the alpha (learning rate)
+    Get the hidden encoded state (output CSDR). Will be equal to ImageEncoder.getHiddenCIs() if there are no higher layers
 
-    :param alpha: (float32) value to set
+    :rtype: (IntBuffer) the CSDR
 
-.. function:: ImageEncoder.getAlpha(self)
+.. function:: ImageEncoder.getOutputSize(self)
 
-    Get the alpha (learning rate)
+    Get the size of the hidden state. Will be equal to ImageEncoder.getHiddenSize() if there are no higher layers
 
-    :rtype: (float32) alpha
+    :rtype: (Int3) the CSDR size
 
-.. function:: ImageEncoder.setGamma(self, gamma)
+.. function:: ImageEncoder.setLR(self, lr)
 
-    Set the gamma (topology radius)
+    Set the first (hidden) layer learning rate
 
-    :param gamma: (float32) value to set
+    :param lr: (float32) value to set
 
-.. function:: ImageEncoder.getGamma(self)
+.. function:: ImageEncoder.getLR(self)
 
-    Get the gamma (topology radius)
+    Get the fist (hidden) layer learning rate
 
-    :rtype: (float32) gamma
+    :rtype: (float32) lr
+
+.. function:: ImageEncoder.setFalloff(self, falloff)
+
+    Set the first (hidden) layer SOM falloff
+
+    :param falloff: (float32) value to set
+
+.. function:: ImageEncoder.getFalloff(self)
+
+    Get the first (hidden) layer SOM falloff
+
+    :rtype: (float32) falloff
+
+.. function:: ImageEncoder.setHigherLR(self, l, lr)
+
+    Set a higher layer learning rate
+
+    :param l: (int32) higher layer index
+    :param lr: (float32) value to set
+
+.. function:: ImageEncoder.getHigherLR(self, l)
+
+    Get a higher layer learning rate
+
+    :param l: (int32) higher layer index
+    :rtype: (float32) lr

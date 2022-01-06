@@ -13,7 +13,7 @@ Describes a single input/output channel for a hierarchy
 
     Type of input/output layer. Can be:
 
-        pyaogmaneo.none: No prediction will be generated (purely an input layer)
+        pyaogmaneo.none: Neither a prediction nor an action will be generated
 
         pyaogmaneo.prediction: A prediction of the next timestep of values will be generated
 
@@ -21,26 +21,22 @@ Describes a single input/output channel for a hierarchy
 
         The prediction of the specified type will be retrieved with Hierarchy.getPredictionCIs (regardless of type).
 
-.. attribute:: (int32) IODesc.ffRadius
+.. attribute:: (int32) IODesc.eRadius
 
-    Feed-forward (bottom-up) sparse coder (AKA encoder) radius. Must be 0 or greater. The diameter of the receptive field will be (2 * radius + 1)
-
-    Note: This value overrides that of the same name in pyaogmaneo.Hierarchy
-
-.. attribute:: (int32) IODesc.pRadius
-
-    Feed-back (top-down) predictor radius. Must be 0 or greater. The diameter of the receptive field will be (2 * radius + 1)
+    Feed-forward (bottom-up) encoder radius. Must be 0 or greater. The diameter of the receptive field will be (2 * radius + 1)
 
     Note: This value overrides that of the same name in pyaogmaneo.Hierarchy
 
-.. attribute:: (int32) IODesc.aRadius
+.. attribute:: (int32) IODesc.dRadius
 
-    Feed-back (top-down) actor radius. Must be 0 or greater. The diameter of the receptive field will be (2 * radius + 1)
-    
+    Feed-back (top-down) decoder radius. Must be 0 or greater. The diameter of the receptive field will be (2 * radius + 1)
+
+    Note: This value overrides that of the same name in pyaogmaneo.Hierarchy
+
 .. attribute:: (int32) IODesc.historyCapacity
 
     Maximum number of history samples (credit assignment horizon) an actor can have
 
-.. function:: IODesc.__init__(self, size=(4, 4, 16), type=pyaogmaneo.none, ffRadius=2, pRadius=2, aRadius=2, historyCapacity=32)
+.. function:: IODesc.__init__(self, size=(4, 4, 16), type=pyaogmaneo.prediction, eRadius=2, dRadius=2, historyCapacity=64)
 
     Initialize to given values

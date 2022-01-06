@@ -3,7 +3,7 @@ Hierarchy
 
 .. class:: pyaogmaneo.Hierarchy
 
-The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when used for reinforcement learning. This is the main piece of any PyAOgmaNeo project
+The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when used for reinforcement learning. This is the main component of any PyAOgmaNeo project
 
 .. function:: Hierarchy.__init__(self):
 
@@ -13,7 +13,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     Initialize a hierarchy (random weights) of given structure.
 
-    :param ioDescs: ([IODesc]) list of IODesc's (input-output descriptors, see IODesc). Defines the size of each input layer and its type
+    :param ioDescs: ([IODesc]) list of IODesc's (input-output (IO) descriptors, see IODesc). Defines the size of each IO layer and its type
     :param layerDescs: ([LayerDesc]) A list of filled-out descriptors (LayerDesc objects) describing how all the layers in the hierarchy should look
 
 .. function:: Hierarchy.initFromFile(self, name)
@@ -58,8 +58,8 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param inputCIs: ([IntBuffer]) list of input integer buffers representing the CSDRs of the dimensions described in the initialization
     :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
-    :param reward: (float32) reward signal, if action input layers (pyaogmaneo.IODesc type set to typeAction) are present this will be used to update those to maximize reward. Defaults to 0.0
-    :param mimic: If true, sets the actors (action generators for reinforcement learning) to behave like regular predictors. This is useful for imitation learning followed by reinforcement learning
+    :param reward: (float32) reward signal, if action IO layers (pyaogmaneo.IODesc type set to typeAction) are present this will be used to update those to maximize reward. Defaults to 0.0
+    :param mimic: (boolean) If true, sets the actors (action generators for reinforcement learning) to behave like regular decoders (prediction). This is useful for imitation learning followed by reinforcement learning
 
 .. function:: Hierarchy.getNumLayers(self)
 
@@ -69,9 +69,9 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
 .. function:: Hierarchy.getPredictionCIs(self, i)
 
-    Get a prediction for a given input layer index. If the IODesc for this index is of type action, it will return the action instead
+    Get a prediction for a given IO layer index. If the IODesc for this index is of type action, it will return the action instead
 
-    :param i: (int32) index of the input layer. Will error if input layer is of type "none" (see IODesc)
+    :param i: (int32) index of the IO layer
     :rtype: (IntBuffer) integer buffer containing predictions
 
 .. function:: Hierarchy.getUpdate(self, l)
@@ -109,178 +109,177 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of ticks. Will always be 1 for the first layer (l = 0)
 
-.. function:: Hierarchy.getNumInputs(self)
+.. function:: Hierarchy.getNumIO(self)
 
-    Get the number of input layers to the hierarchy (number of IODescs).
+    Get the number of IO layers to the hierarchy (number of IODescs).
 
-    :rtype: (int32) number of input layers
+    :rtype: (int32) number of IO layers
 
-.. function:: Hierarchy.getNumPLayers(self, l)
+.. function:: Hierarchy.getIOSizes(self)
 
-    Get the number of predictor (top down) sub-layers at a given layer
+    Get the sizes of all IO layers
 
-    :param l: (int32) index of the layer. Must be greater than 0 as the first layer does not have regular predictors
-    :rtype: (int32) number of input layers
+    :rtype: ([(int32, int32, int32)]) list of sizes of the IO layers
 
-.. function:: Hierarchy.getNumSCVisibleLayers(self, l)
+.. function:: Hierarchy.getNumDLayers(self, l)
 
-    Get the number of visible (sub) layers of a sparse coder (SC), AKA encoder. This will be equal to Hierarchy.getTicksPerUpdate(l) for all l except for 0, where it will be equal to Hierarchy.getNumInputLayers()
+    Get the number of decoder (top down) sub-layers at a given layer
+
+    :param l: (int32) index of the layer. Must be greater than 0 as the first layer does not have regular decoders
+    :rtype: (int32) number of decoder layers
+
+.. function:: Hierarchy.getNumEVisibleLayers(self, l)
+
+    Get the number of visible (sub) layers of a encoder. This will be equal to Hierarchy.getTicksPerUpdate(l) for all l except for 0, where it will be equal to Hierarchy.getNumIO()
 
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
-.. function:: Hierarchy.pLayerExists(self, i)
+.. function:: Hierarchy.dLayerExists(self, i)
 
-    Determine whether there is a predictor at the i-th input layer. This will be True if the IODesc at index i was of type typePrediction during initialization
+    Determine whether there is a decoder at the i-th IO layer. This will be True if the IODesc at index i was of type prediction during initialization
 
-    :param i: (int32) index of the input layer
+    :param i: (int32) index of the IO layer
     :rtype: (boolean) True if exists, False otherwise
 
 .. function:: Hierarchy.aLayerExists(self, i)
 
-    Determine whether there is a actor at the i-th input layer. This will be True if the IODesc at index i was of type typeAction during initialization
+    Determine whether there is a actor at the i-th IO layer. This will be True if the IODesc at index i was of type action during initialization
 
-    :param i: (int32) index of the input layer
+    :param i: (int32) index of the IO layer
     :rtype: (boolean) True if exists, False otherwise
 
-.. function:: Hierarchy.setSCAlpha(self, l, alpha)
+.. function:: Hierarchy.setELR(self, l, lr)
 
-    Set the alpha (learning rate) of a sparse coder (SC) (AKA encoder)
-
-    :param l: (int32) index of the layer
-    :param alpha: (float32) value to set
-
-.. function:: Hierarchy.getSCAlpha(self, l)
-
-    Get the alpha (learning rate) of a sparse coder (SC) (AKA encoder)
+    Set the learning rate of a encoder (E)
 
     :param l: (int32) index of the layer
-    :rtype: (float32) alpha
+    :param lr: (float32) value to set
 
-.. function:: Hierarchy.setSCGamma(self, l, gamma)
+.. function:: Hierarchy.getELR(self, l)
 
-    Set the gamma (topology radius) of the sparsecoder (SC) (AKA encoder)
-
-    :param l: (int32) index of the layer
-    :param gamma: (float32) value to set
-
-.. function:: Hierarchy.getSCGamma(self, l)
-
-    Get the gamma (topology radius) of the sparsecoder (SC) (AKA encoder)
+    Get the learning rate of a encoder (E)
 
     :param l: (int32) index of the layer
-    :rtype: (float32) gamma
+    :rtype: (float32) lr
 
-.. function:: Hierarchy.setPAlpha(self, l, alpha)
+.. function:: Hierarchy.setDLR(self, l, lr)
 
-    Set the alpha (learning rate) of a predictor (P) (AKA decoder)
+    Set the learning rate of a decoder (D)
 
-    :param l: (int32) index of the layer. This function is used for predictors above the first layer, so l > 0
-    :param alpha: (float32) value to set
+    :param l: (int32) index of the layer
+    :param lr: (float32) value to set
 
-.. function:: Hierarchy.getPAlpha(self, l)
+.. function:: Hierarchy.getDLR(self, l)
 
-    Get the alpha (learning rate) of a predictor (P) (AKA decoder)
+    Get the learning rate of a decoder (D)
 
-    :param l: (int32) index of the layer. This function is used for predictors above the first layer, so l > 0
-    :rtype: (float32) alpha
+    :param l: (int32) index of the layer
+    :rtype: (float32) lr
 
-.. function:: Hierarchy.setAAlpha(self, i, alpha)
+.. function:: Hierarchy.setAVLR(self, i, vlr)
 
-    Set the alpha (value learning rate) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Set the value learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
-    :param alpha: (float32) value to set
+    :param i: (int32) index of the IO layer
+    :param vlr: (float32) value to set
 
-.. function:: Hierarchy.getAAlpha(self, i)
+.. function:: Hierarchy.getAVLR(self, i)
 
-    Get the alpha (value learning rate) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Get the value learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
-    :rtype: (float32) alpha
+    :param i: (int32) index of the IO layer
+    :rtype: (float32) vlr
 
-.. function:: Hierarchy.setABeta(self, i, beta)
+.. function:: Hierarchy.setAALR(self, i, alr)
 
-    Set the beta (action learning rate) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Set the action learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
-    :param beta: (float32) value to set
+    :param i: (int32) index of the IO layer
+    :param alr: (float32) value to set
 
-.. function:: Hierarchy.getABeta(self, i)
+.. function:: Hierarchy.getAALR(self, i)
 
-    Get the beta (action learning rate) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Get the action learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
-    :rtype: (float32) beta
+    :param i: (int32) index of the IO layer
+    :rtype: (float32) alr
 
-.. function:: Hierarchy.setAGamma(self, i, gamma)
+.. function:: Hierarchy.setADiscount(self, i, discount)
 
-    Set the gamma (discount factor) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Set the discount factor of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
-    :param gamma: (float32) value to set
+    :param i: (int32) index of the IO layer
+    :param discount: (float32) value to set
 
-.. function:: Hierarchy.getAGamma(self, i)
+.. function:: Hierarchy.getADiscount(self, i)
 
-    Get the gamma (discount factor) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Get the discount factor of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
-    :rtype: (float32) gamma
+    :param i: (int32) index of the IO layer
+    :rtype: (float32) discount
     
 .. function:: Hierarchy.setAMinSteps(self, i, minSteps)
 
-    Set the minSteps (minimum number of samples before actor can update) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Set the minSteps (minimum number of samples before actor can update) of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
+    :param i: (int32) index of the IO layer
     :param minSteps: (int32) value to set
 
 .. function:: Hierarchy.getAMinSteps(self, i)
 
-    Get the minSteps (minimum number of samples before actor can update) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Get the minSteps (minimum number of samples before actor can update) of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
+    :param i: (int32) index of the IO layer
     :rtype: (int32) minSteps
 
 .. function:: Hierarchy.setAHistoryIters(self, i, historyIters)
 
-    Set the historyIters (number of iterations of credit assignment) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Set the historyIters (number of iterations of credit assignment) of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
+    :param i: (int32) index of the IO layer
     :param historyIters: (int32) value to set
 
 .. function:: Hierarchy.getAHistoryIters(self, i)
 
-    Get the historyIters (number of iterations of credit assignment) of an action layer (A) at the bottom of the hierarchy (input layer)
+    Get the historyIters (number of iterations of credit assignment) of an action layer (A) at the bottom of the hierarchy (IO layer)
 
-    :param i: (int32) index of the input layer
+    :param i: (int32) index of the IO layer
     :rtype: (int32) historyIters
 
-.. function:: Hierarchy.getFFRadius(self, l)
+.. function:: Hierarchy.setAExplore(self, i, explore)
 
-    Get the feed forward (FF) radius of a layer
+    Set whether to explore (automatic boltzmann exploration) or not (deterministic) on an action layer (A) at the bottom of the hierarchy (IO layer)
+
+    :param i: (int32) index of the IO layer
+    :param explore: (boolean) value to set
+
+.. function:: Hierarchy.getAExplore(self, i)
+
+    Get whether to explore (automatic boltzmann exploration) or not (deterministic) on an action layer (A) at the bottom of the hierarchy (IO layer)
+
+    :param i: (int32) index of the IO layer
+    :rtype: (boolean) explore
+
+.. function:: Hierarchy.getERadius(self, l)
+
+    Get the feed forward encoder radius of a layer
 
     :param l: (int32) index of the layer
-    :rtype: (int32) FF radius
+    :rtype: (int32) encoder radius
 
-.. function:: Hierarchy.getPRadius(self, l, v)
+.. function:: Hierarchy.getDRadius(self, l, i)
 
-    Get the predictor (P) radius of a layer
+    Get the decoder (D) radius of a layer
 
     :param l: (int32) index of the layer
-    :param v: (int32) index of the input layer 
+    :param i: (int32) index of the IO layer 
     :rtype: (int32) P radius
 
-.. function:: Hierarchy.getARadius(self, v)
-
-    Get the actor (A) radius of a layer
-
-    :param v: (int32) index of the input layer 
-    :rtype: (int32) A radius
-
-.. function:: Hierarchy.getAHistoryCapacity(self, v)
+.. function:: Hierarchy.getAHistoryCapacity(self, i)
 
     Get the actor (A) history capacity
 
-    :param v: (int32) index of the input layer 
+    :param i: (int32) index of the IO layer 
     :rtype: (int32) history capacity
 

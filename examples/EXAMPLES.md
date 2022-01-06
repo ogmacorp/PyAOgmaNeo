@@ -10,7 +10,7 @@
 
 ## The EnvRunner
 
-The EnvRunner is a simple way to automatically create OgmaNeo2 systems for [OpenAI Gym](https://gym.openai.com/) tasks. It will automatically create the hierarchy and appropriate pre-encoders, by guessing reasonable settings. This is good enough for initial experimentation, but further control requires manual usage. Image-based environments require OpenCV in order to scale images to appropriate sizes.
+The EnvRunner is a simple way to automatically create AOgmaNeo systems for [OpenAI Gym](https://gym.openai.com/) tasks. It will automatically create the hierarchy and appropriate pre-encoders, by guessing reasonable settings. This is good enough for initial experimentation, but further control requires manual usage. Image-based environments require OpenCV in order to scale images to appropriate sizes.
 
 ## CartPole examples
 
@@ -30,4 +30,4 @@ The LunarLander example shows a slightly more complicated reinforcement learning
 
 Contact Ogma via licenses@ogmacorp.com to discuss commercial use and licensing options.
 
-PyAOgmaNeo Copyright (c) 2020 [Ogma Intelligent Systems Corp](https://ogmacorp.com). All rights reserved.
+PyAOgmaNeo Copyright (c) 2020-2021 [Ogma Intelligent Systems Corp](https://ogmacorp.com). All rights reserved.
