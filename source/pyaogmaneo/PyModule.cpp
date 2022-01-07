@@ -15,6 +15,9 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(pyaogmaneo, m) {
+    m.def("setNumThreads", &pyaon::setNumThreads);
+    m.def("getNumThreads", &pyaon::getNumThreads);
+
     m.def("setGlobalState", &pyaon::setGlobalState);
     m.def("getGlobalState", &pyaon::getGlobalState);
 

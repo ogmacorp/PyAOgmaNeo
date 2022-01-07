@@ -15,6 +15,16 @@
 #include <iostream>
 
 namespace pyaon {
+inline void setNumThreads(
+    int numThreads
+) {
+    aon::setNumThreads(numThreads);
+}
+
+inline int getNumThreads() {
+    return aon::getNumThreads();
+}
+
 inline void setGlobalState(
     unsigned int state
 ) {
