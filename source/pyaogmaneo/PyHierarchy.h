@@ -506,8 +506,8 @@ public:
             abort();
         }
 
-        if (discount < 0.0f) {
-            std::cerr << "Error: AALR must be >= 0.0" << std::endl;
+        if (discount < 0.0f || discount >= 1.0f) {
+            std::cerr << "Error: ADiscount must be >= 0.0 and < 1.0" << std::endl;
             abort();
         }
 
@@ -530,6 +530,48 @@ public:
         }
 
         return h.getALayer(i).discount;
+    }
+
+    void setATemperature(
+        int i,
+        float temperature
+    ) {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        if (temperature < 0.0f) {
+            std::cerr << "Error: ATemperature must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getALayer(i).temperature = temperature;
+    }
+
+    float getATemperature(
+        int i
+    ) const {
+        initCheck();
+        
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).temperature;
     }
 
     void setAMinSteps(
@@ -614,43 +656,6 @@ public:
         }
 
         return h.getALayer(i).historyIters;
-    }
-
-    void setAExplore(
-        int i,
-        bool explore
-    ) {
-        initCheck();
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).explore = explore;
-    }
-
-    bool getAExplore(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).explore;
     }
 
     // Retrieve additional parameters on the SPH's structure

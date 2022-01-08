@@ -109,12 +109,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getAALR", &pyaon::Hierarchy::getAALR)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
+        .def("setATemperature", &pyaon::Hierarchy::setATemperature)
+        .def("getATemperature", &pyaon::Hierarchy::getATemperature)
         .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
         .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
-        .def("setAExplore", &pyaon::Hierarchy::setAExplore)
-        .def("getAExplore", &pyaon::Hierarchy::getAExplore)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 
@@ -128,17 +128,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("size", &pyaon::ImageEncoderVisibleLayerDesc::size)
         .def_readwrite("radius", &pyaon::ImageEncoderVisibleLayerDesc::radius);
-        
-    py::class_<pyaon::ImageEncoderHigherLayerDesc>(m, "ImageEncoderHigherLayerDesc")
-        .def(py::init<
-                std::tuple<int, int, int>,
-                int
-            >(),
-            py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("radius") = 2
-        )
-        .def_readwrite("hiddenSize", &pyaon::ImageEncoderHigherLayerDesc::hiddenSize)
-        .def_readwrite("radius", &pyaon::ImageEncoderHigherLayerDesc::radius);
 
     py::class_<pyaon::ImageEncoder>(m, "ImageEncoder")
         .def(py::init<>())
@@ -153,17 +142,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
         .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
-        .def("getNumHigherLayers", &pyaon::ImageEncoder::getNumHigherLayers)
         .def("getReconstruction", &pyaon::ImageEncoder::getReconstruction)
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
-        .def("getOutputCIs", &pyaon::ImageEncoder::getOutputCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
-        .def("getOutputSize", &pyaon::ImageEncoder::getOutputSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR)
         .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
-        .def("getFalloff", &pyaon::ImageEncoder::getFalloff)
-        .def("setHigherLR", &pyaon::ImageEncoder::setHigherLR)
-        .def("getHigherLR", &pyaon::ImageEncoder::getHigherLR);
+        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
 }
