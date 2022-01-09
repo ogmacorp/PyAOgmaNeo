@@ -99,8 +99,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setEBR", &pyaon::Hierarchy::setEBR)
-        .def("getEBR", &pyaon::Hierarchy::getEBR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
