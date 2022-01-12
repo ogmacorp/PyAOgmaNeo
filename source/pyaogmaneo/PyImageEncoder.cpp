@@ -34,30 +34,6 @@ bool ImageEncoderVisibleLayerDesc::checkInRange() const {
     return true;
 }
 
-bool ImageEncoderHigherLayerDesc::checkInRange() const {
-    if (std::get<0>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[0] < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    if (std::get<1>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[1] < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    if (std::get<2>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[2] < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    if (radius < 0) {
-        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    return true;
-}
-
 void ImageEncoder::initCheck() const {
     if (!initialized) {
         std::cerr << "Attempted to use the ImageEncoder uninitialized!" << std::endl;
@@ -67,8 +43,7 @@ void ImageEncoder::initCheck() const {
 
 void ImageEncoder::initRandom(
     const std::tuple<int, int, int> &hiddenSize,
-    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
-    const std::vector<ImageEncoderHigherLayerDesc> &higherLayerDescs
+    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
 ) {
     bool allInRange = true;
 
@@ -99,24 +74,12 @@ void ImageEncoder::initRandom(
         allInRange = false;
     }
 
-    aon::Array<aon::ImageEncoder::HigherLayerDesc> cHigherLayerDescs(higherLayerDescs.size());
-
-    for (int l = 0; l < higherLayerDescs.size(); l++) {
-        if (!higherLayerDescs[l].checkInRange()) {
-            std::cerr << " - at higherLayerDescs[" << l << "]" << std::endl;
-            allInRange = false;
-        }
-
-        cHigherLayerDescs[l].hiddenSize = aon::Int3(std::get<0>(higherLayerDescs[l].hiddenSize), std::get<1>(higherLayerDescs[l].hiddenSize), std::get<2>(higherLayerDescs[l].hiddenSize));
-        cHigherLayerDescs[l].radius = higherLayerDescs[l].radius;
-    }
-
     if (!allInRange) {
         std::cerr << " - ImageEncoder: Some parameters out of range!" << std::endl;
         abort();
     }
 
-    enc.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), cVisibleLayerDescs, cHigherLayerDescs);
+    enc.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), cVisibleLayerDescs);
 
     initialized = true;
 }
@@ -185,7 +148,7 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 }
 
 void ImageEncoder::step(
-    const std::vector<std::vector<float>> &inputs,
+    const std::vector<std::vector<unsigned char>> &inputs,
     bool learnEnabled
 ) {
     initCheck();
@@ -195,8 +158,8 @@ void ImageEncoder::step(
         abort();
     }
 
-    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::FloatBuffer*> cInputs(inputs.size());
+    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         if (inputs[i].size() != enc.getVisibleLayer(i).reconstruction.size()) {
@@ -220,7 +183,7 @@ void ImageEncoder::reconstruct(
 ) {
     initCheck();
 
-    if (reconCIs.size() != enc.getOutputCIs().size()) {
+    if (reconCIs.size() != enc.getHiddenCIs().size()) {
         std::cerr << "Error: reconCIs must match the outputSize of the ImageEncoder!" << std::endl;
         abort();
     }
@@ -228,8 +191,8 @@ void ImageEncoder::reconstruct(
     aon::IntBuffer cReconCIsBacking(reconCIs.size());
 
     for (int j = 0; j < reconCIs.size(); j++) {
-        if (reconCIs[j] < 0 || reconCIs[j] >= enc.getOutputSize().z) {
-            std::cerr << "Recon CSDR (reconCIs) has an out-of-bounds column index (" << reconCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (enc.getOutputSize().z - 1) << "]" << std::endl;
+        if (reconCIs[j] < 0 || reconCIs[j] >= enc.getHiddenSize().z) {
+            std::cerr << "Recon CSDR (reconCIs) has an out-of-bounds column index (" << reconCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (enc.getHiddenSize().z - 1) << "]" << std::endl;
             abort();
         }
 
