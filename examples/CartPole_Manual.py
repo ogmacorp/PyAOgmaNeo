@@ -52,7 +52,7 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-res = 32 # Resolution (column size) of encoding
+res = 16 # Resolution (column size) of encoding
 
 se = ScalarEncoder(4, 9, res)
 
@@ -62,7 +62,7 @@ neo.setNumThreads(8)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(3): # Layers with exponential memory. Not much memory is needed for Cart-Pole
+for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole
     ld = neo.LayerDesc(hiddenSize=(4, 4, 16))
 
     ld.eRadius = 2
