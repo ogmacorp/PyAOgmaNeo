@@ -320,6 +320,38 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setEDecay(
+        int l,
+        float decay
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (decay <= 0.0f || decay > 1.0f) {
+            std::cerr << "Error: EDecay must be > 0.0 and <= 1.0" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).decay = decay;
+    }
+
+    float getEDecay(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).decay;
+    }
+
     void setDLR(
         int l,
         int i,
