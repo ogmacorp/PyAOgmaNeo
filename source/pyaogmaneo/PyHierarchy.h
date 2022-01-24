@@ -297,7 +297,7 @@ public:
         return h.getIOSizes().size();
     }
 
-    int getNumDVisibleLayers(
+    int getNumDLayers(
         int l
     ) {
         initCheck();
