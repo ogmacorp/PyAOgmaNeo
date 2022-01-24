@@ -411,7 +411,7 @@ public:
             abort();
         }
 
-        h.getDLayers(l)[i].lr = lr;
+        h.getDLayer(l, i).lr = lr;
     }
 
     float getDLR(
@@ -430,7 +430,7 @@ public:
             abort();
         }
 
-        return h.getDLayers(l)[i].lr;
+        return h.getDLayer(l, i).lr;
     }
 
     void setDDecay(
@@ -455,7 +455,7 @@ public:
             abort();
         }
 
-        h.getDLayers(l)[i].decay = decay;
+        h.getDLayer(l, i).decay = decay;
     }
 
     float getDDecay(
@@ -474,7 +474,7 @@ public:
             abort();
         }
 
-        return h.getDLayers(l)[i].decay;
+        return h.getDLayer(l, i).decay;
     }
 
     void setDDiscount(
@@ -499,7 +499,7 @@ public:
             abort();
         }
 
-        h.getDLayers(l)[i].discount = discount;
+        h.getDLayer(l, i).discount = discount;
     }
 
     float getDDiscount(
@@ -518,7 +518,7 @@ public:
             abort();
         }
 
-        return h.getDLayers(l)[i].discount;
+        return h.getDLayer(l, i).discount;
     }
 
     void setDHistoryIters(
@@ -543,7 +543,7 @@ public:
             abort();
         }
 
-        h.getDLayers(l)[i].historyIters = historyIters;
+        h.getDLayer(l, i).historyIters = historyIters;
     }
 
     int getDHistoryIters(
@@ -562,7 +562,7 @@ public:
             abort();
         }
 
-        return h.getDLayers(l)[i].historyIters;
+        return h.getDLayer(l, i).historyIters;
     }
 
     void setDMaxSteps(
@@ -587,7 +587,7 @@ public:
             abort();
         }
 
-        h.getDLayers(l)[i].historyIters = maxSteps;
+        h.getDLayer(l, i).historyIters = maxSteps;
     }
 
     int getDMaxSteps(
@@ -606,7 +606,7 @@ public:
             abort();
         }
 
-        return h.getDLayers(l)[i].maxSteps;
+        return h.getDLayer(l, i).maxSteps;
     }
 
     // Retrieve additional parameters on the SPH's structure
@@ -639,7 +639,7 @@ public:
             abort();
         }
 
-        return h.getDLayers(l)[i].getVisibleLayerDesc().radius;
+        return h.getDLayer(l, i).getVisibleLayerDesc().radius;
     }
 };
 } // namespace pyaon
