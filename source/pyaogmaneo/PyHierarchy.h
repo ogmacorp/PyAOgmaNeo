@@ -297,6 +297,19 @@ public:
         return h.getIOSizes().size();
     }
 
+    int getNumDVisibleLayers(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayers(l).size();
+    }
+
     int getNumGVisibleLayers(
         int l
     ) {

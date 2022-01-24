@@ -113,6 +113,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
+        .def("getNumDVisibleLayers", &pyaon::Hierarchy::getNumDVisibleLayers)
         .def("getNumGVisibleLayers", &pyaon::Hierarchy::getNumGVisibleLayers)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("setELR", &pyaon::Hierarchy::setELR)
