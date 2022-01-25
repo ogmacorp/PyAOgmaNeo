@@ -76,12 +76,9 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, 2, 16)) ], [ neo.GDesc(size=(1, 1, 16)) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 2000
+iters = 1000
 
 def wave(t):
-    if t % 20 == 0:
-        return 1.0
-    return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
 
 total = 0.0
@@ -97,8 +94,6 @@ for t in range(iters):
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], [ [ 0 ] ], [ [ 0 ] ], True) # True for enabling learning
-
-    print(h.getHiddenCIs(0))
 
     end = time.time()
 
