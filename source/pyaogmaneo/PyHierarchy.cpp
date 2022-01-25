@@ -324,13 +324,13 @@ void Hierarchy::step(
         abort();
     }
 
-    if (goalCIs.size() != h.getNumGVisibleLayers()) {
-        std::cerr << "Incorrect number of goalCIs passed to step! Received " << goalCIs.size() << ", need " << h.getNumGVisibleLayers() << std::endl;
+    if (goalCIs.size() != h.getGLayer(0).getNumVisibleLayers()) {
+        std::cerr << "Incorrect number of goalCIs passed to step! Received " << goalCIs.size() << ", need " << h.getGLayer(0).getNumVisibleLayers() << std::endl;
         abort();
     }
 
-    if (actualCIs.size() != h.getNumGVisibleLayers()) {
-        std::cerr << "Incorrect number of actualCIs passed to step! Received " << actualCIs.size() << ", need " << h.getNumGVisibleLayers() << std::endl;
+    if (actualCIs.size() != h.getGLayer(0).getNumVisibleLayers()) {
+        std::cerr << "Incorrect number of actualCIs passed to step! Received " << actualCIs.size() << ", need " << h.getGLayer(0).getNumVisibleLayers() << std::endl;
         abort();
     }
 

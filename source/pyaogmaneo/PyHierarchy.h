@@ -150,31 +150,6 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<int> getTopHiddenCIs() const {
-        initCheck();
-
-        std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
-
-        for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getTopHiddenCIs()[j];
-
-        return hiddenCIs;
-    }
-
-    std::tuple<int, int, int> getTopHiddenSize() const {
-        initCheck();
-
-        aon::Int3 size = h.getTopHiddenSize();
-
-        return { size.x, size.y, size.z };
-    }
-    
-    bool getTopUpdate() const {
-        initCheck();
-
-        return h.getTopUpdate();
-    }
-
     void setImportance(
         int i,
         float importance
@@ -219,7 +194,7 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getHiddenCIs(
+    std::vector<int> getEHiddenCIs(
         int l
     ) {
         initCheck();
@@ -237,7 +212,25 @@ public:
         return hiddenCIs;
     }
 
-    std::tuple<int, int, int> getHiddenSize(
+    std::vector<int> getGHiddenCIs(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
+
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = h.getGLayer(l).getHiddenCIs()[j];
+
+        return hiddenCIs;
+    }
+
+    std::tuple<int, int, int> getEHiddenSize(
         int l
     ) {
         initCheck();
@@ -248,6 +241,21 @@ public:
         }
 
         aon::Int3 size = h.getELayer(l).getHiddenSize();
+
+        return { size.x, size.y, size.z };
+    }
+
+    std::tuple<int, int, int> getGHiddenSize(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        aon::Int3 size = h.getGLayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -572,50 +580,6 @@ public:
         }
 
         return h.getDLayer(l, i).lr;
-    }
-
-    void setDDecay(
-        int l,
-        int i,
-        float decay
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (decay < 0.0f) {
-            std::cerr << "Error: DDecay must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getDLayer(l, i).decay = decay;
-    }
-
-    float getDDecay(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayer(l, i).decay;
     }
 
     void setDDiscount(
