@@ -151,17 +151,45 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
 .. function:: Hierarchy.setELR(self, l, lr)
 
-    Set the learning rate of a encoder (E)
+    Set the learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
     :param lr: (float32) value to set
 
 .. function:: Hierarchy.getELR(self, l)
 
-    Get the learning rate of a encoder (E)
+    Get the learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
     :rtype: (float32) lr
+
+.. function:: Hierarchy.setEDecay(self, l, decay)
+
+    Set the decay rate of the internal activity running average of an encoder (E)
+
+    :param l: (int32) index of the layer
+    :param lr: (float32) value to set
+
+.. function:: Hierarchy.getEDecay(self, l)
+
+    Get the decay rate of the internal activity running average of an encoder (E)
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) decay
+
+.. function:: Hierarchy.setEBoost(self, l, boost)
+
+    Set the boost amount (for avoiding dead units) of an encoder (E)
+
+    :param l: (int32) index of the layer
+    :param lr: (float32) value to set
+
+.. function:: Hierarchy.getEBoost(self, l)
+
+    Get the boost amount (for avoiding dead units) of an encoder (E)
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) boost
 
 .. function:: Hierarchy.setDLR(self, l, lr)
 
@@ -247,19 +275,19 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param i: (int32) index of the IO layer
     :rtype: (int32) historyIters
 
-.. function:: Hierarchy.setAExplore(self, i, explore)
+.. function:: Hierarchy.setATemperature(self, i, temperature)
 
-    Set whether to explore (automatic boltzmann exploration) or not (deterministic) on an action layer (A) at the bottom of the hierarchy (IO layer)
+    Set the Boltzmann exploration temperature (0.0 for no exploration) on an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :param explore: (boolean) value to set
 
-.. function:: Hierarchy.getAExplore(self, i)
+.. function:: Hierarchy.getATemperature(self, i)
 
-    Get whether to explore (automatic boltzmann exploration) or not (deterministic) on an action layer (A) at the bottom of the hierarchy (IO layer)
+    Get the Boltzmann exploration temperature (0.0 for no exploration) on an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
-    :rtype: (boolean) explore
+    :rtype: (boolean) temperature
 
 .. function:: Hierarchy.getERadius(self, l)
 
