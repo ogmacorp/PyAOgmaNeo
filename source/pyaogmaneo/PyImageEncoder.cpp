@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -34,30 +34,6 @@ bool ImageEncoderVisibleLayerDesc::checkInRange() const {
     return true;
 }
 
-bool ImageEncoderHigherLayerDesc::checkInRange() const {
-    if (std::get<0>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[0] < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    if (std::get<1>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[1] < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    if (std::get<2>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[2] < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    if (radius < 0) {
-        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    return true;
-}
-
 void ImageEncoder::initCheck() const {
     if (!initialized) {
         std::cerr << "Attempted to use the ImageEncoder uninitialized!" << std::endl;
@@ -67,8 +43,7 @@ void ImageEncoder::initCheck() const {
 
 void ImageEncoder::initRandom(
     const std::tuple<int, int, int> &hiddenSize,
-    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
-    const std::vector<ImageEncoderHigherLayerDesc> &higherLayerDescs
+    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
 ) {
     bool allInRange = true;
 
@@ -99,24 +74,12 @@ void ImageEncoder::initRandom(
         allInRange = false;
     }
 
-    aon::Array<aon::ImageEncoder::HigherLayerDesc> cHigherLayerDescs(higherLayerDescs.size());
-
-    for (int l = 0; l < higherLayerDescs.size(); l++) {
-        if (!higherLayerDescs[l].checkInRange()) {
-            std::cerr << " - at higherLayerDescs[" << l << "]" << std::endl;
-            allInRange = false;
-        }
-
-        cHigherLayerDescs[l].hiddenSize = aon::Int3(std::get<0>(higherLayerDescs[l].hiddenSize), std::get<1>(higherLayerDescs[l].hiddenSize), std::get<2>(higherLayerDescs[l].hiddenSize));
-        cHigherLayerDescs[l].radius = higherLayerDescs[l].radius;
-    }
-
     if (!allInRange) {
         std::cerr << " - ImageEncoder: Some parameters out of range!" << std::endl;
         abort();
     }
 
-    enc.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), cVisibleLayerDescs, cHigherLayerDescs);
+    enc.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), cVisibleLayerDescs);
 
     initialized = true;
 }
@@ -220,7 +183,7 @@ void ImageEncoder::reconstruct(
 ) {
     initCheck();
 
-    if (reconCIs.size() != enc.getOutputCIs().size()) {
+    if (reconCIs.size() != enc.getHiddenCIs().size()) {
         std::cerr << "Error: reconCIs must match the outputSize of the ImageEncoder!" << std::endl;
         abort();
     }
@@ -228,7 +191,7 @@ void ImageEncoder::reconstruct(
     aon::IntBuffer cReconCIsBacking(reconCIs.size());
 
     for (int j = 0; j < reconCIs.size(); j++) {
-        if (reconCIs[j] < 0 || reconCIs[j] >= enc.getOutputSize().z) {
+        if (reconCIs[j] < 0 || reconCIs[j] >= enc.getHiddenSize().z) {
             std::cerr << "Recon CSDR (reconCIs) has an out-of-bounds column index (" << reconCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (enc.getHiddenSize().z - 1) << "]" << std::endl;
             abort();
         }

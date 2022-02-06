@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -31,23 +31,6 @@ struct ImageEncoderVisibleLayerDesc {
     bool checkInRange() const;
 };
 
-struct ImageEncoderHigherLayerDesc {
-    std::tuple<int, int, int> hiddenSize;
-
-    int radius;
-
-    ImageEncoderHigherLayerDesc(
-        const std::tuple<int, int, int> &hiddenSize,
-        int radius
-    )
-    : 
-    hiddenSize(hiddenSize),
-    radius(radius)
-    {}
-
-    bool checkInRange() const;
-};
-
 class ImageEncoder {
 private:
     bool initialized;
@@ -64,8 +47,7 @@ public:
 
     void initRandom(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
-        const std::vector<ImageEncoderHigherLayerDesc> &higherLayerDescs
+        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
     );
 
     void initFromFile(
@@ -97,12 +79,6 @@ public:
         return enc.getNumVisibleLayers();
     }
 
-    int getNumHigherLayers() const {
-        initCheck();
-
-        return enc.getNumHigherLayers();
-    }
-
     std::vector<unsigned char> getReconstruction(
         int i
     ) const {
@@ -132,29 +108,10 @@ public:
         return hiddenCIs;
     }
 
-    std::vector<int> getOutputCIs() const {
-        initCheck();
-
-        std::vector<int> outputCIs(enc.getOutputCIs().size());
-
-        for (int j = 0; j < outputCIs.size(); j++)
-            outputCIs[j] = enc.getOutputCIs()[j];
-
-        return outputCIs;
-    }
-
     std::tuple<int, int, int> getHiddenSize() const {
         initCheck();
 
         aon::Int3 size = enc.getHiddenSize();
-
-        return { size.x, size.y, size.z };
-    }
-
-    std::tuple<int, int, int> getOutputSize() const {
-        initCheck();
-
-        aon::Int3 size = enc.getOutputSize();
 
         return { size.x, size.y, size.z };
     }
@@ -206,38 +163,6 @@ public:
         initCheck();
 
         return enc.falloff;
-    }
-
-    void setHigherLR(
-        int l,
-        float lr
-    ) {
-        initCheck();
-
-        if (l < 0 || l > enc.getNumHigherLayers()) {
-            std::cerr << "Error: " << l << " is not a valid higher layer index!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: ImageEncoder higher LR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        enc.getHigherLayer(l).lr = lr;
-    }
-
-    float getHigherLR(
-        int l
-    ) const {
-        initCheck();
-
-        if (l < 0 || l > enc.getNumHigherLayers()) {
-            std::cerr << "Error: " << l << " is not a valid higher layer index!" << std::endl;
-            abort();
-        }
-
-        return enc.getHigherLayer(l).lr;
     }
 };
 } // namespace pyaon
