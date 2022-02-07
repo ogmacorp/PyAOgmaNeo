@@ -6,16 +6,28 @@ import subprocess
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
+from setuptools.command.install import install
 from distutils.version import LooseVersion
 
 # For developers, set to use system install of AOgmaNeo
 use_system_aogmaneo = False
 
-if "--use_system_aogmaneo" in sys.argv:
-    use_system_aogmaneo = True
-    sys.argv.remove("--use_system_aogmaneo")
+class InstallCommand(install):
+    user_options = install.user_options + [
+        ('use-system-aogmaneo', None, None),
+    ]
 
-use_system_aogmaneo = True # Remove before release
+    def initialize_options(self):
+        install.initialize_options(self)
+        self.use_system_aogmaneo = None
+
+    def finalize_options(self):
+        install.finalize_options(self)
+
+    def run(self):
+        global use_system_aogmaneo
+        use_system_aogmaneo = self.use_system_aogmaneo
+        install.run(self)
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -28,6 +40,7 @@ class CMakeExtension(Extension):
             "source/pyaogmaneo/PyImageEncoder.cpp",
             "source/pyaogmaneo/PyModule.cpp",
             ])
+
         self.sourcedir = os.path.abspath(sourcedir)
 
 class CMakeBuild(build_ext):
@@ -40,6 +53,7 @@ class CMakeBuild(build_ext):
 
         if platform.system() == "Windows":
             cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
+
             if cmake_version < '3.1.0':
                 raise RuntimeError("CMake >= 3.1.0 is required on Windows")
 
@@ -52,29 +66,32 @@ class CMakeBuild(build_ext):
         if not extdir.endswith(os.path.sep):
             extdir += os.path.sep
 
-        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                      '-DPYTHON_EXECUTABLE=' + sys.executable,
-                      '-DUSE_SYSTEM_AOGMANEO=' + ('On' if use_system_aogmaneo else 'Off')]
+        cmake_args = [ '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
+                       '-DUSE_SYSTEM_AOGMANEO=' + ('On' if use_system_aogmaneo else 'Off') ]
 
         cfg = 'Debug' if self.debug else 'Release'
-        build_args = ['--config', cfg]
+        build_args = [ '--config', cfg ]
 
         if platform.system() == "Windows":
-            cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
+            cmake_args += [ '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir) ]
+
             if sys.maxsize > 2**32:
                 cmake_args += ['-A', 'x64']
+
             build_args += ['--', '/m']
         else:
-            cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
-            build_args += ['--', '-j2']
+            cmake_args += [ '-DCMAKE_BUILD_TYPE=' + cfg ]
+            build_args += [ '--', '-j2' ]
 
         env = os.environ.copy()
-        env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),
-                                                              self.distribution.get_version())
+
+        env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''), self.distribution.get_version())
+
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
+
+        subprocess.check_call([ 'cmake', ext.sourcedir ] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call([ 'cmake', '--build', '.' ] + build_args, cwd=self.build_temp)
 
 setup(
     name="pyaogmaneo",
@@ -95,8 +112,9 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
-    ext_modules=[CMakeExtension("pyaogmaneo")],
+    ext_modules=[ CMakeExtension("pyaogmaneo") ],
     cmdclass={
+        'install': InstallCommand,
         'build_ext': CMakeBuild,
     },
     zip_safe=False,
