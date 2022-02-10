@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import struct
 
 # Set the number of threads
-neo.setNumThreads(8)
+neo.setNumThreads(4)
 
 def Unorm8ToCSDR(x : float):
     assert(x >= 0.0 and x <= 1.0)

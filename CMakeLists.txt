@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -34,7 +34,7 @@ else()
     FetchContent_Declare(
         AOgmaNeo
         GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-        GIT_TAG 22b1a29fc16a14f7223d62c85b0e27d826df2a15
+        GIT_TAG 13d32ef6a3acb5b5c47e457dbc5db03fcbc74afc
     )
 
     FetchContent_GetProperties(AOgmaNeo)
@@ -43,6 +43,19 @@ else()
         FetchContent_Populate(AOgmaNeo)
         add_subdirectory(${aogmaneo_SOURCE_DIR} ${aogmaneo_BINARY_DIR})
     endif()
+endif()
+
+FetchContent_Declare(
+    pybind11
+    GIT_REPOSITORY https://github.com/pybind/pybind11
+    GIT_TAG origin/master 
+)
+
+FetchContent_GetProperties(pybind11)
+
+if(NOT pybind11_POPULATED)
+    FetchContent_Populate(pybind11)
+    add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
 endif()
 
 include_directories(${AOgmaNeo_SOURCE_DIR}/source)

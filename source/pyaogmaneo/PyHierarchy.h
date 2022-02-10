@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -12,7 +12,7 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
-const int hierarchyMagic = 54398714;
+const int hierarchyMagic = 54398715;
 
 enum IOType {
     none = 0,
@@ -350,6 +350,70 @@ public:
         }
 
         return h.getELayer(l).lr;
+    }
+
+    void setEDecay(
+        int l,
+        float decay
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (decay <= 0.0f || decay > 1.0f) {
+            std::cerr << "Error: EDecay must be > 0.0 and <= 1.0" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).decay = decay;
+    }
+
+    float getEDecay(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).decay;
+    }
+
+    void setEBoost(
+        int l,
+        float boost
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (boost < 0.0f) {
+            std::cerr << "Error: EBoost must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).boost = boost;
+    }
+
+    float getEBoost(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).boost;
     }
 
     void setDLR(

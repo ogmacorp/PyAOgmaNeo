@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'PyAOgmaNeo'
-copyright = '2020-2021, Eric Laukien'
+copyright = '2020-2022, Eric Laukien'
 author = 'Eric Laukien'
 
 # The short X.Y version
