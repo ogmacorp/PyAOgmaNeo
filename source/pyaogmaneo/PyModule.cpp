@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -131,8 +131,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
-        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
+        .def("setMR", &pyaon::ImageEncoder::setMR)
+        .def("getMR", &pyaon::ImageEncoder::getMR);
 
     py::class_<pyaon::RLAdapter>(m, "RLAdapter")
         .def(py::init<>())
