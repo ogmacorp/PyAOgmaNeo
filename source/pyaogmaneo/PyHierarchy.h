@@ -376,9 +376,9 @@ public:
         return h.getDLayer(l, i).lr;
     }
 
-    void setAVLR(
+    void setALR(
         int i,
-        float vlr
+        float lr
     ) {
         initCheck();
 
@@ -392,15 +392,15 @@ public:
             abort();
         }
 
-        if (vlr < 0.0f) {
+        if (lr < 0.0f) {
             std::cerr << "Error: VALR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getALayer(i).vlr = vlr;
+        h.getALayer(i).lr = lr;
     }
 
-    float getAVLR(
+    float getALR(
         int i
     ) const {
         initCheck();
@@ -415,49 +415,7 @@ public:
             abort();
         }
 
-        return h.getALayer(i).vlr;
-    }
-
-    void setAALR(
-        int i,
-        float alr
-    ) {
-        initCheck();
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (alr < 0.0f) {
-            std::cerr << "Error: AALR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).alr = alr;
-    }
-
-    float getAALR(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).alr;
+        return h.getALayer(i).lr;
     }
 
     void setADiscount(
@@ -502,9 +460,9 @@ public:
         return h.getALayer(i).discount;
     }
 
-    void setATemperature(
+    void setATraceDecay(
         int i,
-        float temperature
+        float traceDecay
     ) {
         initCheck();
 
@@ -518,15 +476,15 @@ public:
             abort();
         }
 
-        if (temperature < 0.0f) {
-            std::cerr << "Error: ATemperature must be >= 0.0" << std::endl;
+        if (traceDecay < 0.0f || traceDecay >= 1.0f) {
+            std::cerr << "Error: ATraceDecay must be >= 0.0 and < 1.0" << std::endl;
             abort();
         }
 
-        h.getALayer(i).temperature = temperature;
+        h.getALayer(i).traceDecay = traceDecay;
     }
 
-    float getATemperature(
+    float getATraceDecay(
         int i
     ) const {
         initCheck();
@@ -541,12 +499,12 @@ public:
             abort();
         }
 
-        return h.getALayer(i).temperature;
+        return h.getALayer(i).traceDecay;
     }
 
-    void setAMinSteps(
+    void setATraceScale(
         int i,
-        int minSteps
+        float traceScale
     ) {
         initCheck();
 
@@ -560,38 +518,19 @@ public:
             abort();
         }
 
-        if (minSteps < 1) {
-            std::cerr << "Error: AMinSteps must be >= 1" << std::endl;
+        if (traceScale < 0.0f) {
+            std::cerr << "Error: ATraceScale must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getALayer(i).minSteps = minSteps;
+        h.getALayer(i).traceScale = traceScale;
     }
 
-    int getAMinSteps(
+    float getATraceScale(
         int i
     ) const {
         initCheck();
         
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i)) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).minSteps;
-    }
-
-    void setAHistoryIters(
-        int i,
-        int historyIters
-    ) {
-        initCheck();
-
         if (i < 0 || i >= h.getIOSizes().size()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
@@ -602,30 +541,7 @@ public:
             abort();
         }
 
-        if (historyIters < 0) {
-            std::cerr << "Error: AHistoryIters must be >= 0" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i)) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).historyIters;
+        return h.getALayer(i).traceScale;
     }
 
     // Retrieve additional parameters on the SPH's structure
