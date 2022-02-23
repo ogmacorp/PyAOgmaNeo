@@ -36,11 +36,6 @@ bool IODesc::checkInRange() const {
         return false;
     }
 
-    if (historyCapacity < 2) {
-        std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
-        return false;
-    }
-
     return true;
 }
 
