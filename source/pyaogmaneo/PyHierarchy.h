@@ -27,17 +27,21 @@ struct IODesc {
     int eRadius;
     int dRadius;
 
+    int historyCapacity;
+
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int eRadius,
-        int dRadius
+        int dRadius,
+        int historyCapacity
     )
     :
     size(size),
     type(type),
     eRadius(eRadius),
-    dRadius(dRadius)
+    dRadius(dRadius),
+    historyCapacity(historyCapacity)
     {}
 
     bool checkInRange() const;
@@ -115,7 +119,8 @@ public:
     void step(
         const std::vector<std::vector<int>> &inputCIs,
         bool learnEnabled,
-        float reward
+        float reward,
+        bool mimic
     );
 
     int getNumLayers() const {

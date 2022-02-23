@@ -36,6 +36,11 @@ bool IODesc::checkInRange() const {
         return false;
     }
 
+    if (historyCapacity < 0) {
+        std::cerr << "Error: historyCapacity < 0 is not allowed!" << std::endl;
+        return false;
+    }
+
     return true;
 }
 
@@ -113,7 +118,8 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
             ioDescs[i].eRadius,
-            ioDescs[i].dRadius
+            ioDescs[i].dRadius,
+            ioDescs[i].historyCapacity
         );
     }
     
@@ -242,7 +248,8 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 void Hierarchy::step(
     const std::vector<std::vector<int>> &inputCIs,
     bool learnEnabled,
-    float reward
+    float reward,
+    bool mimic
 ) {
     initCheck();
 
@@ -276,7 +283,7 @@ void Hierarchy::step(
         cInputCIs[i] = &cInputCIsBacking[i];
     }
     
-    h.step(cInputCIs, learnEnabled, reward);
+    h.step(cInputCIs, learnEnabled, reward, mimic);
 }
 
 std::vector<int> Hierarchy::getPredictionCIs(
