@@ -112,6 +112,7 @@ for t2 in range(3000):
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
+    print(h.getHiddenCIs(0))
     # Decode value (de-bin)
     #value = CSDRToF(h.getPredictionCIs(0), inputColumnSize) * maxRange
     value = CSDRToUnorm8(h.getPredictionCIs(0))
