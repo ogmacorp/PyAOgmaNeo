@@ -145,24 +145,5 @@ public:
 
         return enc.lr;
     }
-
-    void setMR(
-        float mr
-    ) {
-        initCheck();
-
-        if (mr < 0.0f) {
-            std::cerr << "Error: ImageEncoder MR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        enc.mr = mr;
-    }
-
-    float getMR() const {
-        initCheck();
-
-        return enc.mr;
-    }
 };
 } // namespace pyaon
