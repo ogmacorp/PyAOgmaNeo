@@ -49,6 +49,7 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
+    int numPriorities;
 
     int eRadius;
     int dRadius;
@@ -58,6 +59,7 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
+        int numPriorities,
         int eRadius,
         int dRadius,
         int ticksPerUpdate,
@@ -65,6 +67,7 @@ struct LayerDesc {
     )
     :
     hiddenSize(hiddenSize),
+    numPriorities(numPriorities),
     eRadius(eRadius),
     dRadius(dRadius),
     ticksPerUpdate(ticksPerUpdate),
@@ -320,10 +323,10 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setDLR(
+    void setDLR0(
         int l,
         int i,
-        float lr
+        float lr0
     ) {
         initCheck();
 
@@ -342,15 +345,15 @@ public:
             abort();
         }
 
-        if (lr < 0.0f) {
+        if (lr0 < 0.0f) {
             std::cerr << "Error: DLR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getDLayer(l, i).lr = lr;
+        h.getDLayer(l, i).lr0 = lr0;
     }
 
-    float getDLR(
+    float getDLR0(
         int l,
         int i
     ) const {
@@ -371,7 +374,7 @@ public:
             abort();
         }
 
-        return h.getDLayer(l, i).lr;
+        return h.getDLayer(l, i).lr0;
     }
 
     void setAVLR(
