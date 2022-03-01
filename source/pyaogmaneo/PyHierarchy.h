@@ -288,9 +288,9 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setELR(
+    void setELR0(
         int l,
-        float lr
+        float lr0
     ) {
         initCheck();
 
@@ -299,15 +299,15 @@ public:
             abort();
         }
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
+        if (lr0 < 0.0f) {
+            std::cerr << "Error: ELR0 must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getELayer(l).lr = lr;
+        h.getELayer(l).lr0 = lr0;
     }
 
-    float getELR(
+    float getELR0(
         int l
     ) {
         initCheck();
@@ -317,13 +317,13 @@ public:
             abort();
         }
 
-        return h.getELayer(l).lr;
+        return h.getELayer(l).lr0;
     }
 
-    void setDLR(
+    void setDLR0(
         int l,
         int i,
-        float lr
+        float lr0
     ) {
         initCheck();
 
@@ -342,15 +342,15 @@ public:
             abort();
         }
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
+        if (lr0 < 0.0f) {
+            std::cerr << "Error: DLR0 must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getDLayer(l, i).lr = lr;
+        h.getDLayer(l, i).lr0 = lr0;
     }
 
-    float getDLR(
+    float getDLR0(
         int l,
         int i
     ) const {
@@ -371,7 +371,7 @@ public:
             abort();
         }
 
-        return h.getDLayer(l, i).lr;
+        return h.getDLayer(l, i).lr0;
     }
 
     void setAVLR(
