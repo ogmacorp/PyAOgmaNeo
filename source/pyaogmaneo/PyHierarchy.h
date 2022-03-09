@@ -346,9 +346,9 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setELR(
+    void setELR0(
         int l,
-        float lr
+        float lr0
     ) {
         initCheck();
 
@@ -357,15 +357,15 @@ public:
             abort();
         }
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
+        if (lr0 < 0.0f) {
+            std::cerr << "Error: ELR0 must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getELayer(l).lr = lr;
+        h.getELayer(l).lr0 = lr0;
     }
 
-    float getELR(
+    float getELR0(
         int l
     ) {
         initCheck();
@@ -375,173 +375,13 @@ public:
             abort();
         }
 
-        return h.getELayer(l).lr;
+        return h.getELayer(l).lr0;
     }
 
-    void setEDecay(
-        int l,
-        float decay
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (decay < 0.0f || decay >= 1.0f) {
-            std::cerr << "Error: EDecay must be >= 0.0 and < 1.0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).decay = decay;
-    }
-
-    float getEDecay(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).decay;
-    }
-
-    void setEBoost(
-        int l,
-        float boost
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (boost < 0.0f) {
-            std::cerr << "Error: EBoost must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).boost = boost;
-    }
-
-    float getEBoost(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).boost;
-    }
-
-    void setGLR(
-        int l,
-        float lr
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: GLR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getGLayer(l).lr = lr;
-    }
-
-    float getGLR(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getGLayer(l).lr;
-    }
-
-    void setGDecay(
-        int l,
-        float decay
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (decay < 0.0f || decay >= 1.0f) {
-            std::cerr << "Error: GDecay must be >= 0.0 and < 1.0" << std::endl;
-            abort();
-        }
-
-        h.getGLayer(l).decay = decay;
-    }
-
-    float getGDecay(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getGLayer(l).decay;
-    }
-
-    void setGBoost(
-        int l,
-        float boost
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (boost < 0.0f) {
-            std::cerr << "Error: GBoost must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getGLayer(l).boost = boost;
-    }
-
-    float getGBoost(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getGLayer(l).boost;
-    }
-
-    void setDLR(
+    void setDLR0(
         int l,
         int i,
-        float lr
+        float lr0
     ) {
         initCheck();
 
@@ -555,15 +395,15 @@ public:
             abort();
         }
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
+        if (lr0 < 0.0f) {
+            std::cerr << "Error: DLR0 must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getDLayer(l, i).lr = lr;
+        h.getDLayer(l, i).lr0 = lr0;
     }
 
-    float getDLR(
+    float getDLR0(
         int l,
         int i
     ) const {
@@ -579,7 +419,7 @@ public:
             abort();
         }
 
-        return h.getDLayer(l, i).lr;
+        return h.getDLayer(l, i).lr0;
     }
 
     void setDDiscount(
