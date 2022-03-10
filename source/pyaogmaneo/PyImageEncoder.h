@@ -146,23 +146,23 @@ public:
         return enc.lr;
     }
 
-    void setMR(
-        float mr
+    void setFalloff(
+        float falloff
     ) {
         initCheck();
 
-        if (mr < 0.0f) {
-            std::cerr << "Error: ImageEncoder MR must be >= 0.0" << std::endl;
+        if (falloff < 0.0f) {
+            std::cerr << "Error: ImageEncoder Falloff must be >= 0.0" << std::endl;
             abort();
         }
 
-        enc.mr = mr;
+        enc.falloff = falloff;
     }
 
-    float getMR() const {
+    float getFalloff() const {
         initCheck();
 
-        return enc.mr;
+        return enc.falloff;
     }
 };
 } // namespace pyaon
