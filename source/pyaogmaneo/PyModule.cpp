@@ -52,20 +52,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
-            py::arg("ticksPerUpdate") = 2,
-            py::arg("temporalHorizon") = 2
+            py::arg("rRadius") = 2,
+            py::arg("dRadius") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
-        .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
-        .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
+        .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
+        .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<>())
@@ -85,15 +82,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getTopHiddenCIs", &pyaon::Hierarchy::getTopHiddenCIs)
         .def("getTopHiddenSize", &pyaon::Hierarchy::getTopHiddenSize)
-        .def("getTopUpdate", &pyaon::Hierarchy::getTopUpdate)
         .def("setImportance", &pyaon::Hierarchy::setImportance)
         .def("getImportance", &pyaon::Hierarchy::getImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
-        .def("getUpdate", &pyaon::Hierarchy::getUpdate)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
-        .def("getTicks", &pyaon::Hierarchy::getTicks)
-        .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
