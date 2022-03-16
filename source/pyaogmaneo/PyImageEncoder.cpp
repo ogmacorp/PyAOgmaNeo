@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -148,7 +148,7 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 }
 
 void ImageEncoder::step(
-    const std::vector<std::vector<unsigned char>> &inputs,
+    const std::vector<std::vector<float>> &inputs,
     bool learnEnabled
 ) {
     initCheck();
@@ -158,8 +158,8 @@ void ImageEncoder::step(
         abort();
     }
 
-    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
+    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::FloatBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         if (inputs[i].size() != enc.getVisibleLayer(i).reconstruction.size()) {
