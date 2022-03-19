@@ -22,7 +22,6 @@ for episode in range(10000):
 
     # Timesteps
     for t in range(500):
-        env.render()
         done, _ = runner.act(pow(0.998, episode)) # Step the environment and agent
 
         if done:
