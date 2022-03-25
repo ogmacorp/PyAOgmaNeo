@@ -99,12 +99,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
+        .def("setEDecay", &pyaon::Hierarchy::setEDecay)
+        .def("getEDecay", &pyaon::Hierarchy::getEDecay)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDDecay", &pyaon::Hierarchy::setDDecay)
+        .def("getDDecay", &pyaon::Hierarchy::getDDecay)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
         .def("getAALR", &pyaon::Hierarchy::getAALR)
+        .def("setADecay", &pyaon::Hierarchy::setADecay)
+        .def("getADecay", &pyaon::Hierarchy::getADecay)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
         .def("setATemperature", &pyaon::Hierarchy::setATemperature)
@@ -145,5 +151,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR);
+        .def("getLR", &pyaon::ImageEncoder::getLR)
+        .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
+        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
 }
