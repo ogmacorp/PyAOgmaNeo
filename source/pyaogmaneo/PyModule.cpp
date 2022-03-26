@@ -117,18 +117,25 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        //.def("setGLR", &pyaon::Hierarchy::setGLR)
-        //.def("getGLR", &pyaon::Hierarchy::getGLR)
+        .def("setEDecay", &pyaon::Hierarchy::setEDecay)
+        .def("getEDecay", &pyaon::Hierarchy::getEDecay)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDDecay", &pyaon::Hierarchy::setDDecay)
+        .def("getDDecay", &pyaon::Hierarchy::getDDecay)
         .def("setDDiscount", &pyaon::Hierarchy::setDDiscount)
         .def("getDDiscount", &pyaon::Hierarchy::getDDiscount)
         .def("setDHistoryIters", &pyaon::Hierarchy::setDHistoryIters)
         .def("getDHistoryIters", &pyaon::Hierarchy::getDHistoryIters)
         .def("setDMaxSteps", &pyaon::Hierarchy::setDMaxSteps)
         .def("getDMaxSteps", &pyaon::Hierarchy::getDMaxSteps)
+        .def("setGLR", &pyaon::Hierarchy::setGLR)
+        .def("getGLR", &pyaon::Hierarchy::getGLR)
+        .def("setGDecay", &pyaon::Hierarchy::setGDecay)
+        .def("getGDecay", &pyaon::Hierarchy::getGDecay)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius);
+        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
+        .def("getGRadius", &pyaon::Hierarchy::getGRadius);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
@@ -159,7 +166,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR);
+        .def("getLR", &pyaon::ImageEncoder::getLR)
+        .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
+        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
 
     py::class_<pyaon::RLAdapter>(m, "RLAdapter")
         .def(py::init<>())

@@ -378,6 +378,38 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setEDecay(
+        int l,
+        float decay
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (decay < 0.0f) {
+            std::cerr << "Error: EDecay must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).decay = decay;
+    }
+
+    float getEDecay(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).decay;
+    }
+
     void setDLR(
         int l,
         int i,
@@ -420,6 +452,50 @@ public:
         }
 
         return h.getDLayer(l, i).lr;
+    }
+
+    void setDDecay(
+        int l,
+        int i,
+        float decay
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (decay < 0.0f) {
+            std::cerr << "Error: DDecay must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getDLayer(l, i).decay = decay;
+    }
+
+    float getDDecay(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayer(l, i).decay;
     }
 
     void setDDiscount(
@@ -554,6 +630,70 @@ public:
         return h.getDLayer(l, i).maxSteps;
     }
 
+    void setGLR(
+        int l,
+        float lr
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (lr < 0.0f) {
+            std::cerr << "Error: GLR must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getGLayer(l).lr = lr;
+    }
+
+    float getGLR(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getGLayer(l).lr;
+    }
+
+    void setGDecay(
+        int l,
+        float decay
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (decay < 0.0f) {
+            std::cerr << "Error: GDecay must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getGLayer(l).decay = decay;
+    }
+
+    float getGDecay(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getGLayer(l).decay;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
@@ -585,6 +725,19 @@ public:
         }
 
         return h.getDLayer(l, i).getVisibleLayerDesc().radius;
+    }
+
+    int getGRadius(
+        int l
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getGLayer(l).getVisibleLayerDesc(0).radius;
     }
 };
 } // namespace pyaon
