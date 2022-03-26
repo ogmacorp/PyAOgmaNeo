@@ -24,6 +24,8 @@ struct IODesc {
     std::tuple<int, int, int> size;
     IOType type;
 
+    int numDendrites;
+
     int eRadius;
     int dRadius;
 
@@ -32,6 +34,7 @@ struct IODesc {
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
+        int numDendrites,
         int eRadius,
         int dRadius,
         int historyCapacity
@@ -39,6 +42,7 @@ struct IODesc {
     :
     size(size),
     type(type),
+    numDendrites(numDendrites),
     eRadius(eRadius),
     dRadius(dRadius),
     historyCapacity(historyCapacity)
@@ -50,6 +54,8 @@ struct IODesc {
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
+    int numDendrites;
+
     int eRadius;
     int dRadius;
 
@@ -58,6 +64,7 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
+        int numDendrites,
         int eRadius,
         int dRadius,
         int ticksPerUpdate,
@@ -65,6 +72,7 @@ struct LayerDesc {
     )
     :
     hiddenSize(hiddenSize),
+    numDendrites(numDendrites),
     eRadius(eRadius),
     dRadius(dRadius),
     ticksPerUpdate(ticksPerUpdate),
@@ -406,10 +414,10 @@ public:
         return h.getDLayer(l, i).lr;
     }
 
-    void setDDecay(
+    void setDBoost(
         int l,
         int i,
-        float decay
+        float boost
     ) {
         initCheck();
 
@@ -428,15 +436,15 @@ public:
             abort();
         }
 
-        if (decay < 0.0f) {
-            std::cerr << "Error: DDecay must be >= 0.0" << std::endl;
+        if (boost < 0.0f) {
+            std::cerr << "Error: DBoost must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getDLayer(l, i).decay = decay;
+        h.getDLayer(l, i).boost = boost;
     }
 
-    float getDDecay(
+    float getDBoost(
         int l,
         int i
     ) const {
@@ -457,7 +465,7 @@ public:
             abort();
         }
 
-        return h.getDLayer(l, i).decay;
+        return h.getDLayer(l, i).boost;
     }
 
     void setAVLR(
