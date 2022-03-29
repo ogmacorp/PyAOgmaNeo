@@ -39,7 +39,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("type") = pyaon::prediction,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 64
+            py::arg("historyCapacity") = 32
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
@@ -61,7 +61,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("gHiddenSizeZ") = 16,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 64,
+            py::arg("historyCapacity") = 32,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
