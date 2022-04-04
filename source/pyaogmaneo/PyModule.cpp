@@ -101,8 +101,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getEExplainIters", &pyaon::Hierarchy::getEExplainIters)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setEDecay", &pyaon::Hierarchy::setEDecay)
-        .def("getEDecay", &pyaon::Hierarchy::getEDecay)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
