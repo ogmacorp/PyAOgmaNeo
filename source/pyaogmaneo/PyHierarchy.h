@@ -195,7 +195,7 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getHiddenCIs(
+    std::vector<int> getRHiddenCIs(
         int l
     ) {
         initCheck();
@@ -205,10 +205,28 @@ public:
             abort();
         }
 
-        std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getReconEnc(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getELayer(l).getHiddenCIs()[j];
+            hiddenCIs[j] = h.getReconEnc(l).getHiddenCIs()[j];
+
+        return hiddenCIs;
+    }
+
+    std::vector<int> getEHiddenCIs(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        std::vector<int> hiddenCIs(h.getErrorEnc(l).getHiddenCIs().size());
+
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = h.getErrorEnc(l).getHiddenCIs()[j];
 
         return hiddenCIs;
     }
@@ -223,7 +241,7 @@ public:
             abort();
         }
 
-        aon::Int3 size = h.getELayer(l).getHiddenSize();
+        aon::Int3 size = h.getReconEnc(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -254,7 +272,7 @@ public:
         return h.getTicksPerUpdate(l);
     }
 
-    int getNumEVisibleLayers(
+    int getNumEncVisibleLayers(
         int l
     ) {
         initCheck();
@@ -264,7 +282,7 @@ public:
             abort();
         }
 
-        return h.getELayer(l).getNumVisibleLayers();
+        return h.getReconEnc(l).getNumVisibleLayers();
     }
 
     int getNumIO() const {
@@ -290,7 +308,7 @@ public:
 
     void setEELR(
         int l,
-        float elr
+        float lr
     ) {
         initCheck();
 
@@ -299,12 +317,12 @@ public:
             abort();
         }
 
-        if (elr < 0.0f) {
+        if (lr < 0.0f) {
             std::cerr << "Error: EELR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getELayer(l).elr = elr;
+        h.getErrorEnc(l).lr = lr;
     }
 
     float getEELR(
@@ -317,12 +335,12 @@ public:
             abort();
         }
 
-        return h.getELayer(l).elr;
+        return h.getErrorEnc(l).lr;
     }
 
-    void setERLR(
+    void setRELR(
         int l,
-        float rlr
+        float lr
     ) {
         initCheck();
 
@@ -331,15 +349,15 @@ public:
             abort();
         }
 
-        if (rlr < 0.0f) {
-            std::cerr << "Error: ERLR must be >= 0.0" << std::endl;
+        if (lr < 0.0f) {
+            std::cerr << "Error: RELR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getELayer(l).rlr = rlr;
+        h.getReconEnc(l).lr = lr;
     }
 
-    float getERLR(
+    float getRELR(
         int l
     ) {
         initCheck();
@@ -349,7 +367,7 @@ public:
             abort();
         }
 
-        return h.getELayer(l).rlr;
+        return h.getReconEnc(l).lr;
     }
 
     void setDLR(
@@ -669,7 +687,7 @@ public:
             abort();
         }
 
-        return h.getELayer(l).getVisibleLayerDesc(0).radius;
+        return h.getReconEnc(l).getVisibleLayerDesc(0).radius;
     }
 
     int getDRadius(

@@ -49,9 +49,6 @@ h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 iters = 10000
 
 def wave(t):
-    if t % 40 == 0:
-        return 1.0
-    return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
 
 for t in range(iters):
@@ -63,7 +60,9 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    print(h.getHiddenCIs(0))
+    print(h.getRHiddenCIs(0))
+    print(h.getEHiddenCIs(0))
+    print("-----------")
     # Print progress
     if t % 100 == 0:
         print(t)
