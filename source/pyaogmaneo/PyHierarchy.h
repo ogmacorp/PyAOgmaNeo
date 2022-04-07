@@ -288,9 +288,9 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setELR(
+    void setEELR(
         int l,
-        float lr
+        float elr
     ) {
         initCheck();
 
@@ -299,15 +299,15 @@ public:
             abort();
         }
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
+        if (elr < 0.0f) {
+            std::cerr << "Error: EELR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getELayer(l).lr = lr;
+        h.getELayer(l).elr = elr;
     }
 
-    float getELR(
+    float getEELR(
         int l
     ) {
         initCheck();
@@ -317,7 +317,39 @@ public:
             abort();
         }
 
-        return h.getELayer(l).lr;
+        return h.getELayer(l).elr;
+    }
+
+    void setERLR(
+        int l,
+        float rlr
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (rlr < 0.0f) {
+            std::cerr << "Error: ERLR must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).rlr = rlr;
+    }
+
+    float getERLR(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).rlr;
     }
 
     void setDLR(
