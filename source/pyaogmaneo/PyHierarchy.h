@@ -574,9 +574,9 @@ public:
         return h.getALayer(i).temperature;
     }
 
-    void setAQSteps(
+    void setANSteps(
         int i,
-        int qSteps
+        int nSteps
     ) {
         initCheck();
 
@@ -590,15 +590,15 @@ public:
             abort();
         }
 
-        if (qSteps < 1) {
-            std::cerr << "Error: AQSteps must be >= 1" << std::endl;
+        if (nSteps < 1) {
+            std::cerr << "Error: ANSteps must be >= 1" << std::endl;
             abort();
         }
 
-        h.getALayer(i).qSteps = qSteps;
+        h.getALayer(i).nSteps = nSteps;
     }
 
-    int getAQSteps(
+    int getANSteps(
         int i
     ) const {
         initCheck();
@@ -613,7 +613,7 @@ public:
             abort();
         }
 
-        return h.getALayer(i).qSteps;
+        return h.getALayer(i).nSteps;
     }
 
     void setAHistoryIters(
