@@ -12,7 +12,7 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
-const int hierarchyMagic = 54398716;
+const int hierarchyMagic = 54398717;
 
 enum IOType {
     none = 0,
