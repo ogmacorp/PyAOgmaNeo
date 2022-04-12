@@ -542,9 +542,9 @@ public:
         return h.getALayer(i).temperature;
     }
 
-    void setAMinSteps(
+    void setANSteps(
         int i,
-        int minSteps
+        int nSteps
     ) {
         initCheck();
 
@@ -558,15 +558,15 @@ public:
             abort();
         }
 
-        if (minSteps < 1) {
-            std::cerr << "Error: AMinSteps must be >= 1" << std::endl;
+        if (nSteps < 1) {
+            std::cerr << "Error: ANSteps must be >= 1" << std::endl;
             abort();
         }
 
-        h.getALayer(i).minSteps = minSteps;
+        h.getALayer(i).nSteps = nSteps;
     }
 
-    int getAMinSteps(
+    int getANSteps(
         int i
     ) const {
         initCheck();
@@ -581,7 +581,7 @@ public:
             abort();
         }
 
-        return h.getALayer(i).minSteps;
+        return h.getALayer(i).nSteps;
     }
 
     void setAHistoryIters(
