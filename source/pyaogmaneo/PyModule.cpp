@@ -39,7 +39,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("type") = pyaon::prediction,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 128
+            py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
@@ -109,6 +109,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
         .def("setATemperature", &pyaon::Hierarchy::setATemperature)
         .def("getATemperature", &pyaon::Hierarchy::getATemperature)
+        .def("setAValueBlend", &pyaon::Hierarchy::setAValueBlend)
+        .def("getAValueBlend", &pyaon::Hierarchy::getAValueBlend)
         .def("setANSteps", &pyaon::Hierarchy::setANSteps)
         .def("getANSteps", &pyaon::Hierarchy::getANSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)

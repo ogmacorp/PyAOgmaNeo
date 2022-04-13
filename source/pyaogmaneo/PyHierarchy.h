@@ -542,6 +542,48 @@ public:
         return h.getALayer(i).temperature;
     }
 
+    void setAValueBlend(
+        int i,
+        float valueBlend
+    ) {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        if (valueBlend < 0.0f || valueBlend > 1.0f) {
+            std::cerr << "Error: AValueBlend must be >= 0.0 and <= 1.0" << std::endl;
+            abort();
+        }
+
+        h.getALayer(i).valueBlend = valueBlend;
+    }
+
+    float getAValueBlend(
+        int i
+    ) const {
+        initCheck();
+        
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).valueBlend;
+    }
+
     void setANSteps(
         int i,
         int nSteps
