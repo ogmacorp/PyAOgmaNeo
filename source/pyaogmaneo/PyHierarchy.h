@@ -574,6 +574,90 @@ public:
         return h.getALayer(i).temperature;
     }
 
+    void setAMinSteps(
+        int i,
+        int minSteps
+    ) {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        if (minSteps < 1) {
+            std::cerr << "Error: AMinSteps must be >= 1" << std::endl;
+            abort();
+        }
+
+        h.getALayer(i).minSteps = minSteps;
+    }
+
+    int getAMinSteps(
+        int i
+    ) const {
+        initCheck();
+        
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i)) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).minSteps;
+    }
+
+    void setAHistoryIters(
+        int i,
+        int historyIters
+    ) {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        if (historyIters < 0) {
+            std::cerr << "Error: AHistoryIters must be >= 0" << std::endl;
+            abort();
+        }
+
+        h.getALayer(i).historyIters = historyIters;
+    }
+
+    int getAHistoryIters(
+        int i
+    ) const {
+        initCheck();
+        
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i)) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).historyIters;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
