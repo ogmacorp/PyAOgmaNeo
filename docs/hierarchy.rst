@@ -149,33 +149,33 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param i: (int32) index of the IO layer
     :rtype: (boolean) True if exists, False otherwise
 
-.. function:: Hierarchy.setELR(self, l, lr)
+.. function:: Hierarchy.setEELR(self, l, lr)
 
-    Set the learning rate of an encoder (E)
+    Set the error learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
     :param lr: (float32) value to set
 
-.. function:: Hierarchy.getELR(self, l)
+.. function:: Hierarchy.getEELR(self, l)
 
-    Get the learning rate of an encoder (E)
+    Get the error learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
     :rtype: (float32) lr
 
-.. function:: Hierarchy.setEDecay(self, l, decay)
+.. function:: Hierarchy.setERLR(self, l, lr)
 
-    Set the decay rate of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :param decay: (float32) value to set
-
-.. function:: Hierarchy.getEDecay(self, l)
-
-    Get the decay rate of an encoder (E)
+    Set the reconstruction learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
-    :rtype: (float32) decay
+    :param lr: (float32) value to set
+
+.. function:: Hierarchy.getERLR(self, l)
+
+    Get the reconstruction learning rate of an encoder (E)
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) lr
 
 .. function:: Hierarchy.setDLR(self, l, lr)
 
@@ -190,20 +190,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param l: (int32) index of the layer
     :rtype: (float32) lr
-
-.. function:: Hierarchy.setDDecay(self, l, decay)
-
-    Set the decay rate of a decoder (D)
-
-    :param l: (int32) index of the layer
-    :param decay: (float32) value to set
-
-.. function:: Hierarchy.getDDecay(self, l)
-
-    Get the decay rate of a decoder (D)
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) decay
 
 .. function:: Hierarchy.setAVLR(self, i, vlr)
 
@@ -232,20 +218,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param i: (int32) index of the IO layer
     :rtype: (float32) alr
-
-.. function:: Hierarchy.setADecay(self, i, decay)
-
-    Set the decay rate of an action layer (A) at the bottom of the hierarchy (IO layer)
-
-    :param i: (int32) index of the IO layer
-    :param decay: (float32) value to set
-
-.. function:: Hierarchy.getADecay(self, i)
-
-    Get the decay rate of an action layer (A) at the bottom of the hierarchy (IO layer)
-
-    :param i: (int32) index of the IO layer
-    :rtype: (float32) decay
 
 .. function:: Hierarchy.setADiscount(self, i, discount)
 
