@@ -45,7 +45,7 @@ It is implemented as a bunch of 1D Self-Organizing Maps (SOMs).
 
     Perform a simulation step of the ImageEncoder. This will both generate a CSDR from the images (visibleActivations) and learn to improve the representation (learning only if learnEnabled=True).
 
-    :param inputs: ([FloatBuffer]) list of input byte buffers representing the image of the dimensions described in the initialization. If using regular RGB images, the values in this buffer should be in the range [0, 255])
+    :param inputs: ([FloatBuffer]) list of input float buffers representing the image of the dimensions described in the initialization. If using regular RGB images, the values in this buffer should be in the range [0, 1])
     :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
 
 .. function:: ImageEncoder.reconstruct(self, reconCIs)
@@ -89,24 +89,24 @@ It is implemented as a bunch of 1D Self-Organizing Maps (SOMs).
 
 .. function:: ImageEncoder.setLR(self, lr)
 
-    Set the first (hidden) layer learning rate
+    Set the learning rate
 
     :param lr: (float32) value to set
 
 .. function:: ImageEncoder.getLR(self)
 
-    Get the fist (hidden) layer learning rate
+    Get the learning rate
 
     :rtype: (float32) lr
 
 .. function:: ImageEncoder.setFalloff(self, falloff)
 
-    Set the first (hidden) layer SOM falloff
+    Set the SOM falloff
 
     :param falloff: (float32) value to set
 
 .. function:: ImageEncoder.getFalloff(self)
 
-    Get the first (hidden) layer SOM falloff
+    Get the SOM falloff
 
     :rtype: (float32) falloff
