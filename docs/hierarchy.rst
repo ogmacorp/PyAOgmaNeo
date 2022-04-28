@@ -135,47 +135,33 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
-.. function:: Hierarchy.dLayerExists(self, i)
-
-    Determine whether there is a decoder at the i-th IO layer. This will be True if the IODesc at index i was of type prediction during initialization
-
-    :param i: (int32) index of the IO layer
-    :rtype: (boolean) True if exists, False otherwise
-
-.. function:: Hierarchy.aLayerExists(self, i)
-
-    Determine whether there is a actor at the i-th IO layer. This will be True if the IODesc at index i was of type action during initialization
-
-    :param i: (int32) index of the IO layer
-    :rtype: (boolean) True if exists, False otherwise
-
-.. function:: Hierarchy.setEELR(self, l, lr)
+.. function:: Hierarchy.setEELR(self, l, elr)
 
     Set the error learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
-    :param lr: (float32) value to set
+    :param elr: (float32) value to set
 
 .. function:: Hierarchy.getEELR(self, l)
 
     Get the error learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
-    :rtype: (float32) lr
+    :rtype: (float32) elr
 
-.. function:: Hierarchy.setERLR(self, l, lr)
+.. function:: Hierarchy.setERLR(self, l, rlr)
 
     Set the reconstruction learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
-    :param lr: (float32) value to set
+    :param rlr: (float32) value to set
 
 .. function:: Hierarchy.getERLR(self, l)
 
     Get the reconstruction learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
-    :rtype: (float32) lr
+    :rtype: (float32) rlr
 
 .. function:: Hierarchy.setDLR(self, l, lr)
 
