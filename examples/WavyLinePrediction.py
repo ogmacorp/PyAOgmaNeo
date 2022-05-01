@@ -50,11 +50,11 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 100000
+iters = 10000
 
 # The function we are modeling
 def wave(t):
-    if t % 100 == 0:
+    if t % 20 == 0:
         return 1.0
     return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
@@ -79,7 +79,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(5000):
+for t2 in range(100):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
