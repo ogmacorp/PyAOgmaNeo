@@ -17,7 +17,7 @@ from copy import copy
 import time
 
 def sigmoid(x):
-    return np.tanh(x) * 0.5 + 0.5
+    return np.tanh(x * 0.5) * 0.5 + 0.5
 
 inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
@@ -216,7 +216,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.04, obsPreprocess=None):
+    def act(self, epsilon=0.0, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
