@@ -17,7 +17,7 @@ from copy import copy
 import time
 
 def sigmoid(x):
-    return np.tanh(x) * 0.5 + 0.5
+    return np.tanh(x * 0.5) * 0.5 + 0.5
 
 inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
@@ -148,7 +148,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius, historyCapacity=128))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 
