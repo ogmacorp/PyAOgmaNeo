@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -34,7 +34,7 @@ else()
     FetchContent_Declare(
         AOgmaNeo
         GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-        GIT_TAG origin/master
+        GIT_TAG 0cf18c7f12223f25e646e291d1bab7e7b10bb6ba
     )
 
     FetchContent_GetProperties(AOgmaNeo)
@@ -76,8 +76,6 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/PyHelpers.cpp"
     "source/pyaogmaneo/PyHierarchy.cpp"
     "source/pyaogmaneo/PyImageEncoder.cpp"
-    "source/pyaogmaneo/PyRLAdapter.cpp"
-    "source/pyaogmaneo/PyStateAdapter.cpp"
 )
 
 find_package(Python COMPONENTS Interpreter Development)

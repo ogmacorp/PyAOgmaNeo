@@ -131,8 +131,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setMR", &pyaon::ImageEncoder::setMR)
-        .def("getMR", &pyaon::ImageEncoder::getMR);
+        .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
+        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
 
     py::class_<pyaon::RLAdapter>(m, "RLAdapter")
         .def(py::init<>())
