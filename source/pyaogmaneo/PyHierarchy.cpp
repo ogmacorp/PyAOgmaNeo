@@ -33,6 +33,11 @@ bool IODesc::checkInRange() const {
         allInRange = false;
     }
 
+    if (historyCapacity < 1) {
+        std::cerr << "Error: historyCapacity < 1 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
     if (eRadius < 0) {
         std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
         allInRange = false;
@@ -71,6 +76,11 @@ bool LayerDesc::checkInRange() const {
 
     if (numDendrites < 1) {
         std::cerr << "Error: numDendrites < 1 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (historyCapacity < 1) {
+        std::cerr << "Error: historyCapacity < 1 is not allowed!" << std::endl;
         allInRange = false;
     }
 
@@ -132,6 +142,7 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
             ioDescs[i].numDendrites,
+            ioDescs[i].historyCapacity,
             ioDescs[i].eRadius,
             ioDescs[i].dRadius
         );
@@ -148,6 +159,7 @@ void Hierarchy::initRandom(
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].numDendrites,
+            layerDescs[l].historyCapacity,
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
             layerDescs[l].ticksPerUpdate,
