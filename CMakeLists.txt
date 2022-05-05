@@ -76,6 +76,8 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/PyHelpers.cpp"
     "source/pyaogmaneo/PyHierarchy.cpp"
     "source/pyaogmaneo/PyImageEncoder.cpp"
+    "source/pyaogmaneo/PyStateAdapter.cpp"
+    "source/pyaogmaneo/PyRLAdapter.cpp"
 )
 
 find_package(Python COMPONENTS Interpreter Development)
