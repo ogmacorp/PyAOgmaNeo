@@ -96,7 +96,7 @@ for t in range(iters):
     start = time.time()
 
     # Step the hierarchy given the inputs (just one here)
-    h.step([ csdr ], h.getHiddenCIs(h.getNumLayers() - 1), True) # True for enabling learning
+    h.step([ csdr ], h.getTopHiddenCIs(), True) # True for enabling learning
 
     print(h.getTopHiddenCIs())
 
@@ -116,7 +116,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(3000):
+for t2 in range(500):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
@@ -125,7 +125,7 @@ for t2 in range(3000):
     start = time.time()
 
     # Run off of own predictions with learning disabled
-    h.step([ h.getPredictionCIs(0) ], h.getHiddenCIs(h.getNumLayers() - 1), False) # Learning disabled
+    h.step([ h.getPredictionCIs(0) ], h.getTopHiddenCIs(), False) # Learning disabled
 
     end = time.time()
 
