@@ -520,48 +520,6 @@ public:
         return h.getALayer(i).alr;
     }
 
-    void setADecay(
-        int i,
-        float decay
-    ) {
-        initCheck();
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (decay < 0.0f) {
-            std::cerr << "Error: ADecay must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).decay = decay;
-    }
-
-    float getADecay(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).decay;
-    }
-
     void setADiscount(
         int i,
         float discount

@@ -113,8 +113,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
         .def("getAALR", &pyaon::Hierarchy::getAALR)
-        .def("setADecay", &pyaon::Hierarchy::setADecay)
-        .def("getADecay", &pyaon::Hierarchy::getADecay)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
         .def("setATemperature", &pyaon::Hierarchy::setATemperature)
