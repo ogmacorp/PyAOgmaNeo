@@ -38,14 +38,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
-            py::arg("numDendrites") = 4,
+            py::arg("supportSize") = 64,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
-        .def_readwrite("numDendrites", &pyaon::IODesc::numDendrites)
+        .def_readwrite("supportSize", &pyaon::IODesc::supportSize)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
         .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
@@ -60,14 +60,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("numDendrites") = 4,
+            py::arg("supportSize") = 64,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("numDendrites", &pyaon::LayerDesc::numDendrites)
+        .def_readwrite("supportSize", &pyaon::LayerDesc::supportSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
@@ -105,8 +105,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setDBoost", &pyaon::Hierarchy::setDBoost)
-        .def("getDBoost", &pyaon::Hierarchy::getDBoost)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)

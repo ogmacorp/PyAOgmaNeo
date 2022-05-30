@@ -24,7 +24,7 @@ struct IODesc {
     std::tuple<int, int, int> size;
     IOType type;
 
-    int numDendrites;
+    int supportSize;
 
     int eRadius;
     int dRadius;
@@ -34,7 +34,7 @@ struct IODesc {
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
-        int numDendrites,
+        int supportSize,
         int eRadius,
         int dRadius,
         int historyCapacity
@@ -42,7 +42,7 @@ struct IODesc {
     :
     size(size),
     type(type),
-    numDendrites(numDendrites),
+    supportSize(supportSize),
     eRadius(eRadius),
     dRadius(dRadius),
     historyCapacity(historyCapacity)
@@ -54,7 +54,7 @@ struct IODesc {
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
-    int numDendrites;
+    int supportSize;
 
     int eRadius;
     int dRadius;
@@ -64,7 +64,7 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int numDendrites,
+        int supportSize,
         int eRadius,
         int dRadius,
         int ticksPerUpdate,
@@ -72,7 +72,7 @@ struct LayerDesc {
     )
     :
     hiddenSize(hiddenSize),
-    numDendrites(numDendrites),
+    supportSize(supportSize),
     eRadius(eRadius),
     dRadius(dRadius),
     ticksPerUpdate(ticksPerUpdate),
@@ -348,60 +348,6 @@ public:
         }
 
         return h.getDLayer(l, i).lr;
-    }
-
-    void setDBoost(
-        int l,
-        int i,
-        float boost
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        if (boost < 0.0f) {
-            std::cerr << "Error: DBoost must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getDLayer(l, i).boost = boost;
-    }
-
-    float getDBoost(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayer(l, i).boost;
     }
 
     void setAVLR(
