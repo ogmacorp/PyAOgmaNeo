@@ -16,6 +16,7 @@ import struct
 # Set the number of threads
 neo.setNumThreads(4)
 
+# Encoding method to get 2 columns with 16 cells each from a byte
 def Unorm8ToCSDR(x : float):
     assert(x >= 0.0 and x <= 1.0)
 
@@ -23,21 +24,24 @@ def Unorm8ToCSDR(x : float):
 
     return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
 
-# Reverse transform of IEEEToCSDR
+# Reverse transform of CSDRToUnorm8
 def CSDRToUnorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
-# This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
+# Dimensions of the encoding
 numInputColumns = 2
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(7): # Layers with exponential memory
+for i in range(6): # Layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder
+
+    ld.ticksPerUpdate = 2
+    ld.temporalHorizon = 2
 
     lds.append(ld)
 
@@ -46,15 +50,20 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 2000
 
+# The function we are modeling
 def wave(t):
+    if t % 20 == 0:
+        return 1.0
+    return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
 
 for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
+    # Encode
     csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
@@ -70,7 +79,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(200):
+for t2 in range(100):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
