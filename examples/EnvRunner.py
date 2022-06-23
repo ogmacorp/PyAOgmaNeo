@@ -172,6 +172,7 @@ class EnvRunner:
         self.averageRewardDecay = 0.01
 
     def _feedObservation(self, obs):
+        print(obs)
         self.inputs = []
 
         actionIndex = 0
