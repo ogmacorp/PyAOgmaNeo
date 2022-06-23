@@ -17,14 +17,14 @@ from copy import copy
 import time
 
 def sigmoid(x):
-    return np.tanh(x) * 0.5 + 0.5
+    return np.tanh(x * 0.5) * 0.5 + 0.5
 
 inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=4):
+    def __init__(self, env, layerSizes=2 * [ (4, 4, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=16, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=2.0, nThreads=4):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -61,7 +61,7 @@ class EnvRunner:
                 
                 # Detect large numbers/inf
                 for i in range(len(lows)):
-                    if abs(lows[i]) > 100000 or abs(highs[i]) > 100000:
+                    if abs(lows[i]) > 10000 or abs(highs[i]) > 10000:
                         # Indicate inf by making low greater than high
                         lows[i] = 1.0
                         highs[i] = -1.0
@@ -202,7 +202,7 @@ class EnvRunner:
                 for j in range(len(self.inputLows[i])):
                     if self.inputLows[i][j] < self.inputHighs[i][j]:
                         # Rescale
-                        indices.append(int((obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]) * (self.inputSizes[i][2] - 1) + 0.5))
+                        indices.append(int(min(1.0, max(0.0, (obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]))) * (self.inputSizes[i][2] - 1) + 0.5))
                     elif self.inputLows[i][j] > self.inputHighs[i][j]: # Inf
                         v = obs[j]
 
