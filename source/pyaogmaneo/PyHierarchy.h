@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -23,24 +23,24 @@ struct IODesc {
     std::tuple<int, int, int> size;
     IOType type;
 
+    int historyCapacity;
+
     int eRadius;
     int dRadius;
-
-    int historyCapacity;
 
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
+        int historyCapacity,
         int eRadius,
-        int dRadius,
-        int historyCapacity
+        int dRadius
     )
     :
     size(size),
     type(type),
+    historyCapacity(historyCapacity),
     eRadius(eRadius),
-    dRadius(dRadius),
-    historyCapacity(historyCapacity)
+    dRadius(dRadius)
     {}
 
     bool checkInRange() const;
@@ -48,6 +48,7 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
+    int historyCapacity;
 
     int eRadius;
     int dRadius;
@@ -59,6 +60,7 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
+        int historyCapacity,
         int eRadius,
         int dRadius,
         int ticksPerUpdate,
@@ -67,6 +69,7 @@ struct LayerDesc {
     )
     :
     hiddenSize(hiddenSize),
+    historyCapacity(historyCapacity),
     eRadius(eRadius),
     dRadius(dRadius),
     ticksPerUpdate(ticksPerUpdate),
@@ -153,7 +156,7 @@ public:
         return h.getTopUpdate();
     }
 
-    void setImportance(
+    void setInputImportance(
         int i,
         float importance
     ) {
@@ -164,10 +167,10 @@ public:
             abort();
         }
 
-        h.setImportance(i, importance);
+        h.setInputImportance(i, importance);
     }
 
-    float getImportance(
+    float getInputImportance(
         int i
     ) const {
         initCheck();
@@ -177,7 +180,7 @@ public:
             abort();
         }
 
-        return h.getImportance(i);
+        return h.getInputImportance(i);
     }
 
     std::vector<int> getPredictionCIs(

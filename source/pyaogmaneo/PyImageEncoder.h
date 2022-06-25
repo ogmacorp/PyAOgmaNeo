@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -12,7 +12,7 @@
 #include <aogmaneo/ImageEncoder.h>
 
 namespace pyaon {
-const int imageEncoderMagic = 128833;
+const int imageEncoderMagic = 128837;
 
 struct ImageEncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;
@@ -65,7 +65,7 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<unsigned char>> &inputs,
+        const std::vector<std::vector<float>> &inputs,
         bool learnEnabled
     );
 
@@ -79,7 +79,7 @@ public:
         return enc.getNumVisibleLayers();
     }
 
-    std::vector<unsigned char> getReconstruction(
+    std::vector<float> getReconstruction(
         int i
     ) const {
         initCheck();
@@ -89,7 +89,7 @@ public:
             abort();
         }
 
-        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
+        std::vector<float> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
@@ -152,7 +152,7 @@ public:
         initCheck();
 
         if (falloff < 0.0f) {
-            std::cerr << "Error: ImageEncoder falloff must be >= 0.0" << std::endl;
+            std::cerr << "Error: ImageEncoder Falloff must be >= 0.0" << std::endl;
             abort();
         }
 

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2021 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -38,15 +38,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
+            py::arg("historyCapacity") = 8,
             py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
-            py::arg("historyCapacity") = 8
+            py::arg("dRadius") = 2
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
+        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
-        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
+        .def_readwrite("dRadius", &pyaon::IODesc::dRadius);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
@@ -58,6 +58,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("historyCapacity") = 8,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
@@ -65,6 +66,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("historyCapacity") = 8
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
@@ -89,8 +91,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getTopHiddenCIs", &pyaon::Hierarchy::getTopHiddenCIs)
         .def("getTopHiddenSize", &pyaon::Hierarchy::getTopHiddenSize)
         .def("getTopUpdate", &pyaon::Hierarchy::getTopUpdate)
-        .def("setImportance", &pyaon::Hierarchy::setImportance)
-        .def("getImportance", &pyaon::Hierarchy::getImportance)
+        .def("setInputImportance", &pyaon::Hierarchy::setInputImportance)
+        .def("getInputImportance", &pyaon::Hierarchy::getInputImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getUpdate", &pyaon::Hierarchy::getUpdate)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
