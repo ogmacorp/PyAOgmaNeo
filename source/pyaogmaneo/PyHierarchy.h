@@ -365,10 +365,10 @@ public:
         return h.getDLayers(l)[i].lr;
     }
 
-    void setDIters(
+    void setDDiscount(
         int l,
         int i,
-        int iters
+        float discount
     ) {
         initCheck();
 
@@ -382,15 +382,15 @@ public:
             abort();
         }
 
-        if (iters < 0) {
-            std::cerr << "Error: DIters must be >= 0" << std::endl;
+        if (discount < 0) {
+            std::cerr << "Error: DDiscount must be >= 0" << std::endl;
             abort();
         }
 
-        h.getDLayers(l)[i].iters = iters;
+        h.getDLayers(l)[i].discount = discount;
     }
 
-    int getDIters(
+    float getDDiscount(
         int l,
         int i
     ) const {
@@ -406,7 +406,7 @@ public:
             abort();
         }
 
-        return h.getDLayers(l)[i].iters;
+        return h.getDLayers(l)[i].discount;
     }
 
     // Retrieve additional parameters on the SPH's structure
