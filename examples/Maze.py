@@ -4,17 +4,33 @@ import pygame.surfarray
 from copy import copy
 import pyaogmaneo as neo
 
-# The maze. 1 for walls, 0 for empty space
+# The maze. 1 for walls, 0 for empty space, 2 is spawn, other numbers are possible goal locations
 maze = [
-    [ 1, 1, 1, 1, 1, 1, 1, 1 ],
-    [ 1, 0, 1, 0, 0, 0, 0, 1 ],
-    [ 1, 0, 0, 0, 1, 1, 0, 1 ],
-    [ 1, 0, 0, 0, 0, 0, 0, 1 ],
-    [ 1, 0, 1, 0, 0, 0, 0, 1 ],
-    [ 1, 0, 1, 1, 0, 1, 0, 1 ],
-    [ 1, 0, 0, 0, 0, 1, 0, 1 ],
-    [ 1, 1, 1, 1, 1, 1, 1, 1 ]
+    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1 ],
+    [ 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1 ],
+    [ 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 ],
+    [ 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 ],
+    [ 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1 ],
+    [ 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 ],
+    [ 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 ],
+    [ 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1 ],
+    [ 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1 ],
+    [ 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1 ],
+    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
 ]
+
+# The maze. 1 for walls, 0 for empty space
+#maze = [
+#    [ 1, 1, 1, 1, 1, 1, 1, 1 ],
+#    [ 1, 0, 1, 0, 0, 0, 0, 1 ],
+#    [ 1, 0, 0, 0, 1, 1, 0, 1 ],
+#    [ 1, 0, 0, 0, 0, 0, 0, 1 ],
+#    [ 1, 0, 1, 0, 0, 0, 0, 1 ],
+#    [ 1, 0, 1, 1, 0, 1, 0, 1 ],
+#    [ 1, 0, 0, 0, 0, 1, 0, 1 ],
+#    [ 1, 1, 1, 1, 1, 1, 1, 1 ]
+#]
 
 mazeSize = ( len(maze), len(maze[0]) )
 
@@ -39,7 +55,7 @@ sizeRatio = (screen.get_size()[0] / mazeSize[0], screen.get_size()[1] / mazeSize
 ########################### Agent ###########################
 
 # Vision configuration
-visRadius = 2 # Radius of visual field
+visRadius = 3 # Radius of visual field
 visDiam = visRadius * 2 + 1
 visArea = visDiam * visDiam
 numActions = 5 # Cardinal directions + standing still
