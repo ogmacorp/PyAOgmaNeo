@@ -106,6 +106,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setDDiscount", &pyaon::Hierarchy::setDDiscount)
         .def("getDDiscount", &pyaon::Hierarchy::getDDiscount)
+        .def("setDSharpness", &pyaon::Hierarchy::setDSharpness)
+        .def("getDSharpness", &pyaon::Hierarchy::getDSharpness)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 

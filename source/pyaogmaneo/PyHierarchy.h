@@ -409,6 +409,50 @@ public:
         return h.getDLayers(l)[i].discount;
     }
 
+    void setDSharpness(
+        int l,
+        int i,
+        float sharpness
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (sharpness < 0) {
+            std::cerr << "Error: DSharpness must be >= 0" << std::endl;
+            abort();
+        }
+
+        h.getDLayers(l)[i].sharpness = sharpness;
+    }
+
+    float getDSharpness(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayers(l)[i].sharpness;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getERadius(
         int l
