@@ -54,7 +54,7 @@ iters = 10000
 
 # The function we are modeling
 def wave(t):
-    if t % 50 == 0:
+    if t % 40 == 0:
         return 1.0
     return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
