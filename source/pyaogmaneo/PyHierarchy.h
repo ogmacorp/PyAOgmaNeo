@@ -21,26 +21,16 @@ enum IOType {
 
 struct IODesc {
     std::tuple<int, int, int> size;
-    IOType type;
 
-    int historyCapacity;
-
-    int eRadius;
-    int dRadius;
+    int radius;
 
     IODesc(
         const std::tuple<int, int, int> &size,
-        IOType type,
-        int historyCapacity,
-        int eRadius,
-        int dRadius
+        int radius
     )
     :
     size(size),
-    type(type),
-    historyCapacity(historyCapacity),
-    eRadius(eRadius),
-    dRadius(dRadius)
+    radius(radius)
     {}
 
     bool checkInRange() const;
@@ -48,27 +38,21 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
-    int historyCapacity;
 
-    int eRadius;
-    int dRadius;
+    int radius;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int historyCapacity,
-        int eRadius,
-        int dRadius,
+        int radius,
         int ticksPerUpdate,
         int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
-    historyCapacity(historyCapacity),
-    eRadius(eRadius),
-    dRadius(dRadius),
+    radius(radius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -117,7 +101,7 @@ public:
 
     void step(
         const std::vector<std::vector<int>> &inputCIs,
-        const std::vector<int> &topProgCIs,
+        const std::vector<int> &topGoalCIs,
         bool learnEnabled
     );
 
@@ -206,10 +190,10 @@ public:
             abort();
         }
 
-        std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getLayer(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getELayer(l).getHiddenCIs()[j];
+            hiddenCIs[j] = h.getLayer(l).getHiddenCIs()[j];
 
         return hiddenCIs;
     }
@@ -224,7 +208,7 @@ public:
             abort();
         }
 
-        aon::Int3 size = h.getELayer(l).getHiddenSize();
+        aon::Int3 size = h.getLayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -265,7 +249,7 @@ public:
             abort();
         }
 
-        return h.getELayer(l).getNumVisibleLayers();
+        return h.getLayer(l).getNumVisibleLayers();
     }
 
     int getNumIO() const {
@@ -289,9 +273,9 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setELR(
+    void setRLR(
         int l,
-        float lr
+        float rlr
     ) {
         initCheck();
 
@@ -300,15 +284,15 @@ public:
             abort();
         }
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
+        if (rlr < 0.0f) {
+            std::cerr << "Error: RLR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getELayer(l).lr = lr;
+        h.getLayer(l).rlr = rlr;
     }
 
-    float getELR(
+    float getRLR(
         int l
     ) {
         initCheck();
@@ -318,13 +302,12 @@ public:
             abort();
         }
 
-        return h.getELayer(l).lr;
+        return h.getLayer(l).rlr;
     }
 
-    void setDLR(
+    void setTLR(
         int l,
-        int i,
-        float lr
+        float tlr
     ) {
         initCheck();
 
@@ -333,42 +316,16 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+        if (tlr < 0.0f) {
+            std::cerr << "Error: TLR must be >= 0.0" << std::endl;
             abort();
         }
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getDLayers(l)[i].lr = lr;
+        h.getLayer(l).tlr = tlr;
     }
 
-    float getDLR(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayers(l)[i].lr;
-    }
-
-    void setDDiscount(
-        int l,
-        int i,
-        float discount
+    float getTLR(
+        int l
     ) {
         initCheck();
 
@@ -377,84 +334,11 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (discount < 0) {
-            std::cerr << "Error: DDiscount must be >= 0" << std::endl;
-            abort();
-        }
-
-        h.getDLayers(l)[i].discount = discount;
-    }
-
-    float getDDiscount(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayers(l)[i].discount;
-    }
-
-    void setDSharpness(
-        int l,
-        int i,
-        float sharpness
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (sharpness < 0) {
-            std::cerr << "Error: DSharpness must be >= 0" << std::endl;
-            abort();
-        }
-
-        h.getDLayers(l)[i].sharpness = sharpness;
-    }
-
-    float getDSharpness(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayers(l)[i].sharpness;
+        return h.getLayer(l).tlr;
     }
 
     // Retrieve additional parameters on the SPH's structure
-    int getERadius(
+    int getRadius(
         int l
     ) const {
         initCheck();
@@ -464,26 +348,7 @@ public:
             abort();
         }
 
-        return h.getELayer(l).getVisibleLayerDesc(0).radius;
-    }
-
-    int getDRadius(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayers(l)[i].getVisibleLayerDesc().radius;
+        return h.getLayer(l).getVisibleLayerDesc(0).radius;
     }
 };
 } // namespace pyaon

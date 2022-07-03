@@ -28,18 +28,8 @@ bool IODesc::checkInRange() const {
         allInRange = false;
     }
 
-    if (historyCapacity < 1) {
-        std::cerr << "Error: historyCapacity < 1 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (eRadius < 0) {
-        std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (dRadius < 0) {
-        std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
+    if (radius < 0) {
+        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
         allInRange = false;
     }
 
@@ -69,18 +59,8 @@ bool LayerDesc::checkInRange() const {
         allInRange = false;
     }
 
-    if (historyCapacity < 1) {
-        std::cerr << "Error: historyCapacity < 1 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (eRadius < 0) {
-        std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
-        allInRange = false;
-    }
-
-    if (dRadius < 0) {
-        std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
+    if (radius < 0) {
+        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
         allInRange = false;
     }
 
@@ -130,10 +110,7 @@ void Hierarchy::initRandom(
 
         cIODescs[i] = aon::Hierarchy::IODesc(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
-            static_cast<aon::IOType>(ioDescs[i].type),
-            ioDescs[i].historyCapacity,
-            ioDescs[i].eRadius,
-            ioDescs[i].dRadius
+            ioDescs[i].radius
         );
     }
     
@@ -147,9 +124,7 @@ void Hierarchy::initRandom(
 
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
-            layerDescs[l].historyCapacity,
-            layerDescs[l].eRadius,
-            layerDescs[l].dRadius,
+            layerDescs[l].radius,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon
         );
@@ -261,7 +236,7 @@ std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
 
 void Hierarchy::step(
     const std::vector<std::vector<int>> &inputCIs,
-    const std::vector<int> &topProgCIs,
+    const std::vector<int> &topGoalCIs,
     bool learnEnabled
 ) {
     initCheck();
@@ -296,23 +271,23 @@ void Hierarchy::step(
         cInputCIs[i] = &cInputCIsBacking[i];
     }
 
-    if (topProgCIs.size() != h.getTopHiddenCIs().size()) {
-        std::cerr << "Incorrect number of topProgCIs passed to step! Received " << topProgCIs.size() << ", need " << h.getTopHiddenCIs().size() << std::endl;
+    if (topGoalCIs.size() != h.getTopHiddenCIs().size()) {
+        std::cerr << "Incorrect number of topGoalCIs passed to step! Received " << topGoalCIs.size() << ", need " << h.getTopHiddenCIs().size() << std::endl;
         abort();
     }
 
-    aon::IntBuffer cTopProgCIs(topProgCIs.size());
+    aon::IntBuffer cTopGoalCIs(topGoalCIs.size());
 
-    for (int i = 0; i < topProgCIs.size(); i++) {
-        if (topProgCIs[i] < 0 || topProgCIs[i] >= h.getTopHiddenSize().z) {
-            std::cerr << "Error: topProgCIs has an out-of-bounds column index (" << topProgCIs[i] << ") at column index " << i << ". It must be in the range [0, " << (h.getTopHiddenSize().z - 1) << "]" << std::endl;
+    for (int i = 0; i < topGoalCIs.size(); i++) {
+        if (topGoalCIs[i] < 0 || topGoalCIs[i] >= h.getTopHiddenSize().z) {
+            std::cerr << "Error: topGoalCIs has an out-of-bounds column index (" << topGoalCIs[i] << ") at column index " << i << ". It must be in the range [0, " << (h.getTopHiddenSize().z - 1) << "]" << std::endl;
             abort();
         }
 
-        cTopProgCIs[i] = topProgCIs[i];
+        cTopGoalCIs[i] = topGoalCIs[i];
     }
     
-    h.step(cInputCIs, &cTopProgCIs, learnEnabled);
+    h.step(cInputCIs, &cTopGoalCIs, learnEnabled);
 }
 
 std::vector<int> Hierarchy::getPredictionCIs(
@@ -322,11 +297,6 @@ std::vector<int> Hierarchy::getPredictionCIs(
 
     if (i < 0 || i >= h.getIOSizes().size()) {
         std::cout << "Prediction index " << i << " out of range [0, " << (h.getIOSizes().size() - 1) << "]!" << std::endl;
-        abort();
-    }
-
-    if (!h.dLayerExists(i)) {
-        std::cerr << "No decoder exists at index " << i << " - did you set it to the correct type?" << std::endl;
         abort();
     }
 

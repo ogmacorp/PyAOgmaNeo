@@ -54,13 +54,13 @@ public:
         bool learnEnabled
     );
 
-    std::vector<int> getProgCIs() const {
+    std::vector<int> getGoalCIs() const {
         initCheck();
 
-        std::vector<int> progCIs(adapter.getProgCIs().size());
+        std::vector<int> progCIs(adapter.getGoalCIs().size());
 
         for (int j = 0; j < progCIs.size(); j++)
-            progCIs[j] = adapter.getProgCIs()[j];
+            progCIs[j] = adapter.getGoalCIs()[j];
 
         return progCIs;
     }

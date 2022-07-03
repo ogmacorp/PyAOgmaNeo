@@ -31,43 +31,28 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::IODesc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
-                pyaon::IOType,
-                int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("type") = pyaon::prediction,
-            py::arg("historyCapacity") = 8,
-            py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2
+            py::arg("radius") = 2
         )
         .def_readwrite("size", &pyaon::IODesc::size)
-        .def_readwrite("type", &pyaon::IODesc::type)
-        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity)
-        .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius);
+        .def_readwrite("radius", &pyaon::IODesc::radius);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 int,
                 int,
-                int,
-                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("historyCapacity") = 8,
-            py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
+            py::arg("radius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("historyCapacity", &pyaon::LayerDesc::historyCapacity)
-        .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
+        .def_readwrite("radius", &pyaon::LayerDesc::radius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
@@ -82,7 +67,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeStateToBuffer", &pyaon::Hierarchy::serializeStateToBuffer)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
-            py::arg("topProgCIs"),
+            py::arg("topGoalCIs"),
             py::arg("learnEnabled") = true
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
@@ -100,16 +85,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
-        .def("setELR", &pyaon::Hierarchy::setELR)
-        .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setDLR", &pyaon::Hierarchy::setDLR)
-        .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setDDiscount", &pyaon::Hierarchy::setDDiscount)
-        .def("getDDiscount", &pyaon::Hierarchy::getDDiscount)
-        .def("setDSharpness", &pyaon::Hierarchy::setDSharpness)
-        .def("getDSharpness", &pyaon::Hierarchy::getDSharpness)
-        .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius);
+        .def("setRLR", &pyaon::Hierarchy::setRLR)
+        .def("getRLR", &pyaon::Hierarchy::getRLR)
+        .def("setTLR", &pyaon::Hierarchy::setTLR)
+        .def("getTLR", &pyaon::Hierarchy::getTLR)
+        .def("getRadius", &pyaon::Hierarchy::getRadius);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
@@ -156,7 +136,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hiddenCIs"),
             py::arg("learnEnabled") = true
         )
-        .def("getProgCIs", &pyaon::RLAdapter::getProgCIs)
+        .def("getGoalCIs", &pyaon::RLAdapter::getGoalCIs)
         .def("getHiddenSize", &pyaon::RLAdapter::getHiddenSize)
         .def("setLR", &pyaon::RLAdapter::setLR)
         .def("getLR", &pyaon::RLAdapter::getLR);
@@ -173,7 +153,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hiddenCIs"),
             py::arg("learnEnabled") = true
         )
-        .def("getProgCIs", &pyaon::StateAdapter::getProgCIs)
+        .def("getGoalCIs", &pyaon::StateAdapter::getGoalCIs)
         .def("getHiddenSize", &pyaon::StateAdapter::getHiddenSize)
         .def("setLR", &pyaon::StateAdapter::setLR)
         .def("getLR", &pyaon::StateAdapter::getLR)

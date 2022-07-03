@@ -129,7 +129,7 @@ void StateAdapter::step(
 ) {
     initCheck();
 
-    if (hiddenCIs.size() != adapter.getProgCIs().size()) {
+    if (hiddenCIs.size() != adapter.getGoalCIs().size()) {
         std::cerr << "Error: Incorrect hiddenCIs size passed to StateAdapter!" << std::endl;
         abort();
     }
