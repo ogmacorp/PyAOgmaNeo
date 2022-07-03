@@ -76,7 +76,7 @@ for i in range(4):
     lds.append(ld)
 
 h = neo.Hierarchy()
-h.initRandom([ neo.IODesc((visDiam, visDiam, 2), neo.none), neo.IODesc((1, 1, 5), neo.prediction) ], lds)
+h.initRandom([ neo.IODesc((visDiam, visDiam, 2)), neo.IODesc((1, 1, 5)) ], lds)
 
 # Set action importance low otherwise will favor just sticking to the goal action too much
 h.setInputImportance(1, 0.0)
