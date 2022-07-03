@@ -68,7 +68,7 @@ neo.setNumThreads(4)
 # Hierarchy
 lds = []
 
-for i in range(3):
+for i in range(4):
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (4, 4, 16)
