@@ -63,15 +63,15 @@ waitSteps = 32 # Number of steps to wait at goal before getting top hidden state
 subSteps = 40 # Number of steps in train mode per frame
 
 # Number of threads to use
-neo.setNumThreads(4)
+neo.setNumThreads(8)
 
 # Hierarchy
 lds = []
 
-for i in range(2):
+for i in range(3):
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (5, 5, 32)
+    ld.hiddenSize = (4, 4, 64)
 
     lds.append(ld)
 

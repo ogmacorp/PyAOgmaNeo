@@ -23,7 +23,7 @@ inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=4 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
+    def __init__(self, env, layerSizes=1 * [ (5, 5, 128) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=16, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -137,8 +137,7 @@ class EnvRunner:
         for i in range(len(layerSizes)):
             ld = neo.LayerDesc(hiddenSize=layerSizes[i])
 
-            ld.eRadius = layerRadius
-            ld.dRadius = layerRadius
+            ld.radius = layerRadius
 
             ld.ticksPerUpdate = 4
             ld.temporalHorizon = 4
@@ -150,7 +149,7 @@ class EnvRunner:
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
-            ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
+            ioDescs.append(neo.IODesc(self.inputSizes[i], layerRadius))
 
         self.h.initRandom(ioDescs, lds)
 
@@ -268,9 +267,9 @@ class EnvRunner:
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
-        self.adapter.step(self.averageReward, self.h.getTopHiddenCIs(), True)
+        self.adapter.step(r, self.h.getTopHiddenCIs(), True)
 
-        self.h.step(self.inputs, self.adapter.getProgCIs(), True)
+        self.h.step(self.inputs, self.adapter.getGoalCIs(), True)
 
         # Retrieve actions
         for i in range(len(self.actionIndices)):

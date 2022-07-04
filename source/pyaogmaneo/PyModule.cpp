@@ -89,6 +89,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getRLR", &pyaon::Hierarchy::getRLR)
         .def("setTLR", &pyaon::Hierarchy::setTLR)
         .def("getTLR", &pyaon::Hierarchy::getTLR)
+        .def("setDLR", &pyaon::Hierarchy::setDLR)
+        .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("getRadius", &pyaon::Hierarchy::getRadius);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")

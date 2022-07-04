@@ -337,6 +337,38 @@ public:
         return h.getLayer(l).tlr;
     }
 
+    void setDLR(
+        int l,
+        float dlr
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (dlr < 0.0f) {
+            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getLayer(l).dlr = dlr;
+    }
+
+    float getDLR(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getLayer(l).dlr;
+    }
+
     // Retrieve additional parameters on the SPH's structure
     int getRadius(
         int l
