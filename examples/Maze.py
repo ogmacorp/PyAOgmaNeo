@@ -71,7 +71,10 @@ lds = []
 for i in range(3):
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 64)
+    ld.hiddenSize = (4, 4, 128)
+
+    ld.ticksPerUpdate = 2
+    ld.temporalHorizon = 2
 
     lds.append(ld)
 
