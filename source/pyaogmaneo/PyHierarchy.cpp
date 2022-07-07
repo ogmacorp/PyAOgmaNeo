@@ -36,6 +36,11 @@ bool IODesc::checkInRange() const {
         return false;
     }
 
+    if (historyCapacity < 2) {
+        std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
+        return false;
+    }
+
     return true;
 }
 
@@ -108,7 +113,8 @@ void Hierarchy::initRandom(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
             ioDescs[i].eRadius,
-            ioDescs[i].dRadius
+            ioDescs[i].dRadius,
+            ioDescs[i].historyCapacity
         );
     }
     

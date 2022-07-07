@@ -32,17 +32,20 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 pyaon::IOType,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
             py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2
+            py::arg("dRadius") = 2,
+            py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius);
+        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
+        .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
@@ -102,10 +105,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setALR", &pyaon::Hierarchy::setALR)
         .def("getALR", &pyaon::Hierarchy::getALR)
+        .def("setADrift", &pyaon::Hierarchy::setADrift)
+        .def("getADrift", &pyaon::Hierarchy::getADrift)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
-        .def("setATraceDecay", &pyaon::Hierarchy::setATraceDecay)
-        .def("getATraceDecay", &pyaon::Hierarchy::getATraceDecay)
+        .def("setANSteps", &pyaon::Hierarchy::setANSteps)
+        .def("getANSteps", &pyaon::Hierarchy::getANSteps)
+        .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
+        .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 
