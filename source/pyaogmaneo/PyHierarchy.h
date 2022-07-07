@@ -27,21 +27,17 @@ struct IODesc {
     int eRadius;
     int dRadius;
 
-    int historyCapacity;
-
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int eRadius,
-        int dRadius,
-        int historyCapacity
+        int dRadius
     )
     :
     size(size),
     type(type),
     eRadius(eRadius),
-    dRadius(dRadius),
-    historyCapacity(historyCapacity)
+    dRadius(dRadius)
     {}
 
     bool checkInRange() const;
