@@ -116,8 +116,7 @@ public:
     void step(
         const std::vector<std::vector<int>> &inputCIs,
         bool learnEnabled,
-        float reward,
-        bool mimic
+        float reward
     );
 
     int getNumLayers() const {
@@ -424,9 +423,9 @@ public:
         return h.getDLayer(l, i).lr;
     }
 
-    void setAVLR(
+    void setALR(
         int i,
-        float vlr
+        float lr
     ) {
         initCheck();
 
@@ -440,15 +439,15 @@ public:
             abort();
         }
 
-        if (vlr < 0.0f) {
+        if (lr < 0.0f) {
             std::cerr << "Error: VALR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getALayer(i).vlr = vlr;
+        h.getALayer(i).lr = lr;
     }
 
-    float getAVLR(
+    float getALR(
         int i
     ) const {
         initCheck();
@@ -463,12 +462,12 @@ public:
             abort();
         }
 
-        return h.getALayer(i).vlr;
+        return h.getALayer(i).lr;
     }
 
-    void setAALR(
+    void setADrift(
         int i,
-        float alr
+        float drift
     ) {
         initCheck();
 
@@ -482,15 +481,15 @@ public:
             abort();
         }
 
-        if (alr < 0.0f) {
-            std::cerr << "Error: AALR must be >= 0.0" << std::endl;
+        if (drift < 0.0f || drift >= 1.0f) {
+            std::cerr << "Error: ADrift must be >= 0.0 and < 1.0" << std::endl;
             abort();
         }
 
-        h.getALayer(i).alr = alr;
+        h.getALayer(i).drift = drift;
     }
 
-    float getAALR(
+    float getADrift(
         int i
     ) const {
         initCheck();
@@ -505,7 +504,7 @@ public:
             abort();
         }
 
-        return h.getALayer(i).alr;
+        return h.getALayer(i).drift;
     }
 
     void setADiscount(
@@ -550,9 +549,9 @@ public:
         return h.getALayer(i).discount;
     }
 
-    void setATemperature(
+    void setANSteps(
         int i,
-        float temperature
+        int nSteps
     ) {
         initCheck();
 
@@ -566,57 +565,15 @@ public:
             abort();
         }
 
-        if (temperature < 0.0f) {
-            std::cerr << "Error: ATemperature must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).temperature = temperature;
-    }
-
-    float getATemperature(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).temperature;
-    }
-
-    void setAMinSteps(
-        int i,
-        int minSteps
-    ) {
-        initCheck();
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (minSteps < 1) {
+        if (nSteps < 1) {
             std::cerr << "Error: AMinSteps must be >= 1" << std::endl;
             abort();
         }
 
-        h.getALayer(i).minSteps = minSteps;
+        h.getALayer(i).nSteps = nSteps;
     }
 
-    int getAMinSteps(
+    int getANSteps(
         int i
     ) const {
         initCheck();
@@ -631,7 +588,7 @@ public:
             abort();
         }
 
-        return h.getALayer(i).minSteps;
+        return h.getALayer(i).nSteps;
     }
 
     void setAHistoryIters(
