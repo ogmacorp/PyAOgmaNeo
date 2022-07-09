@@ -141,7 +141,7 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setImportance(
+    void setInputImportance(
         int i,
         float importance
     ) {
@@ -152,10 +152,10 @@ public:
             abort();
         }
 
-        h.setImportance(i, importance);
+        h.setInputImportance(i, importance);
     }
 
-    float getImportance(
+    float getInputImportance(
         int i
     ) const {
         initCheck();
@@ -165,7 +165,60 @@ public:
             abort();
         }
 
-        return h.getImportance(i);
+        return h.getInputImportance(i);
+    }
+
+    void setRecurrentImportance(
+        int l,
+        float importance
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0) {
+            if (h.getELayer(l).getNumVisibleLayers() == h.getIOSizes().size()) {
+                std::cerr << "Error: Layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+        else {
+            if (h.getELayer(l).getNumVisibleLayers() == 1) {
+                std::cerr << "Error: Layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+
+        h.setRecurrentImportance(l, importance);
+    }
+
+    float getRecurrentImportance(
+        int l
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0) {
+            if (h.getELayer(l).getNumVisibleLayers() == h.getIOSizes().size()) {
+                std::cerr << "Error: Layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+        else {
+            if (h.getELayer(l).getNumVisibleLayers() == 1) {
+                std::cerr << "Error: Layer " << l << " is not recurrent!" << std::endl;
+                abort();
+            }
+        }
+
+        return h.getRecurrentImportance(l);
     }
 
     std::vector<int> getPredictionCIs(
