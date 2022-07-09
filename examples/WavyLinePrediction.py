@@ -16,7 +16,6 @@ import struct
 # Set the number of threads
 neo.setNumThreads(4)
 
-# Encoding method to get 2 columns with 16 cells each from a byte
 def Unorm8ToCSDR(x : float):
     assert(x >= 0.0 and x <= 1.0)
 
@@ -24,24 +23,21 @@ def Unorm8ToCSDR(x : float):
 
     return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
 
-# Reverse transform of CSDRToUnorm8
+# Reverse transform of IEEEToCSDR
 def CSDRToUnorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
-# Dimensions of the encoding
+# This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
 numInputColumns = 2
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(7): # Layers with exponential memory
+for i in range(8): # Layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16) # Size of the encoder
-
-    ld.ticksPerUpdate = 2
-    ld.temporalHorizon = 2
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
@@ -50,11 +46,10 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 20000
 
-# The function we are modeling
 def wave(t):
-    if t % 50 == 0:
+    if t % 20 == 0 or t % 7 == 0:
         return 1.0
     return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
@@ -63,12 +58,12 @@ for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
-    # Encode
     csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
+    print(h.getEHiddenCIs(0))
     # Print progress
     if t % 100 == 0:
         print(t)
@@ -79,7 +74,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(100):
+for t2 in range(200):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
