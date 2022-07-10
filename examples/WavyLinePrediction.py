@@ -37,7 +37,8 @@ lds = []
 for i in range(2): # Layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
+    ld.hiddenSize = (4, 4, 64) # Size of the encoder (SparseCoder)
+    ld.rRadius = 0
 
     lds.append(ld)
 
@@ -46,7 +47,7 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 80000
+iters = 100000
 
 def wave(t):
     if t % 20 == 0 or t % 7 == 0 or t % 11 == 0:
@@ -63,7 +64,7 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    print(h.getHiddenCIs(0))
+    #print(h.getHiddenCIs(0))
     # Print progress
     if t % 100 == 0:
         print(t)
