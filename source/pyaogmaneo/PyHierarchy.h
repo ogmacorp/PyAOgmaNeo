@@ -292,6 +292,38 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    void setEK(
+        int l,
+        int k
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (k < 1) {
+            std::cerr << "Error: EK must be >= 1" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).k = k;
+    }
+
+    int getEK(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).k;
+    }
+
     void setELR(
         int l,
         float lr

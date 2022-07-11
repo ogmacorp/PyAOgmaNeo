@@ -56,7 +56,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
-            py::arg("rRadius") = 0,
+            py::arg("rRadius") = 2,
             py::arg("dRadius") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
@@ -92,6 +92,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
+        .def("setEK", &pyaon::Hierarchy::setEK)
+        .def("getEK", &pyaon::Hierarchy::getEK)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
