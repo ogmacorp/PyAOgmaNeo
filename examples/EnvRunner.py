@@ -159,7 +159,7 @@ class EnvRunner:
 
             #self.h.setImportance(index, 0.01)
 
-            size = len(self.inputLows[index])
+            size = self.inputSizes[index][0] * self.inputSizes[index][1]
 
             startAct = []
 
