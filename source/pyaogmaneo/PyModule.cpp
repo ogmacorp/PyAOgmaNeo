@@ -59,7 +59,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
-            py::arg("temporalHorizon") = 2
+            py::arg("temporalHorizon") = 4
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
@@ -79,8 +79,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = false
+            py::arg("reward") = 0.0f
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getTopHiddenCIs", &pyaon::Hierarchy::getTopHiddenCIs)

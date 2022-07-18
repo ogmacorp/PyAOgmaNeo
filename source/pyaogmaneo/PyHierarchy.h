@@ -116,8 +116,7 @@ public:
     void step(
         const std::vector<std::vector<int>> &inputCIs,
         bool learnEnabled,
-        float reward,
-        bool mimic
+        float reward
     );
 
     int getNumLayers() const {
