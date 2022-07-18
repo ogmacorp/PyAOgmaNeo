@@ -17,14 +17,14 @@ from copy import copy
 import time
 
 def sigmoid(x):
-    return np.tanh(x) * 0.5 + 0.5
+    return np.tanh(x * 0.5) * 0.5 + 0.5
 
 inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=2 * [ (4, 4, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=16, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=4):
+    def __init__(self, env, layerSizes=2 * [ (4, 4, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=2.0, nThreads=1):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -159,7 +159,7 @@ class EnvRunner:
 
             #self.h.setImportance(index, 0.01)
 
-            size = len(self.inputLows[index])
+            size = self.h.getIOSize(index)[0] * self.h.getIOSize(index)[1]
 
             startAct = []
 
@@ -216,7 +216,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.0, obsPreprocess=None):
+    def act(self, epsilon=0.02, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
