@@ -27,21 +27,17 @@ struct IODesc {
     int eRadius;
     int dRadius;
 
-    int historyCapacity;
-
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
         int eRadius,
-        int dRadius,
-        int historyCapacity
+        int dRadius
     )
     :
     size(size),
     type(type),
     eRadius(eRadius),
-    dRadius(dRadius),
-    historyCapacity(historyCapacity)
+    dRadius(dRadius)
     {}
 
     bool checkInRange() const;
@@ -390,7 +386,7 @@ public:
         }
 
         if (lr < 0.0f) {
-            std::cerr << "Error: VALR must be >= 0.0" << std::endl;
+            std::cerr << "Error: ALR must be >= 0.0" << std::endl;
             abort();
         }
 
@@ -413,48 +409,6 @@ public:
         }
 
         return h.getALayer(i).lr;
-    }
-
-    void setADrift(
-        int i,
-        float drift
-    ) {
-        initCheck();
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (drift < 0.0f || drift >= 1.0f) {
-            std::cerr << "Error: ADrift must be >= 0.0 and < 1.0" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).drift = drift;
-    }
-
-    float getADrift(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).drift;
     }
 
     void setADiscount(
@@ -499,9 +453,9 @@ public:
         return h.getALayer(i).discount;
     }
 
-    void setANSteps(
+    void setATraceDecay(
         int i,
-        int nSteps
+        float traceDecay
     ) {
         initCheck();
 
@@ -515,38 +469,19 @@ public:
             abort();
         }
 
-        if (nSteps < 1) {
-            std::cerr << "Error: AMinSteps must be >= 1" << std::endl;
+        if (traceDecay < 0.0f || traceDecay >= 1.0f) {
+            std::cerr << "Error: ATraceDecay must be >= 0.0 and < 1.0" << std::endl;
             abort();
         }
 
-        h.getALayer(i).nSteps = nSteps;
+        h.getALayer(i).traceDecay = traceDecay;
     }
 
-    int getANSteps(
+    float getATraceDecay(
         int i
     ) const {
         initCheck();
         
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i)) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).nSteps;
-    }
-
-    void setAHistoryIters(
-        int i,
-        int historyIters
-    ) {
-        initCheck();
-
         if (i < 0 || i >= h.getIOSizes().size()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
@@ -557,30 +492,7 @@ public:
             abort();
         }
 
-        if (historyIters < 0) {
-            std::cerr << "Error: AHistoryIters must be >= 0" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).historyIters = historyIters;
-    }
-
-    int getAHistoryIters(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i)) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).historyIters;
+        return h.getALayer(i).traceDecay;
     }
 
     // Retrieve additional parameters on the SPH's structure
