@@ -157,7 +157,7 @@ class EnvRunner:
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
 
-            #self.h.setImportance(index, 0.01)
+            #self.h.setImportance(index, 0.0)
 
             size = self.h.getIOSize(index)[0] * self.h.getIOSize(index)[1]
 
