@@ -201,11 +201,10 @@ class EnvRunner:
 
                 for j in range(len(self.inputLows[i])):
                     if self.inputLows[i][j] < self.inputHighs[i][j]:
-                        assert(obs[j] >= self.inputLows[i][j] and obs[j] <= self.inputHighs[i][j])
                         # Rescale
-                        indices.append(int((obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]) * (self.inputSizes[i][2] - 1) + 0.5))
+                        indices.append(int(min(1.0, max(0.0, (obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]))) * (self.inputSizes[i][2] - 1) + 0.5))
                         #v = obs[j]
-                        #indices.append(int(sigmoid(obs[j] * self.infSensitivity) * (self.inputSizes[i][2] - 1) + 0.5))
+                        #indices.append(int(sigmoid(v * self.infSensitivity) * (self.inputSizes[i][2] - 1) + 0.5))
                     elif self.inputLows[i][j] > self.inputHighs[i][j]: # Inf
                         v = obs[j]
 
@@ -219,7 +218,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.01, obsPreprocess=None):
+    def act(self, epsilon=0.0, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
