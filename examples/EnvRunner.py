@@ -263,6 +263,8 @@ class EnvRunner:
 
         self.h.step(self.inputs, True, r)
 
+        print(self.h.getHiddenCIs(0))
+
         # Retrieve actions
         for i in range(len(self.actionIndices)):
             index = self.actionIndices[i]
