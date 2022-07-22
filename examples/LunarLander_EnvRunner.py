@@ -25,9 +25,13 @@ for episode in range(5000):
 
     totalReward = 0.0
 
+    epsilon = pow(0.997, episode)
+
+    print(epsilon)
+
     # Timesteps
     for t in range(10000):
-        done, reward = runner.act() # Step the environment and agent
+        done, reward = runner.act(epsilon) # Step the environment and agent
 
         totalReward += reward
 
