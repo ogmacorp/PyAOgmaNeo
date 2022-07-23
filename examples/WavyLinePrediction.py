@@ -39,7 +39,7 @@ for i in range(2): # Layers with exponential memory
 
     ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
 
-    ld.rRadius = 0
+    ld.rRadius = 2
 
     lds.append(ld)
 

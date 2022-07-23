@@ -76,8 +76,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = false
+            py::arg("reward") = 0.0f
         )
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getTopHiddenCIs", &pyaon::Hierarchy::getTopHiddenCIs)
@@ -96,18 +95,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setAVLR", &pyaon::Hierarchy::setAVLR)
-        .def("getAVLR", &pyaon::Hierarchy::getAVLR)
-        .def("setAALR", &pyaon::Hierarchy::setAALR)
-        .def("getAALR", &pyaon::Hierarchy::getAALR)
-        .def("setADiscount", &pyaon::Hierarchy::setADiscount)
-        .def("getADiscount", &pyaon::Hierarchy::getADiscount)
-        .def("setATemperature", &pyaon::Hierarchy::setATemperature)
-        .def("getATemperature", &pyaon::Hierarchy::getATemperature)
-        .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
-        .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
-        .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
-        .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 
