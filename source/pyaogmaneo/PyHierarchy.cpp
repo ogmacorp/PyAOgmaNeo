@@ -70,21 +70,6 @@ bool LayerDesc::checkInRange() const {
         return false;
     }
 
-    if (ticksPerUpdate < 1) {
-        std::cerr << "Error: ticksPerUpdate < 1 is not allowed!" << std::endl;
-        return false;
-    }
-
-    if (temporalHorizon < 1) {
-        std::cerr << "Error: temporalHorizon < 1 is not allowed!" << std::endl;
-        return false;
-    }
-
-    if (temporalHorizon < ticksPerUpdate) {
-        std::cerr << "Error: temporalHorizon < ticksPerUpdate is not allowed!" << std::endl;
-        return false;
-    }
-
     return true;
 }
 
@@ -129,9 +114,8 @@ void Hierarchy::initRandom(
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].eRadius,
-            layerDescs[l].dRadius,
-            layerDescs[l].ticksPerUpdate,
-            layerDescs[l].temporalHorizon
+            layerDescs[l].rRadius,
+            layerDescs[l].dRadius
         );
     }
 
