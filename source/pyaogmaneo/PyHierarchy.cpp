@@ -11,18 +11,18 @@
 using namespace pyaon;
 
 bool IODesc::checkInRange() const {
-    if (std::get<0>(size) < 0) {
-        std::cerr << "Error: size[0] < 0 is not allowed!" << std::endl;
+    if (std::get<0>(size) < 1) {
+        std::cerr << "Error: size[0] < 1 is not allowed!" << std::endl;
         return false;
     }
 
-    if (std::get<1>(size) < 0) {
-        std::cerr << "Error: size[1] < 0 is not allowed!" << std::endl;
+    if (std::get<1>(size) < 1) {
+        std::cerr << "Error: size[1] < 1 is not allowed!" << std::endl;
         return false;
     }
 
-    if (std::get<2>(size) < 0) {
-        std::cerr << "Error: size[2] < 0 is not allowed!" << std::endl;
+    if (std::get<2>(size) < 1) {
+        std::cerr << "Error: size[2] < 1 is not allowed!" << std::endl;
         return false;
     }
 
@@ -45,18 +45,28 @@ bool IODesc::checkInRange() const {
 }
 
 bool LayerDesc::checkInRange() const {
-    if (std::get<0>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[0] < 0 is not allowed!" << std::endl;
+    if (std::get<0>(hiddenSize) < 1) {
+        std::cerr << "Error: hiddenSize[0] < 1 is not allowed!" << std::endl;
         return false;
     }
 
-    if (std::get<1>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[1] < 0 is not allowed!" << std::endl;
+    if (std::get<1>(hiddenSize) < 1) {
+        std::cerr << "Error: hiddenSize[1] < 1 is not allowed!" << std::endl;
         return false;
     }
 
-    if (std::get<2>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[2] < 0 is not allowed!" << std::endl;
+    if (std::get<2>(hiddenSize) < 1) {
+        std::cerr << "Error: hiddenSize[2] < 1 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (std::get<0>(clumpSize) < 1) {
+        std::cerr << "Error: clumpSize[0] < 1 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (std::get<1>(clumpSize) < 1) {
+        std::cerr << "Error: clumpSize[1] < 1 is not allowed!" << std::endl;
         return false;
     }
 
@@ -118,6 +128,7 @@ void Hierarchy::initRandom(
 
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
+            aon::Int2(std::get<0>(layerDescs[l].clumpSize), std::get<1>(layerDescs[l].clumpSize)),
             layerDescs[l].eRadius,
             layerDescs[l].rRadius,
             layerDescs[l].dRadius
