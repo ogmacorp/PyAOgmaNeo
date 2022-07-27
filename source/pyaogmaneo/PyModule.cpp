@@ -104,6 +104,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getRELR", &pyaon::Hierarchy::getRELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDDecay", &pyaon::Hierarchy::setDDecay)
+        .def("getDDecay", &pyaon::Hierarchy::getDDecay)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
