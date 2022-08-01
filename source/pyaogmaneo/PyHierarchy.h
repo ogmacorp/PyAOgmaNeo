@@ -499,48 +499,6 @@ public:
         return h.getALayer(i).discount;
     }
 
-    void setANSteps(
-        int i,
-        int nSteps
-    ) {
-        initCheck();
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (nSteps < 1) {
-            std::cerr << "Error: AMinSteps must be >= 1" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).nSteps = nSteps;
-    }
-
-    int getANSteps(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i)) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).nSteps;
-    }
-
     void setAHistoryIters(
         int i,
         int historyIters

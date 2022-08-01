@@ -106,8 +106,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getADrift", &pyaon::Hierarchy::getADrift)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
-        .def("setANSteps", &pyaon::Hierarchy::setANSteps)
-        .def("getANSteps", &pyaon::Hierarchy::getANSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
