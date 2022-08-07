@@ -415,48 +415,6 @@ public:
         return h.getALayer(i).lr;
     }
 
-    void setADrift(
-        int i,
-        float drift
-    ) {
-        initCheck();
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (drift < 0.0f || drift >= 1.0f) {
-            std::cerr << "Error: ADrift must be >= 0.0 and < 1.0" << std::endl;
-            abort();
-        }
-
-        h.getALayer(i).drift = drift;
-    }
-
-    float getADrift(
-        int i
-    ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).drift;
-    }
-
     void setADiscount(
         int i,
         float discount
