@@ -34,7 +34,7 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory
+for i in range(5): # Layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
@@ -48,13 +48,10 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 100000
+iters = 10000
 
 def wave(t):
-    if t % 20 == 0 or t % 7 == 0:
-        return 1.0
-    return 0.0
-    return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5 + np.random.randn() * 0.1))
 
 for t in range(iters):
     # The value to encode into the input column
@@ -65,6 +62,7 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
+    print(h.getHiddenCIs(0))
     # Print progress
     if t % 100 == 0:
         print(t)
@@ -75,7 +73,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(200):
+for t2 in range(100):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts
@@ -84,6 +82,7 @@ for t2 in range(200):
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
+    print(h.getHiddenCIs(0))
     # Decode value (de-bin)
     value = CSDRToUnorm8(h.getPredictionCIs(0))
 
