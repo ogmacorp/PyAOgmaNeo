@@ -140,7 +140,7 @@ public:
         return { size.x, size.y, size.z };
     }
     
-    void setImportance(
+    void setInputImportance(
         int i,
         float importance
     ) {
@@ -151,10 +151,10 @@ public:
             abort();
         }
 
-        h.setImportance(i, importance);
+        h.setInputImportance(i, importance);
     }
 
-    float getImportance(
+    float getInputImportance(
         int i
     ) const {
         initCheck();
@@ -164,7 +164,44 @@ public:
             abort();
         }
 
-        return h.getImportance(i);
+        return h.getInputImportance(i);
+    }
+
+    void setRecurrentImportance(
+        int l,
+        float importance
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (!h.isLayerRecurrent(l)) {
+            std::cerr << "Error: Layer at index " << l << " is not recurrent!" << std::endl;
+            abort();
+        }
+
+        h.setRecurrentImportance(l, importance);
+    }
+
+    float getRecurrentImportance(
+        int l
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (!h.isLayerRecurrent(l)) {
+            std::cerr << "Error: Layer at index " << l << " is not recurrent!" << std::endl;
+            abort();
+        }
+
+        return h.getRecurrentImportance(l);
     }
 
     std::vector<int> getPredictionCIs(
