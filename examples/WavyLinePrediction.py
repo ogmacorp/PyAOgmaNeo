@@ -39,6 +39,8 @@ for i in range(8): # Layers with exponential memory
 
     ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
+    ld.temporalHorizon = 4
+
     lds.append(ld)
 
 # Create the hierarchy
@@ -46,13 +48,13 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 20000
 
 def wave(t):
-    if t % 20 == 0 or t % 7 == 0:
+    if t % 40 == 0:
         return 1.0
     return 0.0
-    return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * 0.5 + 0.5
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.1))
 
 for t in range(iters):
     # The value to encode into the input column
@@ -62,7 +64,8 @@ for t in range(iters):
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
-    print(h.getHiddenCIs(2))
+
+    print(h.getHiddenActs(0))
 
     # Print progress
     if t % 100 == 0:
@@ -74,7 +77,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(200):
+for t2 in range(500):
     t = t2 + iters # Continue where previous sequence left off
 
     # New, continued value for comparison to what the hierarchy predicts

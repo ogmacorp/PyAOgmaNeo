@@ -90,6 +90,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getImportance", &pyaon::Hierarchy::getImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getUpdate", &pyaon::Hierarchy::getUpdate)
+        .def("getHiddenActs", &pyaon::Hierarchy::getHiddenActs)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
         .def("getTicks", &pyaon::Hierarchy::getTicks)
