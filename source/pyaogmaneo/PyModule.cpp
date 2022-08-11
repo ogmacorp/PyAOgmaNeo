@@ -100,6 +100,16 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getEFalloff", &pyaon::Hierarchy::getEFalloff)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setAVLR", &pyaon::Hierarchy::setAVLR)
+        .def("getAVLR", &pyaon::Hierarchy::getAVLR)
+        .def("setAALR", &pyaon::Hierarchy::setAALR)
+        .def("getAALR", &pyaon::Hierarchy::getAALR)
+        .def("setADiscount", &pyaon::Hierarchy::setADiscount)
+        .def("getADiscount", &pyaon::Hierarchy::getADiscount)
+        .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
+        .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
+        .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
+        .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
         .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 
