@@ -49,7 +49,6 @@ struct IODesc {
 
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
-    std::tuple<int, int> clumpSize;
 
     int eRadius;
     int rRadius;
@@ -57,14 +56,12 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::tuple<int, int> &clumpSize,
         int eRadius,
         int rRadius,
         int dRadius
     )
     :
     hiddenSize(hiddenSize),
-    clumpSize(clumpSize),
     eRadius(eRadius),
     rRadius(rRadius),
     dRadius(dRadius)
@@ -309,38 +306,6 @@ public:
         }
 
         return h.getELayer(l).lr;
-    }
-
-    void setEFalloff(
-        int l,
-        float falloff
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (falloff < 0.0f) {
-            std::cerr << "Error: EFalloff must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).falloff = falloff;
-    }
-
-    float getEFalloff(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).falloff;
     }
 
     void setDLR(
