@@ -10,7 +10,7 @@
 
 ## The EnvRunner
 
-The EnvRunner is a simple way to automatically create AOgmaNeo systems for [OpenAI Gym](https://gym.openai.com/) tasks. It will automatically create the hierarchy and appropriate pre-encoders, by guessing reasonable settings. This is good enough for initial experimentation, but further control requires manual usage. Image-based environments require OpenCV in order to scale images to appropriate sizes.
+The EnvRunner is a simple way to automatically create AOgmaNeo systems for [OpenAI Gym](https://gym.openai.com/) tasks. It will automatically create the hierarchy and appropriate pre-encoders, by guessing reasonable settings. This is good enough for initial experimentation, but further control requires manual usage. Image-based environments require [tinyscaler](https://github.com/Farama-Foundation/TinyScaler) in order to scale images to appropriate sizes.
 
 ## CartPole examples
 

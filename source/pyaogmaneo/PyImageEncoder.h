@@ -12,7 +12,7 @@
 #include <aogmaneo/ImageEncoder.h>
 
 namespace pyaon {
-const int imageEncoderMagic = 128837;
+const int imageEncoderMagic = 124838;
 
 struct ImageEncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;

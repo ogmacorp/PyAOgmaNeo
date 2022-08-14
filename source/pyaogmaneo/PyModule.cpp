@@ -110,12 +110,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getAALR", &pyaon::Hierarchy::getAALR)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
+        .def("setATemperature", &pyaon::Hierarchy::setATemperature)
+        .def("getATemperature", &pyaon::Hierarchy::getATemperature)
         .def("setAMinSteps", &pyaon::Hierarchy::setAMinSteps)
         .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius);
+        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
+        .def("getARadius", &pyaon::Hierarchy::getARadius);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<

@@ -12,7 +12,7 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
-const int hierarchyMagic = 54398717;
+const int hierarchyMagic = 54348718;
 
 enum IOType {
     none = 0,
@@ -550,6 +550,48 @@ public:
         return h.getALayer(i).discount;
     }
 
+    void setATemperature(
+        int i,
+        float temperature
+    ) {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        if (temperature < 0.0f) {
+            std::cerr << "Error: ATemperature must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getALayer(i).temperature = temperature;
+    }
+
+    float getATemperature(
+        int i
+    ) const {
+        initCheck();
+        
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).temperature;
+    }
+
     void setAMinSteps(
         int i,
         int minSteps
@@ -665,6 +707,19 @@ public:
         }
 
         return h.getDLayer(l, i).getVisibleLayerDesc(0).radius;
+    }
+
+    int getARadius(
+        int i
+    ) const {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).getVisibleLayerDesc(0).radius;
     }
 };
 } // namespace pyaon
