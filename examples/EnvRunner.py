@@ -19,7 +19,7 @@ import time
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
-inputTypeNone = neo.none
+inputTypeNone = neo.prediction
 inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
