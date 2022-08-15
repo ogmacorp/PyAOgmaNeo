@@ -11,7 +11,6 @@
 import pyaogmaneo as neo
 import numpy as np
 import gym
-import cv2
 import os
 from copy import copy
 import time
@@ -19,12 +18,12 @@ import time
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
-inputTypeNone = neo.prediction
+inputTypeNone = neo.none
 inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=1 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=2.0, nThreads=4):
+    def __init__(self, env, layerSizes=2 * [ (5, 5, 16) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=2.0, nThreads=4):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -82,6 +81,8 @@ class EnvRunner:
             raise Exception("Unsupported input type " + str(type(self.env.observation_space)))
 
         if len(self.imageSizes) > 0:
+            import tinyscaler
+
             vlds = []
 
             for i in range(len(self.imageSizes)):
@@ -183,7 +184,7 @@ class EnvRunner:
                 actionIndex += 1
             elif i == self.imEncIndex:
                 # Format image
-                img = cv2.resize(obs, (self.imageSizes[0][0], self.imageSizes[0][1]))
+                img = tinyscaler.scale(obs, (self.imageSizes[0][1], self.imageSizes[0][0]))
                 
                 img = np.swapaxes(img, 0, 1)
                 
@@ -218,7 +219,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.01, obsPreprocess=None):
+    def act(self, epsilon=0.0, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
