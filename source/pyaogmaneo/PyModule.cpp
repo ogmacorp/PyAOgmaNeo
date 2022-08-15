@@ -50,21 +50,21 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
-                int,
+                std::tuple<int, int>,
                 int,
                 int,
                 int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("numPriorities") = 3,
+            py::arg("clumpSize") = std::tuple<int, int>({ 2, 2 }),
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("numPriorities", &pyaon::LayerDesc::numPriorities)
+        .def_readwrite("clumpSize", &pyaon::LayerDesc::clumpSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
@@ -102,8 +102,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setDLR0", &pyaon::Hierarchy::setDLR0)
-        .def("getDLR0", &pyaon::Hierarchy::getDLR0)
+        .def("setDLR", &pyaon::Hierarchy::setDLR)
+        .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDScale", &pyaon::Hierarchy::setDScale)
+        .def("getDScale", &pyaon::Hierarchy::getDScale)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
