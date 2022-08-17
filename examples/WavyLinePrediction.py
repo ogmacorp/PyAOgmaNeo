@@ -28,8 +28,8 @@ def CSDRToUnorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
 # This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-numInputColumns = 2
-inputColumnSize = 16
+numInputColumns = 1
+inputColumnSize = 32
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
@@ -37,26 +37,26 @@ lds = []
 for i in range(5): # LayFrs with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
-    ld.numDendrites = 16
+    ld.hiddenSize = (4, 4, 64) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
 # Create the hierarchy
 h = neo.Hierarchy()
-h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
+h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction, dRadius=4) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 50000
 
 def wave(t):
-    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.0))
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.05))
 
 for t in range(iters):
     # The value to encode into the input column
     valueToEncode = wave(t) # Some wavy line
 
-    csdr = Unorm8ToCSDR(float(valueToEncode))
+    #csdr = Unorm8ToCSDR(float(valueToEncode))
+    csdr = [ int(valueToEncode * (h.getIOSize(0)[2] - 1) + 0.5) ]
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
@@ -82,7 +82,8 @@ for t2 in range(500):
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = CSDRToUnorm8(h.getPredictionCIs(0))
+    #value = CSDRToUnorm8(h.getPredictionCIs(0))
+    value = float(h.getPredictionCIs(0)[0]) / float(h.getIOSize(0)[2] - 1)
 
     # Append to plot data
     ts.append(t2)
