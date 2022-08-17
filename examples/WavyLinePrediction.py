@@ -16,8 +16,6 @@ import struct
 # Set the number of threads
 neo.setNumThreads(4)
 
-# Scalar encoding used in this example, take a byte and convert 4 consective bits into 2 one-hot columns with 16 cells in them
-
 def Unorm8ToCSDR(x : float):
     assert(x >= 0.0 and x <= 1.0)
 
@@ -29,98 +27,41 @@ def Unorm8ToCSDR(x : float):
 def CSDRToUnorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
-# Some other ways of encoding individual scalers:
-
-# Multi-scale embedding
-def fToCSDR(x, num_columns, cells_per_column, scale_factor=0.25):
-    csdr = []
-
-    scale = 1.0
-
-    for i in range(num_columns):
-        s = (x / scale) % (1.0 if x > 0.0 else -1.0)
-
-        csdr.append(int((s * 0.5 + 0.5) * (cells_per_column - 1) + 0.5))
-
-        rec = scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
-        x -= rec
-
-        scale *= scale_factor
-
-    return csdr
-
-def CSDRToF(csdr, cells_per_column, scale_factor=0.25):
-    x = 0.0
-
-    scale = 1.0
-
-    for i in range(len(csdr)):
-        x += scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
-
-        scale *= scale_factor
-
-    return x
-
-# Convert an IEEE float to 8 columns with 16 cells each (similar to first approach but on floating-point data)
-def IEEEToCSDR(x : float):
-    b = struct.pack("<f", x)
-
-    csdr = []
-
-    for i in range(4):
-        csdr.append(b[i] & 0x0f)
-        csdr.append((b[i] & 0xf0) >> 4)
-
-    return csdr
-
-def CSDRToIEEE(csdr):
-    bs = []
-
-    for i in range(4):
-        bs.append(csdr[i * 2 + 0] | (csdr[i * 2 + 1] << 4))
-
-    return struct.unpack("<f", bytes(bs))[0]
-
-# This defines the resolution of the input encoding
-numInputColumns = 2 # 2 half-bytes from Unorm8ToCSDR
-inputColumnSize = 16 # 16 values per half-byte (2^4)
+# This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
+numInputColumns = 1
+inputColumnSize = 32
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(6): # Layers with exponential memory
+for i in range(8): # LayFrs with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (5, 5, 16) # Size of the encoder(s) in the layer
+    ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
 
     lds.append(ld)
 
 # Create the hierarchy
 h = neo.Hierarchy()
-h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
+h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction, dRadius=4) ], lds)
 
-# Present the (noisy) wave sequence for some timesteps
+# Present the wave sequence for some timesteps
 iters = 50000
 
 def wave(t):
-    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.02))
-
-tNoisy = 0
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.05))
 
 for t in range(iters):
     # The value to encode into the input column
-    valueToEncode = wave(tNoisy) # Some wavy line
+    valueToEncode = wave(t) # Some wavy line
 
-    csdr = Unorm8ToCSDR(float(valueToEncode))
+    #csdr = Unorm8ToCSDR(float(valueToEncode))
+    csdr = [ int(valueToEncode * (h.getIOSize(0)[2] - 1) + 0.5) ]
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    tNoisy += 1
-
-    if np.random.rand() < 0.05:
-        tNoisy += 1
-
+    print(h.getHiddenCIs(0))
     # Print progress
     if t % 100 == 0:
         print(t)
@@ -141,7 +82,8 @@ for t2 in range(500):
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = CSDRToUnorm8(h.getPredictionCIs(0))
+    #value = CSDRToUnorm8(h.getPredictionCIs(0))
+    value = float(h.getPredictionCIs(0)[0]) / float(h.getIOSize(0)[2] - 1)
 
     # Append to plot data
     ts.append(t2)
