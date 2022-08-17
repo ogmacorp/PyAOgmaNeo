@@ -38,6 +38,7 @@ for i in range(5): # LayFrs with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (4, 4, 32) # Size of the encoder (SparseCoder)
+    ld.numDendrites = 16
 
     lds.append(ld)
 
@@ -49,7 +50,7 @@ h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
 iters = 10000
 
 def wave(t):
-    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.01))
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.0))
 
 for t in range(iters):
     # The value to encode into the input column

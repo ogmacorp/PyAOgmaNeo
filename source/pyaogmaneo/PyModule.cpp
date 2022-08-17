@@ -33,10 +33,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 pyaon::IOType,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
+            py::arg("numDendrites") = 3,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("historyCapacity") = 64
@@ -53,16 +55,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int>,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("clumpSize") = std::tuple<int, int>({ 2, 2 }),
+            py::arg("numDendrites") = 3,
             py::arg("eRadius") = 2,
             py::arg("rRadius") = 2,
             py::arg("dRadius") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("clumpSize", &pyaon::LayerDesc::clumpSize)
+        .def_readwrite("numDendrites", &pyaon::LayerDesc::numDendrites)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius);

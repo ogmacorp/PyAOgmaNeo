@@ -24,6 +24,8 @@ struct IODesc {
     std::tuple<int, int, int> size;
     IOType type;
 
+    int numDendrites;
+
     int eRadius;
     int dRadius;
 
@@ -32,6 +34,7 @@ struct IODesc {
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
+        int numDendrites,
         int eRadius,
         int dRadius,
         int historyCapacity
@@ -39,6 +42,7 @@ struct IODesc {
     :
     size(size),
     type(type),
+    numDendrites(numDendrites),
     eRadius(eRadius),
     dRadius(dRadius),
     historyCapacity(historyCapacity)
@@ -51,6 +55,8 @@ struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
     std::tuple<int, int> clumpSize;
 
+    int numDendrites;
+
     int eRadius;
     int rRadius;
     int dRadius;
@@ -58,6 +64,7 @@ struct LayerDesc {
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
         const std::tuple<int, int> &clumpSize,
+        int numDendrites,
         int eRadius,
         int rRadius,
         int dRadius
@@ -65,6 +72,7 @@ struct LayerDesc {
     :
     hiddenSize(hiddenSize),
     clumpSize(clumpSize),
+    numDendrites(numDendrites),
     eRadius(eRadius),
     rRadius(rRadius),
     dRadius(dRadius)
