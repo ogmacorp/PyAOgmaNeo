@@ -126,31 +126,6 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<int> getTopHiddenCIs() const {
-        initCheck();
-
-        std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
-
-        for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getTopHiddenCIs()[j];
-
-        return hiddenCIs;
-    }
-
-    std::tuple<int, int, int> getTopHiddenSize() const {
-        initCheck();
-
-        aon::Int3 size = h.getTopHiddenSize();
-
-        return { size.x, size.y, size.z };
-    }
-    
-    bool getTopUpdate() const {
-        initCheck();
-
-        return h.getTopUpdate();
-    }
-
     void setImportance(
         int i,
         float importance
@@ -195,24 +170,6 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getRHiddenCIs(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        std::vector<int> hiddenCIs(h.getReconEnc(l).getHiddenCIs().size());
-
-        for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getReconEnc(l).getHiddenCIs()[j];
-
-        return hiddenCIs;
-    }
-
     std::vector<int> getEHiddenCIs(
         int l
     ) {
@@ -223,10 +180,10 @@ public:
             abort();
         }
 
-        std::vector<int> hiddenCIs(h.getErrorEnc(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getEnc(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getErrorEnc(l).getHiddenCIs()[j];
+            hiddenCIs[j] = h.getEnc(l).getHiddenCIs()[j];
 
         return hiddenCIs;
     }
@@ -241,7 +198,7 @@ public:
             abort();
         }
 
-        aon::Int3 size = h.getReconEnc(l).getHiddenSize();
+        aon::Int3 size = h.getEnc(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -272,7 +229,7 @@ public:
         return h.getTicksPerUpdate(l);
     }
 
-    int getNumEncVisibleLayers(
+    int getNumEVisibleLayers(
         int l
     ) {
         initCheck();
@@ -282,7 +239,7 @@ public:
             abort();
         }
 
-        return h.getReconEnc(l).getNumVisibleLayers();
+        return h.getEnc(l).getNumVisibleLayers();
     }
 
     int getNumIO() const {
@@ -306,7 +263,7 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setEELR(
+    void setELR(
         int l,
         float lr
     ) {
@@ -318,14 +275,14 @@ public:
         }
 
         if (lr < 0.0f) {
-            std::cerr << "Error: EELR must be >= 0.0" << std::endl;
+            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getErrorEnc(l).lr = lr;
+        h.getEnc(l).lr = lr;
     }
 
-    float getEELR(
+    float getELR(
         int l
     ) {
         initCheck();
@@ -335,39 +292,7 @@ public:
             abort();
         }
 
-        return h.getErrorEnc(l).lr;
-    }
-
-    void setRELR(
-        int l,
-        float lr
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: RELR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getReconEnc(l).lr = lr;
-    }
-
-    float getRELR(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getReconEnc(l).lr;
+        return h.getEnc(l).lr;
     }
 
     void setDLR(
@@ -687,7 +612,7 @@ public:
             abort();
         }
 
-        return h.getReconEnc(l).getVisibleLayerDesc(0).radius;
+        return h.getEnc(l).getVisibleLayerDesc(0).radius;
     }
 
     int getDRadius(
