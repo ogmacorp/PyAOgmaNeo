@@ -11,7 +11,6 @@
 import pyaogmaneo as neo
 import numpy as np
 import gym
-import cv2
 import os
 from copy import copy
 import time
@@ -24,7 +23,7 @@ inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=2 * [ (4, 4, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=64, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=4.0, nThreads=4):
+    def __init__(self, env, layerSizes=2 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=4.0, nThreads=4):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -82,6 +81,8 @@ class EnvRunner:
             raise Exception("Unsupported input type " + str(type(self.env.observation_space)))
 
         if len(self.imageSizes) > 0:
+            import tinyscaler
+
             vlds = []
 
             for i in range(len(self.imageSizes)):
@@ -183,7 +184,7 @@ class EnvRunner:
                 actionIndex += 1
             elif i == self.imEncIndex:
                 # Format image
-                img = cv2.resize(obs, (self.imageSizes[0][0], self.imageSizes[0][1]))
+                img = tinyscaler.scale(obs, (self.imageSizes[0][1], self.imageSizes[0][0]))
                 
                 img = np.swapaxes(img, 0, 1)
                 
@@ -202,9 +203,9 @@ class EnvRunner:
                 for j in range(len(self.inputLows[i])):
                     if self.inputLows[i][j] < self.inputHighs[i][j]:
                         # Rescale
-                        #indices.append(int(min(1.0, max(0.0, (obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]))) * (self.inputSizes[i][2] - 1) + 0.5))
-                        v = obs[j]
-                        indices.append(int(sigmoid(v * self.infSensitivity) * (self.inputSizes[i][2] - 1) + 0.5))
+                        indices.append(int(min(1.0, max(0.0, (obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]))) * (self.inputSizes[i][2] - 1) + 0.5))
+                        #v = obs[j]
+                        #indices.append(int(sigmoid(v * self.infSensitivity) * (self.inputSizes[i][2] - 1) + 0.5))
                     elif self.inputLows[i][j] > self.inputHighs[i][j]: # Inf
                         v = obs[j]
 
