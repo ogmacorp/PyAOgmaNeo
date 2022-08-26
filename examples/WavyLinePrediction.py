@@ -39,8 +39,6 @@ for i in range(8): # Layers with exponential memory
 
     ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
 
-    ld.temporalHorizon = 4
-
     lds.append(ld)
 
 # Create the hierarchy
