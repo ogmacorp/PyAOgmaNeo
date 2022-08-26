@@ -38,6 +38,7 @@ for i in range(8): # Layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
+    ld.temporalHorizon = 8
 
     lds.append(ld)
 
