@@ -11,13 +11,13 @@
 using namespace pyaon;
 
 bool IODesc::checkInRange() const {
-    if (std::get<0>(size) < 0) {
-        std::cerr << "Error: size[0] < 0 is not allowed!" << std::endl;
+    if (std::get<0>(size) < 1) {
+        std::cerr << "Error: size[0] < 1 is not allowed!" << std::endl;
         return false;
     }
 
-    if (std::get<1>(size) < 0) {
-        std::cerr << "Error: size[1] < 0 is not allowed!" << std::endl;
+    if (std::get<1>(size) < 1) {
+        std::cerr << "Error: size[1] < 1 is not allowed!" << std::endl;
         return false;
     }
 
@@ -45,13 +45,13 @@ bool IODesc::checkInRange() const {
 }
 
 bool LayerDesc::checkInRange() const {
-    if (std::get<0>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[0] < 0 is not allowed!" << std::endl;
+    if (std::get<0>(hiddenSize) < 1) {
+        std::cerr << "Error: hiddenSize[0] < 1 is not allowed!" << std::endl;
         return false;
     }
 
-    if (std::get<1>(hiddenSize) < 0) {
-        std::cerr << "Error: hiddenSize[1] < 0 is not allowed!" << std::endl;
+    if (std::get<1>(hiddenSize) < 1) {
+        std::cerr << "Error: hiddenSize[1] < 1 is not allowed!" << std::endl;
         return false;
     }
 
