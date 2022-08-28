@@ -27,6 +27,7 @@ for episode in range(5000):
 
     # Timesteps
     for t in range(10000):
+        runner.env.render()
         done, reward = runner.act() # Step the environment and agent
 
         totalReward += reward
