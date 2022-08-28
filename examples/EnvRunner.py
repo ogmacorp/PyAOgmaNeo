@@ -202,6 +202,10 @@ class EnvRunner:
 
                 for j in range(len(self.inputLows[i])):
                     if self.inputLows[i][j] < self.inputHighs[i][j]:
+                        a = min(1.0, max(0.0, (obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j])))
+
+                        if a < 0.0 or a > 1.0:
+                            print(a)
                         # Rescale
                         indices.append(int(min(1.0, max(0.0, (obs[j] - self.inputLows[i][j]) / (self.inputHighs[i][j] - self.inputLows[i][j]))) * (self.inputSizes[i][2] - 1) + 0.5))
                         #v = obs[j]
