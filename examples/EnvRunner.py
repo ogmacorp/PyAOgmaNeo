@@ -18,12 +18,12 @@ import time
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
-inputTypeNone = neo.none
+inputTypeNone = neo.prediction # Prediction so that there is something to generate errors from no matter what
 inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (4, 4, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=64, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=4.0, nThreads=4):
+    def __init__(self, env, layerSizes=3 * [ (4, 4, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=16, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=4.0, nThreads=4):
         self.env = env
 
         neo.setNumThreads(nThreads)
