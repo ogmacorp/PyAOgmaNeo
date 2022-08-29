@@ -11,7 +11,6 @@
 import pyaogmaneo as neo
 import numpy as np
 import gym
-import cv2
 import os
 from copy import copy
 import time
@@ -82,6 +81,8 @@ class EnvRunner:
             raise Exception("Unsupported input type " + str(type(self.env.observation_space)))
 
         if len(self.imageSizes) > 0:
+            import tinyscaler
+
             vlds = []
 
             for i in range(len(self.imageSizes)):
@@ -183,7 +184,7 @@ class EnvRunner:
                 actionIndex += 1
             elif i == self.imEncIndex:
                 # Format image
-                img = cv2.resize(obs, (self.imageSizes[0][0], self.imageSizes[0][1]))
+                img = tinyscaler.scale(obs, (self.imageSizes[0][1], self.imageSizes[0][0]))
                 
                 img = np.swapaxes(img, 0, 1)
                 
