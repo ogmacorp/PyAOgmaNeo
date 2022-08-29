@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -27,7 +27,6 @@ for episode in range(5000):
 
     # Timesteps
     for t in range(10000):
-        runner.env.render()
         done, reward = runner.act() # Step the environment and agent
 
         totalReward += reward
