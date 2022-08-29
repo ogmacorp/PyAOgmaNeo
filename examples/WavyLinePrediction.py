@@ -16,6 +16,8 @@ import struct
 # Set the number of threads
 neo.setNumThreads(4)
 
+# Scalar encoding used in this example, take a byte and convert 4 consective bits into 2 one-hot columns with 16 cells in them
+
 def Unorm8ToCSDR(x : float):
     assert(x >= 0.0 and x <= 1.0)
 
@@ -27,44 +29,103 @@ def Unorm8ToCSDR(x : float):
 def CSDRToUnorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
-# This defines the resolution of the input encoding - we are using a simple single column that represents a bounded scalar through a one-hot encoding. This value is the number of "bins"
-numInputColumns = 2
-inputColumnSize = 16
+# Some other ways of encoding individual scalers:
+
+# Multi-scale embedding
+def fToCSDR(x, num_columns, cells_per_column, scale_factor=0.25):
+    csdr = []
+
+    scale = 1.0
+
+    for i in range(num_columns):
+        s = (x / scale) % (1.0 if x > 0.0 else -1.0)
+
+        csdr.append(int((s * 0.5 + 0.5) * (cells_per_column - 1) + 0.5))
+
+        rec = scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
+        x -= rec
+
+        scale *= scale_factor
+
+    return csdr
+
+def CSDRToF(csdr, cells_per_column, scale_factor=0.25):
+    x = 0.0
+
+    scale = 1.0
+
+    for i in range(len(csdr)):
+        x += scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
+
+        scale *= scale_factor
+
+    return x
+
+# Convert an IEEE float to 8 columns with 16 cells each (similar to first approach but on floating-point data)
+def IEEEToCSDR(x : float):
+    b = struct.pack("<f", x)
+
+    csdr = []
+
+    for i in range(4):
+        csdr.append(b[i] & 0x0f)
+        csdr.append((b[i] & 0xf0) >> 4)
+
+    return csdr
+
+def CSDRToIEEE(csdr):
+    bs = []
+
+    for i in range(4):
+        bs.append(csdr[i * 2 + 0] | (csdr[i * 2 + 1] << 4))
+
+    return struct.unpack("<f", bytes(bs))[0]
+
+# This defines the resolution of the input encoding
+numInputColumns = 2 # 2 half-bytes from Unorm8ToCSDR
+inputColumnSize = 16 # 16 values per half-byte (2^4)
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(3): # LayFrs with exponential memory
+for i in range(8): # Layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16) # Size of the encoder (SparseCoder)
-    ld.rRadius = 2
+    ld.hiddenSize = (4, 4, 16) # Size of the encoder(s) in the layer
 
     lds.append(ld)
 
 # Create the hierarchy
 h = neo.Hierarchy()
-h.initRandom([ neo.IODesc(size=(1, 2, 16), type=neo.prediction) ], lds)
+h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
-# Present the wave sequence for some timesteps
-iters = 50000
+# Present the (noisy) wave sequence for some timesteps
+iters = 3000
 
 def wave(t):
-    if t % 20 == 0:
+    if t % 20 == 0 or t % 7 == 0:
         return 1.0
     return 0.0
-    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.1))
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.03))
+
+tNoisy = 0
 
 for t in range(iters):
     # The value to encode into the input column
-    valueToEncode = wave(t) # Some wavy line
+    valueToEncode = wave(tNoisy) # Some wavy line
 
     csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    print(h.getHiddenCIs(2))
+    print(h.getPredictionCIs(0))
+
+    tNoisy += 1
+
+    if np.random.rand() < 0.0:
+        tNoisy += 1
+
     # Print progress
     if t % 100 == 0:
         print(t)
