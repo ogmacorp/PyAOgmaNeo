@@ -279,6 +279,21 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    IOType getIOType(
+        int i
+    ) const {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        aon::IOType type = h.getIOType(i);
+
+        return static_cast<IOType>(type);
+    }
+
     void setELR(
         int l,
         float lr
