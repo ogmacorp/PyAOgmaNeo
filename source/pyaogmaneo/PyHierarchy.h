@@ -180,10 +180,10 @@ public:
             abort();
         }
 
-        std::vector<int> hiddenCIs(h.getEnc(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getEnc(l).getHiddenCIs()[j];
+            hiddenCIs[j] = h.getELayer(l).getHiddenCIs()[j];
 
         return hiddenCIs;
     }
@@ -198,7 +198,7 @@ public:
             abort();
         }
 
-        aon::Int3 size = h.getEnc(l).getHiddenSize();
+        aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -239,7 +239,7 @@ public:
             abort();
         }
 
-        return h.getEnc(l).getNumVisibleLayers();
+        return h.getELayer(l).getNumVisibleLayers();
     }
 
     int getNumIO() const {
@@ -294,7 +294,7 @@ public:
             abort();
         }
 
-        h.getEnc(l).lr = lr;
+        h.getELayer(l).lr = lr;
     }
 
     float getELR(
@@ -307,7 +307,7 @@ public:
             abort();
         }
 
-        return h.getEnc(l).lr;
+        return h.getELayer(l).lr;
     }
 
     void setDLR(
@@ -627,7 +627,7 @@ public:
             abort();
         }
 
-        return h.getEnc(l).getVisibleLayerDesc(0).radius;
+        return h.getELayer(l).getVisibleLayerDesc(0).radius;
     }
 
     int getDRadius(
