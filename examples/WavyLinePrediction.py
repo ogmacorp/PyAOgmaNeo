@@ -100,16 +100,28 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
 # Present the (noisy) wave sequence for some timesteps
-iters = 20000
+iters = 10000
 
 def wave(t):
     return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.03))
 
-tNoisy = 0
+count = 0
+timer = 0
+steps = 15
+rate = 0.01
 
 for t in range(iters):
-    # The value to encode into the input column
-    valueToEncode = wave(tNoisy) # Some wavy line
+    if timer == 0 and np.random.rand() < rate:
+        count = np.random.randint(1, 5)
+        timer = steps
+
+    if timer > 0:
+        timer -= 1
+
+    valueToEncode = 0.0
+
+    if timer >= steps - count or (timer > 0 and timer <= count + 1):
+        valueToEncode = 1.0
 
     csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
 
@@ -117,11 +129,6 @@ for t in range(iters):
     h.step([ csdr ], True) # True for enabling learning
 
     print(h.getPredictionCIs(0))
-
-    tNoisy += 1
-
-    if np.random.rand() < 0.0:
-        tNoisy += 1
 
     # Print progress
     if t % 100 == 0:
@@ -134,10 +141,17 @@ vs = [] # Predicted value
 trgs = [] # True value
 
 for t2 in range(500):
-    t = t2 + iters # Continue where previous sequence left off
+    if timer == 0 and np.random.rand() < rate:
+        count = np.random.randint(0, 3)
+        timer = steps
 
-    # New, continued value for comparison to what the hierarchy predicts
-    valueToEncode = wave(t) # Some wavy line
+    valueToEncode = 0.0
+
+    if timer >= steps - count or (timer > 0 and timer <= count + 1):
+        valueToEncode = 1.0
+
+    if timer > 0:
+        timer -= 1
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
