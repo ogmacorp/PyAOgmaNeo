@@ -12,7 +12,7 @@
 #include <aogmaneo/ImageEncoder.h>
 
 namespace pyaon {
-const int imageEncoderMagic = 128835;
+const int imageEncoderMagic = 128836;
 
 struct ImageEncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;
@@ -65,7 +65,7 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<float>> &inputs,
+        const std::vector<std::vector<unsigned char>> &inputs,
         bool learnEnabled
     );
 
@@ -79,7 +79,7 @@ public:
         return enc.getNumVisibleLayers();
     }
 
-    std::vector<float> getReconstruction(
+    std::vector<unsigned char> getReconstruction(
         int i
     ) const {
         initCheck();
@@ -89,7 +89,7 @@ public:
             abort();
         }
 
-        std::vector<float> reconstruction(enc.getReconstruction(i).size());
+        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
