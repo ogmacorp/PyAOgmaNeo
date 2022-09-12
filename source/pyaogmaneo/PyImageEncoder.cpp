@@ -11,18 +11,18 @@
 using namespace pyaon;
 
 bool ImageEncoderVisibleLayerDesc::checkInRange() const {
-    if (std::get<0>(size) < 0) {
-        std::cerr << "Error: size[0] < 0 is not allowed!" << std::endl;
+    if (std::get<0>(size) < 1) {
+        std::cerr << "Error: size[0] < 1 is not allowed!" << std::endl;
         return false;
     }
 
-    if (std::get<1>(size) < 0) {
-        std::cerr << "Error: size[1] < 0 is not allowed!" << std::endl;
+    if (std::get<1>(size) < 1) {
+        std::cerr << "Error: size[1] < 1 is not allowed!" << std::endl;
         return false;
     }
 
-    if (std::get<2>(size) < 0) {
-        std::cerr << "Error: size[2] < 0 is not allowed!" << std::endl;
+    if (std::get<2>(size) < 1) {
+        std::cerr << "Error: size[2] < 1 is not allowed!" << std::endl;
         return false;
     }
 
@@ -148,7 +148,7 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 }
 
 void ImageEncoder::step(
-    const std::vector<std::vector<float>> &inputs,
+    const std::vector<std::vector<unsigned char>> &inputs,
     bool learnEnabled
 ) {
     initCheck();
@@ -158,8 +158,8 @@ void ImageEncoder::step(
         abort();
     }
 
-    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::FloatBuffer*> cInputs(inputs.size());
+    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         if (inputs[i].size() != enc.getVisibleLayer(i).reconstruction.size()) {
