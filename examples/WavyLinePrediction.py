@@ -88,10 +88,10 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(5): # Layers with exponential memory
+for i in range(6): # Layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (4, 4, 16) # Size of the encoder(s) in the layer
+    ld.hiddenSize = (4, 4, 32) # Size of the encoder(s) in the layer
 
     lds.append(ld)
 
@@ -103,25 +103,10 @@ h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.p
 iters = 100000
 
 def wave(t):
-    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.03))
-
-count = 0
-timer = 0
-steps = 10
-rate = 0.02
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.04))
 
 for t in range(iters):
-    if timer == 0 and np.random.rand() < rate:
-        count = np.random.randint(1, 4)
-        timer = steps
-
-    valueToEncode = 0.0
-
-    if timer >= steps - count or (timer > 0 and timer <= count + 1):
-        valueToEncode = 1.0
-
-    if timer > 0:
-        timer -= 1
+    valueToEncode = wave(t)
 
     csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
 
@@ -141,22 +126,14 @@ vs = [] # Predicted value
 trgs = [] # True value
 
 for t2 in range(1000):
-    if timer == 0 and np.random.rand() < rate:
-        count = np.random.randint(1, 4)
-        timer = steps
+    t = t2 + iters
 
-    valueToEncode = 0.0
-
-    if timer >= steps - count or (timer > 0 and timer <= count + 1):
-        valueToEncode = 1.0
-
-    if timer > 0:
-        timer -= 1
+    valueToEncode = wave(t)
 
     csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
 
     # Run off of own predictions with learning disabled
-    h.step([ csdr ], False) # Learning disabled
+    h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
     value = float(h.getPredictionCIs(0)[0]) / (inputColumnSize - 1)#CSDRToUnorm8(h.getPredictionCIs(0))
