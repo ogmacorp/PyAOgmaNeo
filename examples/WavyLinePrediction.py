@@ -82,13 +82,13 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs))[0]
 
 # This defines the resolution of the input encoding
-numInputColumns = 2 # 2 half-bytes from Unorm8ToCSDR
-inputColumnSize = 16 # 16 values per half-byte (2^4)
+numInputColumns = 1
+inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(8): # Layers with exponential memory
+for i in range(5): # Layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (4, 4, 16) # Size of the encoder(s) in the layer
@@ -103,28 +103,20 @@ h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.p
 iters = 20000
 
 def wave(t):
-    if t % 30 == 0:
+    if t % 20 == 0 or t % 7 == 0:
         return 1.0
     return 0.0
-    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.03))
-
-tNoisy = 0
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.05))
 
 for t in range(iters):
-    # The value to encode into the input column
-    valueToEncode = wave(tNoisy) # Some wavy line
+    valueToEncode = wave(t)
 
-    csdr = Unorm8ToCSDR(float(valueToEncode))
+    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    print(h.getPredictionCIs(0))
-
-    tNoisy += 1
-
-    if np.random.rand() < 0.0:
-        tNoisy += 1
+    #print(h.getHiddenCIs(3))
 
     # Print progress
     if t % 100 == 0:
@@ -136,21 +128,22 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(500):
-    t = t2 + iters # Continue where previous sequence left off
+for t2 in range(1000):
+    t = t2 + iters
 
-    # New, continued value for comparison to what the hierarchy predicts
-    valueToEncode = wave(t) # Some wavy line
+    valueToEncode = wave(t)
+
+    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = CSDRToUnorm8(h.getPredictionCIs(0))
+    value = float(h.getPredictionCIs(0)[0]) / (inputColumnSize - 1)#CSDRToUnorm8(h.getPredictionCIs(0))
 
     # Append to plot data
     ts.append(t2)
-    vs.append(value)
+    vs.append(value + 1.1)
 
     trgs.append(valueToEncode)
 
