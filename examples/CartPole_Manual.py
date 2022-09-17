@@ -63,9 +63,10 @@ neo.setNumThreads(8)
 lds = []
 
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole
-    ld = neo.LayerDesc(hiddenSize=(4, 4, 16))
+    ld = neo.LayerDesc(hiddenSize=(4, 4, 32))
 
     ld.eRadius = 2
+    ld.rRadius = 2
     ld.dRadius = 2
     
     lds.append(ld)
