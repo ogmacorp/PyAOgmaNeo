@@ -12,7 +12,7 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
-const int hierarchyMagic = 54348718;
+const int hierarchyMagic = 54398716;
 
 enum IOType {
     none = 0,
@@ -195,7 +195,7 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<int> getRHiddenCIs(
+    std::vector<int> getHiddenCIs(
         int l
     ) {
         initCheck();
@@ -205,28 +205,10 @@ public:
             abort();
         }
 
-        std::vector<int> hiddenCIs(h.getReconEnc(l).getHiddenCIs().size());
+        std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getReconEnc(l).getHiddenCIs()[j];
-
-        return hiddenCIs;
-    }
-
-    std::vector<int> getEHiddenCIs(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        std::vector<int> hiddenCIs(h.getErrorEnc(l).getHiddenCIs().size());
-
-        for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getErrorEnc(l).getHiddenCIs()[j];
+            hiddenCIs[j] = h.getELayer(l).getHiddenCIs()[j];
 
         return hiddenCIs;
     }
@@ -241,7 +223,7 @@ public:
             abort();
         }
 
-        aon::Int3 size = h.getReconEnc(l).getHiddenSize();
+        aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
     }
@@ -272,7 +254,7 @@ public:
         return h.getTicksPerUpdate(l);
     }
 
-    int getNumEncVisibleLayers(
+    int getNumEVisibleLayers(
         int l
     ) {
         initCheck();
@@ -282,7 +264,7 @@ public:
             abort();
         }
 
-        return h.getReconEnc(l).getNumVisibleLayers();
+        return h.getELayer(l).getNumVisibleLayers();
     }
 
     int getNumIO() const {
@@ -304,124 +286,6 @@ public:
         aon::Int3 size = h.getIOSizes()[i];
 
         return { size.x, size.y, size.z };
-    }
-
-    void setEELR(
-        int l,
-        float lr
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: EELR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getErrorEnc(l).lr = lr;
-    }
-
-    float getEELR(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getErrorEnc(l).lr;
-    }
-
-    void setRELR(
-        int l,
-        float lr
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: RELR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getReconEnc(l).lr = lr;
-    }
-
-    float getRELR(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getReconEnc(l).lr;
-    }
-
-    void setDLR(
-        int l,
-        int i,
-        float lr
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getDLayer(l, i).lr = lr;
-    }
-
-    float getDLR(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayer(l, i).lr;
     }
 
     void setAVLR(
@@ -687,7 +551,7 @@ public:
             abort();
         }
 
-        return h.getReconEnc(l).getVisibleLayerDesc(0).radius;
+        return h.getELayer(l).getVisibleLayerDesc(0).radius;
     }
 
     int getDRadius(
@@ -707,19 +571,6 @@ public:
         }
 
         return h.getDLayer(l, i).getVisibleLayerDesc(0).radius;
-    }
-
-    int getARadius(
-        int i
-    ) const {
-        initCheck();
-
-        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).getVisibleLayerDesc(0).radius;
     }
 };
 } // namespace pyaon

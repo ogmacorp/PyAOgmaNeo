@@ -35,7 +35,7 @@ class ScalarEncoder:
         for i in range(len(self.protos)):
             acts = -np.sum(np.square(np.repeat(scalars.T, self.cells_per_column, axis=0) - self.protos[i]), axis=1)
 
-            csdr.append(np.asscalar(np.argmax(acts)))
+            csdr.append(np.argmax(acts).item())
 
         return csdr
 
@@ -63,7 +63,7 @@ neo.setNumThreads(8)
 lds = []
 
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole
-    ld = neo.LayerDesc(hiddenSize=(4, 4, 16))
+    ld = neo.LayerDesc(hiddenSize=(4, 4, 32))
 
     ld.eRadius = 2
     ld.dRadius = 2

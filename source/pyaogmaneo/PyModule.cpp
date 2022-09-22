@@ -90,20 +90,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getImportance", &pyaon::Hierarchy::getImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getUpdate", &pyaon::Hierarchy::getUpdate)
-        .def("getRHiddenCIs", &pyaon::Hierarchy::getRHiddenCIs)
-        .def("getEHiddenCIs", &pyaon::Hierarchy::getEHiddenCIs)
+        .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
         .def("getTicks", &pyaon::Hierarchy::getTicks)
         .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
-        .def("getNumEncVisibleLayers", &pyaon::Hierarchy::getNumEncVisibleLayers)
+        .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
-        .def("setEELR", &pyaon::Hierarchy::setEELR)
-        .def("getEELR", &pyaon::Hierarchy::getEELR)
-        .def("setRELR", &pyaon::Hierarchy::setRELR)
-        .def("getRELR", &pyaon::Hierarchy::getRELR)
-        .def("setDLR", &pyaon::Hierarchy::setDLR)
-        .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
@@ -117,8 +110,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
-        .def("getARadius", &pyaon::Hierarchy::getARadius);
+        .def("getDRadius", &pyaon::Hierarchy::getDRadius);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
