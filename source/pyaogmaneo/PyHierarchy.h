@@ -744,5 +744,31 @@ public:
 
         return h.getDLayer(l, i).getVisibleLayerDesc(0).radius;
     }
+
+    int getARadius(
+        int i
+    ) const {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).getVisibleLayerDesc(0).radius;
+    }
+
+    int getAHistoryCapacity(
+        int i
+    ) const {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).getHistoryCapacity();
+    }
 };
 } // namespace pyaon

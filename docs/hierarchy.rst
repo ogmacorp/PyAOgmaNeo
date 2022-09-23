@@ -277,7 +277,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
 .. function:: Hierarchy.getERadius(self, l)
 
-    Get the feed forward encoder radius of a layer
+    Get the encoder (E) radius of a layer
 
     :param l: (int32) index of the layer
     :rtype: (int32) encoder radius
@@ -289,6 +289,13 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :param i: (int32) index of the IO layer 
     :rtype: (int32) P radius
+
+.. function:: Hierarchy.getARadius(self, i)
+
+    Get the actor (A) radius onto the first hidden layer
+
+    :param i: (int32) index of the IO layer 
+    :rtype: (int32) history capacity
 
 .. function:: Hierarchy.getAHistoryCapacity(self, i)
 

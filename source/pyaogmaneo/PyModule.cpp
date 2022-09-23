@@ -118,7 +118,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius);
+        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
+        .def("getARadius", &pyaon::Hierarchy::getARadius)
+        .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
