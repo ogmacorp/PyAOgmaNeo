@@ -135,33 +135,47 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
-.. function:: Hierarchy.setEELR(self, l, elr)
+.. function:: Hierarchy.setEScale(self, l, scale)
 
-    Set the error learning rate of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :param elr: (float32) value to set
-
-.. function:: Hierarchy.getEELR(self, l)
-
-    Get the error learning rate of an encoder (E)
+    Set the scale of an encoder (E). This determines how updates are discretized; a higher scale means a higher discretization resolution at the cost of range.
 
     :param l: (int32) index of the layer
-    :rtype: (float32) elr
+    :param scale: (float32) value to set
 
-.. function:: Hierarchy.setERLR(self, l, rlr)
+.. function:: Hierarchy.getEScale(self, l)
 
-    Set the reconstruction learning rate of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :param rlr: (float32) value to set
-
-.. function:: Hierarchy.getERLR(self, l)
-
-    Get the reconstruction learning rate of an encoder (E)
+    Get the scale of an encoder (E). This determines how updates are discretized; a higher scale means a higher discretization resolution at the cost of range.
 
     :param l: (int32) index of the layer
-    :rtype: (float32) rlr
+    :rtype: (float32) scale
+
+.. function:: Hierarchy.setELR(self, l, lr)
+
+    Set the learning rate of an encoder (E)
+
+    :param l: (int32) index of the layer
+    :param lr: (float32) value to set
+
+.. function:: Hierarchy.getELR(self, l)
+
+    Get the learning rate of an encoder (E)
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) lr
+
+.. function:: Hierarchy.setDScale(self, l, scale)
+
+    Set the learning rate of a decoder (D). This determines how updates are discretized; a higher scale means a higher discretization resolution at the cost of range.
+
+    :param l: (int32) index of the layer
+    :param scale: (float32) value to set
+
+.. function:: Hierarchy.getDLR(self, l)
+
+    Get the learning rate of a decoder (D). This determines how updates are discretized; a higher scale means a higher discretization resolution at the cost of range.
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) scale
 
 .. function:: Hierarchy.setDLR(self, l, lr)
 
@@ -179,28 +193,28 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
 .. function:: Hierarchy.setAVLR(self, i, vlr)
 
-    Set the value learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
+    Set the value (critic) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :param vlr: (float32) value to set
 
 .. function:: Hierarchy.getAVLR(self, i)
 
-    Get the value learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
+    Get the value (critic) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :rtype: (float32) vlr
 
 .. function:: Hierarchy.setAALR(self, i, alr)
 
-    Set the action learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
+    Set the action (actor) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :param alr: (float32) value to set
 
 .. function:: Hierarchy.getAALR(self, i)
 
-    Get the action learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
+    Get the action (actor) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :rtype: (float32) alr
