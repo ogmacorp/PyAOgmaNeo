@@ -60,6 +60,16 @@ bool LayerDesc::checkInRange() const {
         return false;
     }
 
+    if (std::get<0>(clumpSize) < 1) {
+        std::cerr << "Error: clumpSize[0] < 1 is not allowed!" << std::endl;
+        return false;
+    }
+
+    if (std::get<1>(clumpSize) < 1) {
+        std::cerr << "Error: clumpSize[1] < 1 is not allowed!" << std::endl;
+        return false;
+    }
+
     if (eRadius < 0) {
         std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
         return false;
@@ -128,6 +138,7 @@ void Hierarchy::initRandom(
 
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
+            aon::Int2(std::get<0>(layerDescs[l].clumpSize), std::get<1>(layerDescs[l].clumpSize)),
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
             layerDescs[l].ticksPerUpdate,
