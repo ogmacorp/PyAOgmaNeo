@@ -288,41 +288,9 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setEScale(
-        int l,
-        float scale
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (scale <= 0.0f) {
-            std::cerr << "Error: EScale must be > 0.0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).scale = scale;
-    }
-
-    float getEScale(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).scale;
-    }
-
     void setELR(
         int l,
-        float lr
+        int lr
     ) {
         initCheck();
 
@@ -331,15 +299,15 @@ public:
             abort();
         }
 
-        if (lr < 0.0f) {
-            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
+        if (lr < 0) {
+            std::cerr << "Error: ELR must be >= 0" << std::endl;
             abort();
         }
 
         h.getELayer(l).lr = lr;
     }
 
-    float getELR(
+    int getELR(
         int l
     ) {
         initCheck();
