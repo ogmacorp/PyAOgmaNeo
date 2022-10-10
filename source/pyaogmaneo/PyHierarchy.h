@@ -113,6 +113,10 @@ public:
 
     std::vector<unsigned char> serializeStateToBuffer();
 
+    void clearState() {
+        h.clearState();
+    }
+
     void step(
         const std::vector<std::vector<int>> &inputCIs,
         bool learnEnabled,
