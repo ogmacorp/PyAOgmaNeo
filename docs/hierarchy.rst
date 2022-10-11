@@ -153,20 +153,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) lr
 
-.. function:: Hierarchy.setDScale(self, l, scale)
-
-    Set the learning rate of a decoder (D). This determines how updates are discretized; a higher scale means a higher discretization resolution at the cost of range.
-
-    :param l: (int32) index of the layer
-    :param scale: (float32) value to set
-
-.. function:: Hierarchy.getDLR(self, l)
-
-    Get the learning rate of a decoder (D). This determines how updates are discretized; a higher scale means a higher discretization resolution at the cost of range.
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) scale
-
 .. function:: Hierarchy.setDLR(self, l, lr)
 
     Set the learning rate of a decoder (D)
