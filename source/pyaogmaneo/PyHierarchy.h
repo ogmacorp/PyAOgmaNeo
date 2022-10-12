@@ -357,6 +357,38 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setEReg(
+        int l,
+        float reg
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (reg < 0.0f) {
+            std::cerr << "Error: EReg must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).reg = reg;
+    }
+
+    float getEReg(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).reg;
+    }
+
     void setDFLR(
         int l,
         int i,
