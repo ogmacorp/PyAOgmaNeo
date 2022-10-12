@@ -199,24 +199,6 @@ public:
         return h.getUpdate(l);
     }
 
-    std::vector<float> getHiddenActs(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        std::vector<float> hiddenActs(h.getELayer(l).getHiddenActs().size());
-
-        for (int j = 0; j < hiddenActs.size(); j++)
-            hiddenActs[j] = h.getELayer(l).getHiddenActs()[j];
-
-        return hiddenActs;
-    }
-
     std::vector<int> getHiddenCIs(
         int l
     ) {
