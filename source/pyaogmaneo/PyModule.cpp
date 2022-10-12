@@ -76,6 +76,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeToBuffer", &pyaon::Hierarchy::serializeToBuffer)
         .def("setStateFromBuffer", &pyaon::Hierarchy::setStateFromBuffer)
         .def("serializeStateToBuffer", &pyaon::Hierarchy::serializeStateToBuffer)
+        .def("clearState", &pyaon::Hierarchy::clearState)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
@@ -116,7 +117,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius);
+        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
+        .def("getARadius", &pyaon::Hierarchy::getARadius)
+        .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
@@ -146,6 +149,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
+        .def("setGap", &pyaon::ImageEncoder::setGap)
+        .def("getGap", &pyaon::ImageEncoder::getGap)
+        .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
+        .def("getVigilance", &pyaon::ImageEncoder::getVigilance)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR);
+        .def("getLR", &pyaon::ImageEncoder::getLR)
+        .def("setRR", &pyaon::ImageEncoder::setRR)
+        .def("getRR", &pyaon::ImageEncoder::getRR);
 }

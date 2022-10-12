@@ -35,7 +35,7 @@ class ScalarEncoder:
         for i in range(len(self.protos)):
             acts = -np.sum(np.square(np.repeat(scalars.T, self.cells_per_column, axis=0) - self.protos[i]), axis=1)
 
-            csdr.append(np.asscalar(np.argmax(acts)))
+            csdr.append(np.argmax(acts).item())
 
         return csdr
 

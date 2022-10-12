@@ -52,6 +52,10 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :rtype: ([uint8]) byte buffer
 
+.. function:: Hierarchy.clearState(self)
+
+    Clear the hidden state of the hierarchy (short term memory) by setting it to 0
+
 .. function:: Hierarchy.step(self, inputCIs, learnEnabled=True, reward=0.0, mimic=False)
 
     Perform a simulation step of the hierarchy. This will produce new predictions or actions if those are being used (as specified in the IODesc's)
@@ -135,47 +139,19 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
-.. function:: Hierarchy.dLayerExists(self, i)
+.. function:: Hierarchy.setELR(self, l, lr)
 
-    Determine whether there is a decoder at the i-th IO layer. This will be True if the IODesc at index i was of type prediction during initialization
-
-    :param i: (int32) index of the IO layer
-    :rtype: (boolean) True if exists, False otherwise
-
-.. function:: Hierarchy.aLayerExists(self, i)
-
-    Determine whether there is a actor at the i-th IO layer. This will be True if the IODesc at index i was of type action during initialization
-
-    :param i: (int32) index of the IO layer
-    :rtype: (boolean) True if exists, False otherwise
-
-.. function:: Hierarchy.setEELR(self, l, lr)
-
-    Set the error learning rate of an encoder (E)
+    Set the learning rate of an encoder (E). This is an integer in this case
 
     :param l: (int32) index of the layer
-    :param lr: (float32) value to set
+    :param lr: (int32) value to set
 
-.. function:: Hierarchy.getEELR(self, l)
+.. function:: Hierarchy.getELR(self, l)
 
-    Get the error learning rate of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) lr
-
-.. function:: Hierarchy.setERLR(self, l, lr)
-
-    Set the reconstruction learning rate of an encoder (E)
+    Get the learning rate of an encoder (E). This is an integer in this case
 
     :param l: (int32) index of the layer
-    :param lr: (float32) value to set
-
-.. function:: Hierarchy.getERLR(self, l)
-
-    Get the reconstruction learning rate of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) lr
+    :rtype: (int32) lr
 
 .. function:: Hierarchy.setDLR(self, l, lr)
 
@@ -193,28 +169,28 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
 .. function:: Hierarchy.setAVLR(self, i, vlr)
 
-    Set the value learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
+    Set the value (critic) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :param vlr: (float32) value to set
 
 .. function:: Hierarchy.getAVLR(self, i)
 
-    Get the value learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
+    Get the value (critic) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :rtype: (float32) vlr
 
 .. function:: Hierarchy.setAALR(self, i, alr)
 
-    Set the action learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
+    Set the action (actor) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :param alr: (float32) value to set
 
 .. function:: Hierarchy.getAALR(self, i)
 
-    Get the action learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
+    Get the action (actor) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
 
     :param i: (int32) index of the IO layer
     :rtype: (float32) alr
@@ -277,7 +253,7 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
 .. function:: Hierarchy.getERadius(self, l)
 
-    Get the feed forward encoder radius of a layer
+    Get the encoder (E) radius of a layer
 
     :param l: (int32) index of the layer
     :rtype: (int32) encoder radius
@@ -289,6 +265,13 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :param i: (int32) index of the IO layer 
     :rtype: (int32) P radius
+
+.. function:: Hierarchy.getARadius(self, i)
+
+    Get the actor (A) radius onto the first hidden layer
+
+    :param i: (int32) index of the IO layer 
+    :rtype: (int32) history capacity
 
 .. function:: Hierarchy.getAHistoryCapacity(self, i)
 

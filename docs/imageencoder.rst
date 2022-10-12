@@ -4,7 +4,7 @@ Image Encoder
 .. class:: pyaogmaneo.ImageEncoder
 
 The ImageEncoder is a pre-encoder used to convert images to CSDRs. Sometimes, it can also be used for non-image inputs, but images are the primary intended use.
-It is implemented as a bunch of 1D Self-Organizing Maps (SOMs).
+It is implemented as a lattice of Fuzzy ART (Adaptive Resonance Theory) modules.
 
 .. function:: ImageEncoder.__init__(self):
 
@@ -87,26 +87,50 @@ It is implemented as a bunch of 1D Self-Organizing Maps (SOMs).
 
     :rtype: (Int3) the CSDR size
 
+.. function:: ImageEncoder.setGap(self, gap)
+
+    Set the gap (as is called "epsilon" from Adaptive Resonance Theory). Larger gap (always > 0) reduces the importance of unset weights.
+
+    :param gap: (float32) value to set
+
+.. function:: ImageEncoder.getGap(self)
+
+    Get the gap (as is called "epsilon" from Adaptive Resonance Theory). Larger gap (always > 0) reduces the importance of unset weights.
+
+    :rtype: (float32) gap
+
+.. function:: ImageEncoder.setVigilance(self, vigilance)
+
+    Set the vigilance (as from Adaptive Resonance Theory). Increase to close to 1 if the resulting CSDR doesn't change enough when the image changes.
+
+    :param vigilance: (float32) value to set
+
+.. function:: ImageEncoder.getVigilance(self)
+
+    Get the vigilance (as from Adaptive Resonance Theory). Increase to close to 1 if the resulting CSDR doesn't change enough when the image changes.
+
+    :rtype: (float32) vigilance
+
 .. function:: ImageEncoder.setLR(self, lr)
 
-    Set the learning rate
+    Set the (Adaptive Resonance Theory) learning rate
 
     :param lr: (float32) value to set
 
 .. function:: ImageEncoder.getLR(self)
 
-    Get the learning rate
+    Get the (Adaptive Resonance Theory) learning rate
 
     :rtype: (float32) lr
 
-.. function:: ImageEncoder.setFalloff(self, falloff)
+.. function:: ImageEncoder.setRR(self, rr)
 
-    Set the SOM falloff
+    Set the learning rate used for reconstruction
 
-    :param falloff: (float32) value to set
+    :param rr: (float32) value to set
 
-.. function:: ImageEncoder.getFalloff(self)
+.. function:: ImageEncoder.getRR(self)
 
-    Get the SOM falloff
+    Get the learning rate used for reconstruction
 
-    :rtype: (float32) falloff
+    :rtype: (float32) rr

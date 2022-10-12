@@ -35,6 +35,12 @@ This will download the AOgmaNeo library these bindings depend on automatically, 
 Note that the branch of AOgmaNeo that will be used for building is based on the current branch of this repository (PyAOgmaNeo).
 The build system will automatically download the AOgmaNeo branch of the same name as that currently checked out in this repository.
 
+If you would like to use an existing system install of AOgmaNeo, run:
+
+> pip install . --install-option="--use-system-aogmaneo"
+
+from this directory.
+
 ## Importing and Setup
 
 The PyAOgmaNeo module can be imported using:

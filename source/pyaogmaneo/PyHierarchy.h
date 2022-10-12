@@ -12,7 +12,7 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
-const int hierarchyMagic = 54398716;
+const int hierarchyMagic = 54398723;
 
 enum IOType {
     none = 0,
@@ -112,6 +112,10 @@ public:
     );
 
     std::vector<unsigned char> serializeStateToBuffer();
+
+    void clearState() {
+        h.clearState();
+    }
 
     void step(
         const std::vector<std::vector<int>> &inputCIs,
@@ -690,6 +694,32 @@ public:
         }
 
         return h.getDLayer(l, i).getVisibleLayerDesc(0).radius;
+    }
+
+    int getARadius(
+        int i
+    ) const {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).getVisibleLayerDesc(0).radius;
+    }
+
+    int getAHistoryCapacity(
+        int i
+    ) const {
+        initCheck();
+
+        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).getHistoryCapacity();
     }
 };
 } // namespace pyaon
