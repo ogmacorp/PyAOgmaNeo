@@ -339,10 +339,10 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setDFLR(
+    void setDLR(
         int l,
         int i,
-        float flr
+        float lr
     ) {
         initCheck();
 
@@ -361,15 +361,15 @@ public:
             abort();
         }
 
-        if (flr < 0.0f) {
-            std::cerr << "Error: DFLR must be >= 0.0" << std::endl;
+        if (lr < 0.0f) {
+            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getDLayer(l, i).flr = flr;
+        h.getDLayer(l, i).lr = lr;
     }
 
-    float getDFLR(
+    float getDLR(
         int l,
         int i
     ) const {
@@ -390,61 +390,7 @@ public:
             abort();
         }
 
-        return h.getDLayer(l, i).flr;
-    }
-
-    void setDBLR(
-        int l,
-        int i,
-        float blr
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        if (blr < 0.0f) {
-            std::cerr << "Error: DBLR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getDLayer(l, i).blr = blr;
-    }
-
-    float getDBLR(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getIOSizes().size()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayer(l, i).blr;
+        return h.getDLayer(l, i).lr;
     }
 
     void setAVLR(
