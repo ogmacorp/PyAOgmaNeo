@@ -76,13 +76,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeToBuffer", &pyaon::Hierarchy::serializeToBuffer)
         .def("setStateFromBuffer", &pyaon::Hierarchy::setStateFromBuffer)
         .def("serializeStateToBuffer", &pyaon::Hierarchy::serializeStateToBuffer)
-        .def("clearState", &pyaon::Hierarchy::clearState)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
             py::arg("reward") = 0.0f,
             py::arg("mimic") = false
         )
+        .def("clearState", &pyaon::Hierarchy::clearState)
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getTopHiddenCIs", &pyaon::Hierarchy::getTopHiddenCIs)
         .def("getTopHiddenSize", &pyaon::Hierarchy::getTopHiddenSize)

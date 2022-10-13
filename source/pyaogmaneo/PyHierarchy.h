@@ -113,16 +113,16 @@ public:
 
     std::vector<unsigned char> serializeStateToBuffer();
 
-    void clearState() {
-        h.clearState();
-    }
-
     void step(
         const std::vector<std::vector<int>> &inputCIs,
         bool learnEnabled,
         float reward,
         bool mimic
     );
+
+    void clearState() {
+        h.clearState();
+    }
 
     int getNumLayers() const {
         initCheck();
