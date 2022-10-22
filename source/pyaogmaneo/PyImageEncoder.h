@@ -12,7 +12,7 @@
 #include <aogmaneo/ImageEncoder.h>
 
 namespace pyaon {
-const int imageEncoderMagic = 128836;
+const int imageEncoderMagic = 128847;
 
 struct ImageEncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;
@@ -65,7 +65,7 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<float>> &inputs,
+        const std::vector<std::vector<unsigned char>> &inputs,
         bool learnEnabled
     );
 
@@ -79,7 +79,7 @@ public:
         return enc.getNumVisibleLayers();
     }
 
-    std::vector<float> getReconstruction(
+    std::vector<unsigned char> getReconstruction(
         int i
     ) const {
         initCheck();
@@ -89,7 +89,7 @@ public:
             abort();
         }
 
-        std::vector<float> reconstruction(enc.getReconstruction(i).size());
+        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
 
         for (int j = 0; j < reconstruction.size(); j++)
             reconstruction[j] = enc.getReconstruction(i)[j];
@@ -127,6 +127,44 @@ public:
     }
 
     // Params
+    void setGap(
+        float gap
+    ) {
+        initCheck();
+
+        if (gap <= 0.0f) {
+            std::cerr << "Error: ImageEncoder Gap must be > 0.0" << std::endl;
+            abort();
+        }
+
+        enc.gap = gap;
+    }
+
+    float getGap() const {
+        initCheck();
+
+        return enc.gap;
+    }
+
+    void setVigilance(
+        float vigilance
+    ) {
+        initCheck();
+
+        if (vigilance < 0.0f || vigilance > 1.0f) {
+            std::cerr << "Error: ImageEncoder Vigilance must be >= 0.0 and <= 1.0" << std::endl;
+            abort();
+        }
+
+        enc.vigilance = vigilance;
+    }
+
+    float getVigilance() const {
+        initCheck();
+
+        return enc.vigilance;
+    }
+
     void setLR(
         float lr
     ) {
@@ -146,23 +184,23 @@ public:
         return enc.lr;
     }
 
-    void setFalloff(
-        float falloff
+    void setRR(
+        float rr
     ) {
         initCheck();
 
-        if (falloff < 0.0f) {
-            std::cerr << "Error: ImageEncoder Falloff must be >= 0.0" << std::endl;
+        if (rr < 0.0f) {
+            std::cerr << "Error: ImageEncoder RR must be >= 0.0" << std::endl;
             abort();
         }
 
-        enc.falloff = falloff;
+        enc.rr = rr;
     }
 
-    float getFalloff() const {
+    float getRR() const {
         initCheck();
 
-        return enc.falloff;
+        return enc.rr;
     }
 };
 } // namespace pyaon

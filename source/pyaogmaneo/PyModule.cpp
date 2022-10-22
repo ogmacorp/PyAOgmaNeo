@@ -87,14 +87,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("setRecurrentImportance", &pyaon::Hierarchy::setRecurrentImportance)
         .def("getRecurrentImportance", &pyaon::Hierarchy::getRecurrentImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
-        .def("getHiddenActs", &pyaon::Hierarchy::getHiddenActs)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
-        .def("setELR", &pyaon::Hierarchy::setELR)
-        .def("getELR", &pyaon::Hierarchy::getELR)
+        .def("setEELR", &pyaon::Hierarchy::setEELR)
+        .def("getEELR", &pyaon::Hierarchy::getEELR)
+        .def("setERLR", &pyaon::Hierarchy::setERLR)
+        .def("getERLR", &pyaon::Hierarchy::getERLR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
@@ -110,7 +111,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
         .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius);
+        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
+        .def("getARadius", &pyaon::Hierarchy::getARadius)
+        .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
@@ -140,8 +143,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
+        .def("setGap", &pyaon::ImageEncoder::setGap)
+        .def("getGap", &pyaon::ImageEncoder::getGap)
+        .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
+        .def("getVigilance", &pyaon::ImageEncoder::getVigilance)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setFalloff", &pyaon::ImageEncoder::setFalloff)
-        .def("getFalloff", &pyaon::ImageEncoder::getFalloff);
+        .def("setRR", &pyaon::ImageEncoder::setRR)
+        .def("getRR", &pyaon::ImageEncoder::getRR);
 }
