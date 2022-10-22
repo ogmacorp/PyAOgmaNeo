@@ -66,7 +66,8 @@ public:
 
     void step(
         const std::vector<std::vector<unsigned char>> &inputs,
-        bool learnEnabled
+        bool learnEnabled,
+        bool learnRecon
     );
 
     void reconstruct(
