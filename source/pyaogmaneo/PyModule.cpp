@@ -92,6 +92,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
+        .def("getIOType", &pyaon::Hierarchy::getIOType)
         .def("setEELR", &pyaon::Hierarchy::setEELR)
         .def("getEELR", &pyaon::Hierarchy::getEELR)
         .def("setERLR", &pyaon::Hierarchy::setERLR)
