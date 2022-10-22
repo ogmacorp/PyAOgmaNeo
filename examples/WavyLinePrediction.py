@@ -88,10 +88,11 @@ inputColumnSize = 16 # 16 values per half-byte (2^4)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(3): # Layers with exponential memory
+for i in range(2): # Layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (4, 4, 32) # Size of the encoder(s) in the layer
+    ld.rRadius = 0
 
     lds.append(ld)
 
@@ -100,7 +101,7 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
 # Present the (noisy) wave sequence for some timesteps
-iters = 10000
+iters = 100000
 
 def wave(t):
     if t % 20 == 0 or t % 7 == 0:
@@ -119,7 +120,7 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    print(h.getPredictionCIs(0))
+    print(h.getHiddenCIs(0))
 
     tNoisy += 1
 
