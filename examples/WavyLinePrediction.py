@@ -104,9 +104,6 @@ h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.p
 iters = 100000
 
 def wave(t):
-    if t % 100 == 0:
-        return 1.0
-    return 0.0
     return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.03))
 
 tNoisy = 0
