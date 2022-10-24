@@ -292,6 +292,19 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    IOType getIOType(
+        int i
+    ) const {
+        initCheck();
+
+        if (i < 0 || i >= h.getNumIO()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        return static_cast<IOType>(h.getIOType(i));
+    }
+
     void setELR(
         int l,
         int lr
