@@ -119,11 +119,19 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :rtype: (int32) number of IO layers
 
-.. function:: Hierarchy.getIOSizes(self)
+.. function:: Hierarchy.getIOSize(self, i)
 
-    Get the sizes of all IO layers
+    Get the size of an IO layer
 
-    :rtype: ([(int32, int32, int32)]) list of sizes of the IO layers
+    :param i: (int32) index of the IO layer
+    :rtype: ((int32, int32, int32)) size of the IO layer
+
+.. function:: Hierarchy.getIOType(self, i)
+
+    Get the type of an IO layer
+
+    :param i: (int32) index of the IO layer
+    :rtype: (IOType) type of IO layer
 
 .. function:: Hierarchy.getNumDLayers(self, l)
 
