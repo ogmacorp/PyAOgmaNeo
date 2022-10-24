@@ -161,7 +161,7 @@ public:
     ) {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -174,7 +174,7 @@ public:
     ) const {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -274,7 +274,7 @@ public:
     int getNumIO() const {
         initCheck();
 
-        return h.getIOSizes().size();
+        return h.getNumIO();
     }
 
     std::tuple<int, int, int> getIOSize(
@@ -282,12 +282,12 @@ public:
     ) const {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
 
-        aon::Int3 size = h.getIOSizes()[i];
+        aon::Int3 size = h.getIOSize(i);
 
         return { size.x, size.y, size.z };
     }
@@ -336,7 +336,7 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -365,7 +365,7 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -384,7 +384,7 @@ public:
     ) {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -407,7 +407,7 @@ public:
     ) const {
         initCheck();
         
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -426,7 +426,7 @@ public:
     ) {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -449,7 +449,7 @@ public:
     ) const {
         initCheck();
         
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -468,7 +468,7 @@ public:
     ) {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -491,7 +491,7 @@ public:
     ) const {
         initCheck();
         
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -510,7 +510,7 @@ public:
     ) {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -533,7 +533,7 @@ public:
     ) const {
         initCheck();
         
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -552,7 +552,7 @@ public:
     ) {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -575,7 +575,7 @@ public:
     ) const {
         initCheck();
         
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -594,7 +594,7 @@ public:
     ) {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -617,7 +617,7 @@ public:
     ) const {
         initCheck();
         
-        if (i < 0 || i >= h.getIOSizes().size()) {
+        if (i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -655,7 +655,7 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::prediction) {
+        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::prediction) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -668,7 +668,7 @@ public:
     ) const {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::action) {
+        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -681,7 +681,7 @@ public:
     ) const {
         initCheck();
 
-        if (i < 0 || i >= h.getIOSizes().size() || h.getIOType(i) != aon::action) {
+        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
