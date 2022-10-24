@@ -139,7 +139,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
         .def("step", &pyaon::ImageEncoder::step,
             py::arg("inputs"),
-            py::arg("learnEnabled") = true
+            py::arg("learnEnabled") = true,
+            py::arg("learnRecon") = true
         )
         .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
         .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
