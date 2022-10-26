@@ -56,7 +56,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
-            py::arg("rRadius") = 0,
+            py::arg("rRadius") = 2,
             py::arg("dRadius") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
