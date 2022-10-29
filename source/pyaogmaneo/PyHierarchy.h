@@ -673,7 +673,7 @@ public:
             abort();
         }
 
-        return h.getDLayer(l, i).getVisibleLayerDesc().radius;
+        return h.getDLayer(l, i).getVisibleLayerDesc(0).radius;
     }
 
     int getARadius(
@@ -686,7 +686,7 @@ public:
             abort();
         }
 
-        return h.getALayer(i).getVisibleLayerDesc().radius;
+        return h.getALayer(i).getVisibleLayerDesc(0).radius;
     }
 
     int getAHistoryCapacity(
