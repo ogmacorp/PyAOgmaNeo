@@ -475,6 +475,48 @@ public:
         return h.getALayer(i).alr;
     }
 
+    void setABias(
+        int i,
+        float bias
+    ) {
+        initCheck();
+
+        if (i < 0 || i >= h.getNumIO()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        if (bias < 0.0f) {
+            std::cerr << "Error: ABias must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        h.getALayer(i).bias = bias;
+    }
+
+    float getABias(
+        int i
+    ) const {
+        initCheck();
+        
+        if (i < 0 || i >= h.getNumIO()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+            abort();
+        }
+
+        return h.getALayer(i).bias;
+    }
+
     void setADiscount(
         int i,
         float discount
