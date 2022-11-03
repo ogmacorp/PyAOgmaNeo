@@ -148,9 +148,8 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 }
 
 void ImageEncoder::step(
-    const std::vector<std::vector<unsigned char>> &inputs,
-    bool learnEnabled,
-    bool learnRecon
+    const std::vector<std::vector<float>> &inputs,
+    bool learnEnabled
 ) {
     initCheck();
 
@@ -159,8 +158,8 @@ void ImageEncoder::step(
         abort();
     }
 
-    aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
-    aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
+    aon::Array<aon::FloatBuffer> cInputsBacking(inputs.size());
+    aon::Array<const aon::FloatBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         if (inputs[i].size() != enc.getVisibleLayer(i).reconstruction.size()) {
@@ -176,7 +175,7 @@ void ImageEncoder::step(
         cInputs[i] = &cInputsBacking[i];
     }
 
-    enc.step(cInputs, learnEnabled, learnRecon);
+    enc.step(cInputs, learnEnabled);
 }
 
 void ImageEncoder::reconstruct(

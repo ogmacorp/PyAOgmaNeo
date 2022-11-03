@@ -173,8 +173,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
         .def("step", &pyaon::ImageEncoder::step,
             py::arg("inputs"),
-            py::arg("learnEnabled") = true,
-            py::arg("learnRecon") = true
+            py::arg("learnEnabled") = true
         )
         .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
         .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
@@ -182,14 +181,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
-        .def("setGap", &pyaon::ImageEncoder::setGap)
-        .def("getGap", &pyaon::ImageEncoder::getGap)
-        .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
-        .def("getVigilance", &pyaon::ImageEncoder::getVigilance)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setRR", &pyaon::ImageEncoder::setRR)
-        .def("getRR", &pyaon::ImageEncoder::getRR);
+        .def("getLR", &pyaon::ImageEncoder::getLR);
 
     py::class_<pyaon::LocationInvariant>(m, "LocationInvariant")
         .def(py::init<>())
@@ -209,8 +202,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::LocationInvariant::getHiddenSize)
         .def("getSensorSize", &pyaon::LocationInvariant::getSensorSize)
         .def("getWhereSize", &pyaon::LocationInvariant::getWhereSize)
-        .def("setMR", &pyaon::LocationInvariant::setMR)
-        .def("getMR", &pyaon::LocationInvariant::getMR)
+        .def("setDecay", &pyaon::LocationInvariant::setDecay)
+        .def("getDecay", &pyaon::LocationInvariant::getDecay)
         .def("setLR", &pyaon::LocationInvariant::setLR)
         .def("getLR", &pyaon::LocationInvariant::getLR);
 }

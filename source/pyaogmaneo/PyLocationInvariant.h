@@ -70,10 +70,10 @@ public:
         return hiddenCIs;
     }
 
-    std::vector<unsigned char> getMemory() const {
+    std::vector<float> getMemory() const {
         initCheck();
 
-        std::vector<unsigned char> memory(li.getMemory().size());
+        std::vector<float> memory(li.getMemory().size());
 
         for (int j = 0; j < memory.size(); j++)
             memory[j] = li.getMemory()[j];
@@ -106,23 +106,23 @@ public:
     }
 
     // Params
-    void setMR(
-        int mr
+    void setDecay(
+        float decay
     ) {
         initCheck();
 
-        if (mr < 0) {
-            std::cerr << "Error: LocationInvariant MR must be >= 0" << std::endl;
+        if (decay < 0.0f || decay > 1.0f) {
+            std::cerr << "Error: LocationInvariant Decay must be >= 0.0 and <= 1.0" << std::endl;
             abort();
         }
 
-        li.mr = mr;
+        li.decay = decay;
     }
 
-    int getMR() const {
+    float getDecay() const {
         initCheck();
 
-        return li.mr;
+        return li.decay;
     }
 
     void setLR(
