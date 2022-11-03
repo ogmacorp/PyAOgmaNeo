@@ -10,7 +10,9 @@
 #include <pybind11/stl.h>
 
 #include "PyHierarchy.h"
+#include "PyEncoder.h"
 #include "PyImageEncoder.h"
+#include "PyLocationInvariant.h"
 
 namespace py = pybind11;
 
@@ -141,10 +143,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("saveToFile", &pyaon::Encoder::saveToFile)
         .def("serializeToBuffer", &pyaon::Encoder::serializeToBuffer)
         .def("step", &pyaon::Encoder::step,
-            py::arg("inputs"),
+            py::arg("inputCIs"),
             py::arg("learnEnabled") = true
         )
-        .def("reconstruct", &pyaon::Encoder::reconstruct)
         .def("getNumVisibleLayers", &pyaon::Encoder::getNumVisibleLayers)
         .def("getHiddenCIs", &pyaon::Encoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::Encoder::getHiddenSize)
@@ -189,4 +190,24 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getLR", &pyaon::ImageEncoder::getLR)
         .def("setRR", &pyaon::ImageEncoder::setRR)
         .def("getRR", &pyaon::ImageEncoder::getRR);
+
+    py::class_<pyaon::LocationInvariant>(m, "LocationInvariant")
+        .def(py::init<>())
+        .def("initRandom", &pyaon::LocationInvariant::initRandom)
+        .def("initFromFile", &pyaon::LocationInvariant::initFromFile)
+        .def("initFromBuffer", &pyaon::LocationInvariant::initFromBuffer)
+        .def("saveToFile", &pyaon::LocationInvariant::saveToFile)
+        .def("serializeToBuffer", &pyaon::LocationInvariant::serializeToBuffer)
+        .def("step", &pyaon::LocationInvariant::step,
+            py::arg("sensorCIs"),
+            py::arg("whereCIs"),
+            py::arg("learnEnabled") = true
+        )
+        .def("getHiddenCIs", &pyaon::LocationInvariant::getHiddenCIs)
+        .def("getHiddenSize", &pyaon::LocationInvariant::getHiddenSize)
+        .def("getIntermSize", &pyaon::LocationInvariant::getIntermSize)
+        .def("getSensorSizeZ", &pyaon::LocationInvariant::getSensorSizeZ)
+        .def("getWhereSizeZ", &pyaon::LocationInvariant::getWhereSizeZ)
+        .def("setLR", &pyaon::LocationInvariant::setLR)
+        .def("getLR", &pyaon::LocationInvariant::getLR);
 }

@@ -74,6 +74,22 @@ public:
 
         return { size.x, size.y, size.z };
     }
+    
+    std::tuple<int, int> getIntermSize() const {
+        initCheck();
+
+        aon::Int2 size = li.getIntermSize();
+
+        return { size.x, size.y };
+    }
+
+    int getSensorSizeZ() const {
+        return li.getSensorSizeZ();
+    }
+
+    int getWhereSizeZ() const {
+        return li.getWhereSizeZ();
+    }
 
     // Params
     void setLR(
