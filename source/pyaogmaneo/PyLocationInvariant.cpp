@@ -19,9 +19,8 @@ void LocationInvariant::initCheck() const {
 
 void LocationInvariant::initRandom(
     const std::tuple<int, int, int> &hiddenSize,
-    const std::tuple<int, int> &intermSize,
-    int sensorSizeZ,
-    int whereSizeZ,
+    const std::tuple<int, int, int> &sensorSize,
+    const std::tuple<int, int, int> &whereSize,
     int radius
 ) {
     bool allInRange = true;
@@ -41,23 +40,33 @@ void LocationInvariant::initRandom(
         allInRange = false;
     }
 
-    if (std::get<0>(intermSize) < 1) {
-        std::cerr << "Error: intermSize[0] < 1 is not allowed!" << std::endl;
+    if (std::get<0>(sensorSize) < 1) {
+        std::cerr << "Error: sensorSize[0] < 1 is not allowed!" << std::endl;
         allInRange = false;
     }
 
-    if (std::get<1>(intermSize) < 1) {
-        std::cerr << "Error: intermSize[1] < 1 is not allowed!" << std::endl;
+    if (std::get<1>(sensorSize) < 1) {
+        std::cerr << "Error: sensorSize[1] < 1 is not allowed!" << std::endl;
         allInRange = false;
     }
 
-    if (sensorSizeZ < 1) {
-        std::cerr << "Error: sensorSizeZ < 1 is not allowed!" << std::endl;
+    if (std::get<2>(sensorSize) < 1) {
+        std::cerr << "Error: sensorSize[2] < 1 is not allowed!" << std::endl;
         allInRange = false;
     }
 
-    if (whereSizeZ < 1) {
-        std::cerr << "Error: whereSizeZ < 1 is not allowed!" << std::endl;
+    if (std::get<0>(whereSize) < 1) {
+        std::cerr << "Error: whereSize[0] < 1 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (std::get<1>(whereSize) < 1) {
+        std::cerr << "Error: whereSize[1] < 1 is not allowed!" << std::endl;
+        allInRange = false;
+    }
+
+    if (std::get<2>(whereSize) < 1) {
+        std::cerr << "Error: whereSize[2] < 1 is not allowed!" << std::endl;
         allInRange = false;
     }
 
@@ -71,7 +80,9 @@ void LocationInvariant::initRandom(
         abort();
     }
 
-    li.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), aon::Int2(std::get<0>(intermSize), std::get<1>(intermSize)), sensorSizeZ, whereSizeZ, radius);
+    li.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)),
+            aon::Int3(std::get<0>(sensorSize), std::get<1>(sensorSize), std::get<2>(sensorSize)),
+            aon::Int3(std::get<0>(whereSize), std::get<1>(whereSize), std::get<2>(whereSize)), radius);
 
     initialized = true;
 }
@@ -146,31 +157,34 @@ void LocationInvariant::step(
 ) {
     initCheck();
 
-    int numIntermColumns = li.getIntermSize().x * li.getIntermSize().y;
+    int numSensorColumns = li.getSensorSize().x * li.getSensorSize().y;
+    int numWhereColumns = li.getWhereSize().x * li.getWhereSize().y;
 
-    if (sensorCIs.size() != numIntermColumns) {
-        std::cerr << "Incorrect number of sensorCIs given to LocationInvariant! Expected " << numIntermColumns << ", got " << sensorCIs.size() << std::endl;
+    if (sensorCIs.size() != numSensorColumns) {
+        std::cerr << "Incorrect number of sensorCIs given to LocationInvariant! Expected " << numSensorColumns << ", got " << sensorCIs.size() << std::endl;
         abort();
     }
 
-    if (whereCIs.size() != numIntermColumns) {
-        std::cerr << "Incorrect number of whereCIs given to LocationInvariant! Expected " << numIntermColumns << ", got " << whereCIs.size() << std::endl;
+    if (whereCIs.size() != numWhereColumns) {
+        std::cerr << "Incorrect number of whereCIs given to LocationInvariant! Expected " << numWhereColumns << ", got " << whereCIs.size() << std::endl;
         abort();
     }
 
-    aon::IntBuffer cSensorCIs(numIntermColumns);
-    aon::IntBuffer cWhereCIs(numIntermColumns);
+    aon::IntBuffer cSensorCIs(numSensorColumns);
+    aon::IntBuffer cWhereCIs(numWhereColumns);
 
-    for (int j = 0; j < numIntermColumns; j++) {
-        if (sensorCIs[j] < 0 || sensorCIs[j] >= li.getSensorSizeZ()) {
-            std::cerr << "Sensor CSDR has an out-of-bounds column index (" << sensorCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (li.getSensorSizeZ() - 1) << "]" << std::endl;
+    for (int j = 0; j < numSensorColumns; j++) {
+        if (sensorCIs[j] < 0 || sensorCIs[j] >= li.getSensorSize().z) {
+            std::cerr << "Sensor CSDR has an out-of-bounds column index (" << sensorCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (li.getSensorSize().z - 1) << "]" << std::endl;
             abort();
         }
 
         cSensorCIs[j] = sensorCIs[j];
+    }
 
-        if (whereCIs[j] < 0 || whereCIs[j] >= li.getWhereSizeZ()) {
-            std::cerr << "Sensor CSDR has an out-of-bounds column index (" << whereCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (li.getWhereSizeZ() - 1) << "]" << std::endl;
+    for (int j = 0; j < numWhereColumns; j++) {
+        if (whereCIs[j] < 0 || whereCIs[j] >= li.getWhereSize().z) {
+            std::cerr << "Sensor CSDR has an out-of-bounds column index (" << whereCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (li.getWhereSize().z - 1) << "]" << std::endl;
             abort();
         }
 

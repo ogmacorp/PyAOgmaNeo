@@ -30,9 +30,8 @@ public:
 
     void initRandom(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::tuple<int, int> &intermSize,
-        int sensorSizeZ,
-        int whereSizeZ,
+        const std::tuple<int, int, int> &sensorSize,
+        const std::tuple<int, int, int> &whereSize,
         int radius
     );
 
@@ -79,23 +78,42 @@ public:
         return { size.x, size.y, size.z };
     }
     
-    std::tuple<int, int> getIntermSize() const {
+    std::tuple<int, int, int> getSensorSize() const {
         initCheck();
 
-        aon::Int2 size = li.getIntermSize();
+        aon::Int3 size = li.getSensorSize();
 
-        return { size.x, size.y };
+        return { size.x, size.y, size.z };
     }
 
-    int getSensorSizeZ() const {
-        return li.getSensorSizeZ();
-    }
+    std::tuple<int, int, int> getWhereSize() const {
+        initCheck();
 
-    int getWhereSizeZ() const {
-        return li.getWhereSizeZ();
+        aon::Int3 size = li.getWhereSize();
+
+        return { size.x, size.y, size.z };
     }
 
     // Params
+    void setMR(
+        int mr
+    ) {
+        initCheck();
+
+        if (mr < 0) {
+            std::cerr << "Error: LocationInvariant MR must be >= 0" << std::endl;
+            abort();
+        }
+
+        li.mr = mr;
+    }
+
+    int getMR() const {
+        initCheck();
+
+        return li.mr;
+    }
+
     void setLR(
         float lr
     ) {
