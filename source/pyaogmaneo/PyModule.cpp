@@ -122,6 +122,36 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getARadius", &pyaon::Hierarchy::getARadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
+    py::class_<pyaon::EncoderVisibleLayerDesc>(m, "EncoderVisibleLayerDesc")
+        .def(py::init<
+                std::tuple<int, int, int>,
+                int
+            >(),
+            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("radius") = 2
+        )
+        .def_readwrite("size", &pyaon::EncoderVisibleLayerDesc::size)
+        .def_readwrite("radius", &pyaon::EncoderVisibleLayerDesc::radius);
+
+    py::class_<pyaon::Encoder>(m, "Encoder")
+        .def(py::init<>())
+        .def("initRandom", &pyaon::Encoder::initRandom)
+        .def("initFromFile", &pyaon::Encoder::initFromFile)
+        .def("initFromBuffer", &pyaon::Encoder::initFromBuffer)
+        .def("saveToFile", &pyaon::Encoder::saveToFile)
+        .def("serializeToBuffer", &pyaon::Encoder::serializeToBuffer)
+        .def("step", &pyaon::Encoder::step,
+            py::arg("inputs"),
+            py::arg("learnEnabled") = true
+        )
+        .def("reconstruct", &pyaon::Encoder::reconstruct)
+        .def("getNumVisibleLayers", &pyaon::Encoder::getNumVisibleLayers)
+        .def("getHiddenCIs", &pyaon::Encoder::getHiddenCIs)
+        .def("getHiddenSize", &pyaon::Encoder::getHiddenSize)
+        .def("getVisibleSize", &pyaon::Encoder::getVisibleSize)
+        .def("setLR", &pyaon::Encoder::setLR)
+        .def("getLR", &pyaon::Encoder::getLR);
+
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
