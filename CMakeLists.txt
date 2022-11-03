@@ -77,6 +77,7 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/PyHierarchy.cpp"
     "source/pyaogmaneo/PyEncoder.cpp"
     "source/pyaogmaneo/PyImageEncoder.cpp"
+    "source/pyaogmaneo/PyLocationInvariant.cpp"
 )
 
 find_package(Python COMPONENTS Interpreter Development)
