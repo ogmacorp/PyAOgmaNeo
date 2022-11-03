@@ -205,6 +205,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def("clearState", &pyaon::LocationInvariant::clearState)
         .def("getHiddenCIs", &pyaon::LocationInvariant::getHiddenCIs)
+        .def("getMemory", &pyaon::LocationInvariant::getMemory)
         .def("getHiddenSize", &pyaon::LocationInvariant::getHiddenSize)
         .def("getSensorSize", &pyaon::LocationInvariant::getSensorSize)
         .def("getWhereSize", &pyaon::LocationInvariant::getWhereSize)

@@ -70,6 +70,17 @@ public:
         return hiddenCIs;
     }
 
+    std::vector<unsigned char> getMemory() const {
+        initCheck();
+
+        std::vector<unsigned char> memory(li.getMemory().size());
+
+        for (int j = 0; j < memory.size(); j++)
+            memory[j] = li.getMemory()[j];
+
+        return memory;
+    }
+
     std::tuple<int, int, int> getHiddenSize() const {
         initCheck();
 
