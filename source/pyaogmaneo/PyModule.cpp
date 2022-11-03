@@ -203,6 +203,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("whereCIs"),
             py::arg("learnEnabled") = true
         )
+        .def("clearState", &pyaon::LocationInvariant::clearState)
         .def("getHiddenCIs", &pyaon::LocationInvariant::getHiddenCIs)
         .def("getHiddenSize", &pyaon::LocationInvariant::getHiddenSize)
         .def("getIntermSize", &pyaon::LocationInvariant::getIntermSize)

@@ -146,7 +146,7 @@ void LocationInvariant::step(
 ) {
     initCheck();
 
-    int numIntermColumns = li.getIntermCIs().size();
+    int numIntermColumns = li.getIntermSize().x * li.getIntermSize().y;
 
     if (sensorCIs.size() != numIntermColumns) {
         std::cerr << "Incorrect number of sensorCIs given to LocationInvariant! Expected " << numIntermColumns << ", got " << sensorCIs.size() << std::endl;

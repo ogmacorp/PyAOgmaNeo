@@ -56,6 +56,10 @@ public:
         bool learnEnabled
     );
 
+    void clearState() {
+        li.clearState();
+    }
+
     std::vector<int> getHiddenCIs() const {
         initCheck();
 
