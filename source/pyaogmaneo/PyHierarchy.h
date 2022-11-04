@@ -116,6 +116,10 @@ public:
         bool mimic
     );
 
+    void clearState() {
+        h.clearState();
+    }
+
     int getNumLayers() const {
         initCheck();
 

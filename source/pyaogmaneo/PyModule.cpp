@@ -79,6 +79,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("reward") = 0.0f,
             py::arg("mimic") = false
         )
+        .def("clearState", &pyaon::Hierarchy::clearState)
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
         .def("getTopHiddenCIs", &pyaon::Hierarchy::getTopHiddenCIs)
         .def("getTopHiddenSize", &pyaon::Hierarchy::getTopHiddenSize)
