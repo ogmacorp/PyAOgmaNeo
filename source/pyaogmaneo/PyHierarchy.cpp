@@ -247,8 +247,8 @@ void Hierarchy::step(
 ) {
     initCheck();
 
-    if (inputCIs.size() != h.getIOSizes().size()) {
-        std::cerr << "Incorrect number of inputCIs passed to step! Received " << inputCIs.size() << ", need " << h.getIOSizes().size() << std::endl;
+    if (inputCIs.size() != h.getNumIO()) {
+        std::cerr << "Incorrect number of inputCIs passed to step! Received " << inputCIs.size() << ", need " << h.getNumIO() << std::endl;
         abort();
     }
 
@@ -256,7 +256,7 @@ void Hierarchy::step(
     aon::Array<const aon::IntBuffer*> cInputCIs(inputCIs.size());
 
     for (int i = 0; i < inputCIs.size(); i++) {
-        int numColumns = h.getIOSizes()[i].x * h.getIOSizes()[i].y;
+        int numColumns = h.getIOSize(i).x * h.getIOSize(i).y;
 
         if (inputCIs[i].size() != numColumns) {
             std::cerr << "Incorrect CSDR size at index " << i << " - expected " << numColumns << " columns, got " << inputCIs[i].size() << std::endl;
@@ -266,8 +266,8 @@ void Hierarchy::step(
         cInputCIsBacking[i].resize(inputCIs[i].size());
 
         for (int j = 0; j < inputCIs[i].size(); j++) {
-            if (inputCIs[i][j] < 0 || inputCIs[i][j] >= h.getIOSizes()[i].z) {
-                std::cerr << "Input CSDR at input index " << i << " has an out-of-bounds column index (" << inputCIs[i][j] << ") at column index " << j << ". It must be in the range [0, " << (h.getIOSizes()[i].z - 1) << "]" << std::endl;
+            if (inputCIs[i][j] < 0 || inputCIs[i][j] >= h.getIOSize(i).z) {
+                std::cerr << "Input CSDR at input index " << i << " has an out-of-bounds column index (" << inputCIs[i][j] << ") at column index " << j << ". It must be in the range [0, " << (h.getIOSize(i).z - 1) << "]" << std::endl;
                 abort();
             }
 
@@ -285,8 +285,8 @@ std::vector<int> Hierarchy::getPredictionCIs(
 ) const {
     initCheck();
 
-    if (i < 0 || i >= h.getIOSizes().size()) {
-        std::cout << "Prediction index " << i << " out of range [0, " << (h.getIOSizes().size() - 1) << "]!" << std::endl;
+    if (i < 0 || i >= h.getNumIO()) {
+        std::cout << "Prediction index " << i << " out of range [0, " << (h.getNumIO() - 1) << "]!" << std::endl;
         abort();
     }
 
