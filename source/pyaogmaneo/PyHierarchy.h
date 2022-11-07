@@ -151,7 +151,7 @@ public:
         return h.getTopUpdate();
     }
 
-    void setInputImportance(
+    void setImportance(
         int i,
         float importance
     ) {
@@ -162,10 +162,10 @@ public:
             abort();
         }
 
-        h.setInputImportance(i, importance);
+        h.setImportance(i, importance);
     }
 
-    float getInputImportance(
+    float getImportance(
         int i
     ) const {
         initCheck();
@@ -175,34 +175,7 @@ public:
             abort();
         }
 
-        return h.getInputImportance(i);
-    }
-
-    void setHiddenImportance(
-        int l,
-        float importance
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        h.setHiddenImportance(l, importance);
-    }
-
-    float getHiddenImportance(
-        int l
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getHiddenImportance(l);
+        return h.getImportance(i);
     }
 
     std::vector<int> getPredictionCIs(
@@ -360,70 +333,6 @@ public:
         }
 
         return h.getELayer(l).lr;
-    }
-
-    void setEBoost(
-        int l,
-        float boost
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (boost < 0.0f) {
-            std::cerr << "Error: EBoost must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).boost = boost;
-    }
-
-    float getEBoost(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).boost;
-    }
-
-    void setEGroupRadius(
-        int l,
-        int groupRadius
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (groupRadius < 0) {
-            std::cerr << "Error: EGroupRadius must be >= 0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).groupRadius = groupRadius;
-    }
-
-    int getEGroupRadius(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).groupRadius;
     }
 
     void setDLR(
