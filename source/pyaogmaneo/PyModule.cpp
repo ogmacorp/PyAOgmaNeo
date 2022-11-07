@@ -88,8 +88,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getTopUpdate", &pyaon::Hierarchy::getTopUpdate)
         .def("setInputImportance", &pyaon::Hierarchy::setInputImportance)
         .def("getInputImportance", &pyaon::Hierarchy::getInputImportance)
-        .def("setHiddenImportance", &pyaon::Hierarchy::setHiddenImportance)
-        .def("getHiddenImportance", &pyaon::Hierarchy::getHiddenImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getUpdate", &pyaon::Hierarchy::getUpdate)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)

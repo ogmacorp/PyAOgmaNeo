@@ -178,33 +178,6 @@ public:
         return h.getInputImportance(i);
     }
 
-    void setHiddenImportance(
-        int l,
-        float importance
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        h.setHiddenImportance(l, importance);
-    }
-
-    float getHiddenImportance(
-        int l
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getHiddenImportance(l);
-    }
-
     std::vector<int> getPredictionCIs(
         int i
     ) const;
