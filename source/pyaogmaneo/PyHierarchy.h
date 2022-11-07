@@ -394,6 +394,38 @@ public:
         return h.getELayer(l).boost;
     }
 
+    void setEGroupRadius(
+        int l,
+        int groupRadius
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (groupRadius < 0) {
+            std::cerr << "Error: EGroupRadius must be >= 0" << std::endl;
+            abort();
+        }
+
+        h.getELayer(l).groupRadius = groupRadius;
+    }
+
+    int getEGroupRadius(
+        int l
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        return h.getELayer(l).groupRadius;
+    }
+
     void setDLR(
         int l,
         int i,

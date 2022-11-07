@@ -104,6 +104,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setEBoost", &pyaon::Hierarchy::setEBoost)
         .def("getEBoost", &pyaon::Hierarchy::getEBoost)
+        .def("setEGroupRadius", &pyaon::Hierarchy::setEGroupRadius)
+        .def("getEGroupRadius", &pyaon::Hierarchy::getEGroupRadius)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
