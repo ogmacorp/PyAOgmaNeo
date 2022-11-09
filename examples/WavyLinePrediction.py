@@ -100,7 +100,7 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
 # Present the (noisy) wave sequence for some timesteps
-iters = 100000
+iters = 15000
 
 def wave(t):
     if t % 20 == 0 or t % 7 == 0:
