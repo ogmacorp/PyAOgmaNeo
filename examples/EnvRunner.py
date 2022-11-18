@@ -258,7 +258,7 @@ class EnvRunner:
 
         self._feedObservation(obs)
 
-        r = reward * self.rewardScale + float(term or trunc) * self.terminalReward
+        r = reward * self.rewardScale + float(term) * self.terminalReward
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 

@@ -27,6 +27,8 @@ endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(USE_SYSTEM_AOGMANEO)
+    message(STATUS "Using system installation of AOgmaNeo")
+
     find_package(AOgmaNeo)
 else()
     message(STATUS "Not using system installation of AOgmaNeo, will download from repository")
