@@ -251,14 +251,14 @@ class EnvRunner:
         if len(feedActions) == 1:
             feedActions = feedActions[0]
 
-        obs, reward, done, _ = self.env.step(feedActions)
+        obs, reward, term, trunc, _ = self.env.step(feedActions)
 
         if obsPreprocess is not None:
             obs = obsPreprocess(obs)
 
         self._feedObservation(obs)
 
-        r = reward * self.rewardScale + float(done) * self.terminalReward
+        r = reward * self.rewardScale + float(term) * self.terminalReward
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
@@ -272,4 +272,4 @@ class EnvRunner:
 
             self.actions[i] = list(self.h.getPredictionCIs(index))
         
-        return done, reward
+        return term or trunc, reward
