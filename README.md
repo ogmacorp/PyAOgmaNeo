@@ -30,10 +30,10 @@ Or from this directory:
 
 > pip install .
 
-This will download the AOgmaNeo library these bindings depend on automatically, and compile them.
+This will download the AOgmaNeo library these bindings depend on automatically, and compile it.
 
 Note that the branch of AOgmaNeo that will be used for building is based on the current branch of this repository (PyAOgmaNeo).
-The build system will automatically download the AOgmaNeo branch of the same name as that currently checked out in this repository.
+The build system will automatically download the AOgmaNeo branch of the same name as that currently checked out in this repository (using a specific commit id).
 
 If you would like to use an existing system install of AOgmaNeo, set the following environment variable:
 
