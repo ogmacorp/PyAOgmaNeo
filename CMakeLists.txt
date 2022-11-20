@@ -27,6 +27,8 @@ endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(USE_SYSTEM_AOGMANEO)
+    message(STATUS "Using system installation of AOgmaNeo")
+
     find_package(AOgmaNeo)
 else()
     message(STATUS "Not using system installation of AOgmaNeo, will download from repository")
@@ -34,7 +36,7 @@ else()
     FetchContent_Declare(
         AOgmaNeo
         GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-        GIT_TAG 9b2c2d5a8362887ebe8f377c3ddb19e27811a166
+        GIT_TAG master
     )
 
     FetchContent_GetProperties(AOgmaNeo)
@@ -75,9 +77,7 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/PyModule.cpp"
     "source/pyaogmaneo/PyHelpers.cpp"
     "source/pyaogmaneo/PyHierarchy.cpp"
-    "source/pyaogmaneo/PyEncoder.cpp"
     "source/pyaogmaneo/PyImageEncoder.cpp"
-    "source/pyaogmaneo/PyLocationInvariant.cpp"
 )
 
 find_package(Python COMPONENTS Interpreter Development)

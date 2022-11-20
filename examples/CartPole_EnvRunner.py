@@ -27,3 +27,5 @@ for episode in range(10000):
         if done:
             print("Episode {} finished after {} timesteps".format(episode + 1, t + 1))
             break
+
+runner.h.saveToFile("cartpole_test.ohr")

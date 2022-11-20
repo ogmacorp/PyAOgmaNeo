@@ -307,7 +307,7 @@ public:
 
     void setELR(
         int l,
-        int lr
+        float lr
     ) {
         initCheck();
 
@@ -316,15 +316,15 @@ public:
             abort();
         }
 
-        if (lr < 0) {
-            std::cerr << "Error: ELR must be >= 0" << std::endl;
+        if (lr < 0.0f) {
+            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
             abort();
         }
 
         h.getELayer(l).lr = lr;
     }
 
-    int getELR(
+    float getELR(
         int l
     ) {
         initCheck();

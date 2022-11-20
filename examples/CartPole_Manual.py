@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -10,15 +10,14 @@
 
 # Simple Cart-Pole example
 
-import pyaogmaneo as neo
+import pyaogmaneo as pyaon
 import gym
 import numpy as np
 
 # Squashing function
 def sigmoid(x):
-    return np.tanh(x) * 0.5 + 0.5
+    return 1.0 / (1.0 + np.exp(-x))
 
-# An example of a pre-encoder. This one is just random projection. It's not very good, but will do for this task
 class ScalarEncoder:
     def __init__(self, num_scalars, num_columns, cells_per_column, lower_bound=0.0, upper_bound=1.0):
         self.num_scalars = num_scalars
@@ -26,7 +25,7 @@ class ScalarEncoder:
 
         self.protos = []
 
-        for _ in range(num_columns):
+        for i in range(num_columns):
             self.protos.append(np.random.rand(cells_per_column, num_scalars) * (upper_bound - lower_bound) + lower_bound)
 
     def encode(self, scalars):
@@ -52,38 +51,27 @@ env = gym.make('CartPole-v1')
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
 
-res = 16 # Resolution (column size) of encoding
-
-se = ScalarEncoder(4, 9, res)
+se = ScalarEncoder(4, 9, 16)
 
 # Set the number of threads
-neo.setNumThreads(8)
+pyaon.setNumThreads(4)
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole
-    ld = neo.LayerDesc(hiddenSize=(4, 4, 16))
+for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
+    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
 
-    ld.eRadius = 2
-    ld.dRadius = 2
+    ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
+    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
     
     lds.append(ld)
 
 # Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = neo.Hierarchy()
-h.initRandom([ neo.IODesc((3, 3, res), neo.none, eRadius=2, dRadius=2), neo.IODesc((1, 1, numActions), neo.action, eRadius=0, dRadius=2, historyCapacity=64) ], lds)
-
-# Set some parameters for the actor IO layer (index 1)
-h.setAVLR(1, 0.01)
-h.setAALR(1, 0.01)
-h.setADiscount(1, 0.99)
-h.setAMinSteps(1, 16)
-h.setAHistoryIters(1, 16)
+h = pyaon.Hierarchy()
+h.initRandom([ pyaon.IODesc((3, 3, 16), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
 
 reward = 0.0
-
-action = 0
 
 for episode in range(1000):
     obs = env.reset()
@@ -92,16 +80,16 @@ for episode in range(1000):
     for t in range(500):
         csdr = se.encode(sigmoid(np.matrix(obs).T * 4.0))
 
-        h.step([ csdr, [ action ] ], True, reward)
+        h.step([ csdr, h.getPredictionCIs(1) ], True, reward)
 
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column
 
         obs, reward, done, info = env.step(action)
 
-        # Re-define reward so that it is 0 normally and then -100 if done
+        # Re-define reward so that it is 0 normally and then -1 if done
         if done:
-            reward = -100.0
+            reward = -1.0
 
             print("Episode {} finished after {} timesteps".format(episode + 1, t + 1))
 
