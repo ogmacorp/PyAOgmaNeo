@@ -10,28 +10,7 @@ from setuptools.command.install import install
 from distutils.version import LooseVersion
 
 # For developers, set to use system install of AOgmaNeo
-<<<<<<< HEAD
-use_system_aogmaneo = False
-
-class InstallCommand(install):
-    user_options = install.user_options + [
-        ('use-system-aogmaneo', None, None),
-    ]
-
-    def initialize_options(self):
-        install.initialize_options(self)
-        self.use_system_aogmaneo = None
-
-    def finalize_options(self):
-        install.finalize_options(self)
-
-    def run(self):
-        global use_system_aogmaneo
-        use_system_aogmaneo = self.use_system_aogmaneo
-        install.run(self)
-=======
 use_system_aogmaneo = True if "USE_SYSTEM_AOGMANEO" in os.environ else False
->>>>>>> ultralightf_faster3_multisom
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -103,11 +82,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="pyaogmaneo",
-<<<<<<< HEAD
-    version="1.10.0",
-=======
-    version="1.5.3",
->>>>>>> ultralightf_faster3_multisom
+    version="1.11.0",
     description="Python bindings for the AOgmaNeo library",
     long_description='https://github.com/ogmacorp/PyAOgmaNeo',
     author='Ogma Intelligent Systems Corp',
