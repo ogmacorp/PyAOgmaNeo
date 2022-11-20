@@ -408,7 +408,7 @@ public:
         }
 
         if (vlr < 0.0f) {
-            std::cerr << "Error: VALR must be >= 0.0" << std::endl;
+            std::cerr << "Error: AVLR must be >= 0.0" << std::endl;
             abort();
         }
 

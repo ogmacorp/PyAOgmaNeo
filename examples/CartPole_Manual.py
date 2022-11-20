@@ -10,7 +10,7 @@
 
 # Simple Cart-Pole example
 
-import pyaogmaneo as pyaon
+import pyaogmaneo as neo
 import gym
 import numpy as np
 
@@ -18,77 +18,56 @@ import numpy as np
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
-class ScalarEncoder:
-    def __init__(self, num_scalars, num_columns, cells_per_column, lower_bound=0.0, upper_bound=1.0):
-        self.num_scalars = num_scalars
-        self.cells_per_column = cells_per_column
-
-        self.protos = []
-
-        for i in range(num_columns):
-            self.protos.append(np.random.rand(cells_per_column, num_scalars) * (upper_bound - lower_bound) + lower_bound)
-
-    def encode(self, scalars):
-        csdr = []
-
-        for i in range(len(self.protos)):
-            acts = -np.sum(np.square(np.repeat(scalars.T, self.cells_per_column, axis=0) - self.protos[i]), axis=1)
-
-            csdr.append(np.argmax(acts).item())
-
-        return csdr
-
-    def decode(self, csdr):
-        scalars = np.zeros(self.num_scalars)
-
-        for i in range(len(self.protos)):
-            scalars += self.protos[csdr[i]]
-
 # Create the environment
 env = gym.make('CartPole-v1')
 
 # Get observation size
 numObs = env.observation_space.shape[0] # 4 values for Cart-Pole
 numActions = env.action_space.n # N actions (1 discrete value)
-
-se = ScalarEncoder(4, 9, 16)
+inputResolution = 32
 
 # Set the number of threads
-pyaon.setNumThreads(4)
+neo.setNumThreads(4)
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
 for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = pyaon.LayerDesc(hiddenSize=(4, 4, 16))
+    ld = neo.LayerDesc()
 
+    # Set some layer structural parameters
+    ld.hiddenSize = (4, 4, 32)
     ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
     ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
     
     lds.append(ld)
 
-# Create the hierarchy: Provided with input layer sizes (a single column in this case), and input types (a single predicted layer)
-h = pyaon.Hierarchy()
-h.initRandom([ pyaon.IODesc((3, 3, 16), pyaon.prediction), pyaon.IODesc((1, 1, numActions), pyaon.action) ], lds)
+# Create the hierarchy
+h = neo.Hierarchy()
+h.initRandom([ neo.IODesc((2, 2, inputResolution), neo.none), neo.IODesc((1, 1, numActions), neo.action) ], lds)
+
+# Setting parameters
+h.setAVLR(1, 0.01) # Parameters: IO index and value. Here, we set the actor's action learning rate.
 
 reward = 0.0
 
 for episode in range(1000):
-    obs = env.reset()
+    obs, _ = env.reset()
 
     # Timesteps
     for t in range(500):
-        csdr = se.encode(sigmoid(np.matrix(obs).T * 4.0))
+        # CSDR through "squash and bin" method
+        csdr = (sigmoid(obs * 3.0) * (inputResolution - 1) + 0.5).astype(np.int32).tolist()
 
         h.step([ csdr, h.getPredictionCIs(1) ], True, reward)
 
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column
 
-        obs, reward, done, info = env.step(action)
+        obs, reward, term, trunc, _ = env.step(action)
 
         # Re-define reward so that it is 0 normally and then -1 if done
-        if done:
+        if term:
             reward = -1.0
 
             print("Episode {} finished after {} timesteps".format(episode + 1, t + 1))
