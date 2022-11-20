@@ -6,7 +6,6 @@ import subprocess
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-from setuptools.command.install import install
 from distutils.version import LooseVersion
 
 # For developers, set to use system install of AOgmaNeo
@@ -101,7 +100,6 @@ setup(
     ],
     ext_modules=[ CMakeExtension("pyaogmaneo") ],
     cmdclass={
-        'install': InstallCommand,
         'build_ext': CMakeBuild,
     },
     zip_safe=False,

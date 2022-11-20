@@ -10,9 +10,7 @@
 #include <pybind11/stl.h>
 
 #include "PyHierarchy.h"
-#include "PyEncoder.h"
 #include "PyImageEncoder.h"
-#include "PyLocationInvariant.h"
 
 namespace py = pybind11;
 
