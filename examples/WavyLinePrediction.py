@@ -82,7 +82,7 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs))[0]
 
 # This defines the resolution of the input encoding
-numInputColumns = 1
+numInputColumns = 2
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
@@ -100,23 +100,18 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
 # Present the (noisy) wave sequence for some timesteps
-iters = 20000
+iters = 50000
 
 def wave(t):
-    if t % 20 == 0 or t % 7 == 0:
-        return 1.0
-    return 0.0
-    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.03))
+    return min(1.0, max(0.0, (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5 + np.random.randn() * 0.02))
 
 for t in range(iters):
     valueToEncode = wave(t)
 
-    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
+    csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
-
-    #print(h.getHiddenCIs(3))
 
     # Print progress
     if t % 100 == 0:
@@ -133,13 +128,13 @@ for t2 in range(1000):
 
     valueToEncode = wave(t)
 
-    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
+    csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = float(h.getPredictionCIs(0)[0]) / (inputColumnSize - 1)#CSDRToUnorm8(h.getPredictionCIs(0))
+    value = CSDRToUnorm8(h.getPredictionCIs(0))
 
     # Append to plot data
     ts.append(t2)
