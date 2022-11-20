@@ -61,7 +61,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
-            py::arg("temporalHorizon") = 4
+            py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
@@ -124,35 +124,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getARadius", &pyaon::Hierarchy::getARadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
-    py::class_<pyaon::EncoderVisibleLayerDesc>(m, "EncoderVisibleLayerDesc")
-        .def(py::init<
-                std::tuple<int, int, int>,
-                int
-            >(),
-            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("radius") = 2
-        )
-        .def_readwrite("size", &pyaon::EncoderVisibleLayerDesc::size)
-        .def_readwrite("radius", &pyaon::EncoderVisibleLayerDesc::radius);
-
-    py::class_<pyaon::Encoder>(m, "Encoder")
-        .def(py::init<>())
-        .def("initRandom", &pyaon::Encoder::initRandom)
-        .def("initFromFile", &pyaon::Encoder::initFromFile)
-        .def("initFromBuffer", &pyaon::Encoder::initFromBuffer)
-        .def("saveToFile", &pyaon::Encoder::saveToFile)
-        .def("serializeToBuffer", &pyaon::Encoder::serializeToBuffer)
-        .def("step", &pyaon::Encoder::step,
-            py::arg("inputCIs"),
-            py::arg("learnEnabled") = true
-        )
-        .def("getNumVisibleLayers", &pyaon::Encoder::getNumVisibleLayers)
-        .def("getHiddenCIs", &pyaon::Encoder::getHiddenCIs)
-        .def("getHiddenSize", &pyaon::Encoder::getHiddenSize)
-        .def("getVisibleSize", &pyaon::Encoder::getVisibleSize)
-        .def("setLR", &pyaon::Encoder::setLR)
-        .def("getLR", &pyaon::Encoder::getLR);
-
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
@@ -183,27 +154,4 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR);
-
-    py::class_<pyaon::LocationInvariant>(m, "LocationInvariant")
-        .def(py::init<>())
-        .def("initRandom", &pyaon::LocationInvariant::initRandom)
-        .def("initFromFile", &pyaon::LocationInvariant::initFromFile)
-        .def("initFromBuffer", &pyaon::LocationInvariant::initFromBuffer)
-        .def("saveToFile", &pyaon::LocationInvariant::saveToFile)
-        .def("serializeToBuffer", &pyaon::LocationInvariant::serializeToBuffer)
-        .def("step", &pyaon::LocationInvariant::step,
-            py::arg("sensorCIs"),
-            py::arg("whereCIs"),
-            py::arg("learnEnabled") = true
-        )
-        .def("clearState", &pyaon::LocationInvariant::clearState)
-        .def("getHiddenCIs", &pyaon::LocationInvariant::getHiddenCIs)
-        .def("getMemory", &pyaon::LocationInvariant::getMemory)
-        .def("getHiddenSize", &pyaon::LocationInvariant::getHiddenSize)
-        .def("getSensorSize", &pyaon::LocationInvariant::getSensorSize)
-        .def("getWhereSize", &pyaon::LocationInvariant::getWhereSize)
-        .def("setDecay", &pyaon::LocationInvariant::setDecay)
-        .def("getDecay", &pyaon::LocationInvariant::getDecay)
-        .def("setLR", &pyaon::LocationInvariant::setLR)
-        .def("getLR", &pyaon::LocationInvariant::getLR);
 }
