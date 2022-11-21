@@ -82,8 +82,8 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs))[0]
 
 # This defines the resolution of the input encoding
-numInputColumns = 2
-inputColumnSize = 16
+numInputColumns = 1
+inputColumnSize = 32
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
@@ -108,7 +108,7 @@ def wave(t):
 for t in range(iters):
     valueToEncode = wave(t)
 
-    csdr = Unorm8ToCSDR(float(valueToEncode))
+    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
@@ -128,13 +128,13 @@ for t2 in range(1000):
 
     valueToEncode = wave(t)
 
-    csdr = Unorm8ToCSDR(float(valueToEncode))
+    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = CSDRToUnorm8(h.getPredictionCIs(0))
+    value = h.getPredictionCIs(0)[0] / float(inputColumnSize - 1)
 
     # Append to plot data
     ts.append(t2)

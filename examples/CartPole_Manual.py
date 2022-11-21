@@ -69,7 +69,7 @@ for episode in range(1000):
 
         obs, reward, term, trunc, _ = env.step(action)
 
-        # Re-define reward so that it is 0 normally and then -1 if done
+        # Re-define reward so that it is 0 normally and then -100 if terminated
         if term:
             reward = -100.0
         else:
