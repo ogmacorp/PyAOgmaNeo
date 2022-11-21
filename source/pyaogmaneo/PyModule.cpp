@@ -99,6 +99,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("getIOType", &pyaon::Hierarchy::getIOType)
+        .def("setEGroupRadius", &pyaon::Hierarchy::setEGroupRadius)
+        .def("getEGroupRadius", &pyaon::Hierarchy::getEGroupRadius)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)

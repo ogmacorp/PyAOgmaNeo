@@ -147,19 +147,47 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
-.. function:: Hierarchy.setELR(self, l, lr)
+.. function:: Hierarchy.setEGroupRadius(self, l, groupRadius)
 
-    Set the learning rate of an encoder (E). This is an integer in this case
+    Set the group radius of an encoder (E). This is an integer in this case, it defines the second-stage inhibition to make representations distributed
 
     :param l: (int32) index of the layer
-    :param lr: (int32) value to set
+    :param groupRadius: (int32) value to set
+
+.. function:: Hierarchy.getEGroupRadius(self, l)
+
+    Get the group radius of an encoder (E). This is an integer in this case, it defines the second-stage inhibition to make representations distributed
+
+    :param l: (int32) index of the layer
+    :rtype: (int32) groupRadius
+
+.. function:: Hierarchy.setELR(self, l, lr)
+
+    Set the learning rate of an encoder (E)
+
+    :param l: (int32) index of the layer
+    :param lr: (float32) value to set
 
 .. function:: Hierarchy.getELR(self, l)
 
-    Get the learning rate of an encoder (E). This is an integer in this case
+    Get the learning rate of an encoder (E)
 
     :param l: (int32) index of the layer
-    :rtype: (int32) lr
+    :rtype: (float32) lr
+
+.. function:: Hierarchy.setDScale(self, l, scale)
+
+    Set the scale of a decoder (D). This determines how sensitive it is to roundoff
+
+    :param l: (int32) index of the layer
+    :param scale: (float32) value to set
+
+.. function:: Hierarchy.getDScale(self, l)
+
+    Get the learning rate of a decoder (D). This determines how sensitive it is to roundoff
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) scale
 
 .. function:: Hierarchy.setDLR(self, l, lr)
 
