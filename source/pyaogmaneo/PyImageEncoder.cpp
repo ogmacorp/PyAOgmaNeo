@@ -162,8 +162,8 @@ void ImageEncoder::step(
     aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
-        if (inputs[i].size() != enc.getVisibleLayer(i).recons.size()) {
-            std::cerr << "Incorrect number of pixels given to ImageEncoder! At input " << i << ": Expected " << enc.getVisibleLayer(i).recons.size() << ", got " << inputs[i].size() << std::endl;
+        if (inputs[i].size() != enc.getReconstruction(i).size()) {
+            std::cerr << "Incorrect number of pixels given to ImageEncoder! At input " << i << ": Expected " << enc.getReconstruction(i).size() << ", got " << inputs[i].size() << std::endl;
             abort();
         }
 
