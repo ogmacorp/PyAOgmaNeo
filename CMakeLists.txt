@@ -27,6 +27,8 @@ endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(USE_SYSTEM_AOGMANEO)
+    message(STATUS "Using system installation of AOgmaNeo")
+
     find_package(AOgmaNeo)
 else()
     message(STATUS "Not using system installation of AOgmaNeo, will download from repository")
@@ -34,7 +36,7 @@ else()
     FetchContent_Declare(
         AOgmaNeo
         GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-        GIT_TAG 777d8c5cfbcf5cd82749dd15c39779aa7e8445f1
+        GIT_TAG 11d4123f2a47cdb93278c2a093a976c7a3e2b483
     )
 
     FetchContent_GetProperties(AOgmaNeo)
