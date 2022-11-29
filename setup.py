@@ -1,3 +1,11 @@
+# ----------------------------------------------------------------------------
+#  PyAOgmaNeo
+#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+#
+#  This copy of PyAOgmaNeo is licensed to you under the terms described
+#  in the PYAOGMANEO_LICENSE.md file included in this distribution.
+# ----------------------------------------------------------------------------
+
 import os
 import re
 import sys
