@@ -51,24 +51,20 @@ struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
     int eRadius;
+    int rRadius;
     int dRadius;
-
-    int ticksPerUpdate;
-    int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
-        int dRadius,
-        int ticksPerUpdate,
-        int temporalHorizon
+        int rRadius,
+        int dRadius
     )
     :
     hiddenSize(hiddenSize),
     eRadius(eRadius),
-    dRadius(dRadius),
-    ticksPerUpdate(ticksPerUpdate),
-    temporalHorizon(temporalHorizon)
+    rRadius(rRadius),
+    dRadius(dRadius)
     {}
 
     bool checkInRange() const;
@@ -130,31 +126,6 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<int> getTopHiddenCIs() const {
-        initCheck();
-
-        std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
-
-        for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getTopHiddenCIs()[j];
-
-        return hiddenCIs;
-    }
-
-    std::tuple<int, int, int> getTopHiddenSize() const {
-        initCheck();
-
-        aon::Int3 size = h.getTopHiddenSize();
-
-        return { size.x, size.y, size.z };
-    }
-    
-    bool getTopUpdate() const {
-        initCheck();
-
-        return h.getTopUpdate();
-    }
-
     void setInputImportance(
         int i,
         float importance
@@ -185,19 +156,6 @@ public:
     std::vector<int> getPredictionCIs(
         int i
     ) const;
-
-    bool getUpdate(
-        int l
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getUpdate(l);
-    }
 
     std::vector<int> getHiddenCIs(
         int l
@@ -230,32 +188,6 @@ public:
         aon::Int3 size = h.getELayer(l).getHiddenSize();
 
         return { size.x, size.y, size.z };
-    }
-
-    int getTicks(
-        int l
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getTicks(l);
-    }
-
-    int getTicksPerUpdate(
-        int l
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getTicksPerUpdate(l);
     }
 
     int getNumEVisibleLayers(
