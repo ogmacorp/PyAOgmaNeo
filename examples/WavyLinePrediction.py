@@ -88,7 +88,7 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory
+for i in range(3): # Layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (5, 5, 32) # Size of the encoder(s) in the layer
@@ -100,7 +100,7 @@ h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
 # Present the (noisy) wave sequence for some timesteps
-iters = 30000
+iters = 50000
 
 def wave(t):
     if t % 20 == 0:
