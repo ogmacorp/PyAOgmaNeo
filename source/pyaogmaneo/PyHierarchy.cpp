@@ -26,13 +26,13 @@ bool IODesc::checkInRange() const {
         return false;
     }
 
-    if (eRadius < 0) {
-        std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
+    if (ffRadius < 0) {
+        std::cerr << "Error: ffRadius < 0 is not allowed!" << std::endl;
         return false;
     }
 
-    if (dRadius < 0) {
-        std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
+    if (fbRadius < 0) {
+        std::cerr << "Error: fbRadius < 0 is not allowed!" << std::endl;
         return false;
     }
 
@@ -60,13 +60,13 @@ bool LayerDesc::checkInRange() const {
         return false;
     }
 
-    if (eRadius < 0) {
-        std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
+    if (ffRadius < 0) {
+        std::cerr << "Error: ffRadius < 0 is not allowed!" << std::endl;
         return false;
     }
 
-    if (dRadius < 0) {
-        std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
+    if (fbRadius < 0) {
+        std::cerr << "Error: fbRadius < 0 is not allowed!" << std::endl;
         return false;
     }
 
@@ -112,8 +112,8 @@ void Hierarchy::initRandom(
         cIODescs[i] = aon::Hierarchy::IODesc(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
-            ioDescs[i].eRadius,
-            ioDescs[i].dRadius,
+            ioDescs[i].ffRadius,
+            ioDescs[i].fbRadius,
             ioDescs[i].historyCapacity
         );
     }
@@ -128,8 +128,8 @@ void Hierarchy::initRandom(
 
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
-            layerDescs[l].eRadius,
-            layerDescs[l].dRadius,
+            layerDescs[l].ffRadius,
+            layerDescs[l].fbRadius,
             layerDescs[l].ticksPerUpdate,
             layerDescs[l].temporalHorizon
         );

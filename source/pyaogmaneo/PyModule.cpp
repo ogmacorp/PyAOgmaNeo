@@ -37,14 +37,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
-            py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
+            py::arg("ffRadius") = 2,
+            py::arg("fbRadius") = 2,
             py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
-        .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
+        .def_readwrite("ffRadius", &pyaon::IODesc::ffRadius)
+        .def_readwrite("fbRadius", &pyaon::IODesc::fbRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
 
     py::class_<pyaon::LayerDesc>(m, "LayerDesc")
@@ -56,14 +56,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("eRadius") = 2,
-            py::arg("dRadius") = 2,
+            py::arg("ffRadius") = 2,
+            py::arg("fbRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
-        .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
-        .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
+        .def_readwrite("ffRadius", &pyaon::LayerDesc::ffRadius)
+        .def_readwrite("fbRadius", &pyaon::LayerDesc::fbRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
@@ -103,10 +103,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getEGroupRadius", &pyaon::Hierarchy::getEGroupRadius)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setDCapacity", &pyaon::Hierarchy::setDCapacity)
-        .def("getDCapacity", &pyaon::Hierarchy::getDCapacity)
-        .def("setDLR", &pyaon::Hierarchy::setDLR)
-        .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
@@ -121,9 +117,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getAMinSteps", &pyaon::Hierarchy::getAMinSteps)
         .def("setAHistoryIters", &pyaon::Hierarchy::setAHistoryIters)
         .def("getAHistoryIters", &pyaon::Hierarchy::getAHistoryIters)
-        .def("getERadius", &pyaon::Hierarchy::getERadius)
-        .def("getDRadius", &pyaon::Hierarchy::getDRadius)
-        .def("getARadius", &pyaon::Hierarchy::getARadius)
         .def("getAHistoryCapacity", &pyaon::Hierarchy::getAHistoryCapacity);
 
     py::class_<pyaon::ImageEncoderVisibleLayerDesc>(m, "ImageEncoderVisibleLayerDesc")

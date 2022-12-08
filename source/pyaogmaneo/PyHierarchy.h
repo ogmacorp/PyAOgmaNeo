@@ -24,23 +24,23 @@ struct IODesc {
     std::tuple<int, int, int> size;
     IOType type;
 
-    int eRadius;
-    int dRadius;
+    int ffRadius;
+    int fbRadius;
 
     int historyCapacity;
 
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
-        int eRadius,
-        int dRadius,
+        int ffRadius,
+        int fbRadius,
         int historyCapacity
     )
     :
     size(size),
     type(type),
-    eRadius(eRadius),
-    dRadius(dRadius),
+    ffRadius(ffRadius),
+    fbRadius(fbRadius),
     historyCapacity(historyCapacity)
     {}
 
@@ -50,23 +50,23 @@ struct IODesc {
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
-    int eRadius;
-    int dRadius;
+    int ffRadius;
+    int fbRadius;
 
     int ticksPerUpdate;
     int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
-        int eRadius,
-        int dRadius,
+        int ffRadius,
+        int fbRadius,
         int ticksPerUpdate,
         int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
-    eRadius(eRadius),
-    dRadius(dRadius),
+    ffRadius(ffRadius),
+    fbRadius(fbRadius),
     ticksPerUpdate(ticksPerUpdate),
     temporalHorizon(temporalHorizon)
     {}
@@ -369,114 +369,6 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setDCapacity(
-        int l,
-        int i,
-        float capacity
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        if (capacity < 0.0f || capacity > 1.0f) {
-            std::cerr << "Error: DCapacity must be >= 0.0 and <= 1.0" << std::endl;
-            abort();
-        }
-
-        h.getDLayer(l, i).capacity = capacity;
-    }
-
-    float getDCapacity(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayer(l, i).capacity;
-    }
-
-    void setDLR(
-        int l,
-        int i,
-        float lr
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getDLayer(l, i).lr = lr;
-    }
-
-    float getDLR(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayer(l, i).lr;
-    }
-
     void setAVLR(
         int i,
         float vlr
@@ -769,52 +661,6 @@ public:
         }
 
         return h.getALayer(i).historyIters;
-    }
-
-    // Retrieve additional parameters on the SPH's structure
-    int getERadius(
-        int l
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).getVisibleLayerDesc(0).radius;
-    }
-
-    int getDRadius(
-        int l,
-        int i
-    ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        return h.getDLayer(l, i).getVisibleLayerDesc(0).radius;
-    }
-
-    int getARadius(
-        int i
-    ) const {
-        initCheck();
-
-        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        return h.getALayer(i).getVisibleLayerDesc(0).radius;
     }
 
     int getAHistoryCapacity(
