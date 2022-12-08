@@ -290,11 +290,6 @@ std::vector<int> Hierarchy::getPredictionCIs(
         abort();
     }
 
-    if (!h.ioLayerExists(i) || h.getIOType(i) == aon::none) {
-        std::cerr << "No decoder exists at index " << i << " - did you set it to the correct type?" << std::endl;
-        abort();
-    }
-
     std::vector<int> predictions(h.getPredictionCIs(i).size());
 
     for (int j = 0; j < predictions.size(); j++)
