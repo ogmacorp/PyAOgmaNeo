@@ -369,6 +369,60 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setDCapacity(
+        int l,
+        int i,
+        float capacity
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getNumIO()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
+            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
+            abort();
+        }
+
+        if (capacity < 0.0f || capacity > 1.0f) {
+            std::cerr << "Error: DCapacity must be >= 0.0 and <= 1.0" << std::endl;
+            abort();
+        }
+
+        h.getDLayer(l, i).capacity = capacity;
+    }
+
+    float getDCapacity(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (i < 0 || i >= h.getNumIO()) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
+            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayer(l, i).capacity;
+    }
+
     void setDLR(
         int l,
         int i,
