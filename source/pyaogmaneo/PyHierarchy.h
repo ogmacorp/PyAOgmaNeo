@@ -351,10 +351,10 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setDCapacity(
+    void setDScale(
         int l,
         int i,
-        float capacity
+        float scale
     ) {
         initCheck();
 
@@ -373,15 +373,15 @@ public:
             abort();
         }
 
-        if (capacity < 0.0f || capacity > 1.0f) {
-            std::cerr << "Error: DCapacity must be >= 0.0 and <= 1.0" << std::endl;
+        if (scale < 0.0f) {
+            std::cerr << "Error: DScale must be >= 0.0" << std::endl;
             abort();
         }
 
-        h.getDLayer(l, i).capacity = capacity;
+        h.getDLayer(l, i).scale = scale;
     }
 
-    float getDCapacity(
+    float getDScale(
         int l,
         int i
     ) const {
@@ -402,7 +402,7 @@ public:
             abort();
         }
 
-        return h.getDLayer(l, i).capacity;
+        return h.getDLayer(l, i).scale;
     }
 
     void setDLR(
