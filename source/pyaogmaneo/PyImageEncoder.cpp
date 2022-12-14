@@ -149,7 +149,8 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 
 void ImageEncoder::step(
     const std::vector<std::vector<unsigned char>> &inputs,
-    bool learnEnabled
+    bool learnEnabled,
+    bool learnRecon
 ) {
     initCheck();
 
@@ -175,7 +176,7 @@ void ImageEncoder::step(
         cInputs[i] = &cInputsBacking[i];
     }
 
-    enc.step(cInputs, learnEnabled);
+    enc.step(cInputs, learnEnabled, learnRecon);
 }
 
 void ImageEncoder::reconstruct(
