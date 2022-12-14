@@ -144,5 +144,24 @@ public:
 
         return enc.lr;
     }
+
+    void setRR(
+        float rr
+    ) {
+        initCheck();
+
+        if (rr < 0.0f) {
+            std::cerr << "Error: ImageEncoder RR must be >= 0.0" << std::endl;
+            abort();
+        }
+
+        enc.rr = rr;
+    }
+
+    float getRR() const {
+        initCheck();
+
+        return enc.rr;
+    }
 };
 } // namespace pyaon
