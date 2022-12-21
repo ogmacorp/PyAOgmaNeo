@@ -219,7 +219,7 @@ class EnvRunner:
 
                 self.inputs.append(indices)
 
-    def act(self, epsilon=0.0, obsPreprocess=None):
+    def act(self, epsilon=0.01, obsPreprocess=None):
         feedActions = []
 
         for i in range(len(self.actionIndices)):
