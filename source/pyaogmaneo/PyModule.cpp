@@ -106,6 +106,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setALR", &pyaon::Hierarchy::setALR)
         .def("getALR", &pyaon::Hierarchy::getALR)
+        .def("setACons", &pyaon::Hierarchy::setACons)
+        .def("getACons", &pyaon::Hierarchy::getACons)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
         .def("setANSteps", &pyaon::Hierarchy::setANSteps)
