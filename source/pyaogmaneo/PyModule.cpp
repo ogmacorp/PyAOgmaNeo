@@ -80,7 +80,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("inputCIs"),
             py::arg("learnEnabled") = true,
             py::arg("reward") = 0.0f,
-            py::arg("mimic") = false
+            py::arg("mimic") = 0.0f
         )
         .def("clearState", &pyaon::Hierarchy::clearState)
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
