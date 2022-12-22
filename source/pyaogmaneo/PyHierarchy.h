@@ -304,70 +304,6 @@ public:
         return static_cast<IOType>(h.getIOType(i));
     }
 
-    void setEGap(
-        int l,
-        float gap
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (gap < 0.0f) {
-            std::cerr << "Error: EGap must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).gap = gap;
-    }
-
-    float getEGap(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).gap;
-    }
-
-    void setEVigilance(
-        int l,
-        float vigilance
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (vigilance < 0.0f) {
-            std::cerr << "Error: EVigilance must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).vigilance = vigilance;
-    }
-
-    float getEVigilance(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).vigilance;
-    }
-
     void setELR(
         int l,
         float lr
@@ -398,38 +334,6 @@ public:
         }
 
         return h.getELayer(l).lr;
-    }
-
-    void setELRadius(
-        int l,
-        int lRadius
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (lRadius < 0) {
-            std::cerr << "Error: ELRadius must be >= 0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).lRadius = lRadius;
-    }
-
-    int getELRadius(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).lRadius;
     }
 
     void setDLR(
