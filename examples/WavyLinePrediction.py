@@ -99,6 +99,8 @@ for i in range(6): # Layers with exponential memory
 h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.action) ], lds)
 
+h.setACons(0, 0.01)
+
 # Present the (noisy) wave sequence for some timesteps
 iters = 10000
 
