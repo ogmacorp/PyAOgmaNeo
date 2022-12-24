@@ -13,7 +13,7 @@
 import gym
 from EnvRunner import EnvRunner # EnvRunner automatically creates an OgmaNeo2 hierarchy and appropriate encoders for most Gym environments
 
-env = gym.make('LunarLanderContinuous-v2')
+env = gym.make('LunarLander-v2')
 
 runner = EnvRunner(env, terminalReward=0.0, rewardScale=1.0)
 
