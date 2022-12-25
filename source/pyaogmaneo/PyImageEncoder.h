@@ -66,8 +66,7 @@ public:
 
     void step(
         const std::vector<std::vector<unsigned char>> &inputs,
-        bool learnEnabled,
-        bool learnRecon
+        bool learnEnabled
     );
 
     void reconstruct(
@@ -127,45 +126,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    // Params
-    void setGap(
-        float gap
-    ) {
-        initCheck();
-
-        if (gap <= 0.0f) {
-            std::cerr << "Error: ImageEncoder Gap must be > 0.0" << std::endl;
-            abort();
-        }
-
-        enc.gap = gap;
-    }
-
-    float getGap() const {
-        initCheck();
-
-        return enc.gap;
-    }
-
-    void setVigilance(
-        float vigilance
-    ) {
-        initCheck();
-
-        if (vigilance < 0.0f || vigilance > 1.0f) {
-            std::cerr << "Error: ImageEncoder Vigilance must be >= 0.0 and <= 1.0" << std::endl;
-            abort();
-        }
-
-        enc.vigilance = vigilance;
-    }
-
-    float getVigilance() const {
-        initCheck();
-
-        return enc.vigilance;
-    }
-
     void setLR(
         float lr
     ) {
@@ -183,25 +143,6 @@ public:
         initCheck();
 
         return enc.lr;
-    }
-
-    void setRR(
-        float rr
-    ) {
-        initCheck();
-
-        if (rr < 0.0f) {
-            std::cerr << "Error: ImageEncoder RR must be >= 0.0" << std::endl;
-            abort();
-        }
-
-        enc.rr = rr;
-    }
-
-    float getRR() const {
-        initCheck();
-
-        return enc.rr;
     }
 };
 } // namespace pyaon
