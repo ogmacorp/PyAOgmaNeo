@@ -287,9 +287,9 @@ public:
         return static_cast<IOType>(h.getIOType(i));
     }
 
-    void setEGroupRadius(
+    void setELRadius(
         int l,
-        int groupRadius
+        int lRadius
     ) {
         initCheck();
 
@@ -298,15 +298,15 @@ public:
             abort();
         }
 
-        if (groupRadius < 0) {
-            std::cerr << "Error: EGroupRadius must be >= 0" << std::endl;
+        if (lRadius < 0) {
+            std::cerr << "Error: ELRadius must be >= 0" << std::endl;
             abort();
         }
 
-        h.getELayer(l).groupRadius = groupRadius;
+        h.getELayer(l).lRadius = lRadius;
     }
 
-    int getEGroupRadius(
+    int getELRadius(
         int l
     ) {
         initCheck();
@@ -316,7 +316,7 @@ public:
             abort();
         }
 
-        return h.getELayer(l).groupRadius;
+        return h.getELayer(l).lRadius;
     }
 
     void setELR(
