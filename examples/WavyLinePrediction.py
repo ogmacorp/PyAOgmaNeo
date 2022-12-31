@@ -101,7 +101,7 @@ h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.p
 
 for i in range(len(lds)):
     for j in range(2 if i > 0 else 1):
-        h.setDForget(i, j, 1.0)
+        h.setDForget(i, j, 0.01)
 
 # Present the (noisy) wave sequence for some timesteps
 iters = 1000
