@@ -99,8 +99,12 @@ for i in range(6): # Layers with exponential memory
 h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
+for i in range(len(lds)):
+    for j in range(2 if i > 0 else 1):
+        h.setDForget(i, j, 1.0)
+
 # Present the (noisy) wave sequence for some timesteps
-iters = 10000
+iters = 1000
 
 def wave(t):
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5

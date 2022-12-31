@@ -349,12 +349,17 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getNumIO()) {
+        if (l == 0 && i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
 
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
+        if (l > 0 && (i < 0 || i >= h.getTicksPerUpdate(l))) {
+            std::cerr << "Error: " << i << " is not a valid decoder index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
             std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
             abort();
         }
@@ -378,12 +383,17 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getNumIO()) {
+        if (l == 0 && i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
 
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
+        if (l > 0 && (i < 0 || i >= h.getTicksPerUpdate(l))) {
+            std::cerr << "Error: " << i << " is not a valid decoder index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
             std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
             abort();
         }
@@ -403,12 +413,17 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getNumIO()) {
+        if (l == 0 && i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
 
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
+        if (l > 0 && (i < 0 || i >= h.getTicksPerUpdate(l))) {
+            std::cerr << "Error: " << i << " is not a valid decoder index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
             std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
             abort();
         }
@@ -432,12 +447,17 @@ public:
             abort();
         }
 
-        if (i < 0 || i >= h.getNumIO()) {
+        if (l == 0 && i < 0 || i >= h.getNumIO()) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
 
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
+        if (l > 0 && (i < 0 || i >= h.getTicksPerUpdate(l))) {
+            std::cerr << "Error: " << i << " is not a valid decoder index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
             std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
             abort();
         }
