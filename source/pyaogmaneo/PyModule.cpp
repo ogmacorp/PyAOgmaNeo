@@ -103,6 +103,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDForget", &pyaon::Hierarchy::setDForget)
+        .def("getDForget", &pyaon::Hierarchy::getDForget)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
