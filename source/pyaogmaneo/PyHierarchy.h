@@ -349,7 +349,7 @@ public:
             abort();
         }
 
-        if (l == 0 && i < 0 || i >= h.getNumIO()) {
+        if (l == 0 && (i < 0 || i >= h.getNumIO())) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -383,7 +383,7 @@ public:
             abort();
         }
 
-        if (l == 0 && i < 0 || i >= h.getNumIO()) {
+        if (l == 0 && (i < 0 || i >= h.getNumIO())) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -413,7 +413,7 @@ public:
             abort();
         }
 
-        if (l == 0 && i < 0 || i >= h.getNumIO()) {
+        if (l == 0 && (i < 0 || i >= h.getNumIO())) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
@@ -447,7 +447,7 @@ public:
             abort();
         }
 
-        if (l == 0 && i < 0 || i >= h.getNumIO()) {
+        if (l == 0 && (i < 0 || i >= h.getNumIO())) {
             std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
             abort();
         }
