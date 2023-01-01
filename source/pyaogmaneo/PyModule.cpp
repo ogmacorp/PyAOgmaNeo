@@ -11,6 +11,7 @@
 
 #include "PyHierarchy.h"
 #include "PyImageEncoder.h"
+#include "PyLocationInvariant.h"
 
 namespace py = pybind11;
 
