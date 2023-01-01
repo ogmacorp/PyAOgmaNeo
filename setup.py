@@ -28,6 +28,8 @@ class CMakeExtension(Extension):
             "source/pyaogmaneo/PyHierarchy.cpp",
             "source/pyaogmaneo/PyImageEncoder.h",
             "source/pyaogmaneo/PyImageEncoder.cpp",
+            "source/pyaogmaneo/PyLocationInvariant.h",
+            "source/pyaogmaneo/PyLocationInvariant.cpp",
             "source/pyaogmaneo/PyModule.cpp",
             ])
 

@@ -154,4 +154,27 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR);
+
+    py::class_<pyaon::LocationInvariant>(m, "LocationInvariant")
+        .def(py::init<>())
+        .def("initRandom", &pyaon::LocationInvariant::initRandom)
+        .def("initFromFile", &pyaon::LocationInvariant::initFromFile)
+        .def("initFromBuffer", &pyaon::LocationInvariant::initFromBuffer)
+        .def("saveToFile", &pyaon::LocationInvariant::saveToFile)
+        .def("serializeToBuffer", &pyaon::LocationInvariant::serializeToBuffer)
+        .def("step", &pyaon::LocationInvariant::step,
+            py::arg("sensorCIs"),
+            py::arg("whereCIs"),
+            py::arg("learnEnabled") = true
+        )
+        .def("clearState", &pyaon::LocationInvariant::clearState)
+        .def("getHiddenCIs", &pyaon::LocationInvariant::getHiddenCIs)
+        .def("getMemory", &pyaon::LocationInvariant::getMemory)
+        .def("getHiddenSize", &pyaon::LocationInvariant::getHiddenSize)
+        .def("getSensorSize", &pyaon::LocationInvariant::getSensorSize)
+        .def("getWhereSize", &pyaon::LocationInvariant::getWhereSize)
+        .def("setDecay", &pyaon::LocationInvariant::setDecay)
+        .def("getDecay", &pyaon::LocationInvariant::getDecay)
+        .def("setLR", &pyaon::LocationInvariant::setLR)
+        .def("getLR", &pyaon::LocationInvariant::getLR);
 }
