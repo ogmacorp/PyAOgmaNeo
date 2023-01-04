@@ -56,14 +56,14 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     Clear the hidden state of the hierarchy (short term memory) by setting it to 0
 
-.. function:: Hierarchy.step(self, inputCIs, learnEnabled=True, reward=0.0, mimic=False)
+.. function:: Hierarchy.step(self, inputCIs, learnEnabled=True, reward=0.0, mimic=0.0)
 
     Perform a simulation step of the hierarchy. This will produce new predictions or actions if those are being used (as specified in the IODesc's)
 
     :param inputCIs: ([IntBuffer]) list of input integer buffers representing the CSDRs of the dimensions described in the initialization
     :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
     :param reward: (float32) reward signal, if action IO layers (pyaogmaneo.IODesc type set to typeAction) are present this will be used to update those to maximize reward. Defaults to 0.0
-    :param mimic: (boolean) If true, sets the actors (action generators for reinforcement learning) to behave like regular decoders (prediction). This is useful for imitation learning followed by reinforcement learning
+    :param mimic: (float32) If 1.0, sets the actors (action generators for reinforcement learning) to behave like regular decoders (prediction). This is useful for imitation learning followed by reinforcement learning. 0.0 is regular RL, and values between interpolate
 
 .. function:: Hierarchy.getNumLayers(self)
 
