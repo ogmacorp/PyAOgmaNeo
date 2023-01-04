@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -149,8 +149,7 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 
 void ImageEncoder::step(
     const std::vector<std::vector<unsigned char>> &inputs,
-    bool learnEnabled,
-    bool learnRecon
+    bool learnEnabled
 ) {
     initCheck();
 
@@ -163,8 +162,8 @@ void ImageEncoder::step(
     aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
-        if (inputs[i].size() != enc.getVisibleLayer(i).reconstruction.size()) {
-            std::cerr << "Incorrect number of pixels given to ImageEncoder! At input " << i << ": Expected " << enc.getVisibleLayer(i).reconstruction.size() << ", got " << inputs[i].size() << std::endl;
+        if (inputs[i].size() != enc.getReconstruction(i).size()) {
+            std::cerr << "Incorrect number of pixels given to ImageEncoder! At input " << i << ": Expected " << enc.getReconstruction(i).size() << ", got " << inputs[i].size() << std::endl;
             abort();
         }
 
@@ -176,7 +175,7 @@ void ImageEncoder::step(
         cInputs[i] = &cInputsBacking[i];
     }
 
-    enc.step(cInputs, learnEnabled, learnRecon);
+    enc.step(cInputs, learnEnabled);
 }
 
 void ImageEncoder::reconstruct(

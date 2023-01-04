@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -144,8 +144,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
         .def("step", &pyaon::ImageEncoder::step,
             py::arg("inputs"),
-            py::arg("learnEnabled") = true,
-            py::arg("learnRecon") = true
+            py::arg("learnEnabled") = true
         )
         .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
         .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
@@ -153,12 +152,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
-        .def("setGap", &pyaon::ImageEncoder::setGap)
-        .def("getGap", &pyaon::ImageEncoder::getGap)
-        .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
-        .def("getVigilance", &pyaon::ImageEncoder::getVigilance)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setRR", &pyaon::ImageEncoder::setRR)
-        .def("getRR", &pyaon::ImageEncoder::getRR);
+        .def("getLR", &pyaon::ImageEncoder::getLR);
 }

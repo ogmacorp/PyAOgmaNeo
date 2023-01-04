@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -98,10 +98,6 @@ for i in range(5): # Layers with exponential memory
 # Create the hierarchy
 h = neo.Hierarchy()
 h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
-
-for i in range(len(lds)):
-    for j in range(2 if i > 0 else 1):
-        h.setDForget(i, j, 0.01)
 
 # Present the (noisy) wave sequence for some timesteps
 iters = 1000

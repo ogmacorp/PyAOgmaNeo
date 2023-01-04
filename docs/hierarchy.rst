@@ -175,20 +175,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (float32) lr
 
-.. function:: Hierarchy.setDScale(self, l, scale)
-
-    Set the scale of a decoder (D). This determines how sensitive it is to roundoff
-
-    :param l: (int32) index of the layer
-    :param scale: (float32) value to set
-
-.. function:: Hierarchy.getDScale(self, l)
-
-    Get the learning rate of a decoder (D). This determines how sensitive it is to roundoff
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) scale
-
 .. function:: Hierarchy.setDLR(self, l, lr)
 
     Set the learning rate of a decoder (D)
@@ -202,6 +188,20 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param l: (int32) index of the layer
     :rtype: (float32) lr
+
+.. function:: Hierarchy.setDForget(self, l, forget)
+
+    Set the forgetting amount of a decoder (D). A higher value means more forgetting but more capacity
+
+    :param l: (int32) index of the layer
+    :param forget: (float32) value to set
+
+.. function:: Hierarchy.getDForget(self, l)
+
+    Get the forgetting amount of a decoder (D). A higher value means more forgetting but more capacity
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) forget
 
 .. function:: Hierarchy.setAVLR(self, i, vlr)
 
