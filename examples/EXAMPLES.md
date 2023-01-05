@@ -1,6 +1,6 @@
 <!---
   PyAOgmaNeo
-  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 
   This copy of PyAOgmaNeo is licensed to you under the terms described
   in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -30,4 +30,4 @@ The LunarLander example shows a slightly more complicated reinforcement learning
 
 Contact Ogma via licenses@ogmacorp.com to discuss commercial use and licensing options.
 
-PyAOgmaNeo Copyright (c) 2020-2022 [Ogma Intelligent Systems Corp](https://ogmacorp.com). All rights reserved.
+PyAOgmaNeo Copyright (c) 2020-2023 [Ogma Intelligent Systems Corp](https://ogmacorp.com). All rights reserved.
