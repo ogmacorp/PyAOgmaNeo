@@ -401,6 +401,70 @@ public:
         return h.getDLayer(l, i).lr;
     }
 
+    void setDStability(
+        int l,
+        int i,
+        float stability
+    ) {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && (i < 0 || i >= h.getNumIO())) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (l > 0 && (i < 0 || i >= h.getTicksPerUpdate(l))) {
+            std::cerr << "Error: " << i << " is not a valid decoder index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
+            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
+            abort();
+        }
+
+        if (stability < 0.0f || stability > 1.0f) {
+            std::cerr << "Error: DStability must be >= 0.0 and <= 1.0" << std::endl;
+            abort();
+        }
+
+        h.getDLayer(l, i).stability = stability;
+    }
+
+    float getDStability(
+        int l,
+        int i
+    ) const {
+        initCheck();
+
+        if (l < 0 || l >= h.getNumLayers()) {
+            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && (i < 0 || i >= h.getNumIO())) {
+            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+            abort();
+        }
+
+        if (l > 0 && (i < 0 || i >= h.getTicksPerUpdate(l))) {
+            std::cerr << "Error: " << i << " is not a valid decoder index!" << std::endl;
+            abort();
+        }
+
+        if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
+            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
+            abort();
+        }
+
+        return h.getDLayer(l, i).stability;
+    }
+
     void setAVLR(
         int i,
         float vlr
