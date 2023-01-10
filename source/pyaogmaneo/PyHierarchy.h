@@ -401,10 +401,10 @@ public:
         return h.getDLayer(l, i).lr;
     }
 
-    void setDForget(
+    void setDStability(
         int l,
         int i,
-        float forget
+        float stability
     ) {
         initCheck();
 
@@ -428,15 +428,15 @@ public:
             abort();
         }
 
-        if (forget < 0.0f || forget > 1.0f) {
-            std::cerr << "Error: DForget must be >= 0.0 and <= 1.0" << std::endl;
+        if (stability < 0.0f || stability > 1.0f) {
+            std::cerr << "Error: DStability must be >= 0.0 and <= 1.0" << std::endl;
             abort();
         }
 
-        h.getDLayer(l, i).forget = forget;
+        h.getDLayer(l, i).stability = stability;
     }
 
-    float getDForget(
+    float getDStability(
         int l,
         int i
     ) const {
@@ -462,7 +462,7 @@ public:
             abort();
         }
 
-        return h.getDLayer(l, i).forget;
+        return h.getDLayer(l, i).stability;
     }
 
     void setAVLR(
