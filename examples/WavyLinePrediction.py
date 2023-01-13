@@ -103,9 +103,6 @@ h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.p
 iters = 10000
 
 def wave(t):
-    if t % 5 == 0:
-        return 1.0
-    return 0.0
     return (np.sin(t * 0.05 * 2.0 * np.pi + 0.5)) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 for t in range(iters):
