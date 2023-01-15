@@ -93,8 +93,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("getIOType", &pyaon::Hierarchy::getIOType)
-        .def("setELRadius", &pyaon::Hierarchy::setELRadius)
-        .def("getELRadius", &pyaon::Hierarchy::getELRadius)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
@@ -138,7 +136,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
         .def("step", &pyaon::ImageEncoder::step,
             py::arg("inputs"),
-            py::arg("learnEnabled") = true
+            py::arg("learnEnabled") = true,
+            py::arg("learnRecon") = true
         )
         .def("reconstruct", &pyaon::ImageEncoder::reconstruct)
         .def("getNumVisibleLayers", &pyaon::ImageEncoder::getNumVisibleLayers)
@@ -146,6 +145,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
+        .def("setGap", &pyaon::ImageEncoder::setGap)
+        .def("getGap", &pyaon::ImageEncoder::getGap)
+        .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
+        .def("getVigilance", &pyaon::ImageEncoder::getVigilance)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR);
+        .def("getLR", &pyaon::ImageEncoder::getLR)
+        .def("setRR", &pyaon::ImageEncoder::setRR)
+        .def("getRR", &pyaon::ImageEncoder::getRR);
 }

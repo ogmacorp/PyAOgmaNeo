@@ -287,38 +287,6 @@ public:
         return static_cast<IOType>(h.getIOType(i));
     }
 
-    void setELRadius(
-        int l,
-        int lRadius
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (lRadius < 0) {
-            std::cerr << "Error: ELRadius must be >= 0" << std::endl;
-            abort();
-        }
-
-        h.getELayer(l).lRadius = lRadius;
-    }
-
-    int getELRadius(
-        int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        return h.getELayer(l).lRadius;
-    }
-
     void setELR(
         int l,
         float lr
