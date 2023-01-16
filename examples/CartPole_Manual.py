@@ -37,8 +37,7 @@ for i in range(1): # Layers with exponential memory. Not much memory is needed f
 
     # Set some layer structural parameters
     ld.hiddenSize = (4, 4, 32)
-    ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
-    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
+    ld.rRadius = 0
     
     lds.append(ld)
 
@@ -63,6 +62,8 @@ for episode in range(1000):
         csdr = (sigmoid(obs * 3.0) * (inputResolution - 1) + 0.5).astype(np.int32).tolist()
 
         h.step([ csdr, h.getPredictionCIs(1) ], True, reward)
+
+        #print(h.getHiddenCIs(0))
 
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column
