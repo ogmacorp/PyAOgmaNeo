@@ -34,10 +34,21 @@ bool ImageEncoderVisibleLayerDesc::checkInRange() const {
     return true;
 }
 
-void ImageEncoder::initCheck() const {
-    if (!initialized) {
-        throw std::runtime_error("Attempted to use the ImageEncoder uninitialized!");
-        abort();
+ImageEncoder::ImageEncoder(
+    const std::tuple<int, int, int> &hiddenSize,
+    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
+    const std::string &name,
+    const std::vector<unsigned char> &buffer
+) {
+    if (!buffer.empty())
+        initFromBuffer(buffer);
+    else if (!name.empty())
+        initFromFile(name);
+    else {
+        if (visibleLayerDescs.empty())
+            throw std::runtime_error("Error: ImageEncoder constructor requires some non-empty arguments!");
+
+        initRandom(hiddenSize, visibleLayerDescs);
     }
 }
 
@@ -125,8 +136,6 @@ void ImageEncoder::initFromBuffer(
 void ImageEncoder::saveToFile(
     const std::string &name
 ) {
-    initCheck();
-
     FileWriter writer;
     writer.outs.open(name, std::ios::binary);
 
@@ -136,8 +145,6 @@ void ImageEncoder::saveToFile(
 }
 
 std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
-    initCheck();
-
     BufferWriter writer(enc.size() + sizeof(int));
 
     writer.write(&imageEncoderMagic, sizeof(int));
@@ -151,8 +158,6 @@ void ImageEncoder::step(
     const std::vector<std::vector<unsigned char>> &inputs,
     bool learnEnabled
 ) {
-    initCheck();
-
     if (inputs.size() != enc.getNumVisibleLayers()) {
         throw std::runtime_error("Incorrect number of inputs given to ImageEncoder! Expected " + std::to_string(enc.getNumVisibleLayers()) + ", got " + std::to_string(inputs.size()));
         abort();
@@ -181,8 +186,6 @@ void ImageEncoder::step(
 void ImageEncoder::reconstruct(
     const std::vector<int> &reconCIs
 ) {
-    initCheck();
-
     if (reconCIs.size() != enc.getHiddenCIs().size()) {
         throw std::runtime_error("Error: reconCIs must match the outputSize of the ImageEncoder!");
         abort();

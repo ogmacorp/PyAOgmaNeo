@@ -78,8 +78,6 @@ class Hierarchy {
 private:
     bool initialized;
 
-    void initCheck() const;
-
     aon::Hierarchy h;
 
     void encGetSetIndexCheck(
@@ -140,14 +138,10 @@ public:
     }
 
     int getNumLayers() const {
-        initCheck();
-
         return h.getNumLayers();
     }
 
     std::vector<int> getTopHiddenCIs() const {
-        initCheck();
-
         std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
@@ -157,16 +151,12 @@ public:
     }
 
     std::tuple<int, int, int> getTopHiddenSize() const {
-        initCheck();
-
         aon::Int3 size = h.getTopHiddenSize();
 
         return { size.x, size.y, size.z };
     }
     
     bool getTopUpdate() const {
-        initCheck();
-
         return h.getTopUpdate();
     }
 
@@ -174,8 +164,6 @@ public:
         int i,
         float importance
     ) {
-        initCheck();
-
         if (i < 0 || i >= h.getNumIO()) {
             throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
             abort();
@@ -187,8 +175,6 @@ public:
     float getInputImportance(
         int i
     ) const {
-        initCheck();
-
         if (i < 0 || i >= h.getNumIO()) {
             throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
             abort();
@@ -204,8 +190,6 @@ public:
     bool getUpdate(
         int l
     ) const {
-        initCheck();
-
         if (l < 0 || l >= h.getNumLayers()) {
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
             abort();
@@ -217,8 +201,6 @@ public:
     std::vector<int> getHiddenCIs(
         int l
     ) {
-        initCheck();
-
         if (l < 0 || l >= h.getNumLayers()) {
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
             abort();
@@ -235,8 +217,6 @@ public:
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
-        initCheck();
-
         if (l < 0 || l >= h.getNumLayers()) {
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
             abort();
@@ -250,8 +230,6 @@ public:
     int getTicks(
         int l
     ) const {
-        initCheck();
-
         if (l < 0 || l >= h.getNumLayers()) {
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
             abort();
@@ -263,8 +241,6 @@ public:
     int getTicksPerUpdate(
         int l
     ) const {
-        initCheck();
-
         if (l < 0 || l >= h.getNumLayers()) {
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
             abort();
@@ -276,8 +252,6 @@ public:
     int getNumEVisibleLayers(
         int l
     ) {
-        initCheck();
-
         if (l < 0 || l >= h.getNumLayers()) {
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
             abort();
@@ -287,16 +261,12 @@ public:
     }
 
     int getNumIO() const {
-        initCheck();
-
         return h.getNumIO();
     }
 
     std::tuple<int, int, int> getIOSize(
         int i
     ) const {
-        initCheck();
-
         if (i < 0 || i >= h.getNumIO()) {
             throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
             abort();
@@ -310,8 +280,6 @@ public:
     IOType getIOType(
         int i
     ) const {
-        initCheck();
-
         if (i < 0 || i >= h.getNumIO()) {
             throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
             abort();
@@ -324,8 +292,6 @@ public:
         int l,
         float lr
     ) {
-        initCheck();
-
         encGetSetIndexCheck(l);
 
         if (lr < 0.0f) {
@@ -339,8 +305,6 @@ public:
     float getELR(
         int l
     ) const {
-        initCheck();
-
         encGetSetIndexCheck(l);
 
         return h.getELayer(l).lr;
@@ -351,8 +315,6 @@ public:
         int i,
         float lr
     ) {
-        initCheck();
-
         decGetSetIndexCheck(l, i);
 
         if (lr < 0.0f) {
@@ -367,8 +329,6 @@ public:
         int l,
         int i
     ) const {
-        initCheck();
-
         decGetSetIndexCheck(l, i);
 
         if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
@@ -384,8 +344,6 @@ public:
         int i,
         float stability
     ) {
-        initCheck();
-
         decGetSetIndexCheck(l, i);
 
         if (stability < 0.0f) {
@@ -400,8 +358,6 @@ public:
         int l,
         int i
     ) const {
-        initCheck();
-
         decGetSetIndexCheck(l, i);
 
         if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
@@ -416,8 +372,6 @@ public:
         int i,
         float vlr
     ) {
-        initCheck();
-
         actGetSetIndexCheck(i);
 
         if (vlr < 0.0f) {
@@ -431,8 +385,6 @@ public:
     float getAVLR(
         int i
     ) const {
-        initCheck();
-        
         actGetSetIndexCheck(i);
 
         return h.getALayer(i).vlr;
@@ -442,8 +394,6 @@ public:
         int i,
         float alr
     ) {
-        initCheck();
-
         actGetSetIndexCheck(i);
 
         if (alr < 0.0f) {
@@ -457,8 +407,6 @@ public:
     float getAALR(
         int i
     ) const {
-        initCheck();
-        
         actGetSetIndexCheck(i);
 
         return h.getALayer(i).alr;
@@ -468,8 +416,6 @@ public:
         int i,
         float bias
     ) {
-        initCheck();
-
         actGetSetIndexCheck(i);
 
         if (bias < 0.0f) {
@@ -483,8 +429,6 @@ public:
     float getABias(
         int i
     ) const {
-        initCheck();
-        
         actGetSetIndexCheck(i);
 
         return h.getALayer(i).bias;
@@ -494,8 +438,6 @@ public:
         int i,
         float discount
     ) {
-        initCheck();
-
         actGetSetIndexCheck(i);
 
         if (discount < 0.0f || discount >= 1.0f) {
@@ -509,8 +451,6 @@ public:
     float getADiscount(
         int i
     ) const {
-        initCheck();
-        
         actGetSetIndexCheck(i);
 
         return h.getALayer(i).discount;
@@ -520,8 +460,6 @@ public:
         int i,
         float temperature
     ) {
-        initCheck();
-
         actGetSetIndexCheck(i);
 
         if (temperature < 0.0f) {
@@ -535,8 +473,6 @@ public:
     float getATemperature(
         int i
     ) const {
-        initCheck();
-        
         actGetSetIndexCheck(i);
 
         return h.getALayer(i).temperature;
@@ -546,8 +482,6 @@ public:
         int i,
         int minSteps
     ) {
-        initCheck();
-
         actGetSetIndexCheck(i);
 
         if (minSteps < 1) {
@@ -561,8 +495,6 @@ public:
     int getAMinSteps(
         int i
     ) const {
-        initCheck();
-        
         actGetSetIndexCheck(i);
 
         return h.getALayer(i).minSteps;
@@ -572,8 +504,6 @@ public:
         int i,
         int historyIters
     ) {
-        initCheck();
-
         actGetSetIndexCheck(i);
 
         if (historyIters < 0) {
@@ -587,8 +517,6 @@ public:
     int getAHistoryIters(
         int i
     ) const {
-        initCheck();
-        
         actGetSetIndexCheck(i);
 
         return h.getALayer(i).historyIters;
@@ -598,8 +526,6 @@ public:
     int getERadius(
         int l
     ) const {
-        initCheck();
-
         if (l < 0 || l >= h.getNumLayers()) {
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
             abort();
@@ -612,8 +538,6 @@ public:
         int l,
         int i
     ) const {
-        initCheck();
-
         if (l < 0 || l >= h.getNumLayers()) {
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
             abort();
@@ -630,8 +554,6 @@ public:
     int getARadius(
         int i
     ) const {
-        initCheck();
-
         if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action) {
             throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
             abort();
@@ -643,8 +565,6 @@ public:
     int getAHistoryCapacity(
         int i
     ) const {
-        initCheck();
-
         if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action) {
             throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
             abort();

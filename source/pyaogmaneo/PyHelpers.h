@@ -10,6 +10,7 @@
 
 #include <aogmaneo/Helpers.h>
 #include <tuple>
+#include <string>
 #include <vector>
 #include <fstream>
 #include <iostream>

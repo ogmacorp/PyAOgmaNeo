@@ -69,19 +69,16 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
-                const std::vector<IODesc> &ioDescs,
-                const std::vector<LayerDesc> &layerDescs,
-                const std::string &name,
-                const std::vector<unsigned char> &buffer
+                const std::vector<pyaon::IODesc>&,
+                const std::vector<pyaon::LayerDesc>&,
+                const std::string&,
+                const std::vector<unsigned char>&
             >(),
-            py::arg("ioDescs") = {},
-            py::arg("layerDescs") = {},
-            py::arg("name") = "",
-            py::arg("buffer") = {}
+            py::arg("ioDescs") = std::vector<pyaon::IODesc>(),
+            py::arg("layerDescs") = std::vector<pyaon::LayerDesc>(),
+            py::arg("name") = std::string(),
+            py::arg("buffer") = std::vector<unsigned char>()
         )
-        .def("initRandom", &pyaon::Hierarchy::initRandom)
-        .def("initFromFile", &pyaon::Hierarchy::initFromFile)
-        .def("initFromBuffer", &pyaon::Hierarchy::initFromBuffer)
         .def("saveToFile", &pyaon::Hierarchy::saveToFile)
         .def("serializeToBuffer", &pyaon::Hierarchy::serializeToBuffer)
         .def("setStateFromBuffer", &pyaon::Hierarchy::setStateFromBuffer)
@@ -146,10 +143,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("radius", &pyaon::ImageEncoderVisibleLayerDesc::radius);
 
     py::class_<pyaon::ImageEncoder>(m, "ImageEncoder")
-        .def(py::init<>())
-        .def("initRandom", &pyaon::ImageEncoder::initRandom)
-        .def("initFromFile", &pyaon::ImageEncoder::initFromFile)
-        .def("initFromBuffer", &pyaon::ImageEncoder::initFromBuffer)
+        .def(py::init<
+                const std::tuple<int, int, int>&,
+                const std::vector<pyaon::ImageEncoderVisibleLayerDesc>&,
+                const std::string&,
+                const std::vector<unsigned char>&
+            >(),
+            py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("visibleLayerDescs") = std::vector<pyaon::ImageEncoderVisibleLayerDesc>(),
+            py::arg("name") = std::string(),
+            py::arg("buffer") = std::vector<unsigned char>()
+        )
         .def("saveToFile", &pyaon::ImageEncoder::saveToFile)
         .def("serializeToBuffer", &pyaon::ImageEncoder::serializeToBuffer)
         .def("step", &pyaon::ImageEncoder::step,

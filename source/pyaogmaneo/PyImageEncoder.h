@@ -35,15 +35,7 @@ class ImageEncoder {
 private:
     bool initialized;
 
-    void initCheck() const;
-
     aon::ImageEncoder enc;
-
-public:
-    ImageEncoder() 
-    :
-    initialized(false)
-    {}
 
     void initRandom(
         const std::tuple<int, int, int> &hiddenSize,
@@ -55,6 +47,14 @@ public:
     );
 
     void initFromBuffer(
+        const std::vector<unsigned char> &buffer
+    );
+
+public:
+    ImageEncoder(
+        const std::tuple<int, int, int> &hiddenSize,
+        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
+        const std::string &name,
         const std::vector<unsigned char> &buffer
     );
 
@@ -74,16 +74,12 @@ public:
     );
 
     int getNumVisibleLayers() const {
-        initCheck();
-
         return enc.getNumVisibleLayers();
     }
 
     std::vector<unsigned char> getReconstruction(
         int i
     ) const {
-        initCheck();
-
         if (i < 0 || i >= enc.getNumVisibleLayers()) {
             throw std::runtime_error("Cannot get reconstruction at index " + std::to_string(i) + " - out of bounds [0, " + std::to_string(enc.getNumVisibleLayers()) + "]");
             abort();
@@ -98,8 +94,6 @@ public:
     }
 
     std::vector<int> getHiddenCIs() const {
-        initCheck();
-
         std::vector<int> hiddenCIs(enc.getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
@@ -109,8 +103,6 @@ public:
     }
 
     std::tuple<int, int, int> getHiddenSize() const {
-        initCheck();
-
         aon::Int3 size = enc.getHiddenSize();
 
         return { size.x, size.y, size.z };
@@ -119,8 +111,6 @@ public:
     std::tuple<int, int, int> getVisibleSize(
         int i
     ) const {
-        initCheck();
-
         aon::Int3 size = enc.getVisibleLayerDesc(i).size;
 
         return { size.x, size.y, size.z };
@@ -129,8 +119,6 @@ public:
     void setLR(
         float lr
     ) {
-        initCheck();
-
         if (lr < 0.0f) {
             throw std::runtime_error("Error: ImageEncoder LR must be >= 0.0");
             abort();
@@ -140,8 +128,6 @@ public:
     }
 
     float getLR() const {
-        initCheck();
-
         return enc.lr;
     }
 };

@@ -88,13 +88,6 @@ bool LayerDesc::checkInRange() const {
     return true;
 }
 
-void Hierarchy::initCheck() const {
-    if (!initialized) {
-        throw std::runtime_error("Attempted to use the hierarchy uninitialized!");
-        abort();
-    }
-}
-
 void Hierarchy::encGetSetIndexCheck(
     int l
 ) const {
@@ -251,8 +244,6 @@ void Hierarchy::initFromBuffer(
 void Hierarchy::saveToFile(
     const std::string &name
 ) {
-    initCheck();
-
     FileWriter writer;
     writer.outs.open(name, std::ios::binary);
 
@@ -262,8 +253,6 @@ void Hierarchy::saveToFile(
 }
 
 std::vector<unsigned char> Hierarchy::serializeToBuffer() {
-    initCheck();
-
     BufferWriter writer(h.size() + sizeof(int));
 
     writer.write(&hierarchyMagic, sizeof(int));
@@ -276,8 +265,6 @@ std::vector<unsigned char> Hierarchy::serializeToBuffer() {
 void Hierarchy::setStateFromBuffer(
     const std::vector<unsigned char> &buffer
 ) {
-    initCheck();
-
     BufferReader reader;
     reader.buffer = &buffer;
 
@@ -293,8 +280,6 @@ void Hierarchy::setStateFromBuffer(
 }
 
 std::vector<unsigned char> Hierarchy::serializeStateToBuffer() {
-    initCheck();
-
     BufferWriter writer(h.stateSize() + sizeof(int));
 
     writer.write(&hierarchyMagic, sizeof(int));
@@ -310,8 +295,6 @@ void Hierarchy::step(
     float reward,
     float mimic
 ) {
-    initCheck();
-
     if (inputCIs.size() != h.getNumIO()) {
         throw std::runtime_error("Incorrect number of inputCIs passed to step! Received " + std::to_string(inputCIs.size()) + ", need " + std::to_string(h.getNumIO()));
         abort();
@@ -348,8 +331,6 @@ void Hierarchy::step(
 std::vector<int> Hierarchy::getPredictionCIs(
     int i
 ) const {
-    initCheck();
-
     if (i < 0 || i >= h.getNumIO()) {
         throw std::runtime_error("Prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.getNumIO() - 1) + "]!");
         abort();
