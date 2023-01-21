@@ -5,27 +5,14 @@ Hierarchy
 
 The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when used for reinforcement learning. This is the main component of any PyAOgmaNeo project
 
-.. function:: Hierarchy.__init__(self):
+.. function:: Hierarchy.__init__(self, ioDescs=[], layerDescs=[], name="", buffer=[]):
 
-    Does nothing.
-
-.. function:: Hierarchy.initRandom(self, ioDescs, layerDescs)
-
-    Initialize a hierarchy (random weights) of given structure.
+    Initialize a hierarchy. To do so from a file, use just name="filename". To do so from a buffer, just use buffer=[ <data> ].
+    Otherwise, provide ioDescs and layerDescs.
 
     :param ioDescs: ([IODesc]) list of IODesc's (input-output (IO) descriptors, see IODesc). Defines the size of each IO layer and its type
     :param layerDescs: ([LayerDesc]) A list of filled-out descriptors (LayerDesc objects) describing how all the layers in the hierarchy should look
-
-.. function:: Hierarchy.initFromFile(self, name)
-
-    Initialize a hierarchy given a save file.
-
     :param name: (string) save file name
-
-.. function:: Hierarchy.initFromBuffer(self, buffer)
-
-    Initialize a hierarchy given a byte buffer.
-
     :param buffer: ([uint8]) byte buffer to read from
 
 .. function:: Hierarchy.saveToFile(self, name)
@@ -147,20 +134,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
-.. function:: Hierarchy.setEGroupRadius(self, l, groupRadius)
-
-    Set the group radius of an encoder (E). This is an integer in this case, it defines the second-stage inhibition to make representations distributed
-
-    :param l: (int32) index of the layer
-    :param groupRadius: (int32) value to set
-
-.. function:: Hierarchy.getEGroupRadius(self, l)
-
-    Get the group radius of an encoder (E). This is an integer in this case, it defines the second-stage inhibition to make representations distributed
-
-    :param l: (int32) index of the layer
-    :rtype: (int32) groupRadius
-
 .. function:: Hierarchy.setELR(self, l, lr)
 
     Set the learning rate of an encoder (E)
@@ -189,19 +162,19 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (float32) lr
 
-.. function:: Hierarchy.setDForget(self, l, forget)
+.. function:: Hierarchy.setDStability(self, l, stability)
 
-    Set the forgetting amount of a decoder (D). A higher value means more forgetting but more capacity
-
-    :param l: (int32) index of the layer
-    :param forget: (float32) value to set
-
-.. function:: Hierarchy.getDForget(self, l)
-
-    Get the forgetting amount of a decoder (D). A higher value means more forgetting but more capacity
+    Set the stability amount of a decoder (D). A higher value means less forgetting at the cost of some capacity
 
     :param l: (int32) index of the layer
-    :rtype: (float32) forget
+    :param stability: (float32) value to set
+
+.. function:: Hierarchy.getDStability(self, l)
+
+    Get the stability amount of a decoder (D). A higher value means less forgetting at the cost of some capacity
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) stability
 
 .. function:: Hierarchy.setAVLR(self, i, vlr)
 
