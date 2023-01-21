@@ -108,7 +108,7 @@ def wave(t):
 for t in range(iters):
     valueToEncode = wave(t)
 
-    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
+    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) + 5 ]#Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning

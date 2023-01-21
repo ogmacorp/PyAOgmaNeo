@@ -12,7 +12,7 @@
 #include <aogmaneo/ImageEncoder.h>
 
 namespace pyaon {
-const int imageEncoderMagic = 228847;
+const int imageEncoderMagic = 223849;
 
 struct ImageEncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;
@@ -85,7 +85,7 @@ public:
         initCheck();
 
         if (i < 0 || i >= enc.getNumVisibleLayers()) {
-            std::cerr << "Cannot get reconstruction at index " << i << " - out of bounds [0, " << enc.getNumVisibleLayers() << "]" << std::endl;
+            throw std::runtime_error("Cannot get reconstruction at index " + std::to_string(i) + " - out of bounds [0, " + std::to_string(enc.getNumVisibleLayers()) + "]");
             abort();
         }
 
@@ -132,7 +132,7 @@ public:
         initCheck();
 
         if (lr < 0.0f) {
-            std::cerr << "Error: ImageEncoder LR must be >= 0.0" << std::endl;
+            throw std::runtime_error("Error: ImageEncoder LR must be >= 0.0");
             abort();
         }
 

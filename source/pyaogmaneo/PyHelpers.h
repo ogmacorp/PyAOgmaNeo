@@ -13,6 +13,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <exception>
 
 namespace pyaon {
 inline void setNumThreads(

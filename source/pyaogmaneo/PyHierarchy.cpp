@@ -12,32 +12,32 @@ using namespace pyaon;
 
 bool IODesc::checkInRange() const {
     if (std::get<0>(size) < 1) {
-        std::cerr << "Error: size[0] < 1 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: size[0] < 1 is not allowed!");
         return false;
     }
 
     if (std::get<1>(size) < 1) {
-        std::cerr << "Error: size[1] < 1 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: size[1] < 1 is not allowed!");
         return false;
     }
 
     if (std::get<2>(size) < 1) {
-        std::cerr << "Error: size[2] < 1 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: size[2] < 1 is not allowed!");
         return false;
     }
 
     if (eRadius < 0) {
-        std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: eRadius < 0 is not allowed!");
         return false;
     }
 
     if (dRadius < 0) {
-        std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: dRadius < 0 is not allowed!");
         return false;
     }
 
     if (historyCapacity < 2) {
-        std::cerr << "Error: historyCapacity < 2 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: historyCapacity < 2 is not allowed!");
         return false;
     }
 
@@ -46,42 +46,42 @@ bool IODesc::checkInRange() const {
 
 bool LayerDesc::checkInRange() const {
     if (std::get<0>(hiddenSize) < 1) {
-        std::cerr << "Error: hiddenSize[0] < 1 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: hiddenSize[0] < 1 is not allowed!");
         return false;
     }
 
     if (std::get<1>(hiddenSize) < 1) {
-        std::cerr << "Error: hiddenSize[1] < 1 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: hiddenSize[1] < 1 is not allowed!");
         return false;
     }
 
     if (std::get<2>(hiddenSize) < 1) {
-        std::cerr << "Error: hiddenSize[2] < 1 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: hiddenSize[2] < 1 is not allowed!");
         return false;
     }
 
     if (eRadius < 0) {
-        std::cerr << "Error: eRadius < 0 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: eRadius < 0 is not allowed!");
         return false;
     }
 
     if (dRadius < 0) {
-        std::cerr << "Error: dRadius < 0 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: dRadius < 0 is not allowed!");
         return false;
     }
 
     if (ticksPerUpdate < 1) {
-        std::cerr << "Error: ticksPerUpdate < 1 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: ticksPerUpdate < 1 is not allowed!");
         return false;
     }
 
     if (temporalHorizon < 1) {
-        std::cerr << "Error: temporalHorizon < 1 is not allowed!" << std::endl;
+        throw std::runtime_error("Error: temporalHorizon < 1 is not allowed!");
         return false;
     }
 
     if (temporalHorizon < ticksPerUpdate) {
-        std::cerr << "Error: temporalHorizon < ticksPerUpdate is not allowed!" << std::endl;
+        throw std::runtime_error("Error: temporalHorizon < ticksPerUpdate is not allowed!");
         return false;
     }
 
@@ -90,7 +90,7 @@ bool LayerDesc::checkInRange() const {
 
 void Hierarchy::initCheck() const {
     if (!initialized) {
-        std::cerr << "Attempted to use the hierarchy uninitialized!" << std::endl;
+        throw std::runtime_error("Attempted to use the hierarchy uninitialized!");
         abort();
     }
 }
@@ -99,7 +99,7 @@ void Hierarchy::encGetSetIndexCheck(
     int l
 ) const {
     if (l < 0 || l >= h.getNumLayers()) {
-        std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+        throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
         abort();
     }
 }
@@ -108,22 +108,22 @@ void Hierarchy::decGetSetIndexCheck(
     int l, int i
 ) const {
     if (l < 0 || l >= h.getNumLayers()) {
-        std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+        throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
         abort();
     }
 
     if (l == 0 && (i < 0 || i >= h.getNumIO())) {
-        std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+        throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
         abort();
     }
 
     if (l > 0 && i == 0) {
-        std::cerr << "Error: " << i << " is not a valid decoder index!" << std::endl;
+        throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid decoder index!");
         abort();
     }
 
     if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
-        std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
+        throw std::runtime_error("Error: index " + std::to_string(i) + " does not have a decoder!");
         abort();
     }
 }
@@ -132,12 +132,12 @@ void Hierarchy::actGetSetIndexCheck(
     int i
 ) const {
     if (i < 0 || i >= h.getNumIO()) {
-        std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+        throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
         abort();
     }
 
     if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-        std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+        throw std::runtime_error("Error: index " + std::to_string(i) + " does not have an actor!");
         abort();
     }
 }
@@ -152,7 +152,7 @@ void Hierarchy::initRandom(
 
     for (int i = 0; i < ioDescs.size(); i++) {
         if(!ioDescs[i].checkInRange()) {
-            std::cerr << " - at ioDesc[" << i << "]" << std::endl;
+            throw std::runtime_error(" - at ioDesc[" + std::to_string(i) + "]");
             allInRange = false;
         }
 
@@ -169,7 +169,7 @@ void Hierarchy::initRandom(
 
     for (int l = 0; l < layerDescs.size(); l++) {
         if(!layerDescs[l].checkInRange()) {
-            std::cerr << " - at layerDescs[" << l << "]" << std::endl;
+            throw std::runtime_error(" - at layerDescs[" + std::to_string(l) + "]");
             allInRange = false;
         }
 
@@ -183,7 +183,7 @@ void Hierarchy::initRandom(
     }
 
     if (!allInRange) {
-        std::cerr << " - Hierarchy: Some parameters out of range!" << std::endl;
+        throw std::runtime_error(" - Hierarchy: Some parameters out of range!");
         abort();
     }
 
@@ -202,7 +202,7 @@ void Hierarchy::initFromFile(
     reader.read(&magic, sizeof(int));
 
     if (magic != hierarchyMagic) {
-        std::cerr << "Attempted to initialize Hierarchy from incompatible file - " << name << std::endl;
+        throw std::runtime_error("Attempted to initialize Hierarchy from incompatible file - " + name);
         abort();
     }
 
@@ -221,7 +221,7 @@ void Hierarchy::initFromBuffer(
     reader.read(&magic, sizeof(int));
 
     if (magic != hierarchyMagic) {
-        std::cerr << "Attempted to initialize Hierarchy from incompatible buffer!" << std::endl;
+        throw std::runtime_error("Attempted to initialize Hierarchy from incompatible buffer!");
         abort();
     }
 
@@ -267,7 +267,7 @@ void Hierarchy::setStateFromBuffer(
     reader.read(&magic, sizeof(int));
 
     if (magic != hierarchyMagic) {
-        std::cerr << "Attempted to set Hierarchy state from incompatible buffer!" << std::endl;
+        throw std::runtime_error("Attempted to set Hierarchy state from incompatible buffer!");
         abort();
     }
 
@@ -295,7 +295,7 @@ void Hierarchy::step(
     initCheck();
 
     if (inputCIs.size() != h.getNumIO()) {
-        std::cerr << "Incorrect number of inputCIs passed to step! Received " << inputCIs.size() << ", need " << h.getNumIO() << std::endl;
+        throw std::runtime_error("Incorrect number of inputCIs passed to step! Received " + std::to_string(inputCIs.size()) + ", need " + std::to_string(h.getNumIO()));
         abort();
     }
 
@@ -306,7 +306,7 @@ void Hierarchy::step(
         int numColumns = h.getIOSize(i).x * h.getIOSize(i).y;
 
         if (inputCIs[i].size() != numColumns) {
-            std::cerr << "Incorrect CSDR size at index " << i << " - expected " << numColumns << " columns, got " << inputCIs[i].size() << std::endl;
+            throw std::runtime_error("Incorrect CSDR size at index " + std::to_string(i) + " - expected " + std::to_string(numColumns) + " columns, got " + std::to_string(inputCIs[i].size()));
             abort();
         }
 
@@ -314,7 +314,7 @@ void Hierarchy::step(
 
         for (int j = 0; j < inputCIs[i].size(); j++) {
             if (inputCIs[i][j] < 0 || inputCIs[i][j] >= h.getIOSize(i).z) {
-                std::cerr << "Input CSDR at input index " << i << " has an out-of-bounds column index (" << inputCIs[i][j] << ") at column index " << j << ". It must be in the range [0, " << (h.getIOSize(i).z - 1) << "]" << std::endl;
+                throw std::runtime_error("Input CSDR at input index " + std::to_string(i) + " has an out-of-bounds column index (" + std::to_string(inputCIs[i][j]) + ") at column index " + std::to_string(j) + ". It must be in the range [0, " + std::to_string(h.getIOSize(i).z - 1) + "]");
                 abort();
             }
 
@@ -333,12 +333,12 @@ std::vector<int> Hierarchy::getPredictionCIs(
     initCheck();
 
     if (i < 0 || i >= h.getNumIO()) {
-        std::cout << "Prediction index " << i << " out of range [0, " << (h.getNumIO() - 1) << "]!" << std::endl;
+        throw std::runtime_error("Prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.getNumIO() - 1) + "]!");
         abort();
     }
 
     if (!h.ioLayerExists(i) || h.getIOType(i) == aon::none) {
-        std::cerr << "No decoder exists at index " << i << " - did you set it to the correct type?" << std::endl;
+        throw std::runtime_error("No decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
         abort();
     }
 
