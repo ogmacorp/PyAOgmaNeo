@@ -95,12 +95,6 @@ private:
         int i
     ) const;
 
-public:
-    Hierarchy() 
-    :
-    initialized(false)
-    {}
-
     void initRandom(
         const std::vector<IODesc> &ioDescs,
         const std::vector<LayerDesc> &layerDescs
@@ -111,6 +105,14 @@ public:
     );
 
     void initFromBuffer(
+        const std::vector<unsigned char> &buffer
+    );
+
+public:
+    Hierarchy(
+        const std::vector<IODesc> &ioDescs,
+        const std::vector<LayerDesc> &layerDescs,
+        const std::string &name,
         const std::vector<unsigned char> &buffer
     );
 

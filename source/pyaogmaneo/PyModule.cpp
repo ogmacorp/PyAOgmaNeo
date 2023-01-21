@@ -68,7 +68,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
-        .def(py::init<>())
+        .def(py::init<
+                const std::vector<IODesc> &ioDescs,
+                const std::vector<LayerDesc> &layerDescs,
+                const std::string &name,
+                const std::vector<unsigned char> &buffer
+            >(),
+            py::arg("ioDescs") = {},
+            py::arg("layerDescs") = {},
+            py::arg("name") = "",
+            py::arg("buffer") = {}
+        )
         .def("initRandom", &pyaon::Hierarchy::initRandom)
         .def("initFromFile", &pyaon::Hierarchy::initFromFile)
         .def("initFromBuffer", &pyaon::Hierarchy::initFromBuffer)

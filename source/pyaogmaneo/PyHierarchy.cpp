@@ -142,6 +142,24 @@ void Hierarchy::actGetSetIndexCheck(
     }
 }
 
+Hierarchy::Hierarchy(
+    const std::vector<IODesc> &ioDescs,
+    const std::vector<LayerDesc> &layerDescs,
+    const std::string &name,
+    const std::vector<unsigned char> &buffer
+) {
+    if (!buffer.empty())
+        initFromBuffer(buffer);
+    else if (!name.empty())
+        initFromFile(name);
+    else {
+        if (ioDescs.empty() || layerDescs.empty())
+            throw std::runtime_error("Error: Hierarchy constructor requires some non-empty arguments!");
+
+        initRandom(ioDescs, layerDescs);
+    }
+}
+
 void Hierarchy::initRandom(
     const std::vector<IODesc> &ioDescs,
     const std::vector<LayerDesc> &layerDescs
