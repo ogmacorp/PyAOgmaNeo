@@ -95,6 +95,53 @@ void Hierarchy::initCheck() const {
     }
 }
 
+void Hierarchy::encGetSetIndexCheck(
+    int l
+) const {
+    if (l < 0 || l >= h.getNumLayers()) {
+        std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+        abort();
+    }
+}
+
+void Hierarchy::decGetSetIndexCheck(
+    int l, int i
+) const {
+    if (l < 0 || l >= h.getNumLayers()) {
+        std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
+        abort();
+    }
+
+    if (l == 0 && (i < 0 || i >= h.getNumIO())) {
+        std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+        abort();
+    }
+
+    if (l > 0 && i == 0) {
+        std::cerr << "Error: " << i << " is not a valid decoder index!" << std::endl;
+        abort();
+    }
+
+    if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
+        std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
+        abort();
+    }
+}
+
+void Hierarchy::actGetSetIndexCheck(
+    int i
+) const {
+    if (i < 0 || i >= h.getNumIO()) {
+        std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
+        abort();
+    }
+
+    if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
+        std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
+        abort();
+    }
+}
+
 void Hierarchy::initRandom(
     const std::vector<IODesc> &ioDescs,
     const std::vector<LayerDesc> &layerDescs
