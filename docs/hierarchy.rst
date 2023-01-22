@@ -148,6 +148,34 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (float32) lr
 
+.. function:: Hierarchy.setEGroupRadius(self, l, groupRadius)
+
+    Set the group radius of an encoder (E). This is an integer in this case, it defines the second-stage inhibition to make representations distributed
+
+    :param l: (int32) index of the layer
+    :param groupRadius: (int32) value to set
+
+.. function:: Hierarchy.getEGroupRadius(self, l)
+
+    Get the group radius of an encoder (E). This is an integer in this case, it defines the second-stage inhibition to make representations distributed
+
+    :param l: (int32) index of the layer
+    :rtype: (int32) groupRadius
+
+.. function:: Hierarchy.setDScale(self, l, scale)
+
+    Set the byte-to-float scaling factor of a decoder (D)
+
+    :param l: (int32) index of the layer
+    :param scale: (float32) value to set
+
+.. function:: Hierarchy.getDScale(self, l)
+
+    Get the byte-to-float scaling factor of a decoder (D)
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) scale
+
 .. function:: Hierarchy.setDLR(self, l, lr)
 
     Set the learning rate of a decoder (D)

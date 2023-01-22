@@ -310,6 +310,52 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setEGroupRadius(
+        int l,
+        int groupRadius
+    ) {
+        encGetSetIndexCheck(l);
+
+        if (groupRadius < 0) {
+            throw std::runtime_error("Error: EGroupRadius must be >= 0");
+            abort();
+        }
+
+        h.getELayer(l).groupRadius = groupRadius;
+    }
+
+    int getEGroupRadius(
+        int l
+    ) const {
+        encGetSetIndexCheck(l);
+
+        return h.getELayer(l).groupRadius;
+    }
+
+    void setDScale(
+        int l,
+        int i,
+        float scale
+    ) {
+        decGetSetIndexCheck(l, i);
+
+        if (scale <= 0.0f) {
+            throw std::runtime_error("Error: DScale must be > 0.0");
+            abort();
+        }
+
+        h.getDLayer(l, i).scale = scale;
+    }
+
+    float getDScale(
+        int l,
+        int i
+    ) const {
+        decGetSetIndexCheck(l, i);
+
+        return h.getDLayer(l, i).scale;
+    }
+
     void setDLR(
         int l,
         int i,
@@ -359,11 +405,6 @@ public:
         int i
     ) const {
         decGetSetIndexCheck(l, i);
-
-        if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction)) {
-            throw std::runtime_error("Error: index " + std::to_string(i) + " does not have a decoder!");
-            abort();
-        }
 
         return h.getDLayer(l, i).stability;
     }
