@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -10,34 +10,35 @@
 
 using namespace pyaon;
 
-bool ImageEncoderVisibleLayerDesc::checkInRange() const {
-    if (std::get<0>(size) < 1) {
-        std::cerr << "Error: size[0] < 1 is not allowed!" << std::endl;
-        return false;
-    }
+void ImageEncoderVisibleLayerDesc::checkInRange() const {
+    if (std::get<0>(size) < 1)
+        throw std::runtime_error("Error: size[0] < 1 is not allowed!");
 
-    if (std::get<1>(size) < 1) {
-        std::cerr << "Error: size[1] < 1 is not allowed!" << std::endl;
-        return false;
-    }
+    if (std::get<1>(size) < 1)
+        throw std::runtime_error("Error: size[1] < 1 is not allowed!");
 
-    if (std::get<2>(size) < 1) {
-        std::cerr << "Error: size[2] < 1 is not allowed!" << std::endl;
-        return false;
-    }
+    if (std::get<2>(size) < 1)
+        throw std::runtime_error("Error: size[2] < 1 is not allowed!");
 
-    if (radius < 0) {
-        std::cerr << "Error: radius < 0 is not allowed!" << std::endl;
-        return false;
-    }
-
-    return true;
+    if (radius < 0)
+        throw std::runtime_error("Error: radius < 0 is not allowed!");
 }
 
-void ImageEncoder::initCheck() const {
-    if (!initialized) {
-        std::cerr << "Attempted to use the ImageEncoder uninitialized!" << std::endl;
-        abort();
+ImageEncoder::ImageEncoder(
+    const std::tuple<int, int, int> &hiddenSize,
+    const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
+    const std::string &name,
+    const std::vector<unsigned char> &buffer
+) {
+    if (!buffer.empty())
+        initFromBuffer(buffer);
+    else if (!name.empty())
+        initFromFile(name);
+    else {
+        if (visibleLayerDescs.empty())
+            throw std::runtime_error("Error: ImageEncoder constructor requires some non-empty arguments!");
+
+        initRandom(hiddenSize, visibleLayerDescs);
     }
 }
 
@@ -50,38 +51,25 @@ void ImageEncoder::initRandom(
     aon::Array<aon::ImageEncoder::VisibleLayerDesc> cVisibleLayerDescs(visibleLayerDescs.size());
 
     for (int v = 0; v < visibleLayerDescs.size(); v++) {
-        if (!visibleLayerDescs[v].checkInRange()) {
-            std::cerr << " - at visibleLayerDescs[" << v << "]" << std::endl;
-            allInRange = false;
-        }
+        visibleLayerDescs[v].checkInRange();
 
         cVisibleLayerDescs[v].size = aon::Int3(std::get<0>(visibleLayerDescs[v].size), std::get<1>(visibleLayerDescs[v].size), std::get<2>(visibleLayerDescs[v].size));
         cVisibleLayerDescs[v].radius = visibleLayerDescs[v].radius;
     }
 
-    if (std::get<0>(hiddenSize) < 1) {
-        std::cerr << "Error: hiddenSize[0] < 1 is not allowed!" << std::endl;
-        allInRange = false;
-    }
+    if (std::get<0>(hiddenSize) < 1)
+        throw std::runtime_error("Error: hiddenSize[0] < 1 is not allowed!");
 
-    if (std::get<1>(hiddenSize) < 1) {
-        std::cerr << "Error: hiddenSize[1] < 1 is not allowed!" << std::endl;
-        allInRange = false;
-    }
+    if (std::get<1>(hiddenSize) < 1)
+        throw std::runtime_error("Error: hiddenSize[1] < 1 is not allowed!");
 
-    if (std::get<2>(hiddenSize) < 1) {
-        std::cerr << "Error: hiddenSize[2] < 1 is not allowed!" << std::endl;
-        allInRange = false;
-    }
+    if (std::get<2>(hiddenSize) < 1)
+        throw std::runtime_error("Error: hiddenSize[2] < 1 is not allowed!");
 
-    if (!allInRange) {
-        std::cerr << " - ImageEncoder: Some parameters out of range!" << std::endl;
-        abort();
-    }
+    if (!allInRange)
+        throw std::runtime_error(" - ImageEncoder: Some parameters out of range!");
 
     enc.initRandom(aon::Int3(std::get<0>(hiddenSize), std::get<1>(hiddenSize), std::get<2>(hiddenSize)), cVisibleLayerDescs);
-
-    initialized = true;
 }
 
 void ImageEncoder::initFromFile(
@@ -93,14 +81,10 @@ void ImageEncoder::initFromFile(
     int magic;
     reader.read(&magic, sizeof(int));
 
-    if (magic != imageEncoderMagic) {
-        std::cerr << "Attempted to initialize ImageEncoder from incompatible file - " << name << std::endl;
-        abort();
-    }
+    if (magic != imageEncoderMagic)
+        throw std::runtime_error("Attempted to initialize ImageEncoder from incompatible file - " + name);
 
     enc.read(reader);
-
-    initialized = true;
 }
 
 void ImageEncoder::initFromBuffer(
@@ -112,21 +96,15 @@ void ImageEncoder::initFromBuffer(
     int magic;
     reader.read(&magic, sizeof(int));
 
-    if (magic != imageEncoderMagic) {
-        std::cerr << "Attempted to initialize ImageEncoder from incompatible buffer!" << std::endl;
-        abort();
-    }
+    if (magic != imageEncoderMagic)
+        throw std::runtime_error("Attempted to initialize ImageEncoder from incompatible buffer!");
 
     enc.read(reader);
-
-    initialized = true;
 }
 
 void ImageEncoder::saveToFile(
     const std::string &name
 ) {
-    initCheck();
-
     FileWriter writer;
     writer.outs.open(name, std::ios::binary);
 
@@ -136,8 +114,6 @@ void ImageEncoder::saveToFile(
 }
 
 std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
-    initCheck();
-
     BufferWriter writer(enc.size() + sizeof(int));
 
     writer.write(&imageEncoderMagic, sizeof(int));
@@ -152,21 +128,15 @@ void ImageEncoder::step(
     bool learnEnabled,
     bool learnRecon
 ) {
-    initCheck();
-
-    if (inputs.size() != enc.getNumVisibleLayers()) {
-        std::cerr << "Incorrect number of inputs given to ImageEncoder! Expected " << enc.getNumVisibleLayers() << ", got " << inputs.size() << std::endl;
-        abort();
-    }
+    if (inputs.size() != enc.getNumVisibleLayers())
+        throw std::runtime_error("Incorrect number of inputs given to ImageEncoder! Expected " + std::to_string(enc.getNumVisibleLayers()) + ", got " + std::to_string(inputs.size()));
 
     aon::Array<aon::ByteBuffer> cInputsBacking(inputs.size());
     aon::Array<const aon::ByteBuffer*> cInputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
-        if (inputs[i].size() != enc.getVisibleLayer(i).reconstruction.size()) {
-            std::cerr << "Incorrect number of pixels given to ImageEncoder! At input " << i << ": Expected " << enc.getVisibleLayer(i).reconstruction.size() << ", got " << inputs[i].size() << std::endl;
-            abort();
-        }
+        if (inputs[i].size() != enc.getReconstruction(i).size())
+            throw std::runtime_error("Incorrect number of pixels given to ImageEncoder! At input " + std::to_string(i) + ": Expected " + std::to_string(enc.getReconstruction(i).size()) + ", got " + std::to_string(inputs[i].size()));
 
         cInputsBacking[i].resize(inputs[i].size());
         
@@ -182,20 +152,14 @@ void ImageEncoder::step(
 void ImageEncoder::reconstruct(
     const std::vector<int> &reconCIs
 ) {
-    initCheck();
-
-    if (reconCIs.size() != enc.getHiddenCIs().size()) {
-        std::cerr << "Error: reconCIs must match the outputSize of the ImageEncoder!" << std::endl;
-        abort();
-    }
+    if (reconCIs.size() != enc.getHiddenCIs().size())
+        throw std::runtime_error("Error: reconCIs must match the outputSize of the ImageEncoder!");
 
     aon::IntBuffer cReconCIsBacking(reconCIs.size());
 
     for (int j = 0; j < reconCIs.size(); j++) {
-        if (reconCIs[j] < 0 || reconCIs[j] >= enc.getHiddenSize().z) {
-            std::cerr << "Recon CSDR (reconCIs) has an out-of-bounds column index (" << reconCIs[j] << ") at column index " << j << ". It must be in the range [0, " << (enc.getHiddenSize().z - 1) << "]" << std::endl;
-            abort();
-        }
+        if (reconCIs[j] < 0 || reconCIs[j] >= enc.getHiddenSize().z)
+            throw std::runtime_error("Recon CSDR (reconCIs) has an out-of-bounds column index (" + std::to_string(reconCIs[j]) + ") at column index " + std::to_string(j) + ". It must be in the range [0, " + std::to_string(enc.getHiddenSize().z - 1) + "]");
 
         cReconCIsBacking[j] = reconCIs[j];
     }

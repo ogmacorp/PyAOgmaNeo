@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -10,9 +10,11 @@
 
 #include <aogmaneo/Helpers.h>
 #include <tuple>
+#include <string>
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <exception>
 
 namespace pyaon {
 inline void setNumThreads(

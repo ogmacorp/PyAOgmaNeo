@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -12,7 +12,7 @@
 #include <aogmaneo/Hierarchy.h>
 
 namespace pyaon {
-const int hierarchyMagic = 54398723;
+const int hierarchyMagic = 54318325;
 
 enum IOType {
     none = 0,
@@ -44,7 +44,7 @@ struct IODesc {
     historyCapacity(historyCapacity)
     {}
 
-    bool checkInRange() const;
+    void checkInRange() const;
 };
 
 struct LayerDesc {
@@ -67,22 +67,25 @@ struct LayerDesc {
     dRadius(dRadius)
     {}
 
-    bool checkInRange() const;
+    void checkInRange() const;
 };
 
 class Hierarchy {
 private:
-    bool initialized;
-
-    void initCheck() const;
-
     aon::Hierarchy h;
 
-public:
-    Hierarchy() 
-    :
-    initialized(false)
-    {}
+    void encGetSetIndexCheck(
+        int l
+    ) const;
+
+    void decGetSetIndexCheck(
+        int l,
+        int i
+    ) const;
+
+    void actGetSetIndexCheck(
+        int i
+    ) const;
 
     void initRandom(
         const std::vector<IODesc> &ioDescs,
@@ -94,6 +97,14 @@ public:
     );
 
     void initFromBuffer(
+        const std::vector<unsigned char> &buffer
+    );
+
+public:
+    Hierarchy(
+        const std::vector<IODesc> &ioDescs,
+        const std::vector<LayerDesc> &layerDescs,
+        const std::string &name,
         const std::vector<unsigned char> &buffer
     );
 
@@ -113,7 +124,7 @@ public:
         const std::vector<std::vector<int>> &inputCIs,
         bool learnEnabled,
         float reward,
-        bool mimic
+        float mimic
     );
 
     void clearState() {
@@ -121,34 +132,39 @@ public:
     }
 
     int getNumLayers() const {
-        initCheck();
-
         return h.getNumLayers();
     }
 
     bool isLayerRecurrent(
         int l
     ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
         
         return h.isLayerRecurrent(l);
+    }
+
+    std::vector<int> getTopHiddenCIs() const {
+        std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
+
+        for (int j = 0; j < hiddenCIs.size(); j++)
+            hiddenCIs[j] = h.getTopHiddenCIs()[j];
+
+        return hiddenCIs;
+    }
+
+    std::tuple<int, int, int> getTopHiddenSize() const {
+        aon::Int3 size = h.getTopHiddenSize();
+
+        return { size.x, size.y, size.z };
     }
 
     void setInputImportance(
         int i,
         float importance
     ) {
-        initCheck();
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
+        if (i < 0 || i >= h.getNumIO())
+            throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         h.setInputImportance(i, importance);
     }
@@ -156,12 +172,8 @@ public:
     float getInputImportance(
         int i
     ) const {
-        initCheck();
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
+        if (i < 0 || i >= h.getNumIO())
+            throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         return h.getInputImportance(i);
     }
@@ -170,17 +182,11 @@ public:
         int l,
         float importance
     ) {
-        initCheck();
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (!h.isLayerRecurrent(l)) {
-            std::cerr << "Error: Layer at index " << l << " is not recurrent!" << std::endl;
-            abort();
-        }
+        if (!h.isLayerRecurrent(l))
+            throw std::runtime_error("Error: Layer at index " + std::to_string(l) + " is not recurrent!");
 
         h.setRecurrentImportance(l, importance);
     }
@@ -188,18 +194,12 @@ public:
     float getRecurrentImportance(
         int l
     ) const {
-        initCheck();
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (!h.isLayerRecurrent(l)) {
-            std::cerr << "Error: Layer at index " << l << " is not recurrent!" << std::endl;
-            abort();
-        }
-
+        if (!h.isLayerRecurrent(l))
+            throw std::runtime_error("Error: Layer at index " + std::to_string(l) + " is not recurrent!");
+            
         return h.getInputImportance(l);
     }
 
@@ -210,12 +210,8 @@ public:
     std::vector<int> getHiddenCIs(
         int l
     ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
         std::vector<int> hiddenCIs(h.getELayer(l).getHiddenCIs().size());
 
@@ -228,12 +224,8 @@ public:
     std::tuple<int, int, int> getHiddenSize(
         int l
     ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
         aon::Int3 size = h.getELayer(l).getHiddenSize();
 
@@ -243,31 +235,21 @@ public:
     int getNumEVisibleLayers(
         int l
     ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
         return h.getELayer(l).getNumVisibleLayers();
     }
 
     int getNumIO() const {
-        initCheck();
-
         return h.getNumIO();
     }
 
     std::tuple<int, int, int> getIOSize(
         int i
     ) const {
-        initCheck();
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
+        if (i < 0 || i >= h.getNumIO())
+            throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         aon::Int3 size = h.getIOSize(i);
 
@@ -277,12 +259,8 @@ public:
     IOType getIOType(
         int i
     ) const {
-        initCheck();
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
+        if (i < 0 || i >= h.getNumIO())
+            throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         return static_cast<IOType>(h.getIOType(i));
     }
@@ -291,30 +269,18 @@ public:
         int l,
         float lr
     ) {
-        initCheck();
+        encGetSetIndexCheck(l);
 
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: ELR must be >= 0.0" << std::endl;
-            abort();
-        }
+        if (lr < 0.0f)
+            throw std::runtime_error("Error: ELR must be >= 0.0");
 
         h.getELayer(l).lr = lr;
     }
 
     float getELR(
         int l
-    ) {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
+    ) const {
+        encGetSetIndexCheck(l);
 
         return h.getELayer(l).lr;
     }
@@ -324,27 +290,10 @@ public:
         int i,
         float lr
     ) {
-        initCheck();
+        decGetSetIndexCheck(l, i);
 
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: DLR must be >= 0.0" << std::endl;
-            abort();
-        }
+        if (lr < 0.0f)
+            throw std::runtime_error("Error: DLR must be >= 0.0");
 
         h.getDLayer(l, i).lr = lr;
     }
@@ -353,22 +302,7 @@ public:
         int l,
         int i
     ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (l == 0 && !h.ioLayerExists(i) || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: index " << i << " does not have a decoder!" << std::endl;
-            abort();
-        }
+        decGetSetIndexCheck(l, i);
 
         return h.getDLayer(l, i).lr;
     }
@@ -377,22 +311,10 @@ public:
         int i,
         float vlr
     ) {
-        initCheck();
+        actGetSetIndexCheck(i);
 
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (vlr < 0.0f) {
-            std::cerr << "Error: AVLR must be >= 0.0" << std::endl;
-            abort();
-        }
+        if (vlr < 0.0f)
+            throw std::runtime_error("Error: AVLR must be >= 0.0");
 
         h.getALayer(i).vlr = vlr;
     }
@@ -400,17 +322,7 @@ public:
     float getAVLR(
         int i
     ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
+        actGetSetIndexCheck(i);
 
         return h.getALayer(i).vlr;
     }
@@ -419,22 +331,10 @@ public:
         int i,
         float alr
     ) {
-        initCheck();
+        actGetSetIndexCheck(i);
 
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (alr < 0.0f) {
-            std::cerr << "Error: AALR must be >= 0.0" << std::endl;
-            abort();
-        }
+        if (alr < 0.0f)
+            throw std::runtime_error("Error: AALR must be >= 0.0");
 
         h.getALayer(i).alr = alr;
     }
@@ -442,17 +342,7 @@ public:
     float getAALR(
         int i
     ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
+        actGetSetIndexCheck(i);
 
         return h.getALayer(i).alr;
     }
@@ -461,22 +351,10 @@ public:
         int i,
         float bias
     ) {
-        initCheck();
+        actGetSetIndexCheck(i);
 
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (bias < 0.0f) {
-            std::cerr << "Error: ABias must be >= 0.0" << std::endl;
-            abort();
-        }
+        if (bias < 0.0f)
+            throw std::runtime_error("Error: ABias must be >= 0.0");
 
         h.getALayer(i).bias = bias;
     }
@@ -484,17 +362,7 @@ public:
     float getABias(
         int i
     ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
+        actGetSetIndexCheck(i);
 
         return h.getALayer(i).bias;
     }
@@ -503,22 +371,10 @@ public:
         int i,
         float discount
     ) {
-        initCheck();
+        actGetSetIndexCheck(i);
 
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (discount < 0.0f || discount >= 1.0f) {
-            std::cerr << "Error: ADiscount must be >= 0.0 and < 1.0" << std::endl;
-            abort();
-        }
+        if (discount < 0.0f || discount >= 1.0f)
+            throw std::runtime_error("Error: ADiscount must be >= 0.0 and < 1.0");
 
         h.getALayer(i).discount = discount;
     }
@@ -526,17 +382,7 @@ public:
     float getADiscount(
         int i
     ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
+        actGetSetIndexCheck(i);
 
         return h.getALayer(i).discount;
     }
@@ -545,22 +391,10 @@ public:
         int i,
         float temperature
     ) {
-        initCheck();
+        actGetSetIndexCheck(i);
 
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (temperature < 0.0f) {
-            std::cerr << "Error: ATemperature must be >= 0.0" << std::endl;
-            abort();
-        }
+        if (temperature < 0.0f)
+            throw std::runtime_error("Error: ATemperature must be >= 0.0");
 
         h.getALayer(i).temperature = temperature;
     }
@@ -568,17 +402,7 @@ public:
     float getATemperature(
         int i
     ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
+        actGetSetIndexCheck(i);
 
         return h.getALayer(i).temperature;
     }
@@ -587,22 +411,10 @@ public:
         int i,
         int minSteps
     ) {
-        initCheck();
+        actGetSetIndexCheck(i);
 
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (minSteps < 1) {
-            std::cerr << "Error: AMinSteps must be >= 1" << std::endl;
-            abort();
-        }
+        if (minSteps < 1)
+            throw std::runtime_error("Error: AMinSteps must be >= 1");
 
         h.getALayer(i).minSteps = minSteps;
     }
@@ -610,17 +422,7 @@ public:
     int getAMinSteps(
         int i
     ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i)) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
+        actGetSetIndexCheck(i);
 
         return h.getALayer(i).minSteps;
     }
@@ -629,22 +431,10 @@ public:
         int i,
         int historyIters
     ) {
-        initCheck();
+        actGetSetIndexCheck(i);
 
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i) || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
-
-        if (historyIters < 0) {
-            std::cerr << "Error: AHistoryIters must be >= 0" << std::endl;
-            abort();
-        }
+        if (historyIters < 0)
+            throw std::runtime_error("Error: AHistoryIters must be >= 0");
 
         h.getALayer(i).historyIters = historyIters;
     }
@@ -652,17 +442,7 @@ public:
     int getAHistoryIters(
         int i
     ) const {
-        initCheck();
-        
-        if (i < 0 || i >= h.getNumIO()) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
-
-        if (!h.ioLayerExists(i)) {
-            std::cerr << "Error: index " << i << " does not have an actor!" << std::endl;
-            abort();
-        }
+        actGetSetIndexCheck(i);
 
         return h.getALayer(i).historyIters;
     }
@@ -671,12 +451,8 @@ public:
     int getERadius(
         int l
     ) const {
-        initCheck();
-
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
         return h.getELayer(l).getVisibleLayerDesc(0).radius;
     }
@@ -685,17 +461,11 @@ public:
         int l,
         int i
     ) const {
-        initCheck();
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
-        if (l < 0 || l >= h.getNumLayers()) {
-            std::cerr << "Error: " << l << " is not a valid layer index!" << std::endl;
-            abort();
-        }
-
-        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::prediction) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
+        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::prediction)
+            throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         return h.getDLayer(l, i).getVisibleLayerDesc(0).radius;
     }
@@ -703,12 +473,8 @@ public:
     int getARadius(
         int i
     ) const {
-        initCheck();
-
-        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
+        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action)
+            throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         return h.getALayer(i).getVisibleLayerDesc(0).radius;
     }
@@ -716,12 +482,8 @@ public:
     int getAHistoryCapacity(
         int i
     ) const {
-        initCheck();
-
-        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action) {
-            std::cerr << "Error: " << i << " is not a valid input index!" << std::endl;
-            abort();
-        }
+        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::action)
+            throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         return h.getALayer(i).getHistoryCapacity();
     }

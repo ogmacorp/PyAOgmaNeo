@@ -5,27 +5,14 @@ Hierarchy
 
 The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when used for reinforcement learning. This is the main component of any PyAOgmaNeo project
 
-.. function:: Hierarchy.__init__(self):
+.. function:: Hierarchy.__init__(self, ioDescs=[], layerDescs=[], name="", buffer=[]):
 
-    Does nothing.
-
-.. function:: Hierarchy.initRandom(self, ioDescs, layerDescs)
-
-    Initialize a hierarchy (random weights) of given structure.
+    Initialize a hierarchy. To do so from a file, use just name="filename". To do so from a buffer, just use buffer=[ <data> ].
+    Otherwise, provide ioDescs and layerDescs.
 
     :param ioDescs: ([IODesc]) list of IODesc's (input-output (IO) descriptors, see IODesc). Defines the size of each IO layer and its type
     :param layerDescs: ([LayerDesc]) A list of filled-out descriptors (LayerDesc objects) describing how all the layers in the hierarchy should look
-
-.. function:: Hierarchy.initFromFile(self, name)
-
-    Initialize a hierarchy given a save file.
-
     :param name: (string) save file name
-
-.. function:: Hierarchy.initFromBuffer(self, buffer)
-
-    Initialize a hierarchy given a byte buffer.
-
     :param buffer: ([uint8]) byte buffer to read from
 
 .. function:: Hierarchy.saveToFile(self, name)
@@ -56,14 +43,14 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     Clear the hidden state of the hierarchy (short term memory) by setting it to 0
 
-.. function:: Hierarchy.step(self, inputCIs, learnEnabled=True, reward=0.0, mimic=False)
+.. function:: Hierarchy.step(self, inputCIs, learnEnabled=True, reward=0.0, mimic=0.0)
 
     Perform a simulation step of the hierarchy. This will produce new predictions or actions if those are being used (as specified in the IODesc's)
 
     :param inputCIs: ([IntBuffer]) list of input integer buffers representing the CSDRs of the dimensions described in the initialization
     :param learnEnabled: (boolean) whether or not to enable learning (if False, will only perform inference). Defaults to True
     :param reward: (float32) reward signal, if action IO layers (pyaogmaneo.IODesc type set to typeAction) are present this will be used to update those to maximize reward. Defaults to 0.0
-    :param mimic: (boolean) If true, sets the actors (action generators for reinforcement learning) to behave like regular decoders (prediction). This is useful for imitation learning followed by reinforcement learning
+    :param mimic: (float32) If 1.0, sets the actors (action generators for reinforcement learning) to behave like regular decoders (prediction). This is useful for imitation learning followed by reinforcement learning. 0.0 is regular RL, and values between interpolate
 
 .. function:: Hierarchy.getNumLayers(self)
 
@@ -147,20 +134,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
-.. function:: Hierarchy.setEGroupRadius(self, l, groupRadius)
-
-    Set the group radius of an encoder (E). This is an integer in this case, it defines the second-stage inhibition to make representations distributed
-
-    :param l: (int32) index of the layer
-    :param groupRadius: (int32) value to set
-
-.. function:: Hierarchy.getEGroupRadius(self, l)
-
-    Get the group radius of an encoder (E). This is an integer in this case, it defines the second-stage inhibition to make representations distributed
-
-    :param l: (int32) index of the layer
-    :rtype: (int32) groupRadius
-
 .. function:: Hierarchy.setELR(self, l, lr)
 
     Set the learning rate of an encoder (E)
@@ -175,20 +148,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (float32) lr
 
-.. function:: Hierarchy.setDScale(self, l, scale)
-
-    Set the scale of a decoder (D). This determines how sensitive it is to roundoff
-
-    :param l: (int32) index of the layer
-    :param scale: (float32) value to set
-
-.. function:: Hierarchy.getDScale(self, l)
-
-    Get the learning rate of a decoder (D). This determines how sensitive it is to roundoff
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) scale
-
 .. function:: Hierarchy.setDLR(self, l, lr)
 
     Set the learning rate of a decoder (D)
@@ -202,6 +161,20 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param l: (int32) index of the layer
     :rtype: (float32) lr
+
+.. function:: Hierarchy.setDStability(self, l, stability)
+
+    Set the stability amount of a decoder (D). A higher value means less forgetting at the cost of some capacity
+
+    :param l: (int32) index of the layer
+    :param stability: (float32) value to set
+
+.. function:: Hierarchy.getDStability(self, l)
+
+    Get the stability amount of a decoder (D). A higher value means less forgetting at the cost of some capacity
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) stability
 
 .. function:: Hierarchy.setAVLR(self, i, vlr)
 

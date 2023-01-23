@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -23,7 +23,7 @@ inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=1 * [ (4, 4, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=3.0, nThreads=4):
+    def __init__(self, env, layerSizes=2 * [ (4, 4, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=3.0, nThreads=4):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -92,8 +92,7 @@ class EnvRunner:
 
                 self.imgsPrev.append(np.zeros(self.imageSizes[i]))
 
-            self.imEnc = neo.ImageEncoder()
-            self.imEnc.initRandom(hiddenSize, vlds)
+            self.imEnc = neo.ImageEncoder(hiddenSize, vlds)
 
             self.imEncIndex = len(self.inputSizes)
             self.inputSizes.append(hiddenSize)
@@ -144,14 +143,12 @@ class EnvRunner:
 
             lds.append(ld)
 
-        self.h = neo.Hierarchy()
-
         ioDescs = []
 
         for i in range(len(self.inputSizes)):
             ioDescs.append(neo.IODesc(self.inputSizes[i], self.inputTypes[i], layerRadius, layerRadius))
 
-        self.h.initRandom(ioDescs, lds)
+        self.h = neo.Hierarchy(ioDescs, lds)
 
         self.actions = []
 

@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -32,21 +32,22 @@ neo.setNumThreads(4)
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(1): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
+for i in range(2): # Layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
     ld = neo.LayerDesc()
 
     # Set some layer structural parameters
-    ld.hiddenSize = (4, 4, 32)
-    ld.rRadius = 0
+    ld.hiddenSize = (4, 4, 16)
+    ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
+    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
     
     lds.append(ld)
 
 # Create the hierarchy
-h = neo.Hierarchy()
-h.initRandom([ neo.IODesc((2, 2, inputResolution), neo.none), neo.IODesc((1, 1, numActions), neo.action) ], lds)
+h = neo.Hierarchy([ neo.IODesc((2, 2, inputResolution), neo.none), neo.IODesc((1, 1, numActions), neo.action) ], lds)
 
 # Setting parameters
-h.setAVLR(1, 0.01) # Parameters: IO index and value. Here, we set the actor's action learning rate.
+h.setAVLR(1, 0.01) # Parameters: IO index and value. Here, we set the actor's value learning rate.
+h.setATemperature(1, 0.5) # Exploration temperature
 
 # Set importance of action input to 0, the agent doesn't need to know its own last action for this task. This will speed up learning for this task
 h.setInputImportance(1, 0.0) # IO index and value
@@ -62,8 +63,6 @@ for episode in range(1000):
         csdr = (sigmoid(obs * 3.0) * (inputResolution - 1) + 0.5).astype(np.int32).tolist()
 
         h.step([ csdr, h.getPredictionCIs(1) ], True, reward)
-
-        #print(h.getHiddenCIs(0))
 
         # Retrieve the action, the hierarchy already automatically applied exploration
         action = h.getPredictionCIs(1)[0] # First and only column

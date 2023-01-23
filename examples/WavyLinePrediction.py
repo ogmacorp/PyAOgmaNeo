@@ -82,41 +82,35 @@ def CSDRToIEEE(csdr):
     return struct.unpack("<f", bytes(bs))[0]
 
 # This defines the resolution of the input encoding
-numInputColumns = 1
+numInputColumns = 2
 inputColumnSize = 16
 
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # Layers with exponential memory
+for i in range(5): # Layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hiddenSize = (5, 5, 32) # Size of the encoder(s) in the layer
+    ld.hiddenSize = (5, 5, 16) # Size of the encoder(s) in the layer
 
     lds.append(ld)
 
 # Create the hierarchy
-h = neo.Hierarchy()
-h.initRandom([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
+h = neo.Hierarchy([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
-# Present the (noisy) wave sequence for some timesteps
-iters = 50000
+# Present the wave sequence for some timesteps
+iters = 300
 
 def wave(t):
-    if t % 200 == 0 or t % 70 == 0:
-        return 1.0
-    return 0.0
-    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.045 * 2.0 * np.pi - 0.4) * np.sin(t * 0.0025 * 2.0 * np.pi + 0.1) * 0.5 + 0.5
+    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 for t in range(iters):
     valueToEncode = wave(t)
 
-    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
+    csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
-
-    print(h.getHiddenCIs(0))
 
     # Print progress
     if t % 100 == 0:
@@ -128,18 +122,18 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(10000):
+for t2 in range(1000):
     t = t2 + iters
 
     valueToEncode = wave(t)
 
-    csdr = [ int(valueToEncode * (inputColumnSize - 1) + 0.5) ]#Unorm8ToCSDR(float(valueToEncode))
+    csdr = Unorm8ToCSDR(float(valueToEncode))
 
     # Run off of own predictions with learning disabled
     h.step([ h.getPredictionCIs(0) ], False) # Learning disabled
 
     # Decode value (de-bin)
-    value = float(h.getPredictionCIs(0)[0]) / (inputColumnSize - 1)#CSDRToUnorm8(h.getPredictionCIs(0))
+    value = CSDRToUnorm8(h.getPredictionCIs(0))
 
     # Append to plot data
     ts.append(t2)

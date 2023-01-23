@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2022 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -12,7 +12,7 @@
 #include <aogmaneo/ImageEncoder.h>
 
 namespace pyaon {
-const int imageEncoderMagic = 128847;
+const int imageEncoderMagic = 223849;
 
 struct ImageEncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;
@@ -28,22 +28,14 @@ struct ImageEncoderVisibleLayerDesc {
     radius(radius)
     {}
 
-    bool checkInRange() const;
+    void checkInRange() const;
 };
 
 class ImageEncoder {
 private:
     bool initialized;
 
-    void initCheck() const;
-
     aon::ImageEncoder enc;
-
-public:
-    ImageEncoder() 
-    :
-    initialized(false)
-    {}
 
     void initRandom(
         const std::tuple<int, int, int> &hiddenSize,
@@ -55,6 +47,14 @@ public:
     );
 
     void initFromBuffer(
+        const std::vector<unsigned char> &buffer
+    );
+
+public:
+    ImageEncoder(
+        const std::tuple<int, int, int> &hiddenSize,
+        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
+        const std::string &name,
         const std::vector<unsigned char> &buffer
     );
 
@@ -75,20 +75,14 @@ public:
     );
 
     int getNumVisibleLayers() const {
-        initCheck();
-
         return enc.getNumVisibleLayers();
     }
 
     std::vector<unsigned char> getReconstruction(
         int i
     ) const {
-        initCheck();
-
-        if (i < 0 || i >= enc.getNumVisibleLayers()) {
-            std::cerr << "Cannot get reconstruction at index " << i << " - out of bounds [0, " << enc.getNumVisibleLayers() << "]" << std::endl;
-            abort();
-        }
+        if (i < 0 || i >= enc.getNumVisibleLayers())
+            throw std::runtime_error("Cannot get reconstruction at index " + std::to_string(i) + " - out of bounds [0, " + std::to_string(enc.getNumVisibleLayers()) + "]");
 
         std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
 
@@ -99,8 +93,6 @@ public:
     }
 
     std::vector<int> getHiddenCIs() const {
-        initCheck();
-
         std::vector<int> hiddenCIs(enc.getHiddenCIs().size());
 
         for (int j = 0; j < hiddenCIs.size(); j++)
@@ -110,8 +102,6 @@ public:
     }
 
     std::tuple<int, int, int> getHiddenSize() const {
-        initCheck();
-
         aon::Int3 size = enc.getHiddenSize();
 
         return { size.x, size.y, size.z };
@@ -120,87 +110,60 @@ public:
     std::tuple<int, int, int> getVisibleSize(
         int i
     ) const {
-        initCheck();
-
         aon::Int3 size = enc.getVisibleLayerDesc(i).size;
 
         return { size.x, size.y, size.z };
     }
 
-    // Params
     void setGap(
         float gap
     ) {
-        initCheck();
-
-        if (gap <= 0.0f) {
-            std::cerr << "Error: ImageEncoder Gap must be > 0.0" << std::endl;
-            abort();
-        }
+        if (gap <= 0.0f)
+            throw std::runtime_error("Error: ImageEncoder Gap must be > 0.0");
 
         enc.gap = gap;
     }
 
     float getGap() const {
-        initCheck();
-
         return enc.gap;
     }
 
     void setVigilance(
         float vigilance
     ) {
-        initCheck();
-
-        if (vigilance < 0.0f || vigilance > 1.0f) {
-            std::cerr << "Error: ImageEncoder Vigilance must be >= 0.0 and <= 1.0" << std::endl;
-            abort();
-        }
+        if (vigilance <= 0.0f)
+            throw std::runtime_error("Error: ImageEncoder Vigilance must be > 0.0");
 
         enc.vigilance = vigilance;
     }
 
     float getVigilance() const {
-        initCheck();
-
         return enc.vigilance;
     }
 
     void setLR(
         float lr
     ) {
-        initCheck();
-
-        if (lr < 0.0f) {
-            std::cerr << "Error: ImageEncoder LR must be >= 0.0" << std::endl;
-            abort();
-        }
+        if (lr < 0.0f)
+            throw std::runtime_error("Error: ImageEncoder LR must be >= 0.0");
 
         enc.lr = lr;
     }
 
     float getLR() const {
-        initCheck();
-
         return enc.lr;
     }
 
     void setRR(
         float rr
     ) {
-        initCheck();
-
-        if (rr < 0.0f) {
-            std::cerr << "Error: ImageEncoder RR must be >= 0.0" << std::endl;
-            abort();
-        }
+        if (rr < 0.0f)
+            throw std::runtime_error("Error: ImageEncoder RR must be >= 0.0");
 
         enc.rr = rr;
     }
 
     float getRR() const {
-        initCheck();
-
         return enc.rr;
     }
 };

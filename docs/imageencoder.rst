@@ -10,23 +10,14 @@ It is implemented as a lattice of Fuzzy ART (Adaptive Resonance Theory) modules.
 
     Does nothing.
 
-.. function:: ImageEncoder.initRandom(self, hiddenSize, visibleLayerDescs)
+.. function:: ImageEncoder.initRandom(self, hiddenSize=(4, 4, 16), visibleLayerDescs=[], name="", buffer=[])
 
-    Initialize an image encoder of given structure.
+    Initialize an image encoder. To do so from a file, use just name="filename". To do so from a buffer, just use buffer=[ <data> ].
+    Otherwise just provide the hiddenSize and visibleLayerDescs.
 
     :param hiddenSize: (Int3) size of the output (hidden) layer that will be generated.
     :param visibleLayerDescs: ([ImageEncoderVisibleLayerDesc]) list of ImageEncoderVisibleLayerDesc describing each input (visible) layer
-
-.. function:: ImageEncoder.initFromFile(self, name)
-
-    Initialize an image encoder given a save file.
-
     :param name: (string) save file name
-
-.. function:: ImageEncoder.initFromBuffer(self, buffer)
-
-    Initialize a hierarchy given a byte buffer.
-
     :param buffer: ([uint8]) byte buffer to read from
 
 .. function:: ImageEncoder.saveToFile(self, name)
@@ -87,30 +78,6 @@ It is implemented as a lattice of Fuzzy ART (Adaptive Resonance Theory) modules.
 
     :rtype: (Int3) the CSDR size
 
-.. function:: ImageEncoder.setGap(self, gap)
-
-    Set the gap (as is called "epsilon" from Adaptive Resonance Theory). Larger gap (always > 0) reduces the importance of unset weights.
-
-    :param gap: (float32) value to set
-
-.. function:: ImageEncoder.getGap(self)
-
-    Get the gap (as is called "epsilon" from Adaptive Resonance Theory). Larger gap (always > 0) reduces the importance of unset weights.
-
-    :rtype: (float32) gap
-
-.. function:: ImageEncoder.setVigilance(self, vigilance)
-
-    Set the vigilance (as from Adaptive Resonance Theory). Increase to close to 1 if the resulting CSDR doesn't change enough when the image changes.
-
-    :param vigilance: (float32) value to set
-
-.. function:: ImageEncoder.getVigilance(self)
-
-    Get the vigilance (as from Adaptive Resonance Theory). Increase to close to 1 if the resulting CSDR doesn't change enough when the image changes.
-
-    :rtype: (float32) vigilance
-
 .. function:: ImageEncoder.setLR(self, lr)
 
     Set the (Adaptive Resonance Theory) learning rate
@@ -122,15 +89,3 @@ It is implemented as a lattice of Fuzzy ART (Adaptive Resonance Theory) modules.
     Get the (Adaptive Resonance Theory) learning rate
 
     :rtype: (float32) lr
-
-.. function:: ImageEncoder.setRR(self, rr)
-
-    Set the learning rate used for reconstruction
-
-    :param rr: (float32) value to set
-
-.. function:: ImageEncoder.getRR(self)
-
-    Get the learning rate used for reconstruction
-
-    :rtype: (float32) rr
