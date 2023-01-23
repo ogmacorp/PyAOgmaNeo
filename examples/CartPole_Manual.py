@@ -36,9 +36,7 @@ for i in range(2): # Layers with exponential memory. Not much memory is needed f
     ld = neo.LayerDesc()
 
     # Set some layer structural parameters
-    ld.hiddenSize = (4, 4, 16)
-    ld.ticksPerUpdate = 2 # How many ticks before a layer updates (compared to previous layer) - clock speed for exponential memory
-    ld.temporalHorizon = 2 # Memory horizon of the layer. Must be greater or equal to ticksPerUpdate
+    ld.hiddenSize = (4, 4, 32)
     
     lds.append(ld)
 
@@ -47,7 +45,7 @@ h = neo.Hierarchy([ neo.IODesc((2, 2, inputResolution), neo.none), neo.IODesc((1
 
 # Setting parameters
 h.setAVLR(1, 0.01) # Parameters: IO index and value. Here, we set the actor's value learning rate.
-h.setATemperature(1, 0.5) # Exploration temperature
+h.setATemperature(1, 1.0) # Exploration temperature
 
 # Set importance of action input to 0, the agent doesn't need to know its own last action for this task. This will speed up learning for this task
 h.setInputImportance(1, 0.0) # IO index and value
