@@ -45,6 +45,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
+        .def_readwrite("numDendrites", &pyaon::IODesc::numDendrites)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
         .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
@@ -66,6 +67,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("numDendrites", &pyaon::LayerDesc::numDendrites)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
