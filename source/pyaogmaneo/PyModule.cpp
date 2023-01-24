@@ -102,8 +102,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getIOType", &pyaon::Hierarchy::getIOType)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
-        .def("setDLR", &pyaon::Hierarchy::setDLR)
-        .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)

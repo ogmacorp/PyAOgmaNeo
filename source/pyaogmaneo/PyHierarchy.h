@@ -285,28 +285,6 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setDLR(
-        int l,
-        int i,
-        float lr
-    ) {
-        decGetSetIndexCheck(l, i);
-
-        if (lr < 0.0f)
-            throw std::runtime_error("Error: DLR must be >= 0.0");
-
-        h.getDLayer(l, i).lr = lr;
-    }
-
-    float getDLR(
-        int l,
-        int i
-    ) const {
-        decGetSetIndexCheck(l, i);
-
-        return h.getDLayer(l, i).lr;
-    }
-
     void setAVLR(
         int i,
         float vlr
