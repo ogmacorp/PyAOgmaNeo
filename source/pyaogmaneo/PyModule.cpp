@@ -52,17 +52,20 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("eRadius") = 2,
-            py::arg("rRadius") = 0,
-            py::arg("dRadius") = 2
+            py::arg("dRadius") = 2,
+            py::arg("ticksPerUpdate") = 2,
+            py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
-        .def_readwrite("rRadius", &pyaon::LayerDesc::rRadius)
-        .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius);
+        .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
+        .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
+        .def_readwrite("temporalHorizon", &pyaon::LayerDesc::temporalHorizon);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
@@ -88,20 +91,27 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def("clearState", &pyaon::Hierarchy::clearState)
         .def("getNumLayers", &pyaon::Hierarchy::getNumLayers)
-        .def("isLayerRecurrent", &pyaon::Hierarchy::isLayerRecurrent)
         .def("setInputImportance", &pyaon::Hierarchy::setInputImportance)
         .def("getInputImportance", &pyaon::Hierarchy::getInputImportance)
-        .def("setRecurrentImportance", &pyaon::Hierarchy::setRecurrentImportance)
-        .def("getRecurrentImportance", &pyaon::Hierarchy::getRecurrentImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
+        .def("getTicks", &pyaon::Hierarchy::getTicks)
+        .def("getTicksPerUpdate", &pyaon::Hierarchy::getTicksPerUpdate)
         .def("getNumIO", &pyaon::Hierarchy::getNumIO)
         .def("getIOSize", &pyaon::Hierarchy::getIOSize)
         .def("getIOType", &pyaon::Hierarchy::getIOType)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
+        .def("setEGroupRadius", &pyaon::Hierarchy::setEGroupRadius)
+        .def("getEGroupRadius", &pyaon::Hierarchy::getEGroupRadius)
+        .def("setDScale", &pyaon::Hierarchy::setDScale)
+        .def("getDScale", &pyaon::Hierarchy::getDScale)
+        .def("setDLR", &pyaon::Hierarchy::setDLR)
+        .def("getDLR", &pyaon::Hierarchy::getDLR)
+        .def("setDStability", &pyaon::Hierarchy::setDStability)
+        .def("getDStability", &pyaon::Hierarchy::getDStability)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)

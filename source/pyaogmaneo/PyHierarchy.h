@@ -51,20 +51,24 @@ struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
     int eRadius;
-    int rRadius;
     int dRadius;
+
+    int ticksPerUpdate;
+    int temporalHorizon;
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
         int eRadius,
-        int rRadius,
-        int dRadius
+        int dRadius,
+        int ticksPerUpdate,
+        int temporalHorizon
     )
     :
     hiddenSize(hiddenSize),
     eRadius(eRadius),
-    rRadius(rRadius),
-    dRadius(dRadius)
+    dRadius(dRadius),
+    ticksPerUpdate(ticksPerUpdate),
+    temporalHorizon(temporalHorizon)
     {}
 
     void checkInRange() const;
@@ -135,15 +139,6 @@ public:
         return h.getNumLayers();
     }
 
-    bool isLayerRecurrent(
-        int l
-    ) const {
-        if (l < 0 || l >= h.getNumLayers())
-            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
-        
-        return h.isLayerRecurrent(l);
-    }
-
     std::vector<int> getTopHiddenCIs() const {
         std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
 
@@ -176,31 +171,6 @@ public:
             throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         return h.getInputImportance(i);
-    }
-
-    void setRecurrentImportance(
-        int l,
-        float importance
-    ) {
-        if (l < 0 || l >= h.getNumLayers())
-            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
-
-        if (!h.isLayerRecurrent(l))
-            throw std::runtime_error("Error: Layer at index " + std::to_string(l) + " is not recurrent!");
-
-        h.setRecurrentImportance(l, importance);
-    }
-
-    float getRecurrentImportance(
-        int l
-    ) const {
-        if (l < 0 || l >= h.getNumLayers())
-            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
-
-        if (!h.isLayerRecurrent(l))
-            throw std::runtime_error("Error: Layer at index " + std::to_string(l) + " is not recurrent!");
-            
-        return h.getInputImportance(l);
     }
 
     std::vector<int> getPredictionCIs(
@@ -239,6 +209,24 @@ public:
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
         return h.getELayer(l).getNumVisibleLayers();
+    }
+
+    int getTicks(
+        int l
+    ) const {
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
+
+        return h.getTicks(l);
+    }
+
+    int getTicksPerUpdate(
+        int l
+    ) const {
+        if (l < 0 || l >= h.getNumLayers())
+            throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
+
+        return h.getTicksPerUpdate(l);
     }
 
     int getNumIO() const {
@@ -283,6 +271,92 @@ public:
         encGetSetIndexCheck(l);
 
         return h.getELayer(l).lr;
+    }
+
+    void setEGroupRadius(
+        int l,
+        int groupRadius
+    ) {
+        encGetSetIndexCheck(l);
+
+        if (groupRadius < 1)
+            throw std::runtime_error("Error: EGroupRadius must be >= 1");
+
+        h.getELayer(l).groupRadius = groupRadius;
+    }
+
+    int getEGroupRadius(
+        int l
+    ) const {
+        encGetSetIndexCheck(l);
+
+        return h.getELayer(l).groupRadius;
+    }
+
+    void setDScale(
+        int l,
+        int i,
+        float scale
+    ) {
+        decGetSetIndexCheck(l, i);
+
+        if (scale <= 0.0f)
+            throw std::runtime_error("Error: DScale must be > 0.0");
+
+        h.getDLayer(l, i).scale = scale;
+    }
+
+    float getDScale(
+        int l,
+        int i
+    ) const {
+        decGetSetIndexCheck(l, i);
+
+        return h.getDLayer(l, i).scale;
+    }
+
+    void setDLR(
+        int l,
+        int i,
+        float lr
+    ) {
+        decGetSetIndexCheck(l, i);
+
+        if (lr < 0.0f)
+            throw std::runtime_error("Error: DLR must be >= 0.0");
+
+        h.getDLayer(l, i).lr = lr;
+    }
+
+    float getDLR(
+        int l,
+        int i
+    ) const {
+        decGetSetIndexCheck(l, i);
+
+        return h.getDLayer(l, i).lr;
+    }
+
+    void setDStability(
+        int l,
+        int i,
+        float stability
+    ) {
+        decGetSetIndexCheck(l, i);
+
+        if (stability < 0.0f)
+            throw std::runtime_error("Error: DStability must be >= 0.0");
+
+        h.getDLayer(l, i).stability = stability;
+    }
+
+    float getDStability(
+        int l,
+        int i
+    ) const {
+        decGetSetIndexCheck(l, i);
+
+        return h.getDLayer(l, i).stability;
     }
 
     void setAVLR(
@@ -442,7 +516,7 @@ public:
         if (l < 0 || l >= h.getNumLayers())
             throw std::runtime_error("Error: " + std::to_string(l) + " is not a valid layer index!");
 
-        if (i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::prediction)
+        if (l == 0 && i < 0 || i >= h.getNumIO() || h.getIOType(i) != aon::prediction)
             throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
 
         return h.getDLayer(l, i).getVisibleLayerDesc(0).radius;

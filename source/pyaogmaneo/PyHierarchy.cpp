@@ -43,11 +43,17 @@ void LayerDesc::checkInRange() const {
     if (eRadius < 0)
         throw std::runtime_error("Error: eRadius < 0 is not allowed!");
 
-    if (rRadius < -1)
-        throw std::runtime_error("Error: rRadius < -1 is not allowed!");
-
     if (dRadius < 0)
         throw std::runtime_error("Error: dRadius < 0 is not allowed!");
+
+    if (ticksPerUpdate < 1)
+        throw std::runtime_error("Error: ticksPerUpdate < 1 is not allowed!");
+
+    if (temporalHorizon < 1)
+        throw std::runtime_error("Error: temporalHorizon < 1 is not allowed!");
+
+    if (ticksPerUpdate > temporalHorizon)
+        throw std::runtime_error("Error: ticksPerUpdate > temporalHorizon is not allowed!");
 }
 
 void Hierarchy::encGetSetIndexCheck(
@@ -65,9 +71,6 @@ void Hierarchy::decGetSetIndexCheck(
 
     if (l == 0 && (i < 0 || i >= h.getNumIO()))
         throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid input index!");
-
-    if (l > 0 && i == 0)
-        throw std::runtime_error("Error: " + std::to_string(i) + " is not a valid decoder index!");
 
     if (l == 0 && (!h.ioLayerExists(i) || h.getIOType(i) != aon::prediction))
         throw std::runtime_error("Error: index " + std::to_string(i) + " does not have a decoder!");
@@ -127,8 +130,9 @@ void Hierarchy::initRandom(
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
             layerDescs[l].eRadius,
-            layerDescs[l].rRadius,
-            layerDescs[l].dRadius
+            layerDescs[l].dRadius,
+            layerDescs[l].ticksPerUpdate,
+            layerDescs[l].temporalHorizon
         );
     }
 
