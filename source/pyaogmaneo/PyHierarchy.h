@@ -253,6 +253,46 @@ public:
         return static_cast<IOType>(h.getIOType(i));
     }
 
+    void setEGap(
+        int l,
+        float gap
+    ) {
+        encGetSetIndexCheck(l);
+
+        if (gap <= 0.0f)
+            throw std::runtime_error("Error: EGap must be > 0.0");
+
+        h.getELayer(l).gap = gap;
+    }
+
+    float getEGap(
+        int l
+    ) const {
+        encGetSetIndexCheck(l);
+
+        return h.getELayer(l).gap;
+    }
+
+    void setEVigilance(
+        int l,
+        float vigilance
+    ) {
+        encGetSetIndexCheck(l);
+
+        if (vigilance < 0.0f || vigilance > 1.0f)
+            throw std::runtime_error("Error: EVigilance must be >= 0.0 and <= 1.0");
+
+        h.getELayer(l).vigilance = vigilance;
+    }
+
+    float getEVigilance(
+        int l
+    ) const {
+        encGetSetIndexCheck(l);
+
+        return h.getELayer(l).vigilance;
+    }
+
     void setELR(
         int l,
         float lr
@@ -273,24 +313,24 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setEGroupRadius(
+    void setELRadius(
         int l,
-        int groupRadius
+        int lRadius
     ) {
         encGetSetIndexCheck(l);
 
-        if (groupRadius < 1)
-            throw std::runtime_error("Error: EGroupRadius must be >= 1");
+        if (lRadius < 0)
+            throw std::runtime_error("Error: ELRadius must be >= 0");
 
-        h.getELayer(l).groupRadius = groupRadius;
+        h.getELayer(l).lRadius = lRadius;
     }
 
-    int getEGroupRadius(
+    int getELRadius(
         int l
     ) const {
         encGetSetIndexCheck(l);
 
-        return h.getELayer(l).groupRadius;
+        return h.getELayer(l).lRadius;
     }
 
     void setDScale(
