@@ -405,8 +405,8 @@ public:
     ) {
         actGetSetIndexCheck(i);
 
-        if (bias < 0.0f)
-            throw std::runtime_error("Error: ABias must be >= 0.0");
+        if (bias < 0.0f || bias > 1.0f)
+            throw std::runtime_error("Error: ABias must be >= 0.0 and <= 1.0");
 
         h.getALayer(i).bias = bias;
     }
