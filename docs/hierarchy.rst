@@ -134,34 +134,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
-.. function:: Hierarchy.setEGap(self, l, gap)
-
-    Set the ART gap of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :param gap: (float32) value to set
-
-.. function:: Hierarchy.getEGap(self, l)
-
-    Get the ART gap of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) gap
-
-.. function:: Hierarchy.setEVigilance(self, l, vigilance)
-
-    Set the ART vigilance of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :param vigilance: (float32) value to set
-
-.. function:: Hierarchy.getEVigilance(self, l)
-
-    Get the ART vigilance of an encoder (E)
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) vigilance
-
 .. function:: Hierarchy.setELR(self, l, lr)
 
     Set the learning rate of an encoder (E)
@@ -175,34 +147,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
 
     :param l: (int32) index of the layer
     :rtype: (float32) lr
-
-.. function:: Hierarchy.setELRadius(self, l, lRadius)
-
-    Set the lRadius of an encoder (E), determines how distributed the representation can be
-
-    :param l: (int32) index of the layer
-    :param lRadius: (int32) value to set
-
-.. function:: Hierarchy.getELRadius(self, l)
-
-    Get the lRadius of an encoder (E), determines how distributed the representation can be
-
-    :param l: (int32) index of the layer
-    :rtype: (int32) lRadius
-
-.. function:: Hierarchy.setDScale(self, l, scale)
-
-    Set the scale of a decoder (D), used to scale the byte weights into a larger range than [-1, 1]
-
-    :param l: (int32) index of the layer
-    :param scale: (float32) value to set
-
-.. function:: Hierarchy.getDScale(self, l)
-
-    Get the scale of a decoder (D), used to scale the byte weights into a larger range than [-1, 1]
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) scale
 
 .. function:: Hierarchy.setDLR(self, l, lr)
 
