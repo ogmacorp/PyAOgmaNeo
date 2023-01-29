@@ -175,7 +175,5 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
         .def("getVigilance", &pyaon::ImageEncoder::getVigilance)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setRR", &pyaon::ImageEncoder::setRR)
-        .def("getRR", &pyaon::ImageEncoder::getRR);
+        .def("getLR", &pyaon::ImageEncoder::getLR);
 }
