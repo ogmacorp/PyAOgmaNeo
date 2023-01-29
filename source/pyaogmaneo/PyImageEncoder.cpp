@@ -125,8 +125,7 @@ std::vector<unsigned char> ImageEncoder::serializeToBuffer() {
 
 void ImageEncoder::step(
     const std::vector<std::vector<unsigned char>> &inputs,
-    bool learnEnabled,
-    bool learnRecon
+    bool learnEnabled
 ) {
     if (inputs.size() != enc.getNumVisibleLayers())
         throw std::runtime_error("Incorrect number of inputs given to ImageEncoder! Expected " + std::to_string(enc.getNumVisibleLayers()) + ", got " + std::to_string(inputs.size()));
@@ -146,7 +145,7 @@ void ImageEncoder::step(
         cInputs[i] = &cInputsBacking[i];
     }
 
-    enc.step(cInputs, learnEnabled, learnRecon);
+    enc.step(cInputs, learnEnabled);
 }
 
 void ImageEncoder::reconstruct(
