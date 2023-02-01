@@ -66,8 +66,7 @@ public:
 
     void step(
         const std::vector<std::vector<unsigned char>> &inputs,
-        bool learnEnabled,
-        bool learnRecon
+        bool learnEnabled
     );
 
     void reconstruct(
@@ -152,19 +151,6 @@ public:
 
     float getLR() const {
         return enc.lr;
-    }
-
-    void setRR(
-        float rr
-    ) {
-        if (rr < 0.0f)
-            throw std::runtime_error("Error: ImageEncoder RR must be >= 0.0");
-
-        enc.rr = rr;
-    }
-
-    float getRR() const {
-        return enc.rr;
     }
 };
 } // namespace pyaon
