@@ -114,32 +114,6 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setGap(
-        float gap
-    ) {
-        if (gap <= 0.0f)
-            throw std::runtime_error("Error: ImageEncoder Gap must be > 0.0");
-
-        enc.gap = gap;
-    }
-
-    float getGap() const {
-        return enc.gap;
-    }
-
-    void setVigilance(
-        float vigilance
-    ) {
-        if (vigilance <= 0.0f)
-            throw std::runtime_error("Error: ImageEncoder Vigilance must be > 0.0");
-
-        enc.vigilance = vigilance;
-    }
-
-    float getVigilance() const {
-        return enc.vigilance;
-    }
-
     void setLR(
         float lr
     ) {

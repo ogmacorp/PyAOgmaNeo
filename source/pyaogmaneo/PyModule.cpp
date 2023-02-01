@@ -162,10 +162,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
-        .def("setGap", &pyaon::ImageEncoder::setGap)
-        .def("getGap", &pyaon::ImageEncoder::getGap)
-        .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
-        .def("getVigilance", &pyaon::ImageEncoder::getVigilance)
         .def("setLR", &pyaon::ImageEncoder::setLR)
         .def("getLR", &pyaon::ImageEncoder::getLR);
 }
