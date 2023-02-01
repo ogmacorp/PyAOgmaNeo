@@ -204,6 +204,22 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param i: (int32) index of the IO layer
     :rtype: (float32) alr
 
+.. function:: Hierarchy.setABias(self, i, bias)
+
+    Set the action (actor) bias of an action layer (A) at the bottom of the hierarchy (IO layer),
+    this controls how biased updates are to being positive
+
+    :param i: (int32) index of the IO layer
+    :param bias: (float32) value to set
+
+.. function:: Hierarchy.getABias(self, i)
+
+    Get the action (actor) bias of an action layer (A) at the bottom of the hierarchy (IO layer),
+    this controls how biased updates are to being positive
+
+    :param i: (int32) index of the IO layer
+    :rtype: (float32) bias
+
 .. function:: Hierarchy.setADiscount(self, i, discount)
 
     Set the discount factor of an action layer (A) at the bottom of the hierarchy (IO layer)
