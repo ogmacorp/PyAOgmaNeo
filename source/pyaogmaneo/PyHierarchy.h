@@ -139,21 +139,6 @@ public:
         return h.getNumLayers();
     }
 
-    std::vector<int> getTopHiddenCIs() const {
-        std::vector<int> hiddenCIs(h.getTopHiddenCIs().size());
-
-        for (int j = 0; j < hiddenCIs.size(); j++)
-            hiddenCIs[j] = h.getTopHiddenCIs()[j];
-
-        return hiddenCIs;
-    }
-
-    std::tuple<int, int, int> getTopHiddenSize() const {
-        aon::Int3 size = h.getTopHiddenSize();
-
-        return { size.x, size.y, size.z };
-    }
-
     void setInputImportance(
         int i,
         float importance
