@@ -253,24 +253,24 @@ public:
         return static_cast<IOType>(h.getIOType(i));
     }
 
-    void setEGap(
+    void setEChoice(
         int l,
-        float gap
+        float choice
     ) {
         encGetSetIndexCheck(l);
 
-        if (gap <= 0.0f)
-            throw std::runtime_error("Error: EGap must be > 0.0");
+        if (choice <= 0.0f)
+            throw std::runtime_error("Error: EChoice must be > 0.0");
 
-        h.getELayer(l).gap = gap;
+        h.getELayer(l).choice = choice;
     }
 
-    float getEGap(
+    float getEChoice(
         int l
     ) const {
         encGetSetIndexCheck(l);
 
-        return h.getELayer(l).gap;
+        return h.getELayer(l).choice;
     }
 
     void setEVigilance(
