@@ -264,3 +264,20 @@ std::vector<int> Hierarchy::getPredictionCIs(
 
     return predictions;
 }
+
+std::vector<float> Hierarchy::getPredictionActs(
+    int i
+) const {
+    if (i < 0 || i >= h.getNumIO())
+        throw std::runtime_error("Prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.getNumIO() - 1) + "]!");
+
+    if (!h.ioLayerExists(i) || h.getIOType(i) == aon::none)
+        throw std::runtime_error("No decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+
+    std::vector<float> predictions(h.getPredictionActs(i).size());
+
+    for (int j = 0; j < predictions.size(); j++)
+        predictions[j] = h.getPredictionActs(i)[j];
+
+    return predictions;
+}
