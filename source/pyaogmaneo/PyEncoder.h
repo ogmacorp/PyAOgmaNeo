@@ -9,17 +9,17 @@
 #pragma once
 
 #include "PyHelpers.h"
-#include <aogmaneo/ImageEncoder.h>
+#include <aogmaneo/Encoder.h>
 
 namespace pyaon {
-const int imageEncoderMagic = 223849;
+const int encoderMagic = 953342;
 
-struct ImageEncoderVisibleLayerDesc {
+struct EncoderVisibleLayerDesc {
     std::tuple<int, int, int> size;
 
     int radius;
 
-    ImageEncoderVisibleLayerDesc(
+    EncoderVisibleLayerDesc(
         const std::tuple<int, int, int> &size,
         int radius
     )
@@ -31,13 +31,13 @@ struct ImageEncoderVisibleLayerDesc {
     void checkInRange() const;
 };
 
-class ImageEncoder {
+class Encoder {
 private:
-    aon::ImageEncoder enc;
+    aon::Encoder enc;
 
     void initRandom(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs
+        const std::vector<EncoderVisibleLayerDesc> &visibleLayerDescs
     );
 
     void initFromFile(
@@ -49,9 +49,9 @@ private:
     );
 
 public:
-    ImageEncoder(
+    Encoder(
         const std::tuple<int, int, int> &hiddenSize,
-        const std::vector<ImageEncoderVisibleLayerDesc> &visibleLayerDescs,
+        const std::vector<EncoderVisibleLayerDesc> &visibleLayerDescs,
         const std::string &name,
         const std::vector<unsigned char> &buffer
     );
@@ -63,30 +63,17 @@ public:
     std::vector<unsigned char> serializeToBuffer();
 
     void step(
-        const std::vector<std::vector<unsigned char>> &inputs,
+        const std::vector<std::vector<int>> &inputCIs,
         bool learnEnabled
     );
 
-    void reconstruct(
-        const std::vector<int> &hiddenCIs
+    std::vector<int> reconstruct(
+        const std::vector<int> &hiddenCIs,
+        int vli
     );
 
     int getNumVisibleLayers() const {
         return enc.getNumVisibleLayers();
-    }
-
-    std::vector<unsigned char> getReconstruction(
-        int i
-    ) const {
-        if (i < 0 || i >= enc.getNumVisibleLayers())
-            throw std::runtime_error("Cannot get reconstruction at index " + std::to_string(i) + " - out of bounds [0, " + std::to_string(enc.getNumVisibleLayers()) + "]");
-
-        std::vector<unsigned char> reconstruction(enc.getReconstruction(i).size());
-
-        for (int j = 0; j < reconstruction.size(); j++)
-            reconstruction[j] = enc.getReconstruction(i)[j];
-
-        return reconstruction;
     }
 
     std::vector<int> getHiddenCIs() const {
@@ -116,7 +103,7 @@ public:
         float lr
     ) {
         if (lr < 0.0f)
-            throw std::runtime_error("Error: ImageEncoder LR must be >= 0.0");
+            throw std::runtime_error("Error: Encoder LR must be >= 0.0");
 
         enc.lr = lr;
     }
