@@ -10,7 +10,7 @@
 
 import pyaogmaneo as neo
 import numpy as np
-import gym
+import gymnasium as gym
 import os
 from copy import copy
 import time
@@ -23,7 +23,7 @@ inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=2 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=16, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=3.0, nThreads=4):
+    def __init__(self, env, layerSizes=3 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=4):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -45,18 +45,27 @@ class EnvRunner:
 
         self.infSensitivity = infSensitivity
 
-        if type(self.env.observation_space) is gym.spaces.Discrete:
-            self.inputSizes.append((1, 1, self.env.observation_space.n))
+        obs_space = env.observation_space
+
+        if type(obs_space) is gym.spaces.Dict:
+            # Assume the "actual" observation is in the dict
+            if obs_space["observation"] is None:
+                raise Exception("Unsupported Dict observation structure!")
+
+            obs_space = obs_space["observation"]
+
+        if type(obs_space) is gym.spaces.Discrete:
+            self.inputSizes.append((1, 1, obs_space.n))
             self.inputTypes.append(inputTypeNone)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
-        elif type(self.env.observation_space) is gym.spaces.Box:
-            if len(self.env.observation_space.shape) == 1 or len(self.env.observation_space.shape) == 0:
-                squareSize = int(np.ceil(np.sqrt(len(self.env.observation_space.low))))
+        elif type(obs_space) is gym.spaces.Box:
+            if len(obs_space.shape) == 1 or len(obs_space.shape) == 0:
+                squareSize = int(np.ceil(np.sqrt(len(obs_space.low))))
                 self.inputSizes.append((squareSize, squareSize, obsResolution))
                 self.inputTypes.append(inputTypeNone)
-                lows = list(self.env.observation_space.low)
-                highs = list(self.env.observation_space.high)
+                lows = list(obs_space.low)
+                highs = list(obs_space.high)
                 
                 # Detect large numbers/inf
                 for i in range(len(lows)):
@@ -67,18 +76,18 @@ class EnvRunner:
 
                 self.inputLows.append(lows)
                 self.inputHighs.append(highs)
-            elif len(self.env.observation_space.shape) == 2:
-                scaledSize = ( int(self.env.observation_space.shape[0] * imageScale), int(self.env.observation_space.shape[1] * imageScale), 1 )
+            elif len(obs_space.shape) == 2:
+                scaledSize = ( int(obs_space.shape[0] * imageScale), int(obs_space.shape[1] * imageScale), 1 )
 
                 self.imageSizes.append(scaledSize)
-            elif len(self.env.observation_space.shape) == 3:
-                scaledSize = ( int(self.env.observation_space.shape[0] * imageScale), int(self.env.observation_space.shape[1] * imageScale), 3 )
+            elif len(obs_space.shape) == 3:
+                scaledSize = ( int(obs_space.shape[0] * imageScale), int(obs_space.shape[1] * imageScale), 3 )
 
                 self.imageSizes.append(scaledSize)
             else:
-                raise Exception("Unsupported Box input: Dimensions too high " + str(self.env.observation_space.shape))
+                raise Exception("Unsupported Box input: Dimensions too high " + str(obs_space.shape))
         else:
-            raise Exception("Unsupported input type " + str(type(self.env.observation_space)))
+            raise Exception("Unsupported input type " + str(type(obs_space)))
 
         if len(self.imageSizes) > 0:
             import tinyscaler
@@ -169,7 +178,16 @@ class EnvRunner:
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
 
+        self.distPrev = None
+
     def _feedObservation(self, obs):
+        if type(obs) is dict:
+            # Assume the "actual" observation is in the dict
+            if "observation" not in obs:
+                raise Exception("Unsupported dict observation structure!")
+
+            obs = obs["observation"]
+
         self.inputs = []
 
         actionIndex = 0
@@ -253,9 +271,23 @@ class EnvRunner:
         if obsPreprocess is not None:
             obs = obsPreprocess(obs)
 
-        self._feedObservation(obs)
+        self._feedObservation(copy(obs))
 
         r = reward * self.rewardScale + float(term) * self.terminalReward
+
+        # Override reward
+        if obs["desired_goal"] is not None:
+            achieved_goal = obs["achieved_goal"]
+            desired_goal = obs["desired_goal"]
+            delta = [ desired_goal[0] - achieved_goal[0], desired_goal[1] - achieved_goal[1] ]
+            dist = np.sqrt(delta[0] * delta[0] + delta[1] * delta[1])
+
+            if self.distPrev is None:
+                self.distPrev = dist
+
+            r = (self.distPrev - dist) * 1.0
+
+            self.distPrev = dist
 
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
