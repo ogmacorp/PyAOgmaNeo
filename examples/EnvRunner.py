@@ -23,7 +23,7 @@ inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=3 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=4):
+    def __init__(self, env, layerSizes=3 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=16, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=4):
         self.env = env
 
         neo.setNumThreads(nThreads)
@@ -178,8 +178,6 @@ class EnvRunner:
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
 
-        self.distPrev = None
-
     def _feedObservation(self, obs):
         if type(obs) is dict:
             # Assume the "actual" observation is in the dict
@@ -275,20 +273,6 @@ class EnvRunner:
 
         r = reward * self.rewardScale + float(term) * self.terminalReward
 
-        # Override reward
-        if obs["desired_goal"] is not None:
-            achieved_goal = obs["achieved_goal"]
-            desired_goal = obs["desired_goal"]
-            delta = [ desired_goal[0] - achieved_goal[0], desired_goal[1] - achieved_goal[1] ]
-            dist = np.sqrt(delta[0] * delta[0] + delta[1] * delta[1])
-
-            if self.distPrev is None:
-                self.distPrev = dist
-
-            r = (self.distPrev - dist) * 1.0
-
-            self.distPrev = dist
-
         self.averageReward += self.averageRewardDecay * (r - self.averageReward)
 
         self.h.step(self.inputs, True, r)
@@ -300,5 +284,5 @@ class EnvRunner:
             assert(self.inputTypes[index] == inputTypeAction)
 
             self.actions[i] = list(self.h.getPredictionCIs(index))
-        
+
         return term or trunc, reward
