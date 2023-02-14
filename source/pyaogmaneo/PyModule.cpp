@@ -106,6 +106,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getIOType", &pyaon::Hierarchy::getIOType)
         .def("setELR", &pyaon::Hierarchy::setELR)
         .def("getELR", &pyaon::Hierarchy::getELR)
+        .def("setEStability", &pyaon::Hierarchy::setEStability)
+        .def("getEStability", &pyaon::Hierarchy::getEStability)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setDStability", &pyaon::Hierarchy::setDStability)

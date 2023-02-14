@@ -262,6 +262,26 @@ public:
         return h.getELayer(l).lr;
     }
 
+    void setEStability(
+        int l,
+        float stability
+    ) {
+        encGetSetIndexCheck(l);
+
+        if (stability < 0.0f)
+            throw std::runtime_error("Error: EStability must be >= 0.0");
+
+        h.getELayer(l).stability = stability;
+    }
+
+    float getEStability(
+        int l
+    ) const {
+        encGetSetIndexCheck(l);
+
+        return h.getELayer(l).stability;
+    }
+
     void setDLR(
         int l,
         int i,
