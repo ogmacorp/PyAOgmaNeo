@@ -115,8 +115,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getDScale", &pyaon::Hierarchy::getDScale)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
-        .def("setDStability", &pyaon::Hierarchy::setDStability)
-        .def("getDStability", &pyaon::Hierarchy::getDStability)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
