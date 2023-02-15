@@ -114,17 +114,17 @@ public:
         return { size.x, size.y, size.z };
     }
 
-    void setGap(
-        float gap
+    void setChoice(
+        float choice
     ) {
-        if (gap <= 0.0f)
-            throw std::runtime_error("Error: ImageEncoder Gap must be > 0.0");
+        if (choice <= 0.0f)
+            throw std::runtime_error("Error: ImageEncoder Choice must be > 0.0");
 
-        enc.gap = gap;
+        enc.choice = choice;
     }
 
-    float getGap() const {
-        return enc.gap;
+    float getChoice() const {
+        return enc.choice;
     }
 
     void setVigilance(
