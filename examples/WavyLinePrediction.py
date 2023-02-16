@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import struct
 
 # Set the number of threads
-neo.setNumThreads(4)
+neo.setNumThreads(8)
 
 # Scalar encoding used in this example, take a byte and convert 4 consective bits into 2 one-hot columns with 16 cells in them
 
@@ -88,7 +88,7 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(8): # Layers with exponential memory
+for i in range(6): # Laye2s with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (5, 5, 32) # Size of the encoder(s) in the layer
@@ -99,9 +99,12 @@ for i in range(8): # Layers with exponential memory
 h = neo.Hierarchy([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 20000
 
 def wave(t):
+    if t % 20 == 0 or t % 7 == 0:
+        return 1.0
+    return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 for t in range(iters):
