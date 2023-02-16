@@ -262,26 +262,6 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setEStability(
-        int l,
-        float stability
-    ) {
-        encGetSetIndexCheck(l);
-
-        if (stability < 0.0f)
-            throw std::runtime_error("Error: EStability must be >= 0.0");
-
-        h.getELayer(l).stability = stability;
-    }
-
-    float getEStability(
-        int l
-    ) const {
-        encGetSetIndexCheck(l);
-
-        return h.getELayer(l).stability;
-    }
-
     void setDLR(
         int l,
         int i,
@@ -302,28 +282,6 @@ public:
         decGetSetIndexCheck(l, i);
 
         return h.getDLayer(l, i).lr;
-    }
-
-    void setDStability(
-        int l,
-        int i,
-        float stability
-    ) {
-        decGetSetIndexCheck(l, i);
-
-        if (stability < 0.0f)
-            throw std::runtime_error("Error: DStability must be >= 0.0");
-
-        h.getDLayer(l, i).stability = stability;
-    }
-
-    float getDStability(
-        int l,
-        int i
-    ) const {
-        decGetSetIndexCheck(l, i);
-
-        return h.getDLayer(l, i).stability;
     }
 
     void setAVLR(
