@@ -96,7 +96,7 @@ for i in range(6): # Laye2s with exponential memory
     lds.append(ld)
 
 # Create the hierarchy
-h = neo.Hierarchy([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
+h = neo.Hierarchy([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction, numDendrites=8) ], lds)
 
 # Present the wave sequence for some timesteps
 iters = 50000

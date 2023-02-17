@@ -116,6 +116,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setELRadius", &pyaon::Hierarchy::setELRadius)
         .def("getELRadius", &pyaon::Hierarchy::getELRadius)
+        .def("setDChoice", &pyaon::Hierarchy::setDChoice)
+        .def("getDChoice", &pyaon::Hierarchy::getDChoice)
         .def("setDVigilance", &pyaon::Hierarchy::setDVigilance)
         .def("getDVigilance", &pyaon::Hierarchy::getDVigilance)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
