@@ -20,6 +20,9 @@ void IODesc::checkInRange() const {
     if (std::get<2>(size) < 1)
         throw std::runtime_error("Error: size[2] < 1 is not allowed!");
 
+    if (numDendrites < 1)
+        throw std::runtime_error("Error: numDendrites < 1 is not allowed!");
+
     if (eRadius < 0)
         throw std::runtime_error("Error: eRadius < 0 is not allowed!");
 
@@ -39,6 +42,9 @@ void LayerDesc::checkInRange() const {
 
     if (std::get<2>(hiddenSize) < 1)
         throw std::runtime_error("Error: hiddenSize[2] < 1 is not allowed!");
+
+    if (numDendrites < 1)
+        throw std::runtime_error("Error: numDendrites < 1 is not allowed!");
 
     if (eRadius < 0)
         throw std::runtime_error("Error: eRadius < 0 is not allowed!");
@@ -116,6 +122,7 @@ void Hierarchy::initRandom(
         cIODescs[i] = aon::Hierarchy::IODesc(
             aon::Int3(std::get<0>(ioDescs[i].size), std::get<1>(ioDescs[i].size), std::get<2>(ioDescs[i].size)),
             static_cast<aon::IOType>(ioDescs[i].type),
+            ioDescs[i].numDendrites,
             ioDescs[i].eRadius,
             ioDescs[i].dRadius,
             ioDescs[i].historyCapacity
@@ -129,6 +136,7 @@ void Hierarchy::initRandom(
 
         cLayerDescs[l] = aon::Hierarchy::LayerDesc(
             aon::Int3(std::get<0>(layerDescs[l].hiddenSize), std::get<1>(layerDescs[l].hiddenSize), std::get<2>(layerDescs[l].hiddenSize)),
+            layerDescs[l].numDendrites,
             layerDescs[l].eRadius,
             layerDescs[l].dRadius,
             layerDescs[l].ticksPerUpdate,
@@ -261,23 +269,6 @@ std::vector<int> Hierarchy::getPredictionCIs(
 
     for (int j = 0; j < predictions.size(); j++)
         predictions[j] = h.getPredictionCIs(i)[j];
-
-    return predictions;
-}
-
-std::vector<float> Hierarchy::getPredictionActs(
-    int i
-) const {
-    if (i < 0 || i >= h.getNumIO())
-        throw std::runtime_error("Prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.getNumIO() - 1) + "]!");
-
-    if (!h.ioLayerExists(i) || h.getIOType(i) == aon::none)
-        throw std::runtime_error("No decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    std::vector<float> predictions(h.getPredictionActs(i).size());
-
-    for (int j = 0; j < predictions.size(); j++)
-        predictions[j] = h.getPredictionActs(i)[j];
 
     return predictions;
 }

@@ -33,16 +33,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 pyaon::IOType,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("type") = pyaon::prediction,
+            py::arg("numDendrites") = 4,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("historyCapacity") = 64
         )
         .def_readwrite("size", &pyaon::IODesc::size)
         .def_readwrite("type", &pyaon::IODesc::type)
+        .def_readwrite("numDendrites", &pyaon::IODesc::numDendrites)
         .def_readwrite("eRadius", &pyaon::IODesc::eRadius)
         .def_readwrite("dRadius", &pyaon::IODesc::dRadius)
         .def_readwrite("historyCapacity", &pyaon::IODesc::historyCapacity);
@@ -53,15 +56,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hiddenSize") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("numDendrites") = 4,
             py::arg("eRadius") = 2,
             py::arg("dRadius") = 2,
             py::arg("ticksPerUpdate") = 2,
             py::arg("temporalHorizon") = 2
         )
         .def_readwrite("hiddenSize", &pyaon::LayerDesc::hiddenSize)
+        .def_readwrite("numDendrites", &pyaon::LayerDesc::numDendrites)
         .def_readwrite("eRadius", &pyaon::LayerDesc::eRadius)
         .def_readwrite("dRadius", &pyaon::LayerDesc::dRadius)
         .def_readwrite("ticksPerUpdate", &pyaon::LayerDesc::ticksPerUpdate)
@@ -94,7 +100,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("setInputImportance", &pyaon::Hierarchy::setInputImportance)
         .def("getInputImportance", &pyaon::Hierarchy::getInputImportance)
         .def("getPredictionCIs", &pyaon::Hierarchy::getPredictionCIs)
-        .def("getPredictionActs", &pyaon::Hierarchy::getPredictionActs)
         .def("getHiddenCIs", &pyaon::Hierarchy::getHiddenCIs)
         .def("getHiddenSize", &pyaon::Hierarchy::getHiddenSize)
         .def("getNumEVisibleLayers", &pyaon::Hierarchy::getNumEVisibleLayers)
@@ -111,8 +116,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getELR", &pyaon::Hierarchy::getELR)
         .def("setELRadius", &pyaon::Hierarchy::setELRadius)
         .def("getELRadius", &pyaon::Hierarchy::getELRadius)
-        .def("setDScale", &pyaon::Hierarchy::setDScale)
-        .def("getDScale", &pyaon::Hierarchy::getDScale)
+        .def("setDChoice", &pyaon::Hierarchy::setDChoice)
+        .def("getDChoice", &pyaon::Hierarchy::getDChoice)
+        .def("setDVigilance", &pyaon::Hierarchy::setDVigilance)
+        .def("getDVigilance", &pyaon::Hierarchy::getDVigilance)
         .def("setDLR", &pyaon::Hierarchy::setDLR)
         .def("getDLR", &pyaon::Hierarchy::getDLR)
         .def("setAVLR", &pyaon::Hierarchy::setAVLR)

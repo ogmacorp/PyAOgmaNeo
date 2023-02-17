@@ -24,6 +24,8 @@ struct IODesc {
     std::tuple<int, int, int> size;
     IOType type;
 
+    int numDendrites;
+
     int eRadius;
     int dRadius;
 
@@ -32,6 +34,7 @@ struct IODesc {
     IODesc(
         const std::tuple<int, int, int> &size,
         IOType type,
+        int numDendrites,
         int eRadius,
         int dRadius,
         int historyCapacity
@@ -39,6 +42,7 @@ struct IODesc {
     :
     size(size),
     type(type),
+    numDendrites(numDendrites),
     eRadius(eRadius),
     dRadius(dRadius),
     historyCapacity(historyCapacity)
@@ -50,6 +54,8 @@ struct IODesc {
 struct LayerDesc {
     std::tuple<int, int, int> hiddenSize;
 
+    int numDendrites;
+
     int eRadius;
     int dRadius;
 
@@ -58,6 +64,7 @@ struct LayerDesc {
 
     LayerDesc(
         const std::tuple<int, int, int> &hiddenSize,
+        int numDendrites,
         int eRadius,
         int dRadius,
         int ticksPerUpdate,
@@ -65,6 +72,7 @@ struct LayerDesc {
     )
     :
     hiddenSize(hiddenSize),
+    numDendrites(numDendrites),
     eRadius(eRadius),
     dRadius(dRadius),
     ticksPerUpdate(ticksPerUpdate),
@@ -174,10 +182,6 @@ public:
     }
 
     std::vector<int> getPredictionCIs(
-        int i
-    ) const;
-
-    std::vector<float> getPredictionActs(
         int i
     ) const;
 
@@ -303,8 +307,8 @@ public:
     ) {
         encGetSetIndexCheck(l);
 
-        if (lr < 0.0f)
-            throw std::runtime_error("Error: ELR must be >= 0.0");
+        if (lr < 0.0f || lr > 1.0f)
+            throw std::runtime_error("Error: ELR must be >= 0.0 or <= 1.0");
 
         h.getELayer(l).lr = lr;
     }
@@ -337,26 +341,48 @@ public:
         return h.getELayer(l).lRadius;
     }
 
-    void setDScale(
+    void setDChoice(
         int l,
         int i,
-        float scale
+        float choice
     ) {
         decGetSetIndexCheck(l, i);
 
-        if (scale <= 0.0f)
-            throw std::runtime_error("Error: DScale must be > 0.0");
+        if (choice <= 0.0f)
+            throw std::runtime_error("Error: DChoice must be > 0.0");
 
-        h.getDLayer(l, i).scale = scale;
+        h.getDLayer(l, i).choice = choice;
     }
 
-    float getDScale(
+    float getDChoice(
         int l,
         int i
     ) const {
         decGetSetIndexCheck(l, i);
 
-        return h.getDLayer(l, i).scale;
+        return h.getDLayer(l, i).choice;
+    }
+
+    void setDVigilance(
+        int l,
+        int i,
+        float vigilance
+    ) {
+        decGetSetIndexCheck(l, i);
+
+        if (vigilance < 0.0f || vigilance > 1.0f)
+            throw std::runtime_error("Error: DLR must be >= 0.0 and <= 1.0");
+
+        h.getDLayer(l, i).vigilance = vigilance;
+    }
+
+    float getDVigilance(
+        int l,
+        int i
+    ) const {
+        decGetSetIndexCheck(l, i);
+
+        return h.getDLayer(l, i).vigilance;
     }
 
     void setDLR(
@@ -366,8 +392,8 @@ public:
     ) {
         decGetSetIndexCheck(l, i);
 
-        if (lr < 0.0f)
-            throw std::runtime_error("Error: DLR must be >= 0.0");
+        if (lr < 0.0f || lr > 1.0f)
+            throw std::runtime_error("Error: DLR must be >= 0.0 and <= 1.0");
 
         h.getDLayer(l, i).lr = lr;
     }
