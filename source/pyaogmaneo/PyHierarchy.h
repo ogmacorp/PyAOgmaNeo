@@ -341,28 +341,6 @@ public:
         return h.getELayer(l).lRadius;
     }
 
-    void setDChoice(
-        int l,
-        int i,
-        float choice
-    ) {
-        decGetSetIndexCheck(l, i);
-
-        if (choice <= 0.0f)
-            throw std::runtime_error("Error: DChoice must be > 0.0");
-
-        h.getDLayer(l, i).choice = choice;
-    }
-
-    float getDChoice(
-        int l,
-        int i
-    ) const {
-        decGetSetIndexCheck(l, i);
-
-        return h.getDLayer(l, i).choice;
-    }
-
     void setDVigilance(
         int l,
         int i,
