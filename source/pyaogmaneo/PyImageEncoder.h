@@ -33,8 +33,6 @@ struct ImageEncoderVisibleLayerDesc {
 
 class ImageEncoder {
 private:
-    bool initialized;
-
     aon::ImageEncoder enc;
 
     void initRandom(
