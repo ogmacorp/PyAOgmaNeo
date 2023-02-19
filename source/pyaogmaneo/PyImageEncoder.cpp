@@ -149,18 +149,18 @@ void ImageEncoder::step(
 }
 
 void ImageEncoder::reconstruct(
-    const std::vector<int> &hiddenCIs
+    const std::vector<int> &reconCIs
 ) {
-    if (hiddenCIs.size() != enc.getHiddenCIs().size())
-        throw std::runtime_error("Error: hiddenCIs must match the hiddenSize of the ImageEncoder!");
+    if (reconCIs.size() != enc.getHiddenCIs().size())
+        throw std::runtime_error("Error: reconCIs must match the outputSize of the ImageEncoder!");
 
-    aon::IntBuffer cReconCIsBacking(hiddenCIs.size());
+    aon::IntBuffer cReconCIsBacking(reconCIs.size());
 
-    for (int j = 0; j < hiddenCIs.size(); j++) {
-        if (hiddenCIs[j] < 0 || hiddenCIs[j] >= enc.getHiddenSize().z)
-            throw std::runtime_error("Recon CSDR (hiddenCIs) has an out-of-bounds column index (" + std::to_string(hiddenCIs[j]) + ") at column index " + std::to_string(j) + ". It must be in the range [0, " + std::to_string(enc.getHiddenSize().z - 1) + "]");
+    for (int j = 0; j < reconCIs.size(); j++) {
+        if (reconCIs[j] < 0 || reconCIs[j] >= enc.getHiddenSize().z)
+            throw std::runtime_error("Recon CSDR (reconCIs) has an out-of-bounds column index (" + std::to_string(reconCIs[j]) + ") at column index " + std::to_string(j) + ". It must be in the range [0, " + std::to_string(enc.getHiddenSize().z - 1) + "]");
 
-        cReconCIsBacking[j] = hiddenCIs[j];
+        cReconCIsBacking[j] = reconCIs[j];
     }
 
     enc.reconstruct(&cReconCIsBacking);

@@ -68,7 +68,7 @@ public:
     );
 
     void reconstruct(
-        const std::vector<int> &hiddenCIs
+        const std::vector<int> &reconCIs
     );
 
     int getNumVisibleLayers() const {
@@ -110,6 +110,32 @@ public:
         aon::Int3 size = enc.getVisibleLayerDesc(i).size;
 
         return { size.x, size.y, size.z };
+    }
+
+    void setChoice(
+        float choice
+    ) {
+        if (choice <= 0.0f)
+            throw std::runtime_error("Error: ImageEncoder Choice must be > 0.0");
+
+        enc.choice = choice;
+    }
+
+    float getChoice() const {
+        return enc.choice;
+    }
+
+    void setVigilance(
+        float vigilance
+    ) {
+        if (vigilance <= 0.0f)
+            throw std::runtime_error("Error: ImageEncoder Vigilance must be > 0.0");
+
+        enc.vigilance = vigilance;
+    }
+
+    float getVigilance() const {
+        return enc.vigilance;
     }
 
     void setLR(
