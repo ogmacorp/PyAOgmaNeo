@@ -77,7 +77,6 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/PyModule.cpp"
     "source/pyaogmaneo/PyHelpers.cpp"
     "source/pyaogmaneo/PyHierarchy.cpp"
-    "source/pyaogmaneo/PyEncoder.cpp"
     "source/pyaogmaneo/PyImageEncoder.cpp"
 )
 
