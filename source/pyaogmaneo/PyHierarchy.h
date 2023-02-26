@@ -238,24 +238,26 @@ public:
         return static_cast<IOType>(h.getIOType(i));
     }
 
-    void setELR(
+    void setDScale(
         int l,
-        float lr
+        int i,
+        float scale
     ) {
-        encGetSetIndexCheck(l);
+        decGetSetIndexCheck(l, i);
 
-        if (lr < 0.0f)
-            throw std::runtime_error("Error: ELR must be >= 0.0");
+        if (scale <= 0.0f)
+            throw std::runtime_error("Error: DScale must be > 0.0");
 
-        h.getELayer(l).lr = lr;
+        h.getDLayer(l, i).scale = scale;
     }
 
-    float getELR(
-        int l
+    float getDScale(
+        int l,
+        int i
     ) const {
-        encGetSetIndexCheck(l);
+        decGetSetIndexCheck(l, i);
 
-        return h.getELayer(l).lr;
+        return h.getDLayer(l, i).scale;
     }
 
     void setDLR(
