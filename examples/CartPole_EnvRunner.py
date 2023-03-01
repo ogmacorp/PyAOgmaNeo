@@ -11,7 +11,7 @@
 # Simple Cart-Pole example using EnvRunner
 
 import gymnasium as gym
-from EnvRunner import EnvRunner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gym environments
+from EnvRunner import EnvRunner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
 
 env = gym.make('CartPole-v1')
 

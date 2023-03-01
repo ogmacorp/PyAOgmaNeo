@@ -6,17 +6,17 @@ The `examples/ <https://github.com/ogmacorp/PyAOgmaNeo/tree/master/examples>`_ d
 EnvRunner
 ********************************************
 
-The EnvRunner is a simple way to automatically create PyAOgmaNeo systems for Gym tasks. It will automatically create the hierarchy and appropriate pre-encoders. This is good enough for initial experimentation, but further control requires manual usage.
+The EnvRunner is a simple way to automatically create PyAOgmaNeo systems for Gymnasium tasks. It will automatically create the hierarchy and appropriate pre-encoders. This is good enough for initial experimentation, but further control requires manual usage.
 
 CartPole EnvRunner example
 ********************************************
 
-The CartPole example is a simple test on the Gym CartPole environment. It uses EnvRunner.
+The CartPole example is a simple test on the Gymnasium CartPole environment. It uses EnvRunner.
 
 CartPole Manual example
 ********************************************
 
-The CartPole example is a simple test on the Gym CartPole environment. It does not use EnvRunner, and creates the hierarchy manually.
+The CartPole example is a simple test on the Gymnasium CartPole environment. It does not use EnvRunner, and creates the hierarchy manually.
 
 WavyLinePrediction example
 ********************************************

@@ -134,6 +134,20 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (int32) number of visible layers
 
+.. function:: Hierarchy.setEScale(self, l, scale)
+
+    Set the scale of the encoder "squashing"
+
+    :param l: (int32) index of the layer
+    :param scale: (float32) value to set
+
+.. function:: Hierarchy.getEScale(self, l)
+
+    Get the scale of the encoder "squashing"
+
+    :param l: (int32) index of the layer
+    :rtype: (float32) scale
+
 .. function:: Hierarchy.setELR(self, l, lr)
 
     Set the learning rate of an encoder (E)
@@ -148,33 +162,37 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param l: (int32) index of the layer
     :rtype: (float32) lr
 
-.. function:: Hierarchy.setDLR(self, l, lr)
+.. function:: Hierarchy.setDScale(self, l, i, scale)
+
+    Set the scale of the decoder "squashing"
+
+    :param l: (int32) index of the layer
+    :param i: (int32) index of the decoder in the layer
+    :param scale: (float32) value to set
+
+.. function:: Hierarchy.getDScale(self, l, i)
+
+    Get the scale of the decoder "squashing"
+
+    :param l: (int32) index of the layer
+    :param li (int32) index of the decoder in the layer
+    :rtype: (float32) scale
+
+.. function:: Hierarchy.setDLR(self, l, i, lr)
 
     Set the learning rate of a decoder (D)
 
     :param l: (int32) index of the layer
+    :param i: (int32) index of the decoder in the layer
     :param lr: (float32) value to set
 
-.. function:: Hierarchy.getDLR(self, l)
+.. function:: Hierarchy.getDLR(self, l, i)
 
     Get the learning rate of a decoder (D)
 
     :param l: (int32) index of the layer
+    :param li (int32) index of the decoder in the layer
     :rtype: (float32) lr
-
-.. function:: Hierarchy.setDStability(self, l, stability)
-
-    Set the stability amount of a decoder (D). A higher value means less forgetting at the cost of some capacity
-
-    :param l: (int32) index of the layer
-    :param stability: (float32) value to set
-
-.. function:: Hierarchy.getDStability(self, l)
-
-    Get the stability amount of a decoder (D). A higher value means less forgetting at the cost of some capacity
-
-    :param l: (int32) index of the layer
-    :rtype: (float32) stability
 
 .. function:: Hierarchy.setAVLR(self, i, vlr)
 

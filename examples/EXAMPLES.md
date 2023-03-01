@@ -10,11 +10,11 @@
 
 ## The EnvRunner
 
-The EnvRunner is a simple way to automatically create AOgmaNeo systems for [OpenAI Gym](https://gym.openai.com/) tasks. It will automatically create the hierarchy and appropriate pre-encoders, by guessing reasonable settings. This is good enough for initial experimentation, but further control requires manual usage. Image-based environments require [tinyscaler](https://github.com/Farama-Foundation/TinyScaler) in order to scale images to appropriate sizes.
+The EnvRunner is a simple way to automatically create AOgmaNeo systems for [Gymnasium](https://github.com/Farama-Foundation/Gymnasium) tasks. It will automatically create the hierarchy and appropriate pre-encoders, by guessing reasonable settings. This is good enough for initial experimentation, but further control requires manual usage. Image-based environments require [tinyscaler](https://github.com/Farama-Foundation/TinyScaler) in order to scale images to appropriate sizes.
 
 ## CartPole examples
 
-The CartPole examples are simple tests on the Gym CartPole environment. The Manual one sets up a hierarchy manually, while the EnvRunner one does it automatically using EnvRunner.
+The CartPole examples are simple tests on the Gymnasium CartPole environment. The Manual one sets up a hierarchy manually, while the EnvRunner one does it automatically using EnvRunner.
 
 ## WaveLinePrediction example
 
@@ -22,7 +22,7 @@ The WaveLinePrediction example shows how to use a SPH for prediction of a simple
 
 ## LunarLander example
 
-The LunarLander example shows a slightly more complicated reinforcement learning environment using EnvRunner. The Gym LunarLander environment features a landing module that the agent must maneuver to the landing pad.
+The LunarLander example shows a slightly more complicated reinforcement learning environment using EnvRunner. The Gymnasium LunarLander environment features a landing module that the agent must maneuver to the landing pad.
 
 ## License and Copyright
 
