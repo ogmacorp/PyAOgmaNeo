@@ -112,6 +112,32 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    void setChoice(
+        float choice
+    ) {
+        if (choice <= 0.0f)
+            throw std::runtime_error("Error: ImageEncoder Choice must be > 0.0");
+
+        enc.choice = choice;
+    }
+
+    float getChoice() const {
+        return enc.choice;
+    }
+
+    void setVigilance(
+        float vigilance
+    ) {
+        if (vigilance <= 0.0f)
+            throw std::runtime_error("Error: ImageEncoder Vigilance must be > 0.0");
+
+        enc.vigilance = vigilance;
+    }
+
+    float getVigilance() const {
+        return enc.vigilance;
+    }
+
     void setLR(
         float lr
     ) {
@@ -123,19 +149,6 @@ public:
 
     float getLR() const {
         return enc.lr;
-    }
-
-    void setLRadius(
-        int lRadius
-    ) {
-        if (lRadius < 0)
-            throw std::runtime_error("Error: ImageEncoder LRadius must be >= 0");
-
-        enc.lRadius = lRadius;
-    }
-
-    int getLRadius() const {
-        return enc.lRadius;
     }
 };
 } // namespace pyaon
