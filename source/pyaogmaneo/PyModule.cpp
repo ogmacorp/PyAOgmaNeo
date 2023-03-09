@@ -115,8 +115,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getAVLR", &pyaon::Hierarchy::getAVLR)
         .def("setAALR", &pyaon::Hierarchy::setAALR)
         .def("getAALR", &pyaon::Hierarchy::getAALR)
-        .def("setABias", &pyaon::Hierarchy::setABias)
-        .def("getABias", &pyaon::Hierarchy::getABias)
         .def("setADiscount", &pyaon::Hierarchy::setADiscount)
         .def("getADiscount", &pyaon::Hierarchy::getADiscount)
         .def("setATemperature", &pyaon::Hierarchy::setATemperature)
@@ -165,10 +163,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenCIs", &pyaon::ImageEncoder::getHiddenCIs)
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
-        .def("setChoice", &pyaon::ImageEncoder::setChoice)
-        .def("getChoice", &pyaon::ImageEncoder::getChoice)
-        .def("setVigilance", &pyaon::ImageEncoder::setVigilance)
-        .def("getVigilance", &pyaon::ImageEncoder::getVigilance)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR);
+        .def("getLR", &pyaon::ImageEncoder::getLR)
+        .def("setLRadius", &pyaon::ImageEncoder::setLRadius)
+        .def("getLRadius", &pyaon::ImageEncoder::getLRadius);
 }
