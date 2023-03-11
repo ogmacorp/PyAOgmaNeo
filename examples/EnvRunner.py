@@ -11,6 +11,7 @@
 import pyaogmaneo as neo
 import numpy as np
 import gymnasium as gym
+import tinyscaler
 import os
 from copy import copy
 import time
@@ -59,6 +60,14 @@ class EnvRunner:
             self.inputTypes.append(inputTypeNone)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
+        elif type(obs_space) is gym.spaces.MultiDiscrete:
+            squareSize = int(np.ceil(np.sqrt(len(obs_space.nvec))))
+            high = np.max(obs_space.nvec)
+
+            self.inputSizes.append((squareSize, squareSize, high))
+            self.inputTypes.append(inputTypeNone)
+            self.inputLows.append([ 0.0 ])
+            self.inputHighs.append([ 0.0 ])
         elif type(obs_space) is gym.spaces.Box:
             if len(obs_space.shape) == 1 or len(obs_space.shape) == 0:
                 squareSize = int(np.ceil(np.sqrt(len(obs_space.low))))
@@ -90,8 +99,6 @@ class EnvRunner:
             raise Exception("Unsupported input type " + str(type(obs_space)))
 
         if len(self.imageSizes) > 0:
-            import tinyscaler
-
             vlds = []
 
             for i in range(len(self.imageSizes)):
@@ -113,6 +120,15 @@ class EnvRunner:
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.actionIndices.append(len(self.inputSizes))
             self.inputSizes.append((1, 1, self.env.action_space.n))
+            self.inputTypes.append(inputTypeAction)
+            self.inputLows.append([ 0.0 ])
+            self.inputHighs.append([ 0.0 ])
+        elif type(self.env.action_space) is gym.spaces.MultiDiscrete:
+            squareSize = int(np.ceil(np.sqrt(len(self.env.action_space.nvec))))
+            high = np.max(self.env.action_space.nvec)
+
+            self.actionIndices.append(len(self.inputSizes))
+            self.inputSizes.append((squareSize, squareSize, high))
             self.inputTypes.append(inputTypeAction)
             self.inputLows.append([ 0.0 ])
             self.inputHighs.append([ 0.0 ])
@@ -178,6 +194,8 @@ class EnvRunner:
         self.averageReward = -1.0
         self.averageRewardDecay = 0.01
 
+        self.obs_space = obs_space
+
     def _feedObservation(self, obs):
         if type(obs) is dict:
             # Assume the "actual" observation is in the dict
@@ -199,14 +217,12 @@ class EnvRunner:
                 # Format image
                 img = tinyscaler.scale(obs, (self.imageSizes[0][1], self.imageSizes[0][0]))
                 
-                img = np.swapaxes(img, 0, 1)
-                
                 #delta = img - self.imgsPrev[0]
  
                 self.imgsPrev[0] = copy(img)
 
                 # Encode image
-                self.imEnc.step([ img.ravel().tolist() ], True)
+                self.imEnc.step([ (img * 255.0).astype(np.uint8).ravel().tolist() ], True)
 
                 self.inputs.append(list(self.imEnc.getHiddenCIs()))
 
@@ -225,7 +241,10 @@ class EnvRunner:
                         # Rescale
                         indices.append(int(sigmoid(v * self.infSensitivity) * (self.inputSizes[i][2] - 1) + 0.5))
                     else:
-                        indices.append(int(obs[j]))
+                        if type(self.obs_space) is gym.spaces.MultiDiscrete:
+                            indices.append(int(obs[j]) % self.obs_space.nvec[j])
+                        else:
+                            indices.append(int(obs[j]))
 
                 if len(indices) < self.inputSizes[i][0] * self.inputSizes[i][1]:
                     indices += ((self.inputSizes[i][0] * self.inputSizes[i][1]) - len(indices)) * [ int(0) ]
@@ -255,10 +274,17 @@ class EnvRunner:
 
                 feedActions.append(feedAction)
             else:
-                if np.random.rand() < epsilon:
-                    self.actions[i][0] = np.random.randint(0, self.inputSizes[index][2])
+                if type(self.env.action_space) is gym.spaces.MultiDiscrete:
+                    for j in range(len(self.env.action_space.nvec)):
+                        if np.random.rand() < epsilon:
+                            self.actions[i][j] = np.random.randint(0, self.inputSizes[index][2])
 
-                feedActions.append(int(self.actions[i][0]))
+                        feedActions.append(int(self.actions[i][j]))
+                else:
+                    if np.random.rand() < epsilon:
+                        self.actions[i][0] = np.random.randint(0, self.inputSizes[index][2])
+
+                    feedActions.append(int(self.actions[i][0]))
 
         # Remove outer array if needed
         if len(feedActions) == 1:
