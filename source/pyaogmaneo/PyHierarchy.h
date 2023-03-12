@@ -162,10 +162,6 @@ public:
         int i
     ) const;
 
-    std::vector<float> getPredictionActs(
-        int i
-    ) const;
-
     std::vector<int> getHiddenCIs(
         int l
     ) {

@@ -99,12 +99,9 @@ for i in range(12): # Layers with exponential memory
 h = neo.Hierarchy([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 100000
+iters = 10000
 
 def wave(t):
-    if (t // 100) % 2 == 0:
-        return 1.0 - np.random.rand() * 0.05
-    return np.random.rand() * 0.05
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 for t in range(iters):
@@ -125,7 +122,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(10000):
+for t2 in range(1000):
     t = t2 + iters
 
     valueToEncode = wave(t)
