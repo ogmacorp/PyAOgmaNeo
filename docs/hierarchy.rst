@@ -194,22 +194,6 @@ The sparse predictive hierarchy (SPH). Can be thought of as the "agent" when use
     :param li (int32) index of the decoder in the layer
     :rtype: (float32) lr
 
-.. function:: Hierarchy.setDStability(self, l, i, stability)
-
-    Set the stability of a decoder (D), higher values result in less forgetting at diminished per-sample accuracy
-
-    :param l: (int32) index of the layer
-    :param i: (int32) index of the decoder in the layer
-    :param stability: (float32) value to set
-
-.. function:: Hierarchy.getDStability(self, l, i)
-
-    Get the stability of a decoder (D), higher values result in less forgetting at diminished per-sample accuracy
-
-    :param l: (int32) index of the layer
-    :param li (int32) index of the decoder in the layer
-    :rtype: (float32) stability
-
 .. function:: Hierarchy.setAVLR(self, i, vlr)
 
     Set the value (critic) learning rate of an action layer (A) at the bottom of the hierarchy (IO layer)
