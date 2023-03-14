@@ -88,7 +88,7 @@ inputColumnSize = 16
 # Define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(12): # Layers with exponential memory
+for i in range(5): # Layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hiddenSize = (5, 5, 16) # Size of the encoder(s) in the layer
