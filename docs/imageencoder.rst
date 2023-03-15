@@ -78,38 +78,26 @@ It is implemented as a lattice of Fuzzy ART (Adaptive Resonance Theory) modules.
 
     :rtype: (Int3) the CSDR size
 
-.. function:: ImageEncoder.setChoice(self, choice)
-
-    Set the (Adaptive Resonance Theory) choice parameter
-
-    :param choice: (float32) value to set
-
-.. function:: ImageEncoder.getChoice(self)
-
-    Get the (Adaptive Resonance Theory) choice parameter
-
-    :rtype: (float32) choice
-
-.. function:: ImageEncoder.setVigilance(self, vigilance)
-
-    Set the (Adaptive Resonance Theory) vigilance
-
-    :param vigilance: (float32) value to set
-
-.. function:: ImageEncoder.getVigilance(self)
-
-    Get the (Adaptive Resonance Theory) vigilance
-
-    :rtype: (float32) vigilance
-
 .. function:: ImageEncoder.setLR(self, lr)
 
-    Set the (Adaptive Resonance Theory) learning rate
+    Set the learning rate
 
     :param lr: (float32) value to set
 
 .. function:: ImageEncoder.getLR(self)
 
-    Get the (Adaptive Resonance Theory) learning rate
+    Get the learning rate
 
     :rtype: (float32) lr
+
+.. function:: ImageEncoder.setLRadius(self, lRadius)
+
+    Set the lateral inhibition radius, defaults to 0 (off). Can be used to make the representations more distributed.
+
+    :param lRadius: (float32) value to set
+
+.. function:: ImageEncoder.getLRadius(self)
+
+    Get the lateral inhibition radius, defaults to 0 (off). Can be used to make the representations more distributed.
+
+    :rtype: (float32) lRadius
