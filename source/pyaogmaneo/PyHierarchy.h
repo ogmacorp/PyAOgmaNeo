@@ -238,68 +238,6 @@ public:
         return static_cast<IOType>(h.getIOType(i));
     }
 
-    void setEScale(
-        int l,
-        float scale
-    ) {
-        encGetSetIndexCheck(l);
-
-        if (scale < 0.0f)
-            throw std::runtime_error("Error: EScale must be >= 0.0");
-
-        h.getELayer(l).scale = scale;
-    }
-
-    float getEScale(
-        int l
-    ) const {
-        encGetSetIndexCheck(l);
-
-        return h.getELayer(l).scale;
-    }
-
-    void setELR(
-        int l,
-        float lr
-    ) {
-        encGetSetIndexCheck(l);
-
-        if (lr < 0.0f)
-            throw std::runtime_error("Error: ELR must be >= 0.0");
-
-        h.getELayer(l).lr = lr;
-    }
-
-    float getELR(
-        int l
-    ) const {
-        encGetSetIndexCheck(l);
-
-        return h.getELayer(l).lr;
-    }
-
-    void setDChoice(
-        int l,
-        int i,
-        float choice
-    ) {
-        decGetSetIndexCheck(l, i);
-
-        if (choice <= 0.0f)
-            throw std::runtime_error("Error: DChoice must be > 0.0");
-
-        h.getDLayer(l, i).choice = choice;
-    }
-
-    float getDChoice(
-        int l,
-        int i
-    ) const {
-        decGetSetIndexCheck(l, i);
-
-        return h.getDLayer(l, i).choice;
-    }
-
     void setDLR(
         int l,
         int i,
