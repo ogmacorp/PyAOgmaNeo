@@ -278,26 +278,26 @@ public:
         return h.getELayer(l).lr;
     }
 
-    void setDScale(
+    void setDChoice(
         int l,
         int i,
-        float scale
+        float choice
     ) {
         decGetSetIndexCheck(l, i);
 
-        if (scale <= 0.0f)
-            throw std::runtime_error("Error: DScale must be > 0.0");
+        if (choice <= 0.0f)
+            throw std::runtime_error("Error: DChoice must be > 0.0");
 
-        h.getDLayer(l, i).scale = scale;
+        h.getDLayer(l, i).choice = choice;
     }
 
-    float getDScale(
+    float getDChoice(
         int l,
         int i
     ) const {
         decGetSetIndexCheck(l, i);
 
-        return h.getDLayer(l, i).scale;
+        return h.getDLayer(l, i).choice;
     }
 
     void setDLR(
