@@ -159,7 +159,5 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("getHiddenSize", &pyaon::ImageEncoder::getHiddenSize)
         .def("getVisibleSize", &pyaon::ImageEncoder::getVisibleSize)
         .def("setLR", &pyaon::ImageEncoder::setLR)
-        .def("getLR", &pyaon::ImageEncoder::getLR)
-        .def("setLRadius", &pyaon::ImageEncoder::setLRadius)
-        .def("getLRadius", &pyaon::ImageEncoder::getLRadius);
+        .def("getLR", &pyaon::ImageEncoder::getLR);
 }

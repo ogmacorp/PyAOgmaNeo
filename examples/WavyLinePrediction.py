@@ -99,10 +99,13 @@ for i in range(8): # Layers with exponential memory
 h = neo.Hierarchy([ neo.IODesc(size=(1, numInputColumns, inputColumnSize), type=neo.prediction) ], lds)
 
 # Present the wave sequence for some timesteps
-iters = 10000
+iters = 100000
 
 def wave(t):
-    return np.sin(t * 0.01 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
+    if (t // 100) % 2 == 0:
+        return 1.0 - np.random.rand() * 0.05
+    return np.random.rand() * 0.05
+    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 for t in range(iters):
     valueToEncode = wave(t)
@@ -112,7 +115,6 @@ for t in range(iters):
     # Step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # True for enabling learning
 
-    print(h.getHiddenCIs(0))
     # Print progress
     if t % 100 == 0:
         print(t)

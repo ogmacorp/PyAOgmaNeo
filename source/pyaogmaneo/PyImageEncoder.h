@@ -124,18 +124,5 @@ public:
     float getLR() const {
         return enc.lr;
     }
-
-    void setLRadius(
-        int lRadius
-    ) {
-        if (lRadius < 0)
-            throw std::runtime_error("Error: ImageEncoder LRadius must be >= 0");
-
-        enc.lRadius = lRadius;
-    }
-
-    int getLRadius() const {
-        return enc.lRadius;
-    }
 };
 } // namespace pyaon
