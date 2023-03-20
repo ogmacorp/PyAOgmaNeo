@@ -24,7 +24,7 @@ inputTypePrediction = neo.prediction
 inputTypeAction = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layerSizes=1 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=32, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=2.0, nThreads=8):
+    def __init__(self, env, layerSizes=1 * [ (5, 5, 32) ], layerRadius=2, hiddenSize=(8, 8, 16), imageRadius=8, imageScale=1.0, obsResolution=16, actionResolution=9, rewardScale=1.0, terminalReward=0.0, infSensitivity=1.0, nThreads=8):
         self.env = env
 
         neo.setNumThreads(nThreads)
