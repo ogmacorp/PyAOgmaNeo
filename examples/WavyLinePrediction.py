@@ -125,7 +125,7 @@ vs = [] # Predicted value
 
 trgs = [] # True value
 
-for t2 in range(10000):
+for t2 in range(1000):
     t = t2 + iters
 
     valueToEncode = wave(t)
