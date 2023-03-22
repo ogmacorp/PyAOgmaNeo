@@ -67,6 +67,38 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
         .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon);
 
+    // bind params
+    py::class_<aon::Encoder::Params>(m, "Encoder_Params")
+        .def(py::init<>())
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
+        .def_readwrite("lr", &aon::Encoder::Params::lr);
+
+    py::class_<aon::Decoder::Params>(m, "Decoder_Params")
+        .def(py::init<>())
+        .def_readwrite("scale", &aon::Decoder::Params::scale)
+        .def_readwrite("lr", &aon::Decoder::Params::lr);
+
+    py::class_<aon::Actor::Params>(m, "Actor_params")
+        .def(py::init<>())
+        .def_readwrite("vlr", &aon::Actor::Params::vlr)
+        .def_readwrite("alr", &aon::Actor::Params::alr)
+        .def_readwrite("bias", &aon::Actor::Params::bias)
+        .def_readwrite("discount", &aon::Actor::Params::discount)
+        .def_readwrite("temperature", &aon::Actor::Params::temperature)
+        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
+        .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
+
+    py::class_<aon::Hierarchy::Layer_Params>(m, "Layer_Params")
+        .def(py::init<>())
+        .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
+        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
+
+    py::class_<aon::Hierarchy::IO_Params>(m, "IO_Params")
+        .def(py::init<>())
+        .def_readwrite("decoder", &aon::Hierarchy::IO_Params::decoder)
+        .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
+        .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
+
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
                 const std::vector<pyaon::IO_Desc>&,
