@@ -99,6 +99,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
         .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
 
+    py::class_<aon::Hierarchy::Params>(m, "Params")
+        .def(py::init<>())
+        .def_readwrite("layers", &aon::Hierarchy::Params::layers)
+        .def_readwrite("ios", &aon::Hierarchy::Params::ios);
+
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
                 const std::vector<pyaon::IO_Desc>&,
