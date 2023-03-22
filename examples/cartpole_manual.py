@@ -1,12 +1,12 @@
+# -*- coding: utf-8 -*-
+
 # ----------------------------------------------------------------------------
-#  Py_aOgma_neo
+#  PyAOgmaNeo
 #  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 #
-#  This copy of Py_aOgma_neo is licensed to you under the terms described
+#  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 # ----------------------------------------------------------------------------
-
-# -*- coding: utf-8 -*-
 
 # simple Cart-Pole example
 

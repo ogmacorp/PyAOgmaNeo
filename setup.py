@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
 #  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
@@ -85,7 +87,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="pyaogmaneo",
-    version="1.14.3",
+    version="2.0.0",
     description="Python bindings for the AOgmaNeo library",
     long_description='https://github.com/ogmacorp/PyAOgmaNeo',
     author='Ogma Intelligent Systems Corp',

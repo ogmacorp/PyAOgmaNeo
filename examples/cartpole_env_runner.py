@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
 #  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
@@ -5,8 +7,6 @@
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 # ----------------------------------------------------------------------------
-
-# -*- coding: utf-8 -*-
 
 # Simple Cart-Pole example using EnvRunner
 
@@ -27,5 +27,3 @@ for episode in range(10000):
         if done:
             print("Episode {} finished after {} timesteps".format(episode + 1, t + 1))
             break
-
-runner.h.saveToFile("cartpole_test.ohr")

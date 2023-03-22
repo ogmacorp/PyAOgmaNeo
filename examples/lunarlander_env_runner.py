@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
 #  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
@@ -6,38 +8,36 @@
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 # ----------------------------------------------------------------------------
 
-# -*- coding: utf-8 -*-
-
-# Simple Cart-Pole example using EnvRunner
+# lunar lander environment with env_runner
 
 import gymnasium as gym
-from EnvRunner import EnvRunner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
+from env_runner import Env_Runner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
 
 env = gym.make('LunarLander-v2')
 
-runner = EnvRunner(env, terminalReward=0.0, rewardScale=1.0)
+runner = Env_Runner(env, terminal_reward=0.0, reward_scale=1.0)
 
-averageReward = 0.0
-maxReward = 0.0
+average_reward = 0.0
+max_reward = 0.0
 
 for episode in range(5000):
     env.reset()
 
-    totalReward = 0.0
+    total_reward = 0.0
 
     # Timesteps
     for t in range(10000):
         done, reward = runner.act() # Step the environment and agent
 
-        totalReward += reward
+        total_reward += reward
 
         if done:
             if episode == 0:
-                averageReward = totalReward
-                maxReward = totalReward
+                average_reward = total_reward
+                max_reward = total_reward
             else:
-                averageReward = 0.99 * averageReward + 0.01 * totalReward
-                maxReward = max(maxReward, totalReward)
+                average_reward = 0.99 * average_reward + 0.01 * total_reward
+                max_reward = max(max_reward, total_reward)
 
-            print("Episode {} finished after {} timesteps, receiving {} reward. Average: {} Max: {}".format(episode + 1, t + 1, totalReward, averageReward, maxReward))
+            print("Episode {} finished after {} timesteps, receiving {} reward. Average: {} Max: {}".format(episode + 1, t + 1, total_reward, average_reward, max_reward))
             break

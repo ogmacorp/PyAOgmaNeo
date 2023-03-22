@@ -50,7 +50,6 @@ import pyaogmaneo
 ```
 
 Refer to [the examples](./examples) for usage.
-An API reference is available in the [docs directory](./docs). It can be built for easier viewing using [Sphinx](https://www.sphinx-doc.org/en/master/) (e.g. run `make html` in the docs directory).
 
 ## Contributions
 
