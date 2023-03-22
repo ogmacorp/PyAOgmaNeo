@@ -142,7 +142,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
         .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
 
-    py::class_<pyaon::Image_Visible_Layer_Desc>(m, "Image_visible_layer_desc")
+    py::class_<pyaon::Image_Visible_Layer_Desc>(m, "Image_Visible_Layer_Desc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 int
