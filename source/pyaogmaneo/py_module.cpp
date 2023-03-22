@@ -47,7 +47,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
         .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity);
 
-    py::class_<pyaon::Layer_desc>(m, "Layer_desc")
+    py::class_<pyaon::Layer_Desc>(m, "Layer_Desc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 int,
@@ -61,11 +61,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("ticks_per_update") = 2,
             py::arg("temporal_horizon") = 2
         )
-        .def_readwrite("hidden_size", &pyaon::Layer_desc::hidden_size)
-        .def_readwrite("up_radius", &pyaon::Layer_desc::up_radius)
-        .def_readwrite("down_radius", &pyaon::Layer_desc::down_radius)
-        .def_readwrite("ticks_per_update", &pyaon::Layer_desc::ticks_per_update)
-        .def_readwrite("temporal_horizon", &pyaon::Layer_desc::temporal_horizon);
+        .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
+        .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
+        .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
+        .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
+        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
@@ -90,24 +90,22 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("reward") = 0.0f,
             py::arg("mimic") = 0.0f
         )
-        .def("clear_state", &pyaon::hierarchy::clear_state)
-        .def("get_num_layers", &pyaon::hierarchy::get_num_layers)
-        .def("set_input_importance", &pyaon::hierarchy::set_input_importance)
-        .def("get_input_importance", &pyaon::hierarchy::get_input_importance)
-        .def("get_prediction_cis", &pyaon::hierarchy::get_prediction_cis)
-        .def("get_hidden_cis", &pyaon::hierarchy::get_hidden_cis)
-        .def("get_hidden_size", &pyaon::hierarchy::get_hidden_size)
-        .def("get_num_encoder_visible_layers", &pyaon::hierarchy::get_num_encoder_visible_layers)
-        .def("get_ticks", &pyaon::hierarchy::get_ticks)
-        .def("get_ticks_per_update", &pyaon::hierarchy::get_ticks_per_update)
-        .def("get_num_io", &pyaon::hierarchy::get_num_io)
-        .def("get_io_size", &pyaon::hierarchy::get_io_size)
-        .def("get_io_type", &pyaon::hierarchy::get_io_type)
-        .def("get_up_radius", &pyaon::hierarchy::get_up_radius)
-        .def("get_down_radius", &pyaon::hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::hierarchy::get_actor_history_capacity);
+        .def("clear_state", &pyaon::Hierarchy::clear_state)
+        .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
+        .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
+        .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
+        .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
+        .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
+        .def("get_ticks", &pyaon::Hierarchy::get_ticks)
+        .def("get_ticks_per_update", &pyaon::Hierarchy::get_ticks_per_update)
+        .def("get_num_io", &pyaon::Hierarchy::get_num_io)
+        .def("get_io_size", &pyaon::Hierarchy::get_io_size)
+        .def("get_io_type", &pyaon::Hierarchy::get_io_type)
+        .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
+        .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
+        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
 
-    py::class_<pyaon::image_encoder_visible_layer_desc>(m, "image_encoder_visible_layer_desc")
+    py::class_<pyaon::Image_Visible_Layer_Desc>(m, "Image_visible_layer_desc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 int
@@ -115,8 +113,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("radius") = 4
         )
-        .def_readwrite("size", &pyaon::image_encoder_visible_layer_desc::size)
-        .def_readwrite("radius", &pyaon::image_encoder_visible_layer_desc::radius);
+        .def_readwrite("size", &pyaon::Image_Visible_Layer_Desc::size)
+        .def_readwrite("radius", &pyaon::Image_Visible_Layer_Desc::radius);
 
     py::class_<pyaon::Image_Encoder>(m, "Image_Encoder")
         .def(py::init<
@@ -131,16 +129,16 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("buffer") = std::vector<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Image_Encoder::params)
-        .def("save_to_file", &pyaon::image_encoder::save_to_file)
-        .def("serialize_to_buffer", &pyaon::image_encoder::serialize_to_buffer)
-        .def("step", &pyaon::image_encoder::step,
+        .def("save_to_file", &pyaon::Image_Encoder::save_to_file)
+        .def("serialize_to_buffer", &pyaon::Image_Encoder::serialize_to_buffer)
+        .def("step", &pyaon::Image_Encoder::step,
             py::arg("inputs"),
             py::arg("learn_enabled") = true
         )
-        .def("reconstruct", &pyaon::image_encoder::reconstruct)
-        .def("get_num_visible_layers", &pyaon::image_encoder::get_num_visible_layers)
-        .def("get_reconstruction", &pyaon::image_encoder::get_reconstruction)
-        .def("get_hidden_cis", &pyaon::image_encoder::get_hidden_cis)
-        .def("get_hidden_size", &pyaon::image_encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::image_encoder::get_visible_size);
+        .def("reconstruct", &pyaon::Image_Encoder::reconstruct)
+        .def("get_num_visible_layers", &pyaon::Image_Encoder::get_num_visible_layers)
+        .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
+        .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
+        .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
+        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size);
 }
