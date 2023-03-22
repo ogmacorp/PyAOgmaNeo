@@ -11,7 +11,7 @@
 # lunar lander environment with env_runner
 
 import gymnasium as gym
-from env_runner import Env_Runner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
+from env_runner import EnvRunner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
 
 env = gym.make('LunarLander-v2')
 
