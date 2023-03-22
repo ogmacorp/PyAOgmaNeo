@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------
-//  py_aogma_neo
-//  copyright(c) 2020-2023 ogma intelligent systems corp. all rights reserved.
+//  PyAOgmaNeo
+//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 //
-//  this copy of py_aogma_neo is licensed to you under the terms described
-//  in the pyaogmaneo_license.md file included in this distribution.
+//  This copy of PyAOgmaNeo is licensed to you under the terms described
+//  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 // ----------------------------------------------------------------------------
 
 #pragma once
