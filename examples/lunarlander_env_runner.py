@@ -39,5 +39,5 @@ for episode in range(5000):
                 average_reward = 0.99 * average_reward + 0.01 * total_reward
                 max_reward = max(max_reward, total_reward)
 
-            print("Episode {} finished after {} timesteps, receiving {} reward. Average: {} Max: {}".format(episode + 1, t + 1, total_reward, average_reward, max_reward))
+            print(f"Episode {episode + 1} finished after {t + 1} timesteps, receiving {total_reward} reward. Average: {average_reward} Max: {max_reward}")
             break

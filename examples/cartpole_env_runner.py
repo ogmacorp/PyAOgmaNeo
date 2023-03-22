@@ -25,5 +25,5 @@ for episode in range(10000):
         done, _ = runner.act() # Step the environment and agent
 
         if done:
-            print("Episode {} finished after {} timesteps".format(episode + 1, t + 1))
+            print(f"Episode {episode + 1} finished after {t + 1} timesteps")
             break

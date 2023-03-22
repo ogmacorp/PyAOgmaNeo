@@ -75,6 +75,6 @@ for episode in range(1000):
             reward = 0.0
 
         if term or trunc:
-            print("Episode {} finished after {} timesteps".format(episode + 1, t + 1))
+            print(f"Episode {episode + 1} finished after {t + 1} timesteps")
 
             break
