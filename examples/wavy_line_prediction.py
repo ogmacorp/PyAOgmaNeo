@@ -89,14 +89,14 @@ input_column_size = 16
 lds = []
 
 for i in range(8): # layers with exponential memory
-    ld = neo.Layer_Desc()
+    ld = neo.LayerDesc()
 
     ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IO_Desc(size=(1, num_input_columns, input_column_size), type=neo.prediction) ], lds)
+h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), type=neo.prediction) ], lds)
 
 # set params if desired
 h.params.layers[0].encoder.lr = 0.05

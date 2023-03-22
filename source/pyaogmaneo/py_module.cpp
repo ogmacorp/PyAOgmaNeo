@@ -21,13 +21,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("set_global_state", &pyaon::set_global_state);
     m.def("get_global_state", &pyaon::get_global_state);
 
-    py::enum_<pyaon::IO_Type>(m, "IO_Type")
+    py::enum_<pyaon::IO_Type>(m, "IOType")
         .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
         .value("action", pyaon::action)
         .export_values();
 
-    py::class_<pyaon::IO_Desc>(m, "IO_Desc")
+    py::class_<pyaon::IO_Desc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 pyaon::IO_Type,
@@ -47,7 +47,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
         .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity);
 
-    py::class_<pyaon::Layer_Desc>(m, "Layer_Desc")
+    py::class_<pyaon::Layer_Desc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 int,
@@ -68,17 +68,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon);
 
     // bind params
-    py::class_<aon::Encoder::Params>(m, "Encoder_Params")
+    py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr);
 
-    py::class_<aon::Decoder::Params>(m, "Decoder_Params")
+    py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr);
 
-    py::class_<aon::Actor::Params>(m, "Actor_params")
+    py::class_<aon::Actor::Params>(m, "Actorparams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
@@ -88,12 +88,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
-    py::class_<aon::Hierarchy::Layer_Params>(m, "Layer_Params")
+    py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
         .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
 
-    py::class_<aon::Hierarchy::IO_Params>(m, "IO_Params")
+    py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
         .def_readwrite("decoder", &aon::Hierarchy::IO_Params::decoder)
         .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
@@ -142,7 +142,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
         .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
 
-    py::class_<pyaon::Image_Visible_Layer_Desc>(m, "Image_Visible_Layer_Desc")
+    py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 int
@@ -154,11 +154,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("radius", &pyaon::Image_Visible_Layer_Desc::radius);
 
     // bind params
-    py::class_<aon::Image_Encoder::Params>(m, "Image_Encoder_Params")
+    py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr);
 
-    py::class_<pyaon::Image_Encoder>(m, "Image_Encoder")
+    py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
                 const std::tuple<int, int, int>&,
                 const std::vector<pyaon::Image_Visible_Layer_Desc>&,

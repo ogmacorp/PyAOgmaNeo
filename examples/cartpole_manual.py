@@ -33,7 +33,7 @@ neo.set_num_threads(4)
 lds = []
 
 for i in range(3): # layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
-    ld = neo.Layer_Desc()
+    ld = neo.LayerDesc()
 
     # set some layer structural parameters
     ld.hidden_size = (5, 5, 32)
@@ -41,7 +41,7 @@ for i in range(3): # layers with exponential memory. Not much memory is needed f
     lds.append(ld)
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IO_Desc((2, 2, input_resolution), neo.none), neo.IO_Desc((1, 1, num_actions), neo.action) ], lds)
+h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.action) ], lds)
 
 # setting parameters
 h.params.ios[1].actor.vlr = 0.01

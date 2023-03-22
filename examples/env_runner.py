@@ -22,8 +22,12 @@ input_type_none = neo.none
 input_type_prediction = neo.prediction
 input_type_action = neo.action
 
-class Env_Runner:
-    def __init__(self, env, layer_sizes=1 * [ (5, 5, 32) ], layer_radius=2, hidden_size=(8, 8, 16), image_radius=8, image_scale=1.0, obs_resolution=32, action_resolution=9, reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=3.0, n_threads=8):
+class EnvRunner:
+    def __init__(self, env, layer_sizes=2 * [(4, 4, 16)],
+        layer_radius=2, hidden_size=(8, 8, 16),
+        image_radius=8, image_scale=1.0, obs_resolution=32, action_resolution=9,
+        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=3.0, n_threads=8
+    ):
         self.env = env
 
         neo.set_num_threads(n_threads)
@@ -56,16 +60,16 @@ class Env_Runner:
         if type(obs_space) is gym.spaces.Discrete:
             self.input_sizes.append((1, 1, obs_space.n))
             self.input_types.append(input_type_none)
-            self.input_lows.append([ 0.0 ])
-            self.input_highs.append([ 0.0 ])
+            self.input_lows.append([0.0])
+            self.input_highs.append([0.0])
         elif type(obs_space) is gym.spaces.multi_discrete:
             square_size = int(np.ceil(np.sqrt(len(obs_space.nvec))))
             high = np.max(obs_space.nvec)
 
             self.input_sizes.append((square_size, square_size, high))
             self.input_types.append(input_type_none)
-            self.input_lows.append([ 0.0 ])
-            self.input_highs.append([ 0.0 ])
+            self.input_lows.append([0.0])
+            self.input_highs.append([0.0])
         elif type(obs_space) is gym.spaces.Box:
             if len(obs_space.shape) == 1 or len(obs_space.shape) == 0:
                 square_size = int(np.ceil(np.sqrt(len(obs_space.low))))
@@ -84,11 +88,11 @@ class Env_Runner:
                 self.input_lows.append(lows)
                 self.input_highs.append(highs)
             elif len(obs_space.shape) == 2:
-                scaled_size = ( int(obs_space.shape[0] * image_scale), int(obs_space.shape[1] * image_scale), 1 )
+                scaled_size = (int(obs_space.shape[0] * image_scale), int(obs_space.shape[1] * image_scale), 1)
 
                 self.image_sizes.append(scaled_size)
             elif len(obs_space.shape) == 3:
-                scaled_size = ( int(obs_space.shape[0] * image_scale), int(obs_space.shape[1] * image_scale), 3 )
+                scaled_size = (int(obs_space.shape[0] * image_scale), int(obs_space.shape[1] * image_scale), 3)
 
                 self.image_sizes.append(scaled_size)
             else:
@@ -100,25 +104,25 @@ class Env_Runner:
             vlds = []
 
             for i in range(len(self.image_sizes)):
-                vld = neo.Image_Visible_Layer_Desc((self.image_sizes[i][0], self.image_sizes[i][1], self.image_sizes[i][2]), image_radius)
+                vld = neo.ImageVisibleLayerDesc(self.image_sizes[i], image_radius)
 
                 vlds.append(vld)
 
-            self.im_enc = neo.Image_Encoder(hidden_size, vlds)
+            self.im_enc = neo.ImageEncoder(hidden_size, vlds)
 
             self.im_enc_index = len(self.input_sizes)
             self.input_sizes.append(hidden_size)
             self.input_types.append(input_type_none)
-            self.input_lows.append([ 0.0 ])
-            self.input_highs.append([ 1.0 ])
+            self.input_lows.append([0.0])
+            self.input_highs.append([1.0])
 
         # actions
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.action_indices.append(len(self.input_sizes))
             self.input_sizes.append((1, 1, self.env.action_space.n))
             self.input_types.append(input_type_action)
-            self.input_lows.append([ 0.0 ])
-            self.input_highs.append([ 0.0 ])
+            self.input_lows.append([0.0])
+            self.input_highs.append([0.0])
         elif type(self.env.action_space) is gym.spaces.multi_discrete:
             square_size = int(np.ceil(np.sqrt(len(self.env.action_space.nvec))))
             high = np.max(self.env.action_space.nvec)
@@ -126,8 +130,8 @@ class Env_Runner:
             self.action_indices.append(len(self.input_sizes))
             self.input_sizes.append((square_size, square_size, high))
             self.input_types.append(input_type_action)
-            self.input_lows.append([ 0.0 ])
-            self.input_highs.append([ 0.0 ])
+            self.input_lows.append([0.0])
+            self.input_highs.append([0.0])
         elif type(self.env.action_space) is gym.spaces.Box:
             if len(self.env.action_space.shape) < 3:
                 if len(self.env.action_space.shape) == 2:
@@ -157,7 +161,7 @@ class Env_Runner:
         lds = []
 
         for i in range(len(layer_sizes)):
-            ld = neo.Layer_Desc(hidden_size=layer_sizes[i])
+            ld = neo.LayerDesc(hidden_size=layer_sizes[i])
 
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
@@ -167,7 +171,7 @@ class Env_Runner:
         io_descs = []
 
         for i in range(len(self.input_sizes)):
-            io_descs.append(neo.IO_Desc(self.input_sizes[i], self.input_types[i], layer_radius, layer_radius))
+            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], layer_radius, layer_radius))
 
         self.h = neo.Hierarchy(io_descs, lds)
 
@@ -212,7 +216,7 @@ class Env_Runner:
                 img = tinyscaler.scale((obs - self.input_lows[i]) / (self.input_highs[i] - self.input_lows[i]), (self.image_sizes[0][1], self.image_sizes[0][0]))
                 
                 # encode image
-                self.im_enc.step([ (img * 255.0).astype(np.uint8).ravel().tolist() ], True)
+                self.im_enc.step([(img * 255.0).astype(np.uint8).ravel().tolist()], True)
 
                 self.inputs.append(list(self.im_enc.get_hidden_cis()))
 
@@ -237,7 +241,7 @@ class Env_Runner:
                             indices.append(int(obs[j]))
 
                 if len(indices) < self.input_sizes[i][0] * self.input_sizes[i][1]:
-                    indices += ((self.input_sizes[i][0] * self.input_sizes[i][1]) - len(indices)) * [ int(0) ]
+                    indices += ((self.input_sizes[i][0] * self.input_sizes[i][1]) - len(indices)) * [int(0)]
 
                 self.inputs.append(indices)
 
