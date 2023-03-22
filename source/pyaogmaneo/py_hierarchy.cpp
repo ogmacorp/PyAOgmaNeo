@@ -104,15 +104,15 @@ Hierarchy::Hierarchy(
     }
 
     // copy params
-    params.ios.resize(io_descs.size());
+    params.ios.resize(h.get_num_io());
 
-    for (int i = 0; i < io_descs.size(); i++)
+    for (int i = 0; i < h.get_num_io(); i++)
         params.ios[i] = h.params.ios[i];
 
     // copy params
-    params.layers.resize(layer_descs.size());
+    params.layers.resize(h.get_num_layers());
 
-    for (int l = 0; l < layer_descs.size(); l++)
+    for (int l = 0; l < h.get_num_layers(); l++)
         params.layers[l] = h.params.layers[l];
 }
 
