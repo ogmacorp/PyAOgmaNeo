@@ -153,6 +153,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("size", &pyaon::Image_Visible_Layer_Desc::size)
         .def_readwrite("radius", &pyaon::Image_Visible_Layer_Desc::radius);
 
+    // bind params
+    py::class_<aon::Image_Encoder::Params>(m, "Image_Encoder_Params")
+        .def(py::init<>())
+        .def_readwrite("lr", &aon::Image_Encoder::Params::lr);
+
     py::class_<pyaon::Image_Encoder>(m, "Image_Encoder")
         .def(py::init<
                 const std::tuple<int, int, int>&,
