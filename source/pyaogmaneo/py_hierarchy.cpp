@@ -280,6 +280,12 @@ std::vector<int> Hierarchy::get_prediction_cis(
 }
 
 void Hierarchy::copy_params_to_h() {
+    if (params.ios.size() != h.params.ios.size())
+        throw std::runtime_error("ios parameter size mismatch - did you modify the length of params.ios?");
+
+    if (params.layers.size() != h.params.layers.size())
+        throw std::runtime_error("layers parameter size mismatch - did you modify the length of params.layers?");
+    
     // copy params
     for (int i = 0; i < params.ios.size(); i++)
         h.params.ios[i] = params.ios[i];
