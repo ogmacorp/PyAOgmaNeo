@@ -22,13 +22,13 @@ use_system_aogmaneo = True if "USE_SYSTEM_AOGMANEO" in os.environ else False
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[
-            "source/pyaogmaneo/PyHelpers.h",
-            "source/pyaogmaneo/PyHelpers.cpp",
-            "source/pyaogmaneo/PyHierarchy.h",
-            "source/pyaogmaneo/PyHierarchy.cpp",
-            "source/pyaogmaneo/PyImageEncoder.h",
-            "source/pyaogmaneo/PyImageEncoder.cpp",
-            "source/pyaogmaneo/PyModule.cpp",
+            "source/pyaogmaneo/py_helpers.h",
+            "source/pyaogmaneo/py_helpers.cpp",
+            "source/pyaogmaneo/py_hierarchy.h",
+            "source/pyaogmaneo/py_hierarchy.cpp",
+            "source/pyaogmaneo/py_image_encoder.h",
+            "source/pyaogmaneo/py_image_encoder.cpp",
+            "source/pyaogmaneo/py_module.cpp",
             ])
 
         self.sourcedir = os.path.abspath(sourcedir)

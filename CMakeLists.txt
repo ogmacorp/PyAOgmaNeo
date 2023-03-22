@@ -74,10 +74,10 @@ set(PYAOGMANEO_INCLUDE_DIR "source/pyaogmaneo;")
 include_directories(${PYAOGMANEO_INCLUDE_DIR})
 
 set(PYAOGMANEO_SRC
-    "source/pyaogmaneo/PyModule.cpp"
-    "source/pyaogmaneo/PyHelpers.cpp"
-    "source/pyaogmaneo/PyHierarchy.cpp"
-    "source/pyaogmaneo/PyImageEncoder.cpp"
+    "source/pyaogmaneo/py_module.cpp"
+    "source/pyaogmaneo/py_helpers.cpp"
+    "source/pyaogmaneo/py_hierarchy.cpp"
+    "source/pyaogmaneo/py_image_encoder.cpp"
 )
 
 find_package(Python COMPONENTS Interpreter Development)
