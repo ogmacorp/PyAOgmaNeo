@@ -13,7 +13,7 @@
 import gymnasium as gym
 from env_runner import Env_Runner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
 
-env = gym.make('CartPole-v1')
+env = gym.make("GymV26Environment-v0", env_id="ALE/Pong-v5")
 
 runner = Env_Runner(env, terminal_reward=-10.0, reward_scale=0.0) # Cart-Pole environment always returns a reward of 1, so use a custom reward function: -1 if episode ends, 0 otherwise
 
@@ -21,7 +21,7 @@ for episode in range(10000):
     env.reset()
 
     # Timesteps
-    for t in range(500):
+    for t in range(10000):
         done, _ = runner.act() # Step the environment and agent
 
         if done:

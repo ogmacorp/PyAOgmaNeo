@@ -208,11 +208,8 @@ class Env_Runner:
 
                 action_index += 1
             elif i == self.im_enc_index:
-                if self.input_lows[i] == 0 and self.input_highs[i] == 255:
-                    # format image
-                    img = tinyscaler.scale(obs / 255.0, (self.image_sizes[0][1], self.image_sizes[0][0]))
-                else:
-                    img = tinyscaler.scale(np.minimum(1.0, np.maximum(0.0, obs)), (self.image_sizes[0][1], self.image_sizes[0][0]))
+                # format image
+                img = tinyscaler.scale((obs - self.input_lows[i]) / (self.input_highs[i] - self.input_lows[i]), (self.image_sizes[0][1], self.image_sizes[0][0]))
                 
                 # encode image
                 self.im_enc.step([ (img * 255.0).astype(np.uint8).ravel().tolist() ], True)
