@@ -27,13 +27,13 @@ void Image_Visible_Layer_Desc::check_in_range() const {
 Image_Encoder::Image_Encoder(
     const std::tuple<int, int, int> &hidden_size,
     const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs,
-    const std::string &name,
+    const std::string &file_name,
     const std::vector<unsigned char> &buffer
 ) {
     if (!buffer.empty())
         init_from_buffer(buffer);
-    else if (!name.empty())
-        init_from_file(name);
+    else if (!file_name.empty())
+        init_from_file(file_name);
     else {
         if (visible_layer_descs.empty())
             throw std::runtime_error("error: Image_Encoder constructor requires some non-empty arguments!");
@@ -76,16 +76,16 @@ void Image_Encoder::init_random(
 }
 
 void Image_Encoder::init_from_file(
-    const std::string &name
+    const std::string &file_name
 ) {
     File_Reader reader;
-    reader.ins.open(name, std::ios::binary);
+    reader.ins.open(file_name, std::ios::binary);
 
     int magic;
     reader.read(&magic, sizeof(int));
 
     if (magic != image_encoder_magic)
-        throw std::runtime_error("attempted to initialize Image_Encoder from incompatible file - " + name);
+        throw std::runtime_error("attempted to initialize Image_Encoder from incompatible file - " + file_name);
 
     enc.read(reader);
 }
@@ -106,10 +106,10 @@ void Image_Encoder::init_from_buffer(
 }
 
 void Image_Encoder::save_to_file(
-    const std::string &name
+    const std::string &file_name
 ) {
     File_Writer writer;
-    writer.outs.open(name, std::ios::binary);
+    writer.outs.open(file_name, std::ios::binary);
 
     writer.write(&image_encoder_magic, sizeof(int));
 

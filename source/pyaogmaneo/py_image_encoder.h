@@ -41,7 +41,7 @@ private:
     );
 
     void init_from_file(
-        const std::string &name
+        const std::string &file_name
     );
 
     void init_from_buffer(
@@ -54,12 +54,12 @@ public:
     Image_Encoder(
         const std::tuple<int, int, int> &hidden_size,
         const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs,
-        const std::string &name,
+        const std::string &file_name,
         const std::vector<unsigned char> &buffer
     );
 
     void save_to_file(
-        const std::string &name
+        const std::string &file_name
     );
 
     std::vector<unsigned char> serialize_to_buffer();

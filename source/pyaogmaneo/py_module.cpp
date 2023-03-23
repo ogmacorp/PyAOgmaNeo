@@ -113,7 +113,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("io_descs") = std::vector<pyaon::IO_Desc>(),
             py::arg("layer_descs") = std::vector<pyaon::Layer_Desc>(),
-            py::arg("name") = std::string(),
+            py::arg("file_name") = std::string(),
             py::arg("buffer") = std::vector<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Hierarchy::params)
@@ -167,7 +167,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("visible_layer_descs") = std::vector<pyaon::Image_Visible_Layer_Desc>(),
-            py::arg("name") = std::string(),
+            py::arg("file_name") = std::string(),
             py::arg("buffer") = std::vector<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Image_Encoder::params)

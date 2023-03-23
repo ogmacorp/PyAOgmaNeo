@@ -102,7 +102,7 @@ private:
     );
 
     void init_from_file(
-        const std::string &name
+        const std::string &file_name
     );
 
     void init_from_buffer(
@@ -117,12 +117,12 @@ public:
     Hierarchy(
         const std::vector<IO_Desc> &io_descs,
         const std::vector<Layer_Desc> &layer_descs,
-        const std::string &name,
+        const std::string &file_name,
         const std::vector<unsigned char> &buffer
     );
 
     void save_to_file(
-        const std::string &name
+        const std::string &file_name
     );
 
     std::vector<unsigned char> serialize_to_buffer();

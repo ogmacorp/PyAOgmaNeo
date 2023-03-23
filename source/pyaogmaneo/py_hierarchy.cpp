@@ -89,13 +89,13 @@ void Hierarchy::act_get_set_index_check(
 Hierarchy::Hierarchy(
     const std::vector<IO_Desc> &io_descs,
     const std::vector<Layer_Desc> &layer_descs,
-    const std::string &name,
+    const std::string &file_name,
     const std::vector<unsigned char> &buffer
 ) {
     if (!buffer.empty())
         init_from_buffer(buffer);
-    else if (!name.empty())
-        init_from_file(name);
+    else if (!file_name.empty())
+        init_from_file(file_name);
     else {
         if (io_descs.empty() || layer_descs.empty())
             throw std::runtime_error("error: Hierarchy constructor requires some non-empty arguments!");
@@ -152,16 +152,16 @@ void Hierarchy::init_random(
 }
 
 void Hierarchy::init_from_file(
-    const std::string &name
+    const std::string &file_name
 ) {
     File_Reader reader;
-    reader.ins.open(name, std::ios::binary);
+    reader.ins.open(file_name, std::ios::binary);
 
     int magic;
     reader.read(&magic, sizeof(int));
 
     if (magic != hierarchy_magic)
-        throw std::runtime_error("attempted to initialize Hierarchy from incompatible file - " + name);
+        throw std::runtime_error("attempted to initialize Hierarchy from incompatible file - " + file_name);
 
     h.read(reader);
 }
@@ -182,10 +182,10 @@ void Hierarchy::init_from_buffer(
 }
 
 void Hierarchy::save_to_file(
-    const std::string &name
+    const std::string &file_name
 ) {
     File_Writer writer;
-    writer.outs.open(name, std::ios::binary);
+    writer.outs.open(file_name, std::ios::binary);
 
     writer.write(&hierarchy_magic, sizeof(int));
 
