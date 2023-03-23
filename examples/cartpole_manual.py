@@ -32,7 +32,7 @@ neo.set_num_threads(4)
 # define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(3): # layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
+for i in range(2): # layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
     ld = neo.LayerDesc()
 
     # set some layer structural parameters
