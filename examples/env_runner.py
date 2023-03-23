@@ -26,7 +26,7 @@ class EnvRunner:
     def __init__(self, env, layer_sizes=2 * [(4, 4, 16)],
         layer_radius=2, hidden_size=(8, 8, 16),
         image_radius=8, image_scale=1.0, obs_resolution=32, action_resolution=9,
-        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=3.0, n_threads=8
+        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=4.0, n_threads=8
     ):
         self.env = env
 
@@ -96,7 +96,7 @@ class EnvRunner:
 
                 self.image_sizes.append(scaled_size)
             else:
-                raise Exception("unsupported Box input: Dimensions too high " + str(obs_space.shape))
+                raise Exception("unsupported Box input: dimensions too high " + str(obs_space.shape))
         else:
             raise Exception("unsupported input type " + str(type(obs_space)))
 
@@ -154,7 +154,7 @@ class EnvRunner:
                     self.input_lows.append(lows)
                     self.input_highs.append(highs)
             else:
-                raise Exception("unsupported Box action: Dimensions too high " + str(self.env.action_space.shape))
+                raise Exception("unsupported Box action: dimensions too high " + str(self.env.action_space.shape))
         else:
             raise Exception("unsupported action type " + str(type(self.env.action_space)))
 
@@ -179,6 +179,8 @@ class EnvRunner:
 
         for i in range(len(self.action_indices)):
             index = self.action_indices[i]
+
+            self.h.params.ios[index].importance = 0.0
 
             size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
 
@@ -227,11 +229,10 @@ class EnvRunner:
                     if self.input_lows[i][j] < self.input_highs[i][j]:
                         # rescale
                         indices.append(int(min(1.0, max(0.0, (obs[j] - self.input_lows[i][j]) / (self.input_highs[i][j] - self.input_lows[i][j]))) * (self.input_sizes[i][2] - 1) + 0.5))
+                        #indices.append(int(sigmoid(obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
                     elif self.input_lows[i][j] > self.input_highs[i][j]: # Inf
-                        v = obs[j]
-
                         # Rescale
-                        indices.append(int(sigmoid(v * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
+                        indices.append(int(sigmoid(obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
                     else:
                         if type(self.obs_space) is gym.spaces.multi_discrete:
                             indices.append(int(obs[j]) % self.obs_space.nvec[j])
