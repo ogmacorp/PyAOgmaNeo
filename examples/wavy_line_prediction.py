@@ -98,12 +98,8 @@ for i in range(8): # layers with exponential memory
 # create the hierarchy
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), type=neo.prediction) ], lds)
 
-# set params if desired
-h.params.layers[0].encoder.lr = 0.05
-h.params.ios[0].decoder.lr = 0.05
-
 # present the wave sequence for some timesteps
-iters = 1000
+iters = 300
 
 def wave(t):
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
