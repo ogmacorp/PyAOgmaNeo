@@ -91,7 +91,7 @@ lds = []
 for i in range(8): # layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
+    ld.hidden_size = (3, 3, 16) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
@@ -111,6 +111,8 @@ for t in range(iters):
 
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
+
+    print(h.get_hidden_cis(0))
 
     # print progress
     if t % 100 == 0:
