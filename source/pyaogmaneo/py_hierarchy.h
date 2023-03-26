@@ -245,13 +245,13 @@ public:
         if (l < 0 || l >= h.get_num_layers())
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-        if (l == 0 && i < 0 || i >= h.get_num_io())
-            throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
+        if (l == h.get_num_layers() || h.get_io_type(i) != aon::action)
+            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid input index!");
 
         if (h.get_io_type(i) == aon::action)
             return h.get_actor(i).get_visible_layer_desc(0).radius;
         
-        return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
+        return h.get_encoder(l).get_visible_layer_desc(h.get_encoder(l).get_num_visible_layers() - 1).radius;
     }
 
     int get_actor_history_capacity(
