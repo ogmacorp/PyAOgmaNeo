@@ -51,24 +51,20 @@ struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
 
     int up_radius;
+    int recurrent_radius;
     int down_radius;
-
-    int ticks_per_update;
-    int temporal_horizon;
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
         int up_radius,
-        int down_radius,
-        int ticks_per_update,
-        int temporal_horizon
+        int recurrent_radius,
+        int down_radius
     )
     :
     hidden_size(hidden_size),
     up_radius(up_radius),
-    down_radius(down_radius),
-    ticks_per_update(ticks_per_update),
-    temporal_horizon(temporal_horizon)
+    recurrent_radius(recurrent_radius),
+    down_radius(down_radius)
     {}
 
     void check_in_range() const;
@@ -190,24 +186,6 @@ public:
         return h.get_num_encoder_visible_layers(l);
     }
 
-    int get_ticks(
-        int l
-    ) const {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        return h.get_ticks(l);
-    }
-
-    int get_ticks_per_update(
-        int l
-    ) const {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        return h.get_ticks_per_update(l);
-    }
-
     int get_num_io() const {
         return h.get_num_io();
     }
@@ -240,6 +218,18 @@ public:
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
         return h.get_encoder(l).get_visible_layer_desc(0).radius;
+    }
+
+    int get_recurrent_radius(
+        int l
+    ) const {
+        if (l < 0 || l >= h.get_num_layers())
+            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
+
+        if (!h.is_layer_recurrent(l))
+            return -1; // not recurrent
+
+        return h.get_encoder(l).get_visible_layer_desc(h.get_encoder(l).get_num_visible_layers() - 1).radius;
     }
 
     int get_down_radius(
