@@ -72,12 +72,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("code_iters", &aon::Encoder::Params::code_iters)
         .def_readwrite("scale", &aon::Encoder::Params::scale)
-        .def_readwrite("lr", &aon::Encoder::Params::lr);
+        .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("curve", &aon::Encoder::Params::curve);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr);
+        .def_readwrite("lr", &aon::Decoder::Params::lr)
+        .def_readwrite("curve", &aon::Decoder::Params::curve);
 
     py::class_<aon::Actor::Params>(m, "Actorparams")
         .def(py::init<>())
