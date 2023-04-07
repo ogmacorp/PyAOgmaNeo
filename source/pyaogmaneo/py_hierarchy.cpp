@@ -50,36 +50,6 @@ void Layer_Desc::check_in_range() const {
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
 }
 
-void Hierarchy::enc_get_set_index_check(
-    int l
-) const {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-}
-
-void Hierarchy::dec_get_set_index_check(
-    int l, int i
-) const {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-    if (l == 0 && (i < 0 || i >= h.get_num_io()))
-        throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-    if (l == 0 && (!h.io_layer_exists(i) || h.get_io_type(i) != aon::prediction))
-        throw std::runtime_error("error: index " + std::to_string(i) + " does not have a decoder!");
-}
-
-void Hierarchy::act_get_set_index_check(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) != aon::action)
-        throw std::runtime_error("error: index " + std::to_string(i) + " does not have an actor!");
-}
-
 Hierarchy::Hierarchy(
     const std::vector<IO_Desc> &io_descs,
     const std::vector<Layer_Desc> &layer_descs,
