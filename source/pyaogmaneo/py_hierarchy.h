@@ -79,19 +79,6 @@ class Hierarchy {
 private:
     aon::Hierarchy h;
 
-    void enc_get_set_index_check(
-        int l
-    ) const;
-
-    void dec_get_set_index_check(
-        int l,
-        int i
-    ) const;
-
-    void act_get_set_index_check(
-        int i
-    ) const;
-
     void init_random(
         const std::vector<IO_Desc> &io_descs,
         const std::vector<Layer_Desc> &layer_descs
