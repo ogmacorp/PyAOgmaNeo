@@ -213,8 +213,8 @@ void Hierarchy::step(
         c_input_cis_backing[i].resize(input_cis[i].size());
 
         for (int j = 0; j < input_cis[i].size(); j++) {
-            if (input_cis[i][j] < 0 || input_cis[i][j] >= h.get_io_size(i).z)
-                throw std::runtime_error("input csdr at input index " + std::to_string(i) + " has an out-of-bounds column index (" + std::to_string(input_cis[i][j]) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(h.get_io_size(i).z - 1) + "]");
+            if (input_cis[i][j] < -1 || input_cis[i][j] >= h.get_io_size(i).z)
+                throw std::runtime_error("input csdr at input index " + std::to_string(i) + " has an out-of-bounds column index (" + std::to_string(input_cis[i][j]) + ") at column index " + std::to_string(j) + ". it must be in the range [-1, " + std::to_string(h.get_io_size(i).z - 1) + "]");
 
             c_input_cis_backing[i][j] = input_cis[i][j];
         }

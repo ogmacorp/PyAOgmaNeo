@@ -163,8 +163,8 @@ void Image_Encoder::reconstruct(
     aon::Int_Buffer c_recon_cis_backing(recon_cis.size());
 
     for (int j = 0; j < recon_cis.size(); j++) {
-        if (recon_cis[j] < 0 || recon_cis[j] >= enc.get_hidden_size().z)
-            throw std::runtime_error("recon csdr (recon_cis) has an out-of-bounds column index (" + std::to_string(recon_cis[j]) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(enc.get_hidden_size().z - 1) + "]");
+        if (recon_cis[j] < -1 || recon_cis[j] >= enc.get_hidden_size().z)
+            throw std::runtime_error("recon csdr (recon_cis) has an out-of-bounds column index (" + std::to_string(recon_cis[j]) + ") at column index " + std::to_string(j) + ". it must be in the range [-1, " + std::to_string(enc.get_hidden_size().z - 1) + "]");
 
         c_recon_cis_backing[j] = recon_cis[j];
     }
