@@ -56,36 +56,6 @@ void Layer_Desc::check_in_range() const {
         throw std::runtime_error("error: ticks_per_update > temporal_horizon is not allowed!");
 }
 
-void Hierarchy::enc_get_set_index_check(
-    int l
-) const {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-}
-
-void Hierarchy::dec_get_set_index_check(
-    int l, int i
-) const {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-    if (l == 0 && (i < 0 || i >= h.get_num_io()))
-        throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-    if (l == 0 && (!h.io_layer_exists(i) || h.get_io_type(i) != aon::prediction))
-        throw std::runtime_error("error: index " + std::to_string(i) + " does not have a decoder!");
-}
-
-void Hierarchy::act_get_set_index_check(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) != aon::action)
-        throw std::runtime_error("error: index " + std::to_string(i) + " does not have an actor!");
-}
-
 Hierarchy::Hierarchy(
     const std::vector<IO_Desc> &io_descs,
     const std::vector<Layer_Desc> &layer_descs,
@@ -275,23 +245,6 @@ std::vector<int> Hierarchy::get_prediction_cis(
 
     for (int j = 0; j < predictions.size(); j++)
         predictions[j] = h.get_prediction_cis(i)[j];
-
-    return predictions;
-}
-
-std::vector<float> Hierarchy::get_prediction_acts(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    std::vector<float> predictions(h.get_prediction_acts(i).size());
-
-    for (int j = 0; j < predictions.size(); j++)
-        predictions[j] = h.get_prediction_acts(i)[j];
 
     return predictions;
 }
