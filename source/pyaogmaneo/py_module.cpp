@@ -67,13 +67,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
+        .def_readwrite("choice", &aon::Encoder::Params::choice)
+        .def_readwrite("vigilance_low", &aon::Encoder::Params::vigilance_low)
+        .def_readwrite("vigilance_high", &aon::Encoder::Params::vigilance_high)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
-        .def(py::init<>())
-        .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr);
+        .def(py::init<>());
 
     py::class_<aon::Actor::Params>(m, "Actorparams")
         .def(py::init<>())
@@ -128,7 +129,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
-        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)

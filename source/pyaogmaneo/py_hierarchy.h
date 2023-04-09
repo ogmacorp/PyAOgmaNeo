@@ -135,10 +135,6 @@ public:
         int i
     ) const;
 
-    std::vector<float> get_prediction_acts(
-        int i
-    ) const;
-
     std::vector<int> get_hidden_cis(
         int l
     ) {
