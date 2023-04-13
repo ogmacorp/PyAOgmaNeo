@@ -249,6 +249,23 @@ std::vector<int> Hierarchy::get_prediction_cis(
     return predictions;
 }
 
+std::vector<float> Hierarchy::get_prediction_acts(
+    int i
+) const {
+    if (i < 0 || i >= h.get_num_io())
+        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
+
+    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
+        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+
+    std::vector<float> predictions(h.get_prediction_acts(i).size());
+
+    for (int j = 0; j < predictions.size(); j++)
+        predictions[j] = h.get_prediction_acts(i)[j];
+
+    return predictions;
+}
+
 void Hierarchy::copy_params_to_h() {
     if (params.ios.size() != h.params.ios.size())
         throw std::runtime_error("ios parameter size mismatch - did you modify the length of params.ios?");
