@@ -56,7 +56,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("up_radius") = 2,
-            py::arg("recurrent_radius") = 0,
+            py::arg("recurrent_radius") = 2,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
@@ -68,13 +68,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("code_iters", &aon::Encoder::Params::code_iters)
-        .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
         .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
 
