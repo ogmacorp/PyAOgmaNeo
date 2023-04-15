@@ -70,6 +70,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
+        .def_readwrite("radius", &aon::Encoder::Params::radius)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
@@ -157,6 +158,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
+        .def_readwrite("radius", &aon::Image_Encoder::Params::radius)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
