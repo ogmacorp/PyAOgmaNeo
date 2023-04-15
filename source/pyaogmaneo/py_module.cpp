@@ -72,7 +72,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("threshold", &aon::Encoder::Params::threshold)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("boost", &aon::Encoder::Params::boost)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
