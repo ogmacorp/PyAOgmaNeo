@@ -166,6 +166,9 @@ class EnvRunner:
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
 
+            ld.ticks_per_update = 1
+            ld.temporal_horizon = 1
+
             lds.append(ld)
 
         io_descs = []
