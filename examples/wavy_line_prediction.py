@@ -91,7 +91,7 @@ lds = []
 for i in range(3): # layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 128) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
