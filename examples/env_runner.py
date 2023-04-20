@@ -25,7 +25,7 @@ input_type_action = neo.action
 class EnvRunner:
     def __init__(self, env, layer_sizes=1 * [(5, 5, 32)],
         layer_radius=2, hidden_size=(8, 8, 16),
-        image_radius=8, image_scale=1.0, obs_resolution=32, action_resolution=9,
+        image_radius=8, image_scale=1.0, obs_resolution=128, action_resolution=9,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=4.0, n_threads=8
     ):
         self.env = env
@@ -228,8 +228,8 @@ class EnvRunner:
                 for j in range(len(self.input_lows[i])):
                     if self.input_lows[i][j] < self.input_highs[i][j]:
                         # rescale
-                        #indices.append(int(min(1.0, max(0.0, (obs[j] - self.input_lows[i][j]) / (self.input_highs[i][j] - self.input_lows[i][j]))) * (self.input_sizes[i][2] - 1) + 0.5))
-                        indices.append(int(sigmoid(obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
+                        indices.append(int(min(1.0, max(0.0, (obs[j] - self.input_lows[i][j]) / (self.input_highs[i][j] - self.input_lows[i][j]))) * (self.input_sizes[i][2] - 1) + 0.5))
+                        #indices.append(int(sigmoid(obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
                     elif self.input_lows[i][j] > self.input_highs[i][j]: # Inf
                         # Rescale
                         indices.append(int(sigmoid(obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
