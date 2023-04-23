@@ -200,8 +200,7 @@ std::vector<unsigned char> Hierarchy::serialize_state_to_buffer() {
 void Hierarchy::step(
     const std::vector<std::vector<int>> &input_cis,
     bool learn_enabled,
-    float reward,
-    float mimic
+    float reward
 ) {
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -229,7 +228,7 @@ void Hierarchy::step(
         c_input_cis[i] = &c_input_cis_backing[i];
     }
     
-    h.step(c_input_cis, learn_enabled, reward, mimic);
+    h.step(c_input_cis, learn_enabled, reward);
 }
 
 std::vector<int> Hierarchy::get_prediction_cis(
@@ -245,23 +244,6 @@ std::vector<int> Hierarchy::get_prediction_cis(
 
     for (int j = 0; j < predictions.size(); j++)
         predictions[j] = h.get_prediction_cis(i)[j];
-
-    return predictions;
-}
-
-std::vector<float> Hierarchy::get_prediction_acts(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    std::vector<float> predictions(h.get_prediction_acts(i).size());
-
-    for (int j = 0; j < predictions.size(); j++)
-        predictions[j] = h.get_prediction_acts(i)[j];
 
     return predictions;
 }

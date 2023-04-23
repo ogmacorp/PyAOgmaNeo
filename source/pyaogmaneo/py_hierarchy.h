@@ -123,8 +123,7 @@ public:
     void step(
         const std::vector<std::vector<int>> &input_cis,
         bool learn_enabled,
-        float reward,
-        float mimic
+        float reward
     );
 
     void clear_state() {
@@ -136,10 +135,6 @@ public:
     }
 
     std::vector<int> get_prediction_cis(
-        int i
-    ) const;
-
-    std::vector<float> get_prediction_acts(
         int i
     ) const;
 
