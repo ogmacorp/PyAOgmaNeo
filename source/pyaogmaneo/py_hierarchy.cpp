@@ -266,6 +266,45 @@ std::vector<float> Hierarchy::get_prediction_acts(
     return predictions;
 }
 
+std::vector<int> Hierarchy::sample_prediction(
+    int i,
+    float temperature
+) const {
+    if (i < 0 || i >= h.get_num_io())
+        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
+
+    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
+        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+
+    std::vector<int> sample(h.get_prediction_cis(i).size());
+
+    int size_z = h.get_io_size(i).z;
+
+    for (int j = 0; j < sample.size(); j++) {
+        float total = 0.0f;
+
+        for (int k = 0; k < size_z; k++) {
+            total += h.get_prediction_acts(i)[k + j * size_z];
+        }
+
+        float cusp = aon::randf(0.0f, total);
+
+        float sum_so_far = 0.0f;
+
+        for (int k = 0; k < size_z; k++) {
+            sum_so_far += h.get_prediction_acts(i)[k + j * size_z];
+
+            if (sum_so_far >= cusp) {
+                sample[j] = k;
+
+                break;
+            }
+        }
+    }
+
+    return sample;
+}
+
 void Hierarchy::copy_params_to_h() {
     if (params.ios.size() != h.params.ios.size())
         throw std::runtime_error("ios parameter size mismatch - did you modify the length of params.ios?");
