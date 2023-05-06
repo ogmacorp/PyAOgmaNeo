@@ -284,7 +284,7 @@ std::vector<int> Hierarchy::sample_prediction(
         float total = 0.0f;
 
         for (int k = 0; k < size_z; k++) {
-            total += h.get_prediction_acts(i)[k + j * size_z];
+            total += h.get_prediction_acts(i)[k + j * size_z] * temperature;
         }
 
         float cusp = aon::randf(0.0f, total);
@@ -292,7 +292,7 @@ std::vector<int> Hierarchy::sample_prediction(
         float sum_so_far = 0.0f;
 
         for (int k = 0; k < size_z; k++) {
-            sum_so_far += h.get_prediction_acts(i)[k + j * size_z];
+            sum_so_far += h.get_prediction_acts(i)[k + j * size_z] * temperature;
 
             if (sum_so_far >= cusp) {
                 sample[j] = k;
