@@ -67,7 +67,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Encoder::Params::lr);
+        .def_readwrite("code_iters", &aon::Encoder::Params::code_iters)
+        .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -153,8 +155,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
