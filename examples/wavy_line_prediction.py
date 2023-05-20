@@ -15,7 +15,6 @@ import struct
 
 # set the number of threads
 neo.set_num_threads(4)
-neo.set_global_state(12345)
 
 # scalar encoding used in this example, take a byte and convert 4 consective bits into 2 one-hot columns with 16 cells in them
 
@@ -89,7 +88,7 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(3): # layers with exponential memory
+for i in range(6): # layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
@@ -101,10 +100,10 @@ for i in range(3): # layers with exponential memory
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps
-iters = 30000
+iters = 10000
 
 def wave(t):
-    if t % 50 == 0:
+    if t % 200 == 0:
         return 1.0
     return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
@@ -117,7 +116,7 @@ for t in range(iters):
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
 
-    print(h.get_hidden_cis(0))
+    print(h.get_hidden_cis(5))
 
     # print progress
     if t % 100 == 0:
