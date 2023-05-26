@@ -243,5 +243,19 @@ public:
 
         return h.get_actor(i).get_history_capacity();
     }
+
+    // for visualization mostly
+    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_encoder_receptive_field(
+        int l,
+        int i,
+        const std::tuple<int, int, int> &cell_pos
+    );
+
+    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_decoder_receptive_field(
+        int l,
+        int i,
+        bool feedback,
+        const std::tuple<int, int, int> &cell_pos
+    );
 };
 }

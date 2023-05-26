@@ -184,5 +184,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size);
+        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
+        .def("get_encoder_receptive_field", &pyaon::Image_Encoder::get_encoder_receptive_field)
+        .def("get_decoder_receptive_field", &pyaon::Image_Encoder::get_decoder_receptive_field);
 }
