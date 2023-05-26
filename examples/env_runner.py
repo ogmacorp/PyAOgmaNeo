@@ -23,7 +23,7 @@ input_type_prediction = neo.prediction
 input_type_action = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layer_sizes=1 * [(5, 5, 32)],
+    def __init__(self, env, layer_sizes=3 * [(5, 5, 32)],
         layer_radius=2, hidden_size=(8, 8, 16),
         image_radius=8, image_scale=1.0, obs_resolution=32, action_resolution=9,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=4.0, n_threads=8
@@ -165,7 +165,6 @@ class EnvRunner:
 
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
-            ld.recurrent_radius = -1
 
             lds.append(ld)
 
