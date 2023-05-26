@@ -113,5 +113,11 @@ public:
 
         return { size.x, size.y, size.z };
     }
+
+    // for visualization mostly
+    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_receptive_field(
+        int i,
+        const std::tuple<int, int, int> &cell_pos
+    );
 };
 }

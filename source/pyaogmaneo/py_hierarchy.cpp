@@ -282,7 +282,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
 ) {
     const aon::Int3 &hidden_size = h.get_encoder(l).get_hidden_size();
 
-    aon::Encoder::Visible_Layer &vl = h.get_encoder(l).get_visible_layer(i);
+    const aon::Encoder::Visible_Layer &vl = h.get_encoder(l).get_visible_layer(i);
     const aon::Encoder::Visible_Layer_Desc &vld = h.get_encoder(l).get_visible_layer_desc(i);
 
     int diam = vld.radius * 2 + 1;
@@ -338,7 +338,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder
 ) {
     const aon::Int3 &hidden_size = h.get_decoder(l, i).get_hidden_size();
 
-    aon::Decoder::Visible_Layer &vl = h.get_decoder(l, i).get_visible_layer(feedback);
+    const aon::Decoder::Visible_Layer &vl = h.get_decoder(l, i).get_visible_layer(feedback);
     const aon::Decoder::Visible_Layer_Desc &vld = h.get_decoder(l, i).get_visible_layer_desc(feedback);
 
     int diam = vld.radius * 2 + 1;
