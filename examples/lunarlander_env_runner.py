@@ -12,10 +12,13 @@
 
 import gymnasium as gym
 from env_runner import EnvRunner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
+from visadapter.VisAdapter import VisAdapter
 
 env = gym.make('LunarLander-v2')
 
 runner = EnvRunner(env, terminal_reward=0.0, reward_scale=1.0)
+
+#va = VisAdapter()
 
 average_reward = 0.0
 max_reward = 0.0
@@ -28,6 +31,8 @@ for episode in range(5000):
     # timesteps
     for t in range(10000):
         done, reward = runner.act() # step the environment and agent
+
+        #va.update(runner.h, [])
 
         total_reward += reward
 
