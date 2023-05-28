@@ -325,6 +325,9 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
     int i,
     const std::tuple<int, int, int> &cell_pos
 ) {
+    assert(l >= 0 && l < h.get_num_layers());
+    assert(i >= 0 && i < h.get_num_encoder_visible_layers(l));
+
     const aon::Int3 &hidden_size = h.get_encoder(l).get_hidden_size();
 
     const aon::Encoder::Visible_Layer &vl = h.get_encoder(l).get_visible_layer(i);
@@ -358,10 +361,12 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
 
             int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
 
+            int field_start = vld.size.z * (offset.y + diam * offset.x);
+
             for (int vc = 0; vc < vld.size.z; vc++) {
                 float w = vl.weights[vc + wi_start];
 
-                field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
+                field[vc + field_start] = w;
             }
         }
 
@@ -374,6 +379,9 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder
     bool feedback,
     const std::tuple<int, int, int> &cell_pos
 ) {
+    assert(l >= 0 && l < h.get_num_layers());
+    assert(i >= 0 && i < h.get_num_decoders(l));
+
     const aon::Int3 &hidden_size = h.get_decoder(l, i).get_hidden_size();
 
     const aon::Decoder::Visible_Layer &vl = h.get_decoder(l, i).get_visible_layer(feedback);
@@ -407,10 +415,12 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder
 
             int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
 
+            int field_start = vld.size.z * (offset.y + diam * offset.x);
+
             for (int vc = 0; vc < vld.size.z; vc++) {
                 float w = vl.weights[vc + wi_start];
 
-                field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
+                field[vc + field_start] = w;
             }
         }
 

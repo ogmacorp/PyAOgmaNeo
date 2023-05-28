@@ -176,6 +176,8 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_rec
     int i,
     const std::tuple<int, int, int> &cell_pos
 ) {
+    assert(i >= 0 && i < enc.get_num_visible_layers());
+
     const aon::Int3 &hidden_size = enc.get_hidden_size();
 
     const aon::Image_Encoder::Visible_Layer &vl = enc.get_visible_layer(i);
@@ -209,10 +211,12 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_rec
 
             int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
 
+            int field_start = vld.size.z * (offset.y + diam * offset.x);
+
             for (int vc = 0; vc < vld.size.z; vc++) {
                 float w = vl.protos[vc + wi_start];
 
-                field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
+                field[vc + field_start] = w;
             }
         }
 
