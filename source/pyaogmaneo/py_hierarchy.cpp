@@ -270,6 +270,9 @@ std::vector<int> Hierarchy::sample_prediction(
     int i,
     float temperature
 ) const {
+    if (temperature == 0.0f)
+        return get_prediction_cis(i);
+
     if (i < 0 || i >= h.get_num_io())
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
@@ -284,14 +287,14 @@ std::vector<int> Hierarchy::sample_prediction(
         float total = 0.0f;
 
         for (int k = 0; k < size_z; k++)
-            total += aon::expf((h.get_prediction_acts(i)[k + j * size_z] - 1.0f) * temperature);
+            total += aon::expf((h.get_prediction_acts(i)[k + j * size_z] - 1.0f) / temperature);
 
         float cusp = aon::randf(0.0f, total);
 
         float sum_so_far = 0.0f;
 
         for (int k = 0; k < size_z; k++) {
-            sum_so_far += aon::expf((h.get_prediction_acts(i)[k + j * size_z] - 1.0f) * temperature);
+            sum_so_far += aon::expf((h.get_prediction_acts(i)[k + j * size_z] - 1.0f) / temperature);
 
             if (sum_so_far >= cusp) {
                 sample[j] = k;
