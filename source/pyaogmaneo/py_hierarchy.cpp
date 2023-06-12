@@ -283,18 +283,20 @@ std::vector<int> Hierarchy::sample_prediction(
 
     int size_z = h.get_io_size(i).z;
 
+    float temperature_inv = 1.0f / temperature;
+
     for (int j = 0; j < sample.size(); j++) {
         float total = 0.0f;
 
         for (int k = 0; k < size_z; k++)
-            total += aon::expf((h.get_prediction_acts(i)[k + j * size_z] - 1.0f) / temperature);
+            total += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
 
         float cusp = aon::randf(0.0f, total);
 
         float sum_so_far = 0.0f;
 
         for (int k = 0; k < size_z; k++) {
-            sum_so_far += aon::expf((h.get_prediction_acts(i)[k + j * size_z] - 1.0f) / temperature);
+            sum_so_far += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
 
             if (sum_so_far >= cusp) {
                 sample[j] = k;
