@@ -142,7 +142,7 @@ for t2 in range(1000):
     trgs.append(value_to_encode)
 
     # show predicted value
-    #print(value)
+    print(value)
 
 # show plot
 plt.plot(ts, vs, ts, trgs)
