@@ -139,6 +139,11 @@ public:
         int i
     ) const;
 
+    std::vector<int> sample_prediction(
+        int i,
+        float temperature
+    ) const;
+
     std::vector<int> get_hidden_cis(
         int l
     ) {
