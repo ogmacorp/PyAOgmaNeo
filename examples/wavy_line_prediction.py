@@ -102,7 +102,7 @@ h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), t
 iters = 50000
 
 def wave(t):
-    if t % 350 == 0:
+    if t % 250 == 0:
         return 1.0
     return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
