@@ -77,7 +77,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("lr", &aon::Decoder::Params::lr)
         .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
 
-    py::class_<aon::Actor::Params>(m, "Actorparams")
+    py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
