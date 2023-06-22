@@ -12,7 +12,7 @@
 #include <aogmaneo/hierarchy.h>
 
 namespace pyaon {
-const int hierarchy_magic = 1188221;
+const int hierarchy_magic = 1138225;
 
 enum IO_Type {
     none = 0,
@@ -258,5 +258,19 @@ public:
 
         return h.get_actor(i).get_history_capacity();
     }
+
+    // for visualization mostly
+    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_encoder_receptive_field(
+        int l,
+        int i,
+        const std::tuple<int, int, int> &cell_pos
+    );
+
+    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_decoder_receptive_field(
+        int l,
+        int i,
+        bool feedback,
+        const std::tuple<int, int, int> &cell_pos
+    );
 };
 }
