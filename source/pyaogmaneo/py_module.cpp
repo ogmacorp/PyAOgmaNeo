@@ -86,6 +86,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("bias", &aon::Actor::Params::bias)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("temperature", &aon::Actor::Params::temperature)
+        .def_readwrite("value_gcurve", &aon::Actor::Params::value_gcurve)
+        .def_readwrite("action_gcurve", &aon::Actor::Params::action_gcurve)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
