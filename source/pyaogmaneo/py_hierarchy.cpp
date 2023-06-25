@@ -92,6 +92,7 @@ void Hierarchy::init_random(
         c_io_descs[i] = aon::Hierarchy::IO_Desc(
             aon::Int3(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size), std::get<2>(io_descs[i].size)),
             static_cast<aon::IO_Type>(io_descs[i].io_type),
+            io_descs[i].num_indices,
             io_descs[i].up_radius,
             io_descs[i].down_radius,
             io_descs[i].history_capacity
@@ -105,6 +106,7 @@ void Hierarchy::init_random(
 
         c_layer_descs[l] = aon::Hierarchy::Layer_Desc(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
+            layer_descs[l].num_indices,
             layer_descs[l].up_radius,
             layer_descs[l].recurrent_radius,
             layer_descs[l].down_radius
@@ -242,66 +244,6 @@ std::vector<int> Hierarchy::get_prediction_cis(
     return predictions;
 }
 
-std::vector<float> Hierarchy::get_prediction_acts(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    std::vector<float> predictions(h.get_prediction_acts(i).size());
-
-    for (int j = 0; j < predictions.size(); j++)
-        predictions[j] = h.get_prediction_acts(i)[j];
-
-    return predictions;
-}
-
-std::vector<int> Hierarchy::sample_prediction(
-    int i,
-    float temperature
-) const {
-    if (temperature == 0.0f)
-        return get_prediction_cis(i);
-
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    std::vector<int> sample(h.get_prediction_cis(i).size());
-
-    int size_z = h.get_io_size(i).z;
-
-    float temperature_inv = 1.0f / temperature;
-
-    for (int j = 0; j < sample.size(); j++) {
-        float total = 0.0f;
-
-        for (int k = 0; k < size_z; k++)
-            total += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-        float cusp = aon::randf(0.0f, total);
-
-        float sum_so_far = 0.0f;
-
-        for (int k = 0; k < size_z; k++) {
-            sum_so_far += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-            if (sum_so_far >= cusp) {
-                sample[j] = k;
-
-                break;
-            }
-        }
-    }
-
-    return sample;
-}
-
 void Hierarchy::copy_params_to_h() {
     if (params.ios.size() != h.params.ios.size())
         throw std::runtime_error("ios parameter size mismatch - did you modify the length of params.ios?");
@@ -365,55 +307,6 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
                     w = vl.weights[wi];
                 else
                     w = 0.0f;
-
-                field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
-            }
-        }
-
-    return std::make_tuple(field, std::make_tuple(size.x, size.y, size.z));
-}
-
-std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder_receptive_field(
-    int l,
-    int i,
-    bool feedback,
-    const std::tuple<int, int, int> &cell_pos
-) {
-    const aon::Int3 &hidden_size = h.get_decoder(l, i).get_hidden_size();
-
-    const aon::Decoder::Visible_Layer &vl = h.get_decoder(l, i).get_visible_layer(feedback);
-    const aon::Decoder::Visible_Layer_Desc &vld = h.get_decoder(l, i).get_visible_layer_desc(feedback);
-
-    int diam = vld.radius * 2 + 1;
-
-    // projection
-    aon::Float2 h_to_v = aon::Float2(static_cast<float>(vld.size.x) / static_cast<float>(hidden_size.x),
-        static_cast<float>(vld.size.y) / static_cast<float>(hidden_size.y));
-
-    aon::Int2 visible_center = project(aon::Int2(std::get<0>(cell_pos), std::get<1>(cell_pos)), h_to_v);
-
-    // lower corner
-    aon::Int2 field_lower_bound(visible_center.x - vld.radius, visible_center.y - vld.radius);
-
-    // bounds of receptive field, clamped to input size
-    aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
-    aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
-
-    aon::Int3 size(iter_upper_bound.x - iter_lower_bound.x, iter_upper_bound.y - iter_lower_bound.y, vld.size.z);
-
-    int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
-
-    // get weights
-    std::vector<float> field(size.x * size.y * size.z, 0.0f);
-
-    for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
-        for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
-            aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
-
-            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
-
-            for (int vc = 0; vc < vld.size.z; vc++) {
-                float w = vl.weights[vc + wi_start];
 
                 field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
             }

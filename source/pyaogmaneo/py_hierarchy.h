@@ -24,6 +24,8 @@ struct IO_Desc {
     std::tuple<int, int, int> size;
     IO_Type io_type;
 
+    int num_indices;
+
     int up_radius;
     int down_radius;
 
@@ -32,6 +34,7 @@ struct IO_Desc {
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type io_type,
+        int num_indices,
         int up_radius,
         int down_radius,
         int history_capacity
@@ -39,6 +42,7 @@ struct IO_Desc {
     :
     size(size),
     io_type(io_type),
+    num_indices(num_indices),
     up_radius(up_radius),
     down_radius(down_radius),
     history_capacity(history_capacity)
@@ -50,18 +54,22 @@ struct IO_Desc {
 struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
 
+    int num_indices;
+
     int up_radius;
     int recurrent_radius;
     int down_radius;
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
+        int num_indices,
         int up_radius,
         int recurrent_radius,
         int down_radius
     )
     :
     hidden_size(hidden_size),
+    num_indices(num_indices),
     up_radius(up_radius),
     recurrent_radius(recurrent_radius),
     down_radius(down_radius)
@@ -133,15 +141,6 @@ public:
 
     std::vector<int> get_prediction_cis(
         int i
-    ) const;
-
-    std::vector<float> get_prediction_acts(
-        int i
-    ) const;
-
-    std::vector<int> sample_prediction(
-        int i,
-        float temperature
     ) const;
 
     std::vector<int> get_hidden_cis(
@@ -253,13 +252,6 @@ public:
     std::tuple<std::vector<float>, std::tuple<int, int, int>> get_encoder_receptive_field(
         int l,
         int i,
-        const std::tuple<int, int, int> &cell_pos
-    );
-
-    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_decoder_receptive_field(
-        int l,
-        int i,
-        bool feedback,
         const std::tuple<int, int, int> &cell_pos
     );
 };
