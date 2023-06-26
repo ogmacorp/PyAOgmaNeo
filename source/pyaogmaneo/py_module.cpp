@@ -70,7 +70,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("code_iters", &aon::Encoder::Params::code_iters)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
 
@@ -86,8 +85,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("bias", &aon::Actor::Params::bias)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("temperature", &aon::Actor::Params::temperature)
-        .def_readwrite("value_gcurve", &aon::Actor::Params::value_gcurve)
-        .def_readwrite("action_gcurve", &aon::Actor::Params::action_gcurve)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
