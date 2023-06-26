@@ -11,7 +11,7 @@
 # simple Cart-Pole example
 
 import pyaogmaneo as neo
-import gym
+import gymnasium as gym
 import numpy as np
 
 # squashing function
