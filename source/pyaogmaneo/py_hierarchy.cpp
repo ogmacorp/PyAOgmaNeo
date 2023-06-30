@@ -354,17 +354,10 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
         for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
-            int wi = offset.y + diam * (offset.x + diam * hidden_cell_index);
+            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                float w;
-
-                if (vl.indices[wi] == -1)
-                    w = 1.0f;
-                else if (vl.indices[wi] == vc)
-                    w = vl.weights[wi];
-                else
-                    w = 0.0f;
+                float w = vl.weights[vc + wi_start];
 
                 field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
             }
