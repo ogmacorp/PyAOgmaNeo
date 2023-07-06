@@ -166,7 +166,6 @@ class EnvRunner:
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
 
-            ld.recurrent_radius = 2
             lds.append(ld)
 
         io_descs = []
