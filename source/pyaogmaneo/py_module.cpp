@@ -68,7 +68,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
+        .def_readwrite("gcurve", &aon::Encoder::Params::gcurve)
+        .def_readwrite("recurrent_importance", &aon::Encoder::Params::recurrent_importance);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -88,8 +89,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder)
-        .def_readwrite("recurrent_importance", &aon::Hierarchy::Layer_Params::recurrent_importance);
+        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
