@@ -69,7 +69,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("gcurve", &aon::Encoder::Params::gcurve)
-        .def_readwrite("recurrent_importance", &aon::Encoder::Params::recurrent_importance);
+        .def_readwrite("recurrent_importance", &aon::Encoder::Params::recurrent_importance)
+        .def_readwrite("refractory_ticks", &aon::Encoder::Params::refractory_ticks);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
