@@ -25,7 +25,7 @@ input_type_action = neo.action
 class EnvRunner:
     def __init__(self, env, layer_sizes=2 * [(5, 5, 32)],
         layer_radius=2, hidden_size=(8, 8, 16),
-        image_radius=8, image_scale=1.0, obs_resolution=32, action_resolution=9,
+        image_radius=8, image_scale=1.0, obs_resolution=16, action_resolution=9,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=4.0, n_threads=8
     ):
         self.env = env
@@ -179,8 +179,6 @@ class EnvRunner:
 
         for i in range(len(self.action_indices)):
             index = self.action_indices[i]
-
-            self.h.params.ios[index].importance = 0.0
 
             size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
 
