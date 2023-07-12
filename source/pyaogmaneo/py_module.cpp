@@ -51,17 +51,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<
                 std::tuple<int, int, int>,
                 int,
-                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("up_radius") = 2,
-            py::arg("recurrent_radius") = 0,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
-        .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius);
 
     // bind params
@@ -69,7 +66,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("gcurve", &aon::Encoder::Params::gcurve)
-        .def_readwrite("recurrent_importance", &aon::Encoder::Params::recurrent_importance);
+        .def_readwrite("memory", &aon::Encoder::Params::memory);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -137,7 +134,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_size", &pyaon::Hierarchy::get_io_size)
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
-        .def("get_recurrent_radius", &pyaon::Hierarchy::get_recurrent_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
         .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
 
