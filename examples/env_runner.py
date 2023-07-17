@@ -23,7 +23,7 @@ input_type_prediction = neo.prediction
 input_type_action = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layer_sizes=3 * [(5, 5, 32)],
+    def __init__(self, env, layer_sizes=4 * [(5, 5, 16)],
         layer_radius=2, hidden_size=(8, 8, 16),
         image_radius=8, image_scale=1.0, obs_resolution=16, action_resolution=15,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=3.0, n_threads=8
