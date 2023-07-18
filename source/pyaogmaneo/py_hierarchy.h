@@ -139,6 +139,10 @@ public:
         int i
     ) const;
 
+    std::vector<int> get_layer_prediction_cis(
+        int l
+    ) const;
+
     std::vector<float> get_prediction_acts(
         int i
     ) const;

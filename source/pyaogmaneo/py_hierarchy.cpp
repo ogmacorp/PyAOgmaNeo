@@ -249,6 +249,22 @@ std::vector<int> Hierarchy::get_prediction_cis(
     return predictions;
 }
 
+std::vector<int> Hierarchy::get_layer_prediction_cis(
+    int l
+) const {
+    if (l < 1 || l >= h.get_num_layers())
+        throw std::runtime_error("layer index " + std::to_string(l) + " out of range [1, " + std::to_string(h.get_num_layers() - 1) + "]!");
+
+    const aon::Int_Buffer &cis = h.get_decoder(l, h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).get_hidden_cis();
+
+    std::vector<int> predictions(cis.size());
+
+    for (int j = 0; j < predictions.size(); j++)
+        predictions[j] = cis[j];
+
+    return predictions;
+}
+
 std::vector<float> Hierarchy::get_prediction_acts(
     int i
 ) const {
