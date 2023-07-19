@@ -210,10 +210,9 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_rec
             int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                float w0 = vl.weights0[vc + wi_start];
-                float w1 = vl.weights1[vc + wi_start];
+                float w = vl.protos[vc + wi_start];
 
-                field[vc + vld.size.z * (offset.y + diam * offset.x)] = (w0 + w1) * 0.5f;
+                field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
             }
         }
 
