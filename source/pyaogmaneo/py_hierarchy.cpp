@@ -50,36 +50,6 @@ void Layer_Desc::check_in_range() const {
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
 }
 
-void Hierarchy::enc_get_set_index_check(
-    int l
-) const {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-}
-
-void Hierarchy::dec_get_set_index_check(
-    int l, int i
-) const {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-    if (l == 0 && (i < 0 || i >= h.get_num_io()))
-        throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-    if (l == 0 && (!h.io_layer_exists(i) || h.get_io_type(i) != aon::prediction))
-        throw std::runtime_error("error: index " + std::to_string(i) + " does not have a decoder!");
-}
-
-void Hierarchy::act_get_set_index_check(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) != aon::action)
-        throw std::runtime_error("error: index " + std::to_string(i) + " does not have an actor!");
-}
-
 Hierarchy::Hierarchy(
     const std::vector<IO_Desc> &io_descs,
     const std::vector<Layer_Desc> &layer_descs,
@@ -346,4 +316,101 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
+}
+
+std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder_receptive_field(
+    int l,
+    int i,
+    const std::tuple<int, int, int> &cell_pos
+) {
+    const aon::Int3 &hidden_size = h.get_encoder(l).get_hidden_size();
+
+    const aon::Encoder::Visible_Layer &vl = h.get_encoder(l).get_visible_layer(i);
+    const aon::Encoder::Visible_Layer_Desc &vld = h.get_encoder(l).get_visible_layer_desc(i);
+
+    int diam = vld.radius * 2 + 1;
+
+    // projection
+    aon::Float2 h_to_v = aon::Float2(static_cast<float>(vld.size.x) / static_cast<float>(hidden_size.x),
+        static_cast<float>(vld.size.y) / static_cast<float>(hidden_size.y));
+
+    aon::Int2 visible_center = project(aon::Int2(std::get<0>(cell_pos), std::get<1>(cell_pos)), h_to_v);
+
+    // lower corner
+    aon::Int2 field_lower_bound(visible_center.x - vld.radius, visible_center.y - vld.radius);
+
+    // bounds of receptive field, clamped to input size
+    aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
+    aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
+
+    aon::Int3 size(iter_upper_bound.x - iter_lower_bound.x, iter_upper_bound.y - iter_lower_bound.y, vld.size.z);
+
+    int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
+
+    // get weights
+    std::vector<float> field(size.x * size.y * size.z, 0.0f);
+
+    for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
+        for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
+            aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
+
+            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
+
+            for (int vc = 0; vc < vld.size.z; vc++) {
+                float w = vl.weights[vc + wi_start];
+
+                field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
+            }
+        }
+
+    return std::make_tuple(field, std::make_tuple(size.x, size.y, size.z));
+}
+
+std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder_receptive_field(
+    int l,
+    int i,
+    bool feedback,
+    const std::tuple<int, int, int> &cell_pos
+) {
+    const aon::Int3 &hidden_size = h.get_decoder(l, i).get_hidden_size();
+
+    const aon::Decoder::Visible_Layer &vl = h.get_decoder(l, i).get_visible_layer(feedback);
+    const aon::Decoder::Visible_Layer_Desc &vld = h.get_decoder(l, i).get_visible_layer_desc(feedback);
+
+    int diam = vld.radius * 2 + 1;
+
+    // projection
+    aon::Float2 h_to_v = aon::Float2(static_cast<float>(vld.size.x) / static_cast<float>(hidden_size.x),
+        static_cast<float>(vld.size.y) / static_cast<float>(hidden_size.y));
+
+    aon::Int2 visible_center = project(aon::Int2(std::get<0>(cell_pos), std::get<1>(cell_pos)), h_to_v);
+
+    // lower corner
+    aon::Int2 field_lower_bound(visible_center.x - vld.radius, visible_center.y - vld.radius);
+
+    // bounds of receptive field, clamped to input size
+    aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
+    aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
+
+    aon::Int3 size(iter_upper_bound.x - iter_lower_bound.x, iter_upper_bound.y - iter_lower_bound.y, vld.size.z);
+
+    int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
+
+    // get weights
+    std::vector<float> field(size.x * size.y * size.z, 0.0f);
+
+    for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
+        for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
+            aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
+
+            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
+
+            for (int vc = 0; vc < vld.size.z; vc++) {
+                float w = vl.weights[vc + wi_start];
+
+                field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
+            }
+        }
+
+    return std::make_tuple(field, std::make_tuple(size.x, size.y, size.z));
 }
