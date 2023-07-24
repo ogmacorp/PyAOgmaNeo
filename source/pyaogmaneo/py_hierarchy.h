@@ -22,7 +22,7 @@ enum IO_Type {
 
 struct IO_Desc {
     std::tuple<int, int, int> size;
-    IO_Type io_type;
+    IO_Type type;
 
     int up_radius;
     int down_radius;
@@ -31,14 +31,14 @@ struct IO_Desc {
 
     IO_Desc(
         const std::tuple<int, int, int> &size,
-        IO_Type io_type,
+        IO_Type type,
         int up_radius,
         int down_radius,
         int history_capacity
     )
     :
     size(size),
-    io_type(io_type),
+    type(type),
     up_radius(up_radius),
     down_radius(down_radius),
     history_capacity(history_capacity)
