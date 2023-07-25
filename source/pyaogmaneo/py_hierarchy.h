@@ -15,8 +15,9 @@ namespace pyaon {
 const int hierarchy_magic = 3188325;
 
 enum IO_Type {
-    prediction = 0,
-    action = 1
+    none = 0,
+    prediction = 1,
+    action = 2
 };
 
 struct IO_Desc {
