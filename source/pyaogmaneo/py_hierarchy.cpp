@@ -231,9 +231,6 @@ std::vector<int> Hierarchy::get_prediction_cis(
     if (i < 0 || i >= h.get_num_io())
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
     std::vector<int> predictions(h.get_prediction_cis(i).size());
 
     for (int j = 0; j < predictions.size(); j++)
@@ -247,9 +244,6 @@ std::vector<float> Hierarchy::get_prediction_acts(
 ) const {
     if (i < 0 || i >= h.get_num_io())
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     std::vector<float> predictions(h.get_prediction_acts(i).size());
 
@@ -268,9 +262,6 @@ std::vector<int> Hierarchy::sample_prediction(
 
     if (i < 0 || i >= h.get_num_io())
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     std::vector<int> sample(h.get_prediction_cis(i).size());
 
