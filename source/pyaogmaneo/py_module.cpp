@@ -67,16 +67,16 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
+        .def_readwrite("temperature", &aon::Encoder::Params::temperature)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("gcurve", &aon::Encoder::Params::gcurve)
         .def_readwrite("recurrent_importance", &aon::Encoder::Params::recurrent_importance);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
+        .def_readwrite("temperature", &aon::Decoder::Params::temperature)
+        .def_readwrite("lr", &aon::Decoder::Params::lr);
 
-    py::class_<aon::Actor::Params>(m, "Actorparams")
+    py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
@@ -128,7 +128,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
-        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
+        .def("get_prediction_probs", &pyaon::Hierarchy::get_prediction_probs)
         .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
