@@ -239,60 +239,6 @@ std::vector<int> Hierarchy::get_prediction_cis(
     return predictions;
 }
 
-std::vector<float> Hierarchy::get_prediction_acts(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    std::vector<float> predictions(h.get_prediction_acts(i).size());
-
-    for (int j = 0; j < predictions.size(); j++)
-        predictions[j] = h.get_prediction_acts(i)[j];
-
-    return predictions;
-}
-
-std::vector<int> Hierarchy::sample_prediction(
-    int i,
-    float temperature
-) const {
-    if (temperature == 0.0f)
-        return get_prediction_cis(i);
-
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    std::vector<int> sample(h.get_prediction_cis(i).size());
-
-    int size_z = h.get_io_size(i).z;
-
-    float temperature_inv = 1.0f / temperature;
-
-    for (int j = 0; j < sample.size(); j++) {
-        float total = 0.0f;
-
-        for (int k = 0; k < size_z; k++)
-            total += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-        float cusp = aon::randf(0.0f, total);
-
-        float sum_so_far = 0.0f;
-
-        for (int k = 0; k < size_z; k++) {
-            sum_so_far += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-            if (sum_so_far >= cusp) {
-                sample[j] = k;
-
-                break;
-            }
-        }
-    }
-
-    return sample;
-}
-
 void Hierarchy::copy_params_to_h() {
     if (params.ios.size() != h.params.ios.size())
         throw std::runtime_error("ios parameter size mismatch - did you modify the length of params.ios?");
