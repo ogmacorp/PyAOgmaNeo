@@ -73,6 +73,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
+        .def_readwrite("temperature", &aon::Decoder::Params::temperature)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
         .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
 
