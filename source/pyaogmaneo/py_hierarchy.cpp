@@ -385,7 +385,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
             int field_start = vld.size.z * (offset.y + diam * offset.x);
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                float w = vl.weights[vc + wi_start];
+                float w = vl.weights[vc + wi_start] / 255.0f;
 
                 field[vc + field_start] = w;
             }
@@ -439,7 +439,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder
             int field_start = vld.size.z * (offset.y + diam * offset.x);
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                float w = vl.weights[vc + wi_start];
+                float w = vl.weights[vc + wi_start] / 255.0f;
 
                 field[vc + field_start] = w;
             }
