@@ -135,7 +135,7 @@ public:
         int i
     ) const;
 
-    std::vector<float> get_prediction_probs(
+    std::vector<float> get_prediction_acts(
         int i
     ) const;
 
