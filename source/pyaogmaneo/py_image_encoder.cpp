@@ -163,8 +163,8 @@ void Image_Encoder::reconstruct(
     aon::Int_Buffer c_recon_cis_backing(recon_cis.size());
 
     for (int j = 0; j < recon_cis.size(); j++) {
-        if (recon_cis[j] < -1 || recon_cis[j] >= enc.get_hidden_size().z)
-            throw std::runtime_error("recon csdr (recon_cis) has an out-of-bounds column index (" + std::to_string(recon_cis[j]) + ") at column index " + std::to_string(j) + ". it must be in the range [-1, " + std::to_string(enc.get_hidden_size().z - 1) + "]");
+        if (recon_cis[j] < 0 || recon_cis[j] >= enc.get_hidden_size().z)
+            throw std::runtime_error("recon csdr (recon_cis) has an out-of-bounds column index (" + std::to_string(recon_cis[j]) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(enc.get_hidden_size().z - 1) + "]");
 
         c_recon_cis_backing[j] = recon_cis[j];
     }
@@ -176,6 +176,8 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_rec
     int i,
     const std::tuple<int, int, int> &cell_pos
 ) {
+    assert(i >= 0 && i < enc.get_num_visible_layers());
+
     const aon::Int3 &hidden_size = enc.get_hidden_size();
 
     const aon::Image_Encoder::Visible_Layer &vl = enc.get_visible_layer(i);
@@ -208,6 +210,8 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_rec
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
             int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
+
+            int field_start = vld.size.z * (offset.y + diam * offset.x);
 
             for (int vc = 0; vc < vld.size.z; vc++) {
                 float w = vl.protos[vc + wi_start];
