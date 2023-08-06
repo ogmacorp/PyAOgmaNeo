@@ -39,7 +39,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("io_type") = pyaon::prediction,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 128
+            py::arg("history_capacity") = 64
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
@@ -56,7 +56,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("up_radius") = 2,
-            py::arg("recurrent_radius") = 0,
+            py::arg("recurrent_radius") = 2,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
@@ -79,10 +79,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Actor::Params::scale)
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
+        .def_readwrite("bias", &aon::Actor::Params::bias)
         .def_readwrite("temperature", &aon::Actor::Params::temperature)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
@@ -141,9 +141,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_recurrent_radius", &pyaon::Hierarchy::get_recurrent_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
-        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
-        .def("get_decoder_receptive_field", &pyaon::Hierarchy::get_decoder_receptive_field);
+        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
@@ -188,6 +186,5 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
-        .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field);
+        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size);
 }
