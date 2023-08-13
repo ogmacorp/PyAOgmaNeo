@@ -74,7 +74,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Decoder::Params::choice)
         .def_readwrite("vigilance", &aon::Decoder::Params::vigilance)
         .def_readwrite("lr", &aon::Decoder::Params::lr);
 
