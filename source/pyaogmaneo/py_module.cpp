@@ -74,10 +74,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("lr_weight", &aon::Decoder::Params::lr_weight)
-        .def_readwrite("lr_proto", &aon::Decoder::Params::lr_proto)
-        .def_readwrite("rehearsal_mut", &aon::Decoder::Params::rehearsal_mut)
-        .def_readwrite("rehearsal_iters", &aon::Decoder::Params::rehearsal_iters);
+        .def_readwrite("scale", &aon::Decoder::Params::scale)
+        .def_readwrite("lr", &aon::Decoder::Params::lr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
