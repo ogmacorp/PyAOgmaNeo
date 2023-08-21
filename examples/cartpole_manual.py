@@ -44,9 +44,9 @@ for i in range(2): # layers with exponential memory. Not much memory is needed f
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.action) ], lds)
 
 # setting parameters
-h.params.ios[1].actor.vlr = 0.01
-h.params.ios[1].actor.alr = 0.01
-h.params.ios[1].actor.temperature = 0.5
+#h.params.ios[1].actor.vlr = 0.01
+#h.params.ios[1].actor.alr = 0.01
+#h.params.ios[1].actor.temperature = 0.5
 
 # set importance of action input to 0, the agent doesn't need to know its own last action for this task. This will speed up learning for this task
 h.params.ios[1].importance = 0.0
