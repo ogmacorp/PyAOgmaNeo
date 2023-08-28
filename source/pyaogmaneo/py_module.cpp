@@ -73,9 +73,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
-        .def(py::init<>())
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("min_gap", &aon::Decoder::Params::min_gap);
+        .def(py::init<>());
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
