@@ -74,6 +74,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
+        .def_readwrite("remember", &aon::Decoder::Params::remember)
         .def_readwrite("forget", &aon::Decoder::Params::forget);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
