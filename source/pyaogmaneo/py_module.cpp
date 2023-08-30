@@ -37,8 +37,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
-            py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
+            py::arg("up_radius") = 1,
+            py::arg("down_radius") = 1,
             py::arg("history_capacity") = 64
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
@@ -55,9 +55,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("up_radius") = 2,
+            py::arg("up_radius") = 1,
             py::arg("recurrent_radius") = 0,
-            py::arg("down_radius") = 2
+            py::arg("down_radius") = 1
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
