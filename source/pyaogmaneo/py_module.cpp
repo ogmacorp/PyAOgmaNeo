@@ -39,7 +39,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("io_type") = pyaon::prediction,
             py::arg("up_radius") = 1,
             py::arg("down_radius") = 1,
-            py::arg("history_capacity") = 64
+            py::arg("history_capacity") = 128
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
