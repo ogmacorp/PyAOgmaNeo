@@ -443,7 +443,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder
             for (int vc = 0; vc < vld.size.z; vc++) {
                 int wi = hidden_ci + hidden_size.z * (offset.y + diam * (offset.x + diam * (vc + vld.size.z * hidden_column_index)));
 
-                float w = vl.weights[wi];
+                float w = vl.weights[wi] / 255.0f;
 
                 field[vc + field_start] = w;
             }
