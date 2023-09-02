@@ -198,7 +198,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_rec
     aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
     aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
 
-    aon::Int3 size(iter_upper_bound.x - iter_lower_bound.x, iter_upper_bound.y - iter_lower_bound.y, vld.size.z);
+    aon::Int3 size(diam, diam, vld.size.z);
 
     int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
 
