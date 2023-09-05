@@ -171,7 +171,7 @@ class EnvRunner:
         io_descs = []
 
         for i in range(len(self.input_sizes)):
-            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], layer_radius, layer_radius, history_capacity=512))
+            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], layer_radius, layer_radius))
 
         self.h = neo.Hierarchy(io_descs, lds)
 
