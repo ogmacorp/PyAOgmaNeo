@@ -28,12 +28,12 @@ inline int get_num_threads() {
 }
 
 inline void set_global_state(
-    unsigned int state
+    unsigned long state
 ) {
     aon::global_state = state;
 }
 
-inline unsigned int get_global_state() {
+inline unsigned long get_global_state() {
     return aon::global_state;
 }
 
