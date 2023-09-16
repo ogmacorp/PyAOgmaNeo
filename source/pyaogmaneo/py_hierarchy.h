@@ -51,18 +51,21 @@ struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
 
     int up_radius;
+    int l_radius;
     int recurrent_radius;
     int down_radius;
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
         int up_radius,
+        int l_radius,
         int recurrent_radius,
         int down_radius
     )
     :
     hidden_size(hidden_size),
     up_radius(up_radius),
+    l_radius(l_radius),
     recurrent_radius(recurrent_radius),
     down_radius(down_radius)
     {}

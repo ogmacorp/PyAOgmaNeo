@@ -38,7 +38,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 1,
+            py::arg("down_radius") = 2,
             py::arg("history_capacity") = 128
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
@@ -52,25 +52,26 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("up_radius") = 2,
+            py::arg("l_radius") = 2,
             py::arg("recurrent_radius") = 2,
-            py::arg("down_radius") = 1
+            py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
+        .def_readwrite("l_radius", &pyaon::Layer_Desc::l_radius)
         .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius);
 
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("explain_iters", &aon::Encoder::Params::explain_iters);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
