@@ -78,8 +78,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
+        .def_readwrite("threshold", &aon::Decoder::Params::threshold)
+        .def_readwrite("lr", &aon::Decoder::Params::lr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
