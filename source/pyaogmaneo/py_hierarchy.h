@@ -12,7 +12,7 @@
 #include <aogmaneo/hierarchy.h>
 
 namespace pyaon {
-const int hierarchy_magic = 1138225;
+const int hierarchy_magic = 7514621;
 
 enum IO_Type {
     none = 0,
@@ -137,6 +137,10 @@ public:
 
     std::vector<int> get_prediction_cis(
         int i
+    ) const;
+
+    std::vector<int> get_layer_prediction_cis(
+        int l
     ) const;
 
     std::vector<float> get_prediction_acts(

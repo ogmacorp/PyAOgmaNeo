@@ -249,6 +249,22 @@ std::vector<int> Hierarchy::get_prediction_cis(
     return predictions;
 }
 
+std::vector<int> Hierarchy::get_layer_prediction_cis(
+    int l
+) const {
+    if (l < 1 || l >= h.get_num_layers())
+        throw std::runtime_error("layer index " + std::to_string(l) + " out of range [1, " + std::to_string(h.get_num_layers() - 1) + "]!");
+
+    const aon::Int_Buffer &cis = h.get_decoder(l, h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).get_hidden_cis();
+
+    std::vector<int> predictions(cis.size());
+
+    for (int j = 0; j < predictions.size(); j++)
+        predictions[j] = cis[j];
+
+    return predictions;
+}
+
 std::vector<float> Hierarchy::get_prediction_acts(
     int i
 ) const {
@@ -256,7 +272,7 @@ std::vector<float> Hierarchy::get_prediction_acts(
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     std::vector<float> predictions(h.get_prediction_acts(i).size());
 
@@ -277,7 +293,7 @@ std::vector<int> Hierarchy::sample_prediction(
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     std::vector<int> sample(h.get_prediction_cis(i).size());
 
@@ -353,7 +369,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
     aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
     aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
 
-    aon::Int3 size(iter_upper_bound.x - iter_lower_bound.x, iter_upper_bound.y - iter_lower_bound.y, vld.size.z);
+    aon::Int3 size(diam, diam, vld.size.z);
 
     int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
 
@@ -369,7 +385,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
             int field_start = vld.size.z * (offset.y + diam * offset.x);
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                float w = vl.weights[vc + wi_start];
+                float w = vl.weights[vc + wi_start] / 255.0f;
 
                 field[vc + field_start] = w;
             }
@@ -407,9 +423,13 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder
     aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
     aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
 
-    aon::Int3 size(iter_upper_bound.x - iter_lower_bound.x, iter_upper_bound.y - iter_lower_bound.y, vld.size.z);
+    aon::Int3 size(diam, diam, vld.size.z);
 
-    int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
+    aon::Int2 column_pos(std::get<0>(cell_pos), std::get<1>(cell_pos));
+
+    int hidden_column_index = aon::address2(column_pos, aon::Int2(hidden_size.x, hidden_size.y));
+
+    int hidden_ci = std::get<2>(cell_pos);
 
     // get weights
     std::vector<float> field(size.x * size.y * size.z, 0.0f);
@@ -418,12 +438,12 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder
         for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
-            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
-
             int field_start = vld.size.z * (offset.y + diam * offset.x);
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                float w = vl.weights[vc + wi_start];
+                int wi = hidden_ci + hidden_size.z * (offset.y + diam * (offset.x + diam * (vc + vld.size.z * hidden_column_index)));
+
+                float w = vl.weights[wi] / 255.0f;
 
                 field[vc + field_start] = w;
             }
