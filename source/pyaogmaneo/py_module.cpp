@@ -71,7 +71,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("lr_inc", &aon::Encoder::Params::lr_inc)
+        .def_readwrite("lr_dec", &aon::Encoder::Params::lr_dec)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
