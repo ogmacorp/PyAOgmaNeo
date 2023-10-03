@@ -164,6 +164,7 @@ class EnvRunner:
             ld = neo.LayerDesc(hidden_size=layer_sizes[i])
 
             ld.up_radius = layer_radius
+            ld.recurrent_radius = -1
             ld.down_radius = layer_radius
 
             lds.append(ld)
