@@ -369,7 +369,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
     aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
     aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
 
-    aon::Int3 size(diam, diam, vld.size.z);
+    aon::Int3 size(diam, diam, 1);
 
     int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
 
@@ -380,15 +380,11 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder
         for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
-            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
+            int wi = offset.y + diam * (offset.x + diam * hidden_cell_index);
 
-            int field_start = vld.size.z * (offset.y + diam * offset.x);
+            float w = vl.weights0[wi];
 
-            for (int vc = 0; vc < vld.size.z; vc++) {
-                float w = vl.weights[vc + wi_start] / 255.0f;
-
-                field[vc + field_start] = w;
-            }
+            field[offset.y + diam * offset.x] = w;
         }
 
     return std::make_tuple(field, std::make_tuple(size.x, size.y, size.z));
