@@ -70,14 +70,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Decoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Decoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Decoder::Params::lr);
+        .def_readwrite("scale", &aon::Decoder::Params::scale)
+        .def_readwrite("lr", &aon::Decoder::Params::lr)
+        .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
@@ -161,10 +162,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
+        .def_readwrite("threshold", &aon::Image_Encoder::Params::threshold)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
+        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
+        .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
