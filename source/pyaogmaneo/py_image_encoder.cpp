@@ -137,7 +137,7 @@ void Image_Encoder::step(
     enc.params = params;
 
     aon::Array<aon::Byte_Buffer> c_inputs_backing(inputs.size());
-    aon::Array<const aon::Byte_Buffer*> c_inputs(inputs.size());
+    aon::Array<aon::Byte_Buffer_View> c_inputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         if (inputs[i].size() != enc.get_reconstruction(i).size())
@@ -148,7 +148,7 @@ void Image_Encoder::step(
         for (int j = 0; j < inputs[i].size(); j++)
             c_inputs_backing[i][j] = inputs[i][j];
 
-        c_inputs[i] = &c_inputs_backing[i];
+        c_inputs[i] = c_inputs_backing[i];
     }
 
     enc.step(c_inputs, learn_enabled);
@@ -169,7 +169,7 @@ void Image_Encoder::reconstruct(
         c_recon_cis_backing[j] = recon_cis[j];
     }
 
-    enc.reconstruct(&c_recon_cis_backing);
+    enc.reconstruct(c_recon_cis_backing);
 }
 
 std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_receptive_field(

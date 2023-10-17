@@ -202,7 +202,7 @@ void Hierarchy::step(
     copy_params_to_h();
 
     aon::Array<aon::Int_Buffer> c_input_cis_backing(input_cis.size());
-    aon::Array<const aon::Int_Buffer*> c_input_cis(input_cis.size());
+    aon::Array<aon::Int_Buffer_View> c_input_cis(input_cis.size());
 
     for (int i = 0; i < input_cis.size(); i++) {
         int num_columns = h.get_io_size(i).x * h.get_io_size(i).y;
@@ -219,7 +219,7 @@ void Hierarchy::step(
             c_input_cis_backing[i][j] = input_cis[i][j];
         }
 
-        c_input_cis[i] = &c_input_cis_backing[i];
+        c_input_cis[i] = c_input_cis_backing[i];
     }
     
     h.step(c_input_cis, learn_enabled, reward, mimic);
