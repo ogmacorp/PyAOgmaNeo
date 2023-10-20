@@ -96,8 +96,7 @@ void Hierarchy::init_random(
             aon::Int3(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size), std::get<2>(io_descs[i].size)),
             static_cast<aon::IO_Type>(io_descs[i].type),
             io_descs[i].up_radius,
-            io_descs[i].down_radius,
-            io_descs[i].history_capacity
+            io_descs[i].down_radius
         );
     }
     
