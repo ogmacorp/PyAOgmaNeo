@@ -35,12 +35,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("type") = pyaon::prediction,
+            py::arg("io_type") = pyaon::prediction,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
-        .def_readwrite("type", &pyaon::IO_Desc::type)
+        .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius);
 
@@ -67,16 +67,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("code_iters", &aon::Encoder::Params::code_iters)
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
+        .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
         .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
 
-    py::class_<aon::Actor::Params>(m, "Actorparams")
+    py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("lr", &aon::Actor::Params::lr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
@@ -123,6 +124,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
+        .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
+        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
+        .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
@@ -132,7 +136,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_size", &pyaon::Hierarchy::get_io_size)
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
-        .def("get_down_radius", &pyaon::Hierarchy::get_down_radius);
+        .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
+        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
+        .def("get_decoder_receptive_field", &pyaon::Hierarchy::get_decoder_receptive_field);
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
@@ -148,9 +154,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Image_Encoder::Params::lr);
+        .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
+        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
+        .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
+        .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
@@ -176,5 +183,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size);
+        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
+        .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field);
 }

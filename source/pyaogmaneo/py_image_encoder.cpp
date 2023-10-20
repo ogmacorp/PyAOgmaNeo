@@ -137,7 +137,7 @@ void Image_Encoder::step(
     enc.params = params;
 
     aon::Array<aon::Byte_Buffer> c_inputs_backing(inputs.size());
-    aon::Array<const aon::Byte_Buffer*> c_inputs(inputs.size());
+    aon::Array<aon::Byte_Buffer_View> c_inputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
         if (inputs[i].size() != enc.get_reconstruction(i).size())
@@ -148,7 +148,7 @@ void Image_Encoder::step(
         for (int j = 0; j < inputs[i].size(); j++)
             c_inputs_backing[i][j] = inputs[i][j];
 
-        c_inputs[i] = &c_inputs_backing[i];
+        c_inputs[i] = c_inputs_backing[i];
     }
 
     enc.step(c_inputs, learn_enabled);
@@ -169,5 +169,56 @@ void Image_Encoder::reconstruct(
         c_recon_cis_backing[j] = recon_cis[j];
     }
 
-    enc.reconstruct(&c_recon_cis_backing);
+    enc.reconstruct(c_recon_cis_backing);
+}
+
+std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_receptive_field(
+    int i,
+    const std::tuple<int, int, int> &cell_pos
+) {
+    assert(i >= 0 && i < enc.get_num_visible_layers());
+
+    const aon::Int3 &hidden_size = enc.get_hidden_size();
+
+    const aon::Image_Encoder::Visible_Layer &vl = enc.get_visible_layer(i);
+    const aon::Image_Encoder::Visible_Layer_Desc &vld = enc.get_visible_layer_desc(i);
+
+    int diam = vld.radius * 2 + 1;
+
+    // projection
+    aon::Float2 h_to_v = aon::Float2(static_cast<float>(vld.size.x) / static_cast<float>(hidden_size.x),
+        static_cast<float>(vld.size.y) / static_cast<float>(hidden_size.y));
+
+    aon::Int2 visible_center = project(aon::Int2(std::get<0>(cell_pos), std::get<1>(cell_pos)), h_to_v);
+
+    // lower corner
+    aon::Int2 field_lower_bound(visible_center.x - vld.radius, visible_center.y - vld.radius);
+
+    // bounds of receptive field, clamped to input size
+    aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
+    aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
+
+    aon::Int3 size(diam, diam, vld.size.z);
+
+    int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
+
+    // get weights
+    std::vector<float> field(size.x * size.y * size.z, 0.0f);
+
+    for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
+        for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
+            aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
+
+            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
+
+            int field_start = vld.size.z * (offset.y + diam * offset.x);
+
+            for (int vc = 0; vc < vld.size.z; vc++) {
+                float w = vl.protos[vc + wi_start] / 255.0f;
+
+                field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
+            }
+        }
+
+    return std::make_tuple(field, std::make_tuple(size.x, size.y, size.z));
 }

@@ -12,7 +12,7 @@
 #include <aogmaneo/image_encoder.h>
 
 namespace pyaon {
-const int image_encoder_magic = 6121137;
+const int image_encoder_magic = 3251108;
 
 struct Image_Visible_Layer_Desc {
     std::tuple<int, int, int> size;
@@ -113,5 +113,11 @@ public:
 
         return { size.x, size.y, size.z };
     }
+
+    // for visualization mostly
+    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_receptive_field(
+        int i,
+        const std::tuple<int, int, int> &cell_pos
+    );
 };
 }

@@ -12,7 +12,7 @@
 #include <aogmaneo/hierarchy.h>
 
 namespace pyaon {
-const int hierarchy_magic = 1188221;
+const int hierarchy_magic = 2184245;
 
 enum IO_Type {
     none = 0,
@@ -134,6 +134,19 @@ public:
         int i
     ) const;
 
+    std::vector<int> get_layer_prediction_cis(
+        int l
+    ) const;
+
+    std::vector<float> get_prediction_acts(
+        int i
+    ) const;
+
+    std::vector<int> sample_prediction(
+        int i,
+        float temperature
+    ) const;
+
     std::vector<int> get_hidden_cis(
         int l
     ) {
@@ -235,5 +248,19 @@ public:
         
         return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
     }
+
+    // for visualization mostly
+    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_encoder_receptive_field(
+        int l,
+        int i,
+        const std::tuple<int, int, int> &cell_pos
+    );
+
+    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_decoder_receptive_field(
+        int l,
+        int i,
+        bool feedback,
+        const std::tuple<int, int, int> &cell_pos
+    );
 };
 }
