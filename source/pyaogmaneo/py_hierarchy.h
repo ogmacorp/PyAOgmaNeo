@@ -225,19 +225,12 @@ public:
     }
 
     int get_down_radius(
-        int l,
-        int i
+        int l
     ) const {
         if (l < 0 || l >= h.get_num_layers())
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-        if (l == 0 && i < 0 || i >= h.get_num_io())
-            throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-        if (h.get_io_type(i) == aon::action)
-            return h.get_actor(i).get_visible_layer_desc(0).radius;
-        
-        return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
+        return h.get_routed_layer(l).get_visible_layer_desc(0).radius;
     }
 
     int get_actor_history_capacity(
@@ -253,13 +246,6 @@ public:
     std::tuple<std::vector<float>, std::tuple<int, int, int>> get_encoder_receptive_field(
         int l,
         int i,
-        const std::tuple<int, int, int> &cell_pos
-    );
-
-    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_decoder_receptive_field(
-        int l,
-        int i,
-        bool feedback,
         const std::tuple<int, int, int> &cell_pos
     );
 };

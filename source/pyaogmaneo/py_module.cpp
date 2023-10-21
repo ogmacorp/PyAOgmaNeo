@@ -72,11 +72,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
-    py::class_<aon::Decoder::Params>(m, "DecoderParams")
+    py::class_<aon::Routed_Layer::Params>(m, "RoutedLayerParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
+        .def_readwrite("scale", &aon::Routed_Layer::Params::scale)
+        .def_readwrite("lr", &aon::Routed_Layer::Params::lr);
+
+    py::class_<aon::Predictor::Params>(m, "PredictorParams")
+        .def(py::init<>())
+        .def_readwrite("lr", &aon::Predictor::Params::lr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
@@ -90,12 +93,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder)
+        .def_readwrite("routed_layer", &aon::Hierarchy::Layer_Params::routed_layer)
         .def_readwrite("recurrent_importance", &aon::Hierarchy::Layer_Params::recurrent_importance);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
-        .def_readwrite("decoder", &aon::Hierarchy::IO_Params::decoder)
+        .def_readwrite("predictor", &aon::Hierarchy::IO_Params::predictor)
         .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
         .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
 
@@ -142,8 +145,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_recurrent_radius", &pyaon::Hierarchy::get_recurrent_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
         .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
-        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
-        .def("get_decoder_receptive_field", &pyaon::Hierarchy::get_decoder_receptive_field);
+        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field);
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
