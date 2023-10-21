@@ -52,17 +52,20 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("up_radius") = 2,
-            py::arg("recurrent_radius") = 2,
-            py::arg("down_radius") = 2
+            py::arg("down_radius") = 2,
+            py::arg("ticks_per_update") = 2,
+            py::arg("temporal_horizon") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
-        .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
-        .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius);
+        .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
+        .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
+        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon);
 
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
@@ -92,8 +95,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("routed_layer", &aon::Hierarchy::Layer_Params::routed_layer)
-        .def_readwrite("recurrent_importance", &aon::Hierarchy::Layer_Params::recurrent_importance);
+        .def_readwrite("routed_layer", &aon::Hierarchy::Layer_Params::routed_layer);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
@@ -137,12 +139,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
+        .def("get_ticks", &pyaon::Hierarchy::get_ticks)
+        .def("get_ticks_per_update", &pyaon::Hierarchy::get_ticks_per_update)
         .def("get_num_io", &pyaon::Hierarchy::get_num_io)
         .def("get_io_size", &pyaon::Hierarchy::get_io_size)
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
-        .def("get_recurrent_radius", &pyaon::Hierarchy::get_recurrent_radius)
-        .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
         .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
         .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field);
 
@@ -160,10 +162,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
+        .def_readwrite("threshold", &aon::Image_Encoder::Params::threshold)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
+        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
+        .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")

@@ -214,7 +214,7 @@ std::tuple<std::vector<float>, std::tuple<int, int, int>> Image_Encoder::get_rec
             int field_start = vld.size.z * (offset.y + diam * offset.x);
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                float w = vl.weights0[vc + wi_start] / 255.0f;
+                float w = vl.protos[vc + wi_start] / 255.0f;
 
                 field[vc + vld.size.z * (offset.y + diam * offset.x)] = w;
             }
