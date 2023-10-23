@@ -76,7 +76,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Routed_Layer::Params>(m, "RoutedLayerParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Routed_Layer::Params::scale)
         .def_readwrite("lr", &aon::Routed_Layer::Params::lr);
 
     py::class_<aon::Predictor::Params>(m, "PredictorParams")
