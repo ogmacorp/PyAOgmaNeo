@@ -81,7 +81,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr);
+        .def_readwrite("dlr", &aon::Decoder::Params::dlr)
+        .def_readwrite("wlr", &aon::Decoder::Params::wlr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
