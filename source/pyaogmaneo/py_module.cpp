@@ -38,14 +38,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
-            py::arg("num_dendrites_per_cell") = 4,
+            py::arg("num_dendrites_per_column") = 16,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("history_capacity") = 128
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
-        .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
+        .def_readwrite("num_dendrites_per_column", &pyaon::IO_Desc::num_dendrites_per_column)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
         .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity);
@@ -59,13 +59,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("num_dendrites_per_cell") = 4,
+            py::arg("num_dendrites_per_column") = 16,
             py::arg("up_radius") = 2,
             py::arg("recurrent_radius") = 2,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
-        .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
+        .def_readwrite("num_dendrites_per_column", &pyaon::Layer_Desc::num_dendrites_per_column)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius);
