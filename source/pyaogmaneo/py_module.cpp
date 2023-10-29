@@ -91,6 +91,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("scale", &aon::Actor::Params::scale)
         .def_readwrite("dlr", &aon::Actor::Params::dlr)
         .def_readwrite("wlr", &aon::Actor::Params::wlr)
+        .def_readwrite("cons", &aon::Actor::Params::cons)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
