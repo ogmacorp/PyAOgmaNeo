@@ -70,8 +70,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("escale", &aon::Encoder::Params::escale)
-        .def_readwrite("rscale", &aon::Encoder::Params::rscale)
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("elr", &aon::Encoder::Params::elr)
         .def_readwrite("rlr", &aon::Encoder::Params::rlr)
         .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
@@ -80,6 +79,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
+        .def_readwrite("centering", &aon::Decoder::Params::centering)
         .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
