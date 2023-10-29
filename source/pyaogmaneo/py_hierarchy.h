@@ -24,6 +24,8 @@ struct IO_Desc {
     std::tuple<int, int, int> size;
     IO_Type type;
 
+    int num_dendrites_per_column;
+
     int up_radius;
     int down_radius;
 
@@ -32,6 +34,7 @@ struct IO_Desc {
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
+        int num_dendrites_per_column,
         int up_radius,
         int down_radius,
         int history_capacity
@@ -39,6 +42,7 @@ struct IO_Desc {
     :
     size(size),
     type(type),
+    num_dendrites_per_column(num_dendrites_per_column),
     up_radius(up_radius),
     down_radius(down_radius),
     history_capacity(history_capacity)
@@ -50,6 +54,8 @@ struct IO_Desc {
 struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
 
+    int num_dendrites_per_column;
+
     int up_radius;
     int down_radius;
 
@@ -58,6 +64,7 @@ struct Layer_Desc {
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
+        int num_dendrites_per_column,
         int up_radius,
         int down_radius,
         int ticks_per_update,
@@ -65,6 +72,7 @@ struct Layer_Desc {
     )
     :
     hidden_size(hidden_size),
+    num_dendrites_per_column(num_dendrites_per_column),
     up_radius(up_radius),
     down_radius(down_radius),
     ticks_per_update(ticks_per_update),
