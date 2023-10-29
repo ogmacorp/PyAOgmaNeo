@@ -131,8 +131,7 @@ public:
     void step(
         const std::vector<std::vector<int>> &input_cis,
         bool learn_enabled,
-        float reward,
-        float mimic
+        float reward
     );
 
     void clear_state() {
