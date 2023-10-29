@@ -58,8 +58,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
-            py::arg("ticks_per_update") = 1,
-            py::arg("temporal_horizon") = 4
+            py::arg("ticks_per_update") = 2,
+            py::arg("temporal_horizon") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
