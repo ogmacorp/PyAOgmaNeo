@@ -72,7 +72,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("error_mod", &aon::Encoder::Params::error_mod)
+        .def_readwrite("bias", &aon::Encoder::Params::bias)
         .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
