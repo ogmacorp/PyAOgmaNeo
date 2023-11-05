@@ -12,7 +12,7 @@
 #include <aogmaneo/hierarchy.h>
 
 namespace pyaon {
-const int hierarchy_magic = 7514621;
+const int hierarchy_magic = 2184245;
 
 enum IO_Type {
     none = 0,
@@ -27,17 +27,21 @@ struct IO_Desc {
     int up_radius;
     int down_radius;
 
+    int history_capacity;
+
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int up_radius,
-        int down_radius
+        int down_radius,
+        int history_capacity
     )
     :
     size(size),
     type(type),
     up_radius(up_radius),
-    down_radius(down_radius)
+    down_radius(down_radius),
+    history_capacity(history_capacity)
     {}
 
     void check_in_range() const;
@@ -119,8 +123,7 @@ public:
     void step(
         const std::vector<std::vector<int>> &input_cis,
         bool learn_enabled,
-        float reward,
-        float mimic
+        float reward
     );
 
     void clear_state() {
@@ -248,6 +251,15 @@ public:
             return h.get_actor(i).get_visible_layer_desc(0).radius;
         
         return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
+    }
+
+    int get_actor_history_capacity(
+        int i
+    ) const {
+        if (i < 0 || i >= h.get_num_io() || h.get_io_type(i) != aon::action)
+            throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
+
+        return h.get_actor(i).get_history_capacity();
     }
 
     // for visualization mostly
