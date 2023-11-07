@@ -88,7 +88,7 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(4): # layers with exponential memory
+for i in range(8): # layers with exponential memory
     ld = neo.LayerDesc()
 
     ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
@@ -118,7 +118,7 @@ for t in range(iters):
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
 
-    print(h.get_hidden_cis(3))
+    print(h.get_hidden_cis(4))
 
     # print progress
     if t % 100 == 0:
