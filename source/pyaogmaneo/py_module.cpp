@@ -58,8 +58,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
-            py::arg("ticks_per_update") = 1,
-            py::arg("temporal_horizon") = 4
+            py::arg("ticks_per_update") = 2,
+            py::arg("temporal_horizon") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
@@ -86,11 +86,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Actor::Params::lr)
-        .def_readwrite("cons", &aon::Actor::Params::cons)
-        .def_readwrite("gap", &aon::Actor::Params::gap)
+        .def_readwrite("vlr", &aon::Actor::Params::vlr)
+        .def_readwrite("alr", &aon::Actor::Params::alr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
+        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
@@ -129,7 +128,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
-            py::arg("reward") = 0.0f
+            py::arg("reward") = 0.0f,
+            py::arg("mimic") = 0.0f
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
