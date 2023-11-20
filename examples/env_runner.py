@@ -24,8 +24,8 @@ input_type_action = neo.action
 
 class EnvRunner:
     def __init__(self, env, layer_sizes=2 * [(5, 5, 32)],
-        layer_radius=2, hidden_size=(8, 8, 16),
-        image_radius=8, image_scale=1.0, obs_resolution=16, action_resolution=15,
+        layer_radius=2, hidden_size=(10, 10, 16),
+        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=15,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=3.0, n_threads=8
     ):
         self.env = env
@@ -213,10 +213,10 @@ class EnvRunner:
                 action_index += 1
             elif i == self.im_enc_index:
                 # format image
-                img = tinyscaler.scale((obs - self.input_lows[i]) / (self.input_highs[i] - self.input_lows[i]), (self.image_sizes[0][1], self.image_sizes[0][0]))
+                img = tinyscaler.scale((obs - self.input_lows[i]) / (self.input_highs[i][0] - self.input_lows[i][0]), (self.image_sizes[0][1], self.image_sizes[0][0]))
                 
                 # encode image
-                self.im_enc.step([(img * 255.0).astype(np.uint8).ravel().tolist()], True)
+                self.im_enc.step([img.astype(np.uint8).ravel().tolist()], True)
 
                 self.inputs.append(list(self.im_enc.get_hidden_cis()))
 
