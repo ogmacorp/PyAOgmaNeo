@@ -11,6 +11,12 @@
 #include "py_helpers.h"
 #include <aogmaneo/image_encoder.h>
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
+
+namespace py = pybind11;
+
 namespace pyaon {
 const int image_encoder_magic = 3251108;
 
@@ -65,7 +71,7 @@ public:
     std::vector<unsigned char> serialize_to_buffer();
 
     void step(
-        const std::vector<std::vector<unsigned char>> &inputs,
+        const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,
         bool learn_enabled
     );
 
@@ -113,11 +119,5 @@ public:
 
         return { size.x, size.y, size.z };
     }
-
-    // for visualization mostly
-    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_receptive_field(
-        int i,
-        const std::tuple<int, int, int> &cell_pos
-    );
 };
 }

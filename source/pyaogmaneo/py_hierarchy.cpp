@@ -198,7 +198,7 @@ std::vector<unsigned char> Hierarchy::serialize_state_to_buffer() {
 }
 
 void Hierarchy::step(
-    const std::vector<std::vector<int>> &input_cis,
+    const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
     bool learn_enabled,
     float reward,
     float mimic
@@ -212,18 +212,30 @@ void Hierarchy::step(
     aon::Array<aon::Int_Buffer_View> c_input_cis(input_cis.size());
 
     for (int i = 0; i < input_cis.size(); i++) {
+        py::buffer_info info = input_cis[i].request();
+
+        if (info.format != py::format_descriptor<int>::format())
+            throw std::runtime_error("expected csdr (type int) in step, but got wrong type!");
+
+        const int* data = static_cast<const int*>(info.ptr);
+
+        int size = info.shape[0];
+
+        for (int d = 1; d < info.ndim; d++)
+            size *= info.shape[d];
+
         int num_columns = h.get_io_size(i).x * h.get_io_size(i).y;
 
-        if (input_cis[i].size() != num_columns)
-            throw std::runtime_error("incorrect csdr size at index " + std::to_string(i) + " - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(input_cis[i].size()));
+        if (size != num_columns)
+            throw std::runtime_error("incorrect csdr size at index " + std::to_string(i) + " - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(size));
 
-        c_input_cis_backing[i].resize(input_cis[i].size());
+        c_input_cis_backing[i].resize(size);
 
-        for (int j = 0; j < input_cis[i].size(); j++) {
-            if (input_cis[i][j] < 0 || input_cis[i][j] >= h.get_io_size(i).z)
-                throw std::runtime_error("input csdr at input index " + std::to_string(i) + " has an out-of-bounds column index (" + std::to_string(input_cis[i][j]) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(h.get_io_size(i).z - 1) + "]");
+        for (int j = 0; j < size; j++) {
+            if (data[j] < 0 || data[j] >= h.get_io_size(i).z)
+                throw std::runtime_error("input csdr at input index " + std::to_string(i) + " has an out-of-bounds column index (" + std::to_string(data[j]) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(h.get_io_size(i).z - 1) + "]");
 
-            c_input_cis_backing[i][j] = input_cis[i][j];
+            c_input_cis_backing[i][j] = data[j];
         }
 
         c_input_cis[i] = c_input_cis_backing[i];
@@ -339,115 +351,4 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
-}
-
-std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_encoder_receptive_field(
-    int l,
-    int i,
-    const std::tuple<int, int, int> &cell_pos
-) {
-    assert(l >= 0 && l < h.get_num_layers());
-    assert(i >= 0 && i < h.get_num_encoder_visible_layers(l));
-
-    const aon::Int3 &hidden_size = h.get_encoder(l).get_hidden_size();
-
-    const aon::Encoder::Visible_Layer &vl = h.get_encoder(l).get_visible_layer(i);
-    const aon::Encoder::Visible_Layer_Desc &vld = h.get_encoder(l).get_visible_layer_desc(i);
-
-    int diam = vld.radius * 2 + 1;
-
-    // projection
-    aon::Float2 h_to_v = aon::Float2(static_cast<float>(vld.size.x) / static_cast<float>(hidden_size.x),
-        static_cast<float>(vld.size.y) / static_cast<float>(hidden_size.y));
-
-    aon::Int2 visible_center = project(aon::Int2(std::get<0>(cell_pos), std::get<1>(cell_pos)), h_to_v);
-
-    // lower corner
-    aon::Int2 field_lower_bound(visible_center.x - vld.radius, visible_center.y - vld.radius);
-
-    // bounds of receptive field, clamped to input size
-    aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
-    aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
-
-    aon::Int3 size(diam, diam, vld.size.z);
-
-    int hidden_cell_index = aon::address3(aon::Int3(std::get<0>(cell_pos), std::get<1>(cell_pos), std::get<2>(cell_pos)), hidden_size);
-
-    // get weights
-    std::vector<float> field(size.x * size.y * size.z, 0.0f);
-
-    for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
-        for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
-            aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
-
-            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
-
-            int field_start = vld.size.z * (offset.y + diam * offset.x);
-
-            for (int vc = 0; vc < vld.size.z; vc++) {
-                float w = vl.weights[vc + wi_start] / 255.0f;
-
-                field[vc + field_start] = w;
-            }
-        }
-
-    return std::make_tuple(field, std::make_tuple(size.x, size.y, size.z));
-}
-
-std::tuple<std::vector<float>, std::tuple<int, int, int>> Hierarchy::get_decoder_receptive_field(
-    int l,
-    int i,
-    bool feedback,
-    const std::tuple<int, int, int> &cell_pos
-) {
-    assert(l >= 0 && l < h.get_num_layers());
-    assert(i >= 0 && i < h.get_num_decoders(l));
-
-    const aon::Int3 &hidden_size = h.get_decoder(l, i).get_hidden_size();
-
-    const aon::Decoder::Visible_Layer &vl = h.get_decoder(l, i).get_visible_layer(feedback);
-    const aon::Decoder::Visible_Layer_Desc &vld = h.get_decoder(l, i).get_visible_layer_desc(feedback);
-
-    int diam = vld.radius * 2 + 1;
-
-    // projection
-    aon::Float2 h_to_v = aon::Float2(static_cast<float>(vld.size.x) / static_cast<float>(hidden_size.x),
-        static_cast<float>(vld.size.y) / static_cast<float>(hidden_size.y));
-
-    aon::Int2 visible_center = project(aon::Int2(std::get<0>(cell_pos), std::get<1>(cell_pos)), h_to_v);
-
-    // lower corner
-    aon::Int2 field_lower_bound(visible_center.x - vld.radius, visible_center.y - vld.radius);
-
-    // bounds of receptive field, clamped to input size
-    aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
-    aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
-
-    aon::Int3 size(diam, diam, vld.size.z);
-
-    aon::Int2 column_pos(std::get<0>(cell_pos), std::get<1>(cell_pos));
-
-    int hidden_column_index = aon::address2(column_pos, aon::Int2(hidden_size.x, hidden_size.y));
-
-    int hidden_ci = std::get<2>(cell_pos);
-
-    // get weights
-    std::vector<float> field(size.x * size.y * size.z, 0.0f);
-
-    for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
-        for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
-            aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
-
-            int field_start = vld.size.z * (offset.y + diam * offset.x);
-
-            for (int vc = 0; vc < vld.size.z; vc++) {
-                int wi = hidden_ci + hidden_size.z * (offset.y + diam * (offset.x + diam * (vc + vld.size.z * hidden_column_index)));
-
-                float w = vl.weights[wi] / 255.0f;
-
-                field[vc + field_start] = w;
-            }
-        }
-
-    return std::make_tuple(field, std::make_tuple(size.x, size.y, size.z));
 }

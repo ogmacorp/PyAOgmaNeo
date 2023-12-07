@@ -11,6 +11,12 @@
 #include "py_helpers.h"
 #include <aogmaneo/hierarchy.h>
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
+
+namespace py = pybind11;
+
 namespace pyaon {
 const int hierarchy_magic = 7514621;
 
@@ -121,7 +127,7 @@ public:
     std::vector<unsigned char> serialize_state_to_buffer();
 
     void step(
-        const std::vector<std::vector<int>> &input_cis,
+        const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
         bool learn_enabled,
         float reward,
         float mimic
@@ -262,19 +268,5 @@ public:
 
         return h.get_actor(i).get_history_capacity();
     }
-
-    // for visualization mostly
-    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_encoder_receptive_field(
-        int l,
-        int i,
-        const std::tuple<int, int, int> &cell_pos
-    );
-
-    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_decoder_receptive_field(
-        int l,
-        int i,
-        bool feedback,
-        const std::tuple<int, int, int> &cell_pos
-    );
 };
 }

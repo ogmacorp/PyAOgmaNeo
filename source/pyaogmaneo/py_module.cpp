@@ -12,6 +12,10 @@
 #include "py_hierarchy.h"
 #include "py_image_encoder.h"
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(pyaogmaneo, m) {
@@ -141,9 +145,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
-        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
-        .def("get_decoder_receptive_field", &pyaon::Hierarchy::get_decoder_receptive_field);
+        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
