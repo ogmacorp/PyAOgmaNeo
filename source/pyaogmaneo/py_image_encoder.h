@@ -83,16 +83,17 @@ public:
         return enc.get_num_visible_layers();
     }
 
-    std::vector<unsigned char> get_reconstruction(
+    py::array_t<unsigned char> get_reconstruction(
         int i
     ) const {
         if (i < 0 || i >= enc.get_num_visible_layers())
             throw std::runtime_error("cannot get reconstruction at index " + std::to_string(i) + " - out of bounds [0, " + std::to_string(enc.get_num_visible_layers()) + "]");
 
-        std::vector<unsigned char> reconstruction(enc.get_reconstruction(i).size());
+        py::array_t<unsigned char> reconstruction(enc.get_reconstruction(i).size());
+        auto view = reconstruction.mutable_unchecked();
 
-        for (int j = 0; j < reconstruction.size(); j++)
-            reconstruction[j] = enc.get_reconstruction(i)[j];
+        for (int j = 0; j < view.size(); j++)
+            view(j) = enc.get_reconstruction(i)[j];
 
         return reconstruction;
     }
