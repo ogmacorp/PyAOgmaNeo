@@ -6,9 +6,6 @@
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 // ----------------------------------------------------------------------------
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-
 #include "py_hierarchy.h"
 #include "py_image_encoder.h"
 

@@ -60,9 +60,9 @@ Hierarchy::Hierarchy(
     const std::vector<IO_Desc> &io_descs,
     const std::vector<Layer_Desc> &layer_descs,
     const std::string &file_name,
-    const std::vector<unsigned char> &buffer
+    const py::array_t<unsigned char> &buffer
 ) {
-    if (!buffer.empty())
+    if (buffer.unchecked().size() > 0)
         init_from_buffer(buffer);
     else if (!file_name.empty())
         init_from_file(file_name);
@@ -137,7 +137,7 @@ void Hierarchy::init_from_file(
 }
 
 void Hierarchy::init_from_buffer(
-    const std::vector<unsigned char> &buffer
+    const py::array_t<unsigned char> &buffer
 ) {
     Buffer_Reader reader;
     reader.buffer = &buffer;
@@ -162,7 +162,7 @@ void Hierarchy::save_to_file(
     h.write(writer);
 }
 
-std::vector<unsigned char> Hierarchy::serialize_to_buffer() {
+py::array_t<unsigned char> Hierarchy::serialize_to_buffer() {
     Buffer_Writer writer(h.size() + sizeof(int));
 
     writer.write(&hierarchy_magic, sizeof(int));
@@ -173,7 +173,7 @@ std::vector<unsigned char> Hierarchy::serialize_to_buffer() {
 }
 
 void Hierarchy::set_state_from_buffer(
-    const std::vector<unsigned char> &buffer
+    const py::array_t<unsigned char> &buffer
 ) {
     Buffer_Reader reader;
     reader.buffer = &buffer;
@@ -187,7 +187,7 @@ void Hierarchy::set_state_from_buffer(
     h.read_state(reader);
 }
 
-std::vector<unsigned char> Hierarchy::serialize_state_to_buffer() {
+py::array_t<unsigned char> Hierarchy::serialize_state_to_buffer() {
     Buffer_Writer writer(h.state_size() + sizeof(int));
 
     writer.write(&hierarchy_magic, sizeof(int));
@@ -212,30 +212,20 @@ void Hierarchy::step(
     aon::Array<aon::Int_Buffer_View> c_input_cis(input_cis.size());
 
     for (int i = 0; i < input_cis.size(); i++) {
-        py::buffer_info info = input_cis[i].request();
-
-        if (info.format != py::format_descriptor<int>::format())
-            throw std::runtime_error("expected csdr (type int) in step, but got wrong type!");
-
-        const int* data = static_cast<const int*>(info.ptr);
-
-        int size = info.shape[0];
-
-        for (int d = 1; d < info.ndim; d++)
-            size *= info.shape[d];
+        auto view = input_cis[i].unchecked();
 
         int num_columns = h.get_io_size(i).x * h.get_io_size(i).y;
 
-        if (size != num_columns)
-            throw std::runtime_error("incorrect csdr size at index " + std::to_string(i) + " - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(size));
+        if (view.size() != num_columns)
+            throw std::runtime_error("incorrect csdr size at index " + std::to_string(i) + " - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(view.size()));
 
-        c_input_cis_backing[i].resize(size);
+        c_input_cis_backing[i].resize(view.size());
 
-        for (int j = 0; j < size; j++) {
-            if (data[j] < 0 || data[j] >= h.get_io_size(i).z)
-                throw std::runtime_error("input csdr at input index " + std::to_string(i) + " has an out-of-bounds column index (" + std::to_string(data[j]) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(h.get_io_size(i).z - 1) + "]");
+        for (int j = 0; j < view.size(); j++) {
+            if (view(j) < 0 || view(j) >= h.get_io_size(i).z)
+                throw std::runtime_error("input csdr at input index " + std::to_string(i) + " has an out-of-bounds column index (" + std::to_string(view(j)) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(h.get_io_size(i).z - 1) + "]");
 
-            c_input_cis_backing[i][j] = data[j];
+            c_input_cis_backing[i][j] = view(j);
         }
 
         c_input_cis[i] = c_input_cis_backing[i];
@@ -244,7 +234,7 @@ void Hierarchy::step(
     h.step(c_input_cis, learn_enabled, reward, mimic);
 }
 
-std::vector<int> Hierarchy::get_prediction_cis(
+py::array_t<int> Hierarchy::get_prediction_cis(
     int i
 ) const {
     if (i < 0 || i >= h.get_num_io())
@@ -253,15 +243,17 @@ std::vector<int> Hierarchy::get_prediction_cis(
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
         throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
-    std::vector<int> predictions(h.get_prediction_cis(i).size());
+    py::array_t<int> predictions(h.get_prediction_cis(i).size());
 
-    for (int j = 0; j < predictions.size(); j++)
-        predictions[j] = h.get_prediction_cis(i)[j];
+    auto view = predictions.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = h.get_prediction_cis(i)[j];
 
     return predictions;
 }
 
-std::vector<int> Hierarchy::get_layer_prediction_cis(
+py::array_t<int> Hierarchy::get_layer_prediction_cis(
     int l
 ) const {
     if (l < 1 || l >= h.get_num_layers())
@@ -269,15 +261,17 @@ std::vector<int> Hierarchy::get_layer_prediction_cis(
 
     const aon::Int_Buffer &cis = h.get_decoder(l, h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).get_hidden_cis();
 
-    std::vector<int> predictions(cis.size());
+    py::array_t<int> predictions(cis.size());
 
-    for (int j = 0; j < predictions.size(); j++)
-        predictions[j] = cis[j];
+    auto view = predictions.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = cis[j];
 
     return predictions;
 }
 
-std::vector<float> Hierarchy::get_prediction_acts(
+py::array_t<float> Hierarchy::get_prediction_acts(
     int i
 ) const {
     if (i < 0 || i >= h.get_num_io())
@@ -286,15 +280,17 @@ std::vector<float> Hierarchy::get_prediction_acts(
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
         throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
-    std::vector<float> predictions(h.get_prediction_acts(i).size());
+    py::array_t<float> predictions(h.get_prediction_acts(i).size());
 
-    for (int j = 0; j < predictions.size(); j++)
-        predictions[j] = h.get_prediction_acts(i)[j];
+    auto view = predictions.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = h.get_prediction_acts(i)[j];
 
     return predictions;
 }
 
-std::vector<int> Hierarchy::sample_prediction(
+py::array_t<int> Hierarchy::sample_prediction(
     int i,
     float temperature
 ) const {
@@ -307,19 +303,21 @@ std::vector<int> Hierarchy::sample_prediction(
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
         throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
-    std::vector<int> sample(h.get_prediction_cis(i).size());
+    py::array_t<int> sample(h.get_prediction_cis(i).size());
+
+    auto view = sample.mutable_unchecked();
 
     int size_z = h.get_io_size(i).z;
 
     float temperature_inv = 1.0f / temperature;
 
-    for (int j = 0; j < sample.size(); j++) {
+    for (int j = 0; j < view.size(); j++) {
         float total = 0.0f;
 
         for (int k = 0; k < size_z; k++)
             total += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
 
-        float cusp = aon::randf(0.0f, total);
+        float cusp = aon::randf() * total;
 
         float sum_so_far = 0.0f;
 
@@ -327,7 +325,7 @@ std::vector<int> Hierarchy::sample_prediction(
             sum_so_far += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
 
             if (sum_so_far >= cusp) {
-                sample[j] = k;
+                view(j) = k;
 
                 break;
             }
@@ -335,6 +333,22 @@ std::vector<int> Hierarchy::sample_prediction(
     }
 
     return sample;
+}
+
+py::array_t<int> Hierarchy::get_hidden_cis(
+    int l
+) {
+    if (l < 0 || l >= h.get_num_layers())
+        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
+
+    py::array_t<int> hidden_cis(h.get_encoder(l).get_hidden_cis().size());
+
+    auto view = hidden_cis.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = h.get_encoder(l).get_hidden_cis()[j];
+
+    return hidden_cis;
 }
 
 void Hierarchy::copy_params_to_h() {

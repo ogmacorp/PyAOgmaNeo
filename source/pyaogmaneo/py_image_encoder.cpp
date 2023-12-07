@@ -28,9 +28,9 @@ Image_Encoder::Image_Encoder(
     const std::tuple<int, int, int> &hidden_size,
     const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs,
     const std::string &file_name,
-    const std::vector<unsigned char> &buffer
+    const py::array_t<unsigned char> &buffer
 ) {
-    if (!buffer.empty())
+    if (buffer.unchecked().size() > 0)
         init_from_buffer(buffer);
     else if (!file_name.empty())
         init_from_file(file_name);
@@ -91,7 +91,7 @@ void Image_Encoder::init_from_file(
 }
 
 void Image_Encoder::init_from_buffer(
-    const std::vector<unsigned char> &buffer
+    const py::array_t<unsigned char> &buffer
 ) {
     Buffer_Reader reader;
     reader.buffer = &buffer;
@@ -116,7 +116,7 @@ void Image_Encoder::save_to_file(
     enc.write(writer);
 }
 
-std::vector<unsigned char> Image_Encoder::serialize_to_buffer() {
+py::array_t<unsigned char> Image_Encoder::serialize_to_buffer() {
     Buffer_Writer writer(enc.size() + sizeof(int));
 
     writer.write(&image_encoder_magic, sizeof(int));
@@ -140,25 +140,12 @@ void Image_Encoder::step(
     aon::Array<aon::Byte_Buffer_View> c_inputs(inputs.size());
 
     for (int i = 0; i < inputs.size(); i++) {
-        py::buffer_info info = inputs[i].request();
+        auto view = inputs[i].unchecked();
 
-        if (info.format != py::format_descriptor<unsigned char>::format())
-            throw std::runtime_error("expected image (type unsigned char) in step, but got wrong type!");
-
-        const unsigned char* data = static_cast<const unsigned char*>(info.ptr);
-
-        int size = info.shape[0];
-
-        for (int d = 1; d < info.ndim; d++)
-            size *= info.shape[d];
-
-        if (size != enc.get_reconstruction(i).size())
-            throw std::runtime_error("incorrect number of pixels given to Image_Encoder! at input " + std::to_string(i) + ": expected " + std::to_string(enc.get_reconstruction(i).size()) + ", got " + std::to_string(size));
-
-        c_inputs_backing[i].resize(size);
+        c_inputs_backing[i].resize(view.size());
         
-        for (int j = 0; j < size; j++)
-            c_inputs_backing[i][j] = data[j];
+        for (int j = 0; j < view.size(); j++)
+            c_inputs_backing[i][j] = view(j);
 
         c_inputs[i] = c_inputs_backing[i];
     }
@@ -167,19 +154,48 @@ void Image_Encoder::step(
 }
 
 void Image_Encoder::reconstruct(
-    const std::vector<int> &recon_cis
+    const py::array_t<int> &recon_cis
 ) {
     if (recon_cis.size() != enc.get_hidden_cis().size())
         throw std::runtime_error("error: recon_cis must match the output_size of the Image_Encoder!");
 
-    aon::Int_Buffer c_recon_cis_backing(recon_cis.size());
+    auto view = recon_cis.unchecked();
 
-    for (int j = 0; j < recon_cis.size(); j++) {
-        if (recon_cis[j] < 0 || recon_cis[j] >= enc.get_hidden_size().z)
-            throw std::runtime_error("recon csdr (recon_cis) has an out-of-bounds column index (" + std::to_string(recon_cis[j]) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(enc.get_hidden_size().z - 1) + "]");
+    aon::Int_Buffer c_recon_cis_backing(view.size());
 
-        c_recon_cis_backing[j] = recon_cis[j];
+    for (int j = 0; j < view.size(); j++) {
+        if (view(j) < 0 || view(j) >= enc.get_hidden_size().z)
+            throw std::runtime_error("recon csdr (recon_cis) has an out-of-bounds column index (" + std::to_string(view(j)) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(enc.get_hidden_size().z - 1) + "]");
+
+        c_recon_cis_backing[j] = view(j);
     }
 
     enc.reconstruct(c_recon_cis_backing);
+}
+
+py::array_t<unsigned char> Image_Encoder::get_reconstruction(
+    int i
+) const {
+    if (i < 0 || i >= enc.get_num_visible_layers())
+        throw std::runtime_error("cannot get reconstruction at index " + std::to_string(i) + " - out of bounds [0, " + std::to_string(enc.get_num_visible_layers()) + "]");
+
+    py::array_t<unsigned char> reconstruction(enc.get_reconstruction(i).size());
+
+    auto view = reconstruction.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = enc.get_reconstruction(i)[j];
+
+    return reconstruction;
+}
+
+py::array_t<int> Image_Encoder::get_hidden_cis() const {
+    py::array_t<int> hidden_cis(enc.get_hidden_cis().size());
+
+    auto view = hidden_cis.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = enc.get_hidden_cis()[j];
+
+    return hidden_cis;
 }
