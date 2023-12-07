@@ -59,7 +59,7 @@ for episode in range(1000):
     # timesteps
     for t in range(500):
         # sensory CSDR creation through "squash and bin" method
-        csdr = (sigmoid(obs * 3.0) * (input_resolution - 1) + 0.5).astype(np.int32).tolist()
+        csdr = (sigmoid(obs * 3.0) * (input_resolution - 1) + 0.5).astype(np.int32)
 
         h.step([ csdr, h.get_prediction_cis(1) ], True, reward)
 

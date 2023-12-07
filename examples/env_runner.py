@@ -216,7 +216,7 @@ class EnvRunner:
                 img = tinyscaler.scale((obs - self.input_lows[i]) / (self.input_highs[i][0] - self.input_lows[i][0]), (self.image_sizes[0][1], self.image_sizes[0][0]))
                 
                 # encode image
-                self.im_enc.step([img.astype(np.uint8).ravel().tolist()], True)
+                self.im_enc.step([img.astype(np.uint8).ravel()], True)
 
                 self.inputs.append(list(self.im_enc.get_hidden_cis()))
 
