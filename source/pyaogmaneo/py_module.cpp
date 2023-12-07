@@ -104,12 +104,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 const std::vector<pyaon::IO_Desc>&,
                 const std::vector<pyaon::Layer_Desc>&,
                 const std::string&,
-                const std::vector<unsigned char>&
+                const py::array_t<unsigned char>&
             >(),
             py::arg("io_descs") = std::vector<pyaon::IO_Desc>(),
             py::arg("layer_descs") = std::vector<pyaon::Layer_Desc>(),
             py::arg("file_name") = std::string(),
-            py::arg("buffer") = std::vector<unsigned char>()
+            py::arg("buffer") = py::array_t<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Hierarchy::params)
         .def("save_to_file", &pyaon::Hierarchy::save_to_file)
@@ -165,12 +165,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 const std::tuple<int, int, int>&,
                 const std::vector<pyaon::Image_Visible_Layer_Desc>&,
                 const std::string&,
-                const std::vector<unsigned char>&
+                const py::array_t<unsigned char>&
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("visible_layer_descs") = std::vector<pyaon::Image_Visible_Layer_Desc>(),
             py::arg("file_name") = std::string(),
-            py::arg("buffer") = std::vector<unsigned char>()
+            py::arg("buffer") = py::array_t<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Image_Encoder::params)
         .def("save_to_file", &pyaon::Image_Encoder::save_to_file)

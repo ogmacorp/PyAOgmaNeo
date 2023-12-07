@@ -21,7 +21,7 @@ void File_Writer::write(const void* data, int len) {
 }
 
 void Buffer_Reader::read(void* data, int len) {
-    auto view = buffer.unchecked();
+    auto view = buffer->unchecked();
 
     for (int i = 0; i < len; i++)
         static_cast<unsigned char*>(data)[i] = view(start + i);

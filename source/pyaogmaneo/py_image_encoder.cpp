@@ -154,7 +154,7 @@ void Image_Encoder::step(
 }
 
 void Image_Encoder::reconstruct(
-    const py::array_t<int> &recon_cis
+    const py::array_t<int, py::array::c_style | py::array::forcecast> &recon_cis
 ) {
     if (recon_cis.size() != enc.get_hidden_cis().size())
         throw std::runtime_error("error: recon_cis must match the output_size of the Image_Encoder!");

@@ -91,7 +91,7 @@ public:
     :
     start(0)
     {
-        buffer.resize(buffer_size);
+        buffer = py::array_t<unsigned char>(buffer_size);
     }
 
     void write(
