@@ -21,8 +21,10 @@ void File_Writer::write(const void* data, int len) {
 }
 
 void Buffer_Reader::read(void* data, int len) {
+    auto view = buffer->unchecked();
+
     for (int i = 0; i < len; i++)
-        static_cast<unsigned char*>(data)[i] = (*buffer)[start + i];
+        static_cast<unsigned char*>(data)[i] = view(start + i);
 
     start += len;
 }
@@ -30,8 +32,10 @@ void Buffer_Reader::read(void* data, int len) {
 void Buffer_Writer::write(const void* data, int len) {
     assert(buffer.size() >= start + len);
 
+    auto view = buffer.mutable_unchecked();
+
     for (int i = 0; i < len; i++)
-        buffer[start + i] = static_cast<const unsigned char*>(data)[i];
+        view(start + i) = static_cast<const unsigned char*>(data)[i];
 
     start += len;
 }

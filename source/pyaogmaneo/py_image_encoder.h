@@ -11,6 +11,8 @@
 #include "py_helpers.h"
 #include <aogmaneo/image_encoder.h>
 
+namespace py = pybind11;
+
 namespace pyaon {
 const int image_encoder_magic = 3251108;
 
@@ -45,7 +47,7 @@ private:
     );
 
     void init_from_buffer(
-        const std::vector<unsigned char> &buffer
+        const py::array_t<unsigned char> &buffer
     );
 
 public:
@@ -55,50 +57,33 @@ public:
         const std::tuple<int, int, int> &hidden_size,
         const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs,
         const std::string &file_name,
-        const std::vector<unsigned char> &buffer
+        const py::array_t<unsigned char> &buffer
     );
 
     void save_to_file(
         const std::string &file_name
     );
 
-    std::vector<unsigned char> serialize_to_buffer();
+    py::array_t<unsigned char> serialize_to_buffer();
 
     void step(
-        const std::vector<std::vector<unsigned char>> &inputs,
+        const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,
         bool learn_enabled
     );
 
     void reconstruct(
-        const std::vector<int> &recon_cis
+        const py::array_t<int, py::array::c_style | py::array::forcecast> &recon_cis
     );
 
     int get_num_visible_layers() const {
         return enc.get_num_visible_layers();
     }
 
-    std::vector<unsigned char> get_reconstruction(
+    py::array_t<unsigned char> get_reconstruction(
         int i
-    ) const {
-        if (i < 0 || i >= enc.get_num_visible_layers())
-            throw std::runtime_error("cannot get reconstruction at index " + std::to_string(i) + " - out of bounds [0, " + std::to_string(enc.get_num_visible_layers()) + "]");
+    ) const;
 
-        std::vector<unsigned char> reconstruction(enc.get_reconstruction(i).size());
-
-        for (int j = 0; j < reconstruction.size(); j++)
-            reconstruction[j] = enc.get_reconstruction(i)[j];
-
-        return reconstruction;
-    }
-
-    std::vector<int> get_hidden_cis() const {
-        std::vector<int> hidden_cis(enc.get_hidden_cis().size());
-
-        for (int j = 0; j < hidden_cis.size(); j++)
-            hidden_cis[j] = enc.get_hidden_cis()[j];
-
-        return hidden_cis;
-    }
+    py::array_t<int> get_hidden_cis() const;
 
     std::tuple<int, int, int> get_hidden_size() const {
         aon::Int3 size = enc.get_hidden_size();
@@ -113,11 +98,5 @@ public:
 
         return { size.x, size.y, size.z };
     }
-
-    // for visualization mostly
-    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_receptive_field(
-        int i,
-        const std::tuple<int, int, int> &cell_pos
-    );
 };
 }
