@@ -6,9 +6,6 @@
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 // ----------------------------------------------------------------------------
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-
 #include "py_hierarchy.h"
 #include "py_image_encoder.h"
 
@@ -41,7 +38,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 128
+            py::arg("history_capacity") = 256
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
@@ -77,15 +74,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Encoder::Params::scale)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
+        .def_readwrite("lr", &aon::Encoder::Params::lr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak)
-        .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
+        .def_readwrite("leak", &aon::Decoder::Params::leak);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
@@ -118,12 +113,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 const std::vector<pyaon::IO_Desc>&,
                 const std::vector<pyaon::Layer_Desc>&,
                 const std::string&,
-                const std::vector<unsigned char>&
+                const py::array_t<unsigned char>&
             >(),
             py::arg("io_descs") = std::vector<pyaon::IO_Desc>(),
             py::arg("layer_descs") = std::vector<pyaon::Layer_Desc>(),
             py::arg("file_name") = std::string(),
-            py::arg("buffer") = std::vector<unsigned char>()
+            py::arg("buffer") = py::array_t<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Hierarchy::params)
         .def("save_to_file", &pyaon::Hierarchy::save_to_file)
@@ -152,9 +147,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
-        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
-        .def("get_decoder_receptive_field", &pyaon::Hierarchy::get_decoder_receptive_field);
+        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
@@ -181,12 +174,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 const std::tuple<int, int, int>&,
                 const std::vector<pyaon::Image_Visible_Layer_Desc>&,
                 const std::string&,
-                const std::vector<unsigned char>&
+                const py::array_t<unsigned char>&
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("visible_layer_descs") = std::vector<pyaon::Image_Visible_Layer_Desc>(),
             py::arg("file_name") = std::string(),
-            py::arg("buffer") = std::vector<unsigned char>()
+            py::arg("buffer") = py::array_t<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Image_Encoder::params)
         .def("save_to_file", &pyaon::Image_Encoder::save_to_file)
@@ -200,6 +193,5 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
-        .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field);
+        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size);
 }

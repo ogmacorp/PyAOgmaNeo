@@ -16,6 +16,12 @@
 #include <iostream>
 #include <exception>
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
+
+namespace py = pybind11;
+
 namespace pyaon {
 inline void set_num_threads(
     int num_threads
@@ -60,7 +66,7 @@ public:
 class Buffer_Reader : public aon::Stream_Reader {
 public:
     int start;
-    const std::vector<unsigned char>* buffer;
+    const py::array_t<unsigned char>* buffer;
 
     Buffer_Reader()
     :
@@ -77,7 +83,7 @@ public:
 class Buffer_Writer : public aon::Stream_Writer {
 public:
     int start;
-    std::vector<unsigned char> buffer;
+    py::array_t<unsigned char> buffer;
 
     Buffer_Writer(
         int buffer_size
@@ -85,7 +91,7 @@ public:
     :
     start(0)
     {
-        buffer.resize(buffer_size);
+        buffer = py::array_t<unsigned char>(buffer_size);
     }
 
     void write(

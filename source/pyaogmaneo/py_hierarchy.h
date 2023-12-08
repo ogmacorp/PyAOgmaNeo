@@ -11,6 +11,8 @@
 #include "py_helpers.h"
 #include <aogmaneo/hierarchy.h>
 
+namespace py = pybind11;
+
 namespace pyaon {
 const int hierarchy_magic = 7514621;
 
@@ -101,7 +103,7 @@ private:
     );
 
     void init_from_buffer(
-        const std::vector<unsigned char> &buffer
+        const py::array_t<unsigned char> &buffer
     );
 
     void copy_params_to_h();
@@ -113,23 +115,23 @@ public:
         const std::vector<IO_Desc> &io_descs,
         const std::vector<Layer_Desc> &layer_descs,
         const std::string &file_name,
-        const std::vector<unsigned char> &buffer
+        const py::array_t<unsigned char> &buffer
     );
 
     void save_to_file(
         const std::string &file_name
     );
 
-    std::vector<unsigned char> serialize_to_buffer();
+    py::array_t<unsigned char> serialize_to_buffer();
 
     void set_state_from_buffer(
-        const std::vector<unsigned char> &buffer
+        const py::array_t<unsigned char> &buffer
     );
 
-    std::vector<unsigned char> serialize_state_to_buffer();
+    py::array_t<unsigned char> serialize_state_to_buffer();
 
     void step(
-        const std::vector<std::vector<int>> &input_cis,
+        const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
         bool learn_enabled,
         float reward,
         float mimic
@@ -143,36 +145,26 @@ public:
         return h.get_num_layers();
     }
 
-    std::vector<int> get_prediction_cis(
+    py::array_t<int> get_prediction_cis(
         int i
     ) const;
 
-    std::vector<int> get_layer_prediction_cis(
+    py::array_t<int> get_layer_prediction_cis(
         int l
     ) const;
 
-    std::vector<float> get_prediction_acts(
+    py::array_t<float> get_prediction_acts(
         int i
     ) const;
 
-    std::vector<int> sample_prediction(
+    py::array_t<int> sample_prediction(
         int i,
         float temperature
     ) const;
 
-    std::vector<int> get_hidden_cis(
+    py::array_t<int> get_hidden_cis(
         int l
-    ) {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        std::vector<int> hidden_cis(h.get_encoder(l).get_hidden_cis().size());
-
-        for (int j = 0; j < hidden_cis.size(); j++)
-            hidden_cis[j] = h.get_encoder(l).get_hidden_cis()[j];
-
-        return hidden_cis;
-    }
+    );
 
     std::tuple<int, int, int> get_hidden_size(
         int l
@@ -270,19 +262,5 @@ public:
 
         return h.get_actor(i).get_history_capacity();
     }
-
-    // for visualization mostly
-    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_encoder_receptive_field(
-        int l,
-        int i,
-        const std::tuple<int, int, int> &cell_pos
-    );
-
-    std::tuple<std::vector<float>, std::tuple<int, int, int>> get_decoder_receptive_field(
-        int l,
-        int i,
-        bool feedback,
-        const std::tuple<int, int, int> &cell_pos
-    );
 };
 }
