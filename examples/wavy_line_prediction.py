@@ -91,7 +91,7 @@ lds = []
 for i in range(6): # layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
@@ -99,7 +99,7 @@ for i in range(6): # layers with exponential memory
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps
-iters = 10000
+iters = 50000
 
 def wave(t):
     if t % 10 == 0:
@@ -115,7 +115,7 @@ for t in range(iters):
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
 
-    print(h.get_hidden_cis(3))
+    print(h.get_hidden_cis(0))
 
     # print progress
     if t % 100 == 0:
