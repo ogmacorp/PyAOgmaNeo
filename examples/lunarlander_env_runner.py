@@ -8,12 +8,12 @@
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 # ----------------------------------------------------------------------------
 
-# lunar lander environment with env_runner
+# Lunar lander environment with EnvRunner
 
 import gymnasium as gym
 from env_runner import EnvRunner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
 
-env = gym.make('LunarLander-v2')
+env = gym.make('LunarLander-v2')#, render_mode='human')
 
 runner = EnvRunner(env, terminal_reward=0.0, reward_scale=1.0)
 

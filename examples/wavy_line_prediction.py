@@ -88,61 +88,59 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(6): # layers with exponential memory
+for i in range(4): # layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
-# create the hierarchy
+# create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
-# present the wave sequence for some timesteps
-iters = 50000
+# present the wave sequence for some timesteps, 1000 here
+iters = 1000
 
+# function for the wave
 def wave(t):
-    if t % 10 == 0:
-        return 1.0
-    return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
+# iterate
 for t in range(iters):
     value_to_encode = wave(t)
 
+    # encode
     csdr = unorm8_to_csdr(float(value_to_encode))
 
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
 
-    print(h.get_hidden_cis(0))
-
     # print progress
     if t % 100 == 0:
         print(t)
 
-# recall the sequence
+# recall the sequence and plot the result
 ts = [] # time step
 vs = [] # predicted value
 
 trgs = [] # true value
 
 for t2 in range(1000):
-    t = t2 + iters
+    t = t2 + iters # get "continued" timestep (relative to previous training iterations)
 
     value_to_encode = wave(t)
 
     csdr = unorm8_to_csdr(float(value_to_encode))
 
     # run off of own predictions with learning disabled
-    h.step([ h.get_prediction_cis(0) ], False) # learning disabled
+    h.step([ h.get_prediction_cis(0) ], False) # learning disabled for recall
 
-    # decode value (de-bin)
+    # decode value from latest prediction
     value = csdr_to_unorm8(h.get_prediction_cis(0))
 
     # append to plot data
     ts.append(t2)
-    vs.append(value + 1.1)
+    vs.append(value + 1.1) # offset the plot by 1.1 so we can see it better
 
     trgs.append(value_to_encode)
 

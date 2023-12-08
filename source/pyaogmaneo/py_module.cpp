@@ -6,9 +6,6 @@
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 // ----------------------------------------------------------------------------
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-
 #include "py_hierarchy.h"
 #include "py_image_encoder.h"
 
@@ -81,11 +78,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Actor::Params::lr)
-        .def_readwrite("cons", &aon::Actor::Params::cons)
+        .def_readwrite("vlr", &aon::Actor::Params::vlr)
+        .def_readwrite("alr", &aon::Actor::Params::alr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("gap", &aon::Actor::Params::gap)
-        .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
+        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
@@ -109,12 +105,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 const std::vector<pyaon::IO_Desc>&,
                 const std::vector<pyaon::Layer_Desc>&,
                 const std::string&,
-                const std::vector<unsigned char>&
+                const py::array_t<unsigned char>&
             >(),
             py::arg("io_descs") = std::vector<pyaon::IO_Desc>(),
             py::arg("layer_descs") = std::vector<pyaon::Layer_Desc>(),
             py::arg("file_name") = std::string(),
-            py::arg("buffer") = std::vector<unsigned char>()
+            py::arg("buffer") = py::array_t<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Hierarchy::params)
         .def("save_to_file", &pyaon::Hierarchy::save_to_file)
@@ -124,7 +120,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
-            py::arg("reward") = 0.0f
+            py::arg("reward") = 0.0f,
+            py::arg("mimic") = 0.0f
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
@@ -142,9 +139,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
-        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
-        .def("get_decoder_receptive_field", &pyaon::Hierarchy::get_decoder_receptive_field);
+        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
@@ -160,6 +155,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
+        .def_readwrite("threshold", &aon::Image_Encoder::Params::threshold)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
@@ -170,12 +166,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 const std::tuple<int, int, int>&,
                 const std::vector<pyaon::Image_Visible_Layer_Desc>&,
                 const std::string&,
-                const std::vector<unsigned char>&
+                const py::array_t<unsigned char>&
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("visible_layer_descs") = std::vector<pyaon::Image_Visible_Layer_Desc>(),
             py::arg("file_name") = std::string(),
-            py::arg("buffer") = std::vector<unsigned char>()
+            py::arg("buffer") = py::array_t<unsigned char>()
         )
         .def_readwrite("params", &pyaon::Image_Encoder::params)
         .def("save_to_file", &pyaon::Image_Encoder::save_to_file)
@@ -189,6 +185,5 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
-        .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field);
+        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size);
 }

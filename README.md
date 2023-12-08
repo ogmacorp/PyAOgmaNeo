@@ -2,7 +2,7 @@
   PyAOgmaNeo
   Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 
-  This copy of OgmaNeo is licensed to you under the terms described
+  This copy of PyAOgmaNeo is licensed to you under the terms described
   in the PYAOGMANEO_LICENSE.md file included in this distribution.
 --->
 

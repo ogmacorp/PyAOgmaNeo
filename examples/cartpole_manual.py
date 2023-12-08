@@ -44,9 +44,9 @@ for i in range(2): # layers with exponential memory. Not much memory is needed f
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.action) ], lds)
 
 # setting parameters
-h.params.ios[1].actor.vlr = 0.01
-h.params.ios[1].actor.alr = 0.01
-h.params.ios[1].actor.temperature = 0.5
+#h.params.ios[1].actor.vlr = 0.01
+#h.params.ios[1].actor.alr = 0.01
+#h.params.ios[1].actor.temperature = 0.5
 
 # set importance of action input to 0, the agent doesn't need to know its own last action for this task. This will speed up learning for this task
 h.params.ios[1].importance = 0.0
@@ -59,7 +59,7 @@ for episode in range(1000):
     # timesteps
     for t in range(500):
         # sensory CSDR creation through "squash and bin" method
-        csdr = (sigmoid(obs * 3.0) * (input_resolution - 1) + 0.5).astype(np.int32).tolist()
+        csdr = (sigmoid(obs * 3.0) * (input_resolution - 1) + 0.5).astype(np.int32)
 
         h.step([ csdr, h.get_prediction_cis(1) ], True, reward)
 
