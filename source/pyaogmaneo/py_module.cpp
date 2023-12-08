@@ -68,13 +68,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Encoder::Params::scale)
-        .def_readwrite("lr", &aon::Encoder::Params::lr);
+        .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("gcurve", &aon::Encoder::Params::gcurve);
 
     py::class_<aon::Routed_Layer::Params>(m, "RoutedLayerParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Routed_Layer::Params::scale)
         .def_readwrite("lr", &aon::Routed_Layer::Params::lr)
         .def_readwrite("clip", &aon::Routed_Layer::Params::clip);
+
+    py::class_<aon::Predictor::Params>(m, "PredictorParams")
+        .def(py::init<>())
+        .def_readwrite("lr", &aon::Predictor::Params::lr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
@@ -91,7 +96,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
-        .def_readwrite("routed_layer", &aon::Hierarchy::IO_Params::decoder)
+        .def_readwrite("predictor", &aon::Hierarchy::IO_Params::predictor)
         .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
         .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
 
@@ -126,7 +131,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
-        .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
         .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
         .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
