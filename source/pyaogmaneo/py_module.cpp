@@ -86,7 +86,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Actor::Params::scale)
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
