@@ -164,7 +164,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("threshold", &aon::Image_Encoder::Params::threshold)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
@@ -187,7 +186,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serialize_to_buffer", &pyaon::Image_Encoder::serialize_to_buffer)
         .def("step", &pyaon::Image_Encoder::step,
             py::arg("inputs"),
-            py::arg("learn_enabled") = true
+            py::arg("learn_enabled") = true,
+            py::arg("learn_recon") = true
         )
         .def("reconstruct", &pyaon::Image_Encoder::reconstruct)
         .def("get_num_visible_layers", &pyaon::Image_Encoder::get_num_visible_layers)

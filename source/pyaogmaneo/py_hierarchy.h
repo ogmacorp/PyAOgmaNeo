@@ -93,6 +93,9 @@ class Hierarchy {
 private:
     aon::Hierarchy h;
 
+    aon::Array<aon::Int_Buffer> c_input_cis_backing;
+    aon::Array<aon::Int_Buffer_View> c_input_cis;
+
     void init_random(
         const std::vector<IO_Desc> &io_descs,
         const std::vector<Layer_Desc> &layer_descs

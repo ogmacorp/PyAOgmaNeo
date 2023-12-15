@@ -43,6 +43,12 @@ Image_Encoder::Image_Encoder(
 
     // copy params
     params = enc.params;
+
+    c_inputs_backing.resize(enc.get_num_visible_layers());
+    c_inputs.resize(enc.get_num_visible_layers());
+
+    for (int i = 0; i < c_inputs_backing.size(); i++)
+        c_inputs_backing[i].resize(enc.get_visible_layer_desc(i).size.x * enc.get_visible_layer_desc(i).size.y * enc.get_visible_layer_desc(i).size.z);
 }
 
 void Image_Encoder::init_random(
@@ -128,7 +134,8 @@ py::array_t<unsigned char> Image_Encoder::serialize_to_buffer() {
 
 void Image_Encoder::step(
     const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,
-    bool learn_enabled
+    bool learn_enabled,
+    bool learn_recon
 ) {
     if (inputs.size() != enc.get_num_visible_layers())
         throw std::runtime_error("incorrect number of inputs given to Image_Encoder! expected " + std::to_string(enc.get_num_visible_layers()) + ", got " + std::to_string(inputs.size()));
@@ -136,21 +143,16 @@ void Image_Encoder::step(
     // copy params
     enc.params = params;
 
-    aon::Array<aon::Byte_Buffer> c_inputs_backing(inputs.size());
-    aon::Array<aon::Byte_Buffer_View> c_inputs(inputs.size());
-
     for (int i = 0; i < inputs.size(); i++) {
         auto view = inputs[i].unchecked();
 
-        c_inputs_backing[i].resize(view.size());
-        
         for (int j = 0; j < view.size(); j++)
             c_inputs_backing[i][j] = view(j);
 
         c_inputs[i] = c_inputs_backing[i];
     }
 
-    enc.step(c_inputs, learn_enabled);
+    enc.step(c_inputs, learn_enabled, learn_recon);
 }
 
 void Image_Encoder::reconstruct(

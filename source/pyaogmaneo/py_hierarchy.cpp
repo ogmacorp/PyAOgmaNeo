@@ -90,6 +90,12 @@ Hierarchy::Hierarchy(
 
     for (int l = 0; l < h.get_num_layers(); l++)
         params.layers[l] = h.params.layers[l];
+
+    c_input_cis_backing.resize(h.get_num_io());
+    c_input_cis.resize(h.get_num_io());
+
+    for (int i = 0; i < c_input_cis_backing.size(); i++)
+        c_input_cis_backing[i].resize(h.get_io_size(i).x * h.get_io_size(i).y);
 }
 
 void Hierarchy::init_random(
@@ -216,9 +222,6 @@ void Hierarchy::step(
 
     copy_params_to_h();
 
-    aon::Array<aon::Int_Buffer> c_input_cis_backing(input_cis.size());
-    aon::Array<aon::Int_Buffer_View> c_input_cis(input_cis.size());
-
     for (int i = 0; i < input_cis.size(); i++) {
         auto view = input_cis[i].unchecked();
 
@@ -226,8 +229,6 @@ void Hierarchy::step(
 
         if (view.size() != num_columns)
             throw std::runtime_error("incorrect csdr size at index " + std::to_string(i) + " - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(view.size()));
-
-        c_input_cis_backing[i].resize(view.size());
 
         for (int j = 0; j < view.size(); j++) {
             if (view(j) < 0 || view(j) >= h.get_io_size(i).z)
