@@ -47,7 +47,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity);
+        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
+        .def("__copy__", 
+            [](const pyaon::IO_Desc &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::IO_Desc &other) {
+                return other;
+            }
+        );
 
     py::class_<pyaon::Layer_Desc>(m, "LayerDesc")
         .def(py::init<
@@ -67,7 +77,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
         .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
-        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon);
+        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
+        .def("__copy__", 
+            [](const pyaon::Layer_Desc &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::Layer_Desc &other) {
+                return other;
+            }
+        );
 
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
@@ -146,7 +166,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
         .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
-        .def("merge", &pyaon::Hierarchy::merge);
+        .def("merge", &pyaon::Hierarchy::merge)
+        .def("__copy__", 
+            [](const pyaon::Hierarchy &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::Hierarchy &other) {
+                return other;
+            }
+        );
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
@@ -193,5 +223,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size);
+        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
+        .def("__copy__", 
+            [](const pyaon::Image_Encoder &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::Image_Encoder &other) {
+                return other;
+            }
+        );
 }
