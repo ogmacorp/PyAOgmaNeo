@@ -24,6 +24,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .value("action", pyaon::action)
         .export_values();
 
+    py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
+        .value("merge_random", pyaon::merge_random)
+        .value("merge_average", pyaon::merge_average)
+        .export_values();
+
     py::class_<pyaon::IO_Desc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
@@ -140,7 +145,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
+        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
+        .def("merge", &pyaon::Hierarchy::merge);
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
