@@ -24,6 +24,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .value("action", pyaon::action)
         .export_values();
 
+    py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
+        .value("merge_random", pyaon::merge_random)
+        .value("merge_average", pyaon::merge_average)
+        .export_values();
+
     py::class_<pyaon::IO_Desc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
@@ -45,7 +50,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity);
+        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
+        .def("__copy__", 
+            [](const pyaon::IO_Desc &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::IO_Desc &other) {
+                return other;
+            }
+        );
 
     py::class_<pyaon::Layer_Desc>(m, "LayerDesc")
         .def(py::init<
@@ -68,7 +83,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
         .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
-        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon);
+        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
+        .def("__copy__", 
+            [](const pyaon::Layer_Desc &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::Layer_Desc &other) {
+                return other;
+            }
+        );
 
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
@@ -123,9 +148,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("params", &pyaon::Hierarchy::params)
         .def("save_to_file", &pyaon::Hierarchy::save_to_file)
-        .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
         .def("set_state_from_buffer", &pyaon::Hierarchy::set_state_from_buffer)
+        .def("set_weights_from_buffer", &pyaon::Hierarchy::set_weights_from_buffer)
+        .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
         .def("serialize_state_to_buffer", &pyaon::Hierarchy::serialize_state_to_buffer)
+        .def("serialize_weights_to_buffer", &pyaon::Hierarchy::serialize_weights_to_buffer)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
@@ -148,7 +175,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity);
+        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
+        .def("merge", &pyaon::Hierarchy::merge)
+        .def("__copy__", 
+            [](const pyaon::Hierarchy &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::Hierarchy &other) {
+                return other;
+            }
+        );
 
     py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
         .def(py::init<
@@ -164,9 +202,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
+        .def_readwrite("threshold", &aon::Image_Encoder::Params::threshold)
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
+        .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
@@ -183,7 +222,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("params", &pyaon::Image_Encoder::params)
         .def("save_to_file", &pyaon::Image_Encoder::save_to_file)
+        .def("set_state_from_buffer", &pyaon::Image_Encoder::set_state_from_buffer)
+        .def("set_weights_from_buffer", &pyaon::Image_Encoder::set_weights_from_buffer)
         .def("serialize_to_buffer", &pyaon::Image_Encoder::serialize_to_buffer)
+        .def("serialize_state_to_buffer", &pyaon::Image_Encoder::serialize_state_to_buffer)
+        .def("serialize_weights_to_buffer", &pyaon::Image_Encoder::serialize_weights_to_buffer)
         .def("step", &pyaon::Image_Encoder::step,
             py::arg("inputs"),
             py::arg("learn_enabled") = true,
@@ -194,5 +237,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size);
+        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
+        .def("__copy__", 
+            [](const pyaon::Image_Encoder &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::Image_Encoder &other) {
+                return other;
+            }
+        );
 }

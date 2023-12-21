@@ -125,13 +125,19 @@ public:
         const std::string &file_name
     );
 
-    py::array_t<unsigned char> serialize_to_buffer();
-
     void set_state_from_buffer(
         const py::array_t<unsigned char> &buffer
     );
 
+    void set_weights_from_buffer(
+        const py::array_t<unsigned char> &buffer
+    );
+
+    py::array_t<unsigned char> serialize_to_buffer();
+
     py::array_t<unsigned char> serialize_state_to_buffer();
+
+    py::array_t<unsigned char> serialize_weights_to_buffer();
 
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
@@ -265,5 +271,10 @@ public:
 
         return h.get_actor(i).get_history_capacity();
     }
+
+    void merge(
+        const std::vector<Hierarchy*> &hierarchies,
+        Merge_Mode mode
+    );
 };
 }
