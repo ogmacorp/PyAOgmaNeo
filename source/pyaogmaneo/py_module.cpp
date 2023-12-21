@@ -140,9 +140,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("params", &pyaon::Hierarchy::params)
         .def("save_to_file", &pyaon::Hierarchy::save_to_file)
-        .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
         .def("set_state_from_buffer", &pyaon::Hierarchy::set_state_from_buffer)
+        .def("set_weights_from_buffer", &pyaon::Hierarchy::set_weights_from_buffer)
+        .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
         .def("serialize_state_to_buffer", &pyaon::Hierarchy::serialize_state_to_buffer)
+        .def("serialize_weights_to_buffer", &pyaon::Hierarchy::serialize_weights_to_buffer)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
@@ -212,7 +214,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("params", &pyaon::Image_Encoder::params)
         .def("save_to_file", &pyaon::Image_Encoder::save_to_file)
+        .def("set_state_from_buffer", &pyaon::Image_Encoder::set_state_from_buffer)
+        .def("set_weights_from_buffer", &pyaon::Image_Encoder::set_weights_from_buffer)
         .def("serialize_to_buffer", &pyaon::Image_Encoder::serialize_to_buffer)
+        .def("serialize_state_to_buffer", &pyaon::Image_Encoder::serialize_state_to_buffer)
+        .def("serialize_weights_to_buffer", &pyaon::Image_Encoder::serialize_weights_to_buffer)
         .def("step", &pyaon::Image_Encoder::step,
             py::arg("inputs"),
             py::arg("learn_enabled") = true,

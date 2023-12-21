@@ -67,7 +67,19 @@ public:
         const std::string &file_name
     );
 
+    void set_state_from_buffer(
+        const py::array_t<unsigned char> &buffer
+    );
+
+    void set_weights_from_buffer(
+        const py::array_t<unsigned char> &buffer
+    );
+
     py::array_t<unsigned char> serialize_to_buffer();
+
+    py::array_t<unsigned char> serialize_state_to_buffer();
+
+    py::array_t<unsigned char> serialize_weights_to_buffer();
 
     void step(
         const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,

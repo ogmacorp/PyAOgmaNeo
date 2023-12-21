@@ -122,12 +122,46 @@ void Image_Encoder::save_to_file(
     enc.write(writer);
 }
 
+void Image_Encoder::set_state_from_buffer(
+    const py::array_t<unsigned char> &buffer
+) {
+    Buffer_Reader reader;
+    reader.buffer = &buffer;
+
+    enc.read_state(reader);
+}
+
+void Image_Encoder::set_weights_from_buffer(
+    const py::array_t<unsigned char> &buffer
+) {
+    Buffer_Reader reader;
+    reader.buffer = &buffer;
+
+    enc.read_weights(reader);
+}
+
 py::array_t<unsigned char> Image_Encoder::serialize_to_buffer() {
     Buffer_Writer writer(enc.size() + sizeof(int));
 
     writer.write(&image_encoder_magic, sizeof(int));
 
     enc.write(writer);
+
+    return writer.buffer;
+}
+
+py::array_t<unsigned char> Image_Encoder::serialize_state_to_buffer() {
+    Buffer_Writer writer(enc.state_size());
+
+    enc.write_state(writer);
+
+    return writer.buffer;
+}
+
+py::array_t<unsigned char> Image_Encoder::serialize_weights_to_buffer() {
+    Buffer_Writer writer(enc.weights_size());
+
+    enc.write_weights(writer);
 
     return writer.buffer;
 }
