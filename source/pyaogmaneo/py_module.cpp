@@ -40,7 +40,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
-            py::arg("num_dendrites_per_cell") = 4,
+            py::arg("num_dendrites_per_cell") = 2,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("history_capacity") = 256
@@ -72,7 +72,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("num_dendrites_per_cell") = 4,
+            py::arg("num_dendrites_per_cell") = 2,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("ticks_per_update") = 2,
@@ -153,6 +153,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
         .def("serialize_state_to_buffer", &pyaon::Hierarchy::serialize_state_to_buffer)
         .def("serialize_weights_to_buffer", &pyaon::Hierarchy::serialize_weights_to_buffer)
+        .def("get_size", &pyaon::Hierarchy::get_size)
+        .def("get_state_size", &pyaon::Hierarchy::get_state_size)
+        .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
@@ -227,6 +230,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serialize_to_buffer", &pyaon::Image_Encoder::serialize_to_buffer)
         .def("serialize_state_to_buffer", &pyaon::Image_Encoder::serialize_state_to_buffer)
         .def("serialize_weights_to_buffer", &pyaon::Image_Encoder::serialize_weights_to_buffer)
+        .def("get_size", &pyaon::Image_Encoder::get_size)
+        .def("get_state_size", &pyaon::Image_Encoder::get_state_size)
+        .def("get_weights_size", &pyaon::Image_Encoder::get_weights_size)
         .def("step", &pyaon::Image_Encoder::step,
             py::arg("inputs"),
             py::arg("learn_enabled") = true,
