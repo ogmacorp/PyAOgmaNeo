@@ -35,7 +35,7 @@ void Buffer_Writer::write(const void* data, long len) {
     auto view = buffer.mutable_unchecked();
 
     for (long i = 0; i < len; i++)
-        view(start + i) = static_cast<const unsigned char*>(data)[i];
+        view[start + i] = static_cast<const unsigned char*>(data)[i];
 
     start += len;
 }

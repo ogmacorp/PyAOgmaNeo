@@ -89,10 +89,9 @@ public:
         long buffer_size
     )
     :
-    start(0)
-    {
-        buffer = py::array_t<unsigned char>(buffer_size);
-    }
+    start(0),
+    buffer(buffer_size)
+    {}
 
     void write(
         const void* data,
