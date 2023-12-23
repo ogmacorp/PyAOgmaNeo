@@ -35,16 +35,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 pyaon::IO_Type,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
+            py::arg("num_dendrites_per_cell") = 2,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("history_capacity") = 256
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
+        .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
         .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
@@ -65,15 +68,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("num_dendrites_per_cell") = 2,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("ticks_per_update") = 2,
             py::arg("temporal_horizon") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
+        .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
         .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
@@ -107,6 +113,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
+        .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
@@ -146,6 +153,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
         .def("serialize_state_to_buffer", &pyaon::Hierarchy::serialize_state_to_buffer)
         .def("serialize_weights_to_buffer", &pyaon::Hierarchy::serialize_weights_to_buffer)
+        .def("get_size", &pyaon::Hierarchy::get_size)
+        .def("get_state_size", &pyaon::Hierarchy::get_state_size)
+        .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
@@ -220,6 +230,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("serialize_to_buffer", &pyaon::Image_Encoder::serialize_to_buffer)
         .def("serialize_state_to_buffer", &pyaon::Image_Encoder::serialize_state_to_buffer)
         .def("serialize_weights_to_buffer", &pyaon::Image_Encoder::serialize_weights_to_buffer)
+        .def("get_size", &pyaon::Image_Encoder::get_size)
+        .def("get_state_size", &pyaon::Image_Encoder::get_state_size)
+        .def("get_weights_size", &pyaon::Image_Encoder::get_weights_size)
         .def("step", &pyaon::Image_Encoder::step,
             py::arg("inputs"),
             py::arg("learn_enabled") = true,

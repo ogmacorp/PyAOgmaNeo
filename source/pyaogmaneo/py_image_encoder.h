@@ -81,6 +81,18 @@ public:
 
     py::array_t<unsigned char> serialize_weights_to_buffer();
 
+    long get_size() const {
+        return enc.size();
+    }
+
+    long get_state_size() const {
+        return enc.state_size();
+    }
+
+    long get_weights_size() const {
+        return enc.weights_size();
+    }
+
     void step(
         const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,
         bool learn_enabled,

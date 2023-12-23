@@ -49,7 +49,7 @@ public:
 
     void read(
         void* data,
-        int len
+        long len
     ) override;
 };
 
@@ -59,7 +59,7 @@ public:
 
     void write(
         const void* data,
-        int len
+        long len
     ) override;
 };
 
@@ -76,27 +76,26 @@ public:
 
     void read(
         void* data,
-        int len
+        long len
     ) override;
 };
 
 class Buffer_Writer : public aon::Stream_Writer {
 public:
-    int start;
+    long start;
     py::array_t<unsigned char> buffer;
 
     Buffer_Writer(
-        int buffer_size
+        long buffer_size
     )
     :
-    start(0)
-    {
-        buffer = py::array_t<unsigned char>(buffer_size);
-    }
+    start(0),
+    buffer(buffer_size)
+    {}
 
     void write(
         const void* data,
-        int len
+        long len
     ) override;
 };
 
