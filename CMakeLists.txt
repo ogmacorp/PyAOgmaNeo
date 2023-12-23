@@ -36,7 +36,7 @@ else()
     FetchContent_Declare(
         AOgmaNeo
         GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-        GIT_TAG 15bbca99b6de1cace11457cfd4bc866bda2a41d6
+        GIT_TAG 2f11e0e94d5ffaf3cb91e967432b10725004e917
     )
 
     FetchContent_GetProperties(AOgmaNeo)
