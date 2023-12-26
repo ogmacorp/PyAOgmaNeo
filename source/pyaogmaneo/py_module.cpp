@@ -244,6 +244,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
         .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
+        .def("merge", &pyaon::Image_Encoder::merge)
         .def("__copy__", 
             [](const pyaon::Image_Encoder &other) {
                 return other;

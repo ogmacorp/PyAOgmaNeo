@@ -126,5 +126,10 @@ public:
 
         return { size.x, size.y, size.z };
     }
+
+    void merge(
+        const std::vector<Image_Encoder*> &image_encoders,
+        Merge_Mode mode
+    );
 };
 }

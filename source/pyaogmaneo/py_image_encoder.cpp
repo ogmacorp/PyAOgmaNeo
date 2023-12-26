@@ -235,3 +235,15 @@ py::array_t<int> Image_Encoder::get_hidden_cis() const {
 
     return hidden_cis;
 }
+
+void Image_Encoder::merge(
+    const std::vector<Image_Encoder*> &image_encoders,
+    Merge_Mode mode
+) {
+    aon::Array<aon::Image_Encoder*> c_image_encoders(image_encoders.size());
+
+    for (int i = 0; i < image_encoders.size(); i++)
+        c_image_encoders[i] = &image_encoders[i]->enc;
+
+    enc.merge(c_image_encoders, static_cast<aon::Merge_Mode>(mode));
+}
