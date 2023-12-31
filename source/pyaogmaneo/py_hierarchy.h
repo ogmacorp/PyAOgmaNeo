@@ -268,5 +268,10 @@ public:
 
         return h.get_actor(i).get_history_capacity();
     }
+
+    void merge(
+        const std::vector<Hierarchy*> &hierarchies,
+        Merge_Mode mode
+    );
 };
 }

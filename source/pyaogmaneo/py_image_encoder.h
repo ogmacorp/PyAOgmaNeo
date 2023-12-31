@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int image_encoder_magic = 3251108;
+const int image_encoder_magic = 2210529;
 
 struct Image_Visible_Layer_Desc {
     std::tuple<int, int, int> size;
@@ -36,6 +36,9 @@ struct Image_Visible_Layer_Desc {
 class Image_Encoder {
 private:
     aon::Image_Encoder enc;
+
+    aon::Array<aon::Byte_Buffer> c_inputs_backing;
+    aon::Array<aon::Byte_Buffer_View> c_inputs;
 
     void init_random(
         const std::tuple<int, int, int> &hidden_size,
@@ -64,11 +67,36 @@ public:
         const std::string &file_name
     );
 
+    void set_state_from_buffer(
+        const py::array_t<unsigned char> &buffer
+    );
+
+    void set_weights_from_buffer(
+        const py::array_t<unsigned char> &buffer
+    );
+
     py::array_t<unsigned char> serialize_to_buffer();
+
+    py::array_t<unsigned char> serialize_state_to_buffer();
+
+    py::array_t<unsigned char> serialize_weights_to_buffer();
+
+    long get_size() const {
+        return enc.size();
+    }
+
+    long get_state_size() const {
+        return enc.state_size();
+    }
+
+    long get_weights_size() const {
+        return enc.weights_size();
+    }
 
     void step(
         const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,
-        bool learn_enabled
+        bool learn_enabled,
+        bool learn_recon
     );
 
     void reconstruct(
@@ -98,5 +126,10 @@ public:
 
         return { size.x, size.y, size.z };
     }
+
+    void merge(
+        const std::vector<Image_Encoder*> &image_encoders,
+        Merge_Mode mode
+    );
 };
 }
