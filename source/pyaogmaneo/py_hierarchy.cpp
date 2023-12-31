@@ -162,6 +162,24 @@ void Hierarchy::save_to_file(
     h.write(writer);
 }
 
+void Hierarchy::set_state_from_buffer(
+    const py::array_t<unsigned char> &buffer
+) {
+    Buffer_Reader reader;
+    reader.buffer = &buffer;
+
+    h.read_state(reader);
+}
+
+void Hierarchy::set_weights_from_buffer(
+    const py::array_t<unsigned char> &buffer
+) {
+    Buffer_Reader reader;
+    reader.buffer = &buffer;
+
+    h.read_weights(reader);
+}
+
 py::array_t<unsigned char> Hierarchy::serialize_to_buffer() {
     Buffer_Writer writer(h.size() + sizeof(int));
 
@@ -172,27 +190,18 @@ py::array_t<unsigned char> Hierarchy::serialize_to_buffer() {
     return writer.buffer;
 }
 
-void Hierarchy::set_state_from_buffer(
-    const py::array_t<unsigned char> &buffer
-) {
-    Buffer_Reader reader;
-    reader.buffer = &buffer;
-
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != hierarchy_magic)
-        throw std::runtime_error("attempted to set Hierarchy state from incompatible buffer!");
-
-    h.read_state(reader);
-}
-
 py::array_t<unsigned char> Hierarchy::serialize_state_to_buffer() {
-    Buffer_Writer writer(h.state_size() + sizeof(int));
-
-    writer.write(&hierarchy_magic, sizeof(int));
+    Buffer_Writer writer(h.state_size());
 
     h.write_state(writer);
+
+    return writer.buffer;
+}
+
+py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
+    Buffer_Writer writer(h.weights_size());
+
+    h.write_weights(writer);
 
     return writer.buffer;
 }
@@ -347,4 +356,16 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
+}
+
+void Hierarchy::merge(
+    const std::vector<Hierarchy*> &hierarchies,
+    Merge_Mode mode
+) {
+    aon::Array<aon::Hierarchy*> c_hierarchies(hierarchies.size());
+
+    for (int h = 0; h < hierarchies.size(); h++)
+        c_hierarchies[h] = &hierarchies[h]->h;
+
+    h.merge(c_hierarchies, static_cast<aon::Merge_Mode>(mode));
 }

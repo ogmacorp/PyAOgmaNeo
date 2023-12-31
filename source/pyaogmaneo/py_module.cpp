@@ -119,9 +119,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("params", &pyaon::Hierarchy::params)
         .def("save_to_file", &pyaon::Hierarchy::save_to_file)
-        .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
         .def("set_state_from_buffer", &pyaon::Hierarchy::set_state_from_buffer)
+        .def("set_weights_from_buffer", &pyaon::Hierarchy::set_weights_from_buffer)
+        .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
         .def("serialize_state_to_buffer", &pyaon::Hierarchy::serialize_state_to_buffer)
+        .def("serialize_weights_to_buffer", &pyaon::Hierarchy::serialize_weights_to_buffer)
+        .def("get_size", &pyaon::Hierarchy::get_size)
+        .def("get_state_size", &pyaon::Hierarchy::get_state_size)
+        .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
