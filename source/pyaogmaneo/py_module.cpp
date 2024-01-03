@@ -104,7 +104,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Decoder::Params::scale)
+        .def_readwrite("scale_max", &aon::Decoder::Params::scale_max)
+        .def_readwrite("scale_arg", &aon::Decoder::Params::scale_arg)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
         .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
 
