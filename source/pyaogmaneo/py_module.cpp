@@ -106,14 +106,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak)
         .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
-        .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
