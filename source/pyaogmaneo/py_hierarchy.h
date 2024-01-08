@@ -53,24 +53,20 @@ struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
 
     int up_radius;
+    int recurrent_radius;
     int down_radius;
-
-    int ticks_per_update;
-    int temporal_horizon;
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
         int up_radius,
-        int down_radius,
-        int ticks_per_update,
-        int temporal_horizon
+        int recurrent_radius,
+        int down_radius
     )
     :
     hidden_size(hidden_size),
     up_radius(up_radius),
-    down_radius(down_radius),
-    ticks_per_update(ticks_per_update),
-    temporal_horizon(temporal_horizon)
+    recurrent_radius(recurrent_radius),
+    down_radius(down_radius)
     {}
 
     void check_in_range() const;
@@ -192,24 +188,6 @@ public:
         return h.get_num_encoder_visible_layers(l);
     }
 
-    int get_ticks(
-        int l
-    ) const {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        return h.get_ticks(l);
-    }
-
-    int get_ticks_per_update(
-        int l
-    ) const {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        return h.get_ticks_per_update(l);
-    }
-
     int get_num_io() const {
         return h.get_num_io();
     }
@@ -242,22 +220,6 @@ public:
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
         return h.get_encoder(l).get_visible_layer_desc(0).radius;
-    }
-
-    int get_down_radius(
-        int l,
-        int i
-    ) const {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        if (l == 0 && i < 0 || i >= h.get_num_io())
-            throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-        if (h.get_io_type(i) == aon::action)
-            return h.get_actor(i).get_visible_layer_desc(0).radius;
-        
-        return h.get_routed_layer(l, i).get_visible_layer_desc(0).radius;
     }
 
     int get_actor_history_capacity(

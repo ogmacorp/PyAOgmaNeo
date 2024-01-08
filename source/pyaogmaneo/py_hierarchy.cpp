@@ -43,17 +43,11 @@ void Layer_Desc::check_in_range() const {
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
+    if (recurrent_radius < -1)
+        throw std::runtime_error("error: recurrent_radius < -1 is not allowed!");
+
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
-
-    if (ticks_per_update < 1)
-        throw std::runtime_error("error: ticks_per_update < 1 is not allowed!");
-
-    if (temporal_horizon < 1)
-        throw std::runtime_error("error: temporal_horizon < 1 is not allowed!");
-
-    if (ticks_per_update > temporal_horizon)
-        throw std::runtime_error("error: ticks_per_update > temporal_horizon is not allowed!");
 }
 
 Hierarchy::Hierarchy(
@@ -112,9 +106,8 @@ void Hierarchy::init_random(
         c_layer_descs[l] = aon::Hierarchy::Layer_Desc(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
             layer_descs[l].up_radius,
-            layer_descs[l].down_radius,
-            layer_descs[l].ticks_per_update,
-            layer_descs[l].temporal_horizon
+            layer_descs[l].recurrent_radius,
+            layer_descs[l].down_radius
         );
     }
 
