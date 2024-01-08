@@ -119,7 +119,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
+        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder)
         .def_readwrite("recurrent_importance", &aon::Hierarchy::Layer_Params::recurrent_importance);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
