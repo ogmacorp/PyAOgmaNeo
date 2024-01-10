@@ -95,17 +95,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("threshold", &aon::Encoder::Params::threshold)
-        .def_readwrite("falloff", &aon::Encoder::Params::falloff)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
+        .def_readwrite("lr", &aon::Encoder::Params::lr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak)
-        .def_readwrite("gcurve", &aon::Decoder::Params::gcurve);
+        .def_readwrite("leak", &aon::Decoder::Params::leak);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
