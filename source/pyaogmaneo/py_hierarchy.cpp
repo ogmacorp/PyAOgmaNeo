@@ -223,7 +223,8 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
     bool learn_enabled,
-    float reward
+    float reward,
+    float mimic
 ) {
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -248,7 +249,7 @@ void Hierarchy::step(
         c_input_cis[i] = c_input_cis_backing[i];
     }
     
-    h.step(c_input_cis, learn_enabled, reward);
+    h.step(c_input_cis, learn_enabled, reward, mimic);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
