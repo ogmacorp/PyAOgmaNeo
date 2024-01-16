@@ -182,7 +182,7 @@ class EnvRunner:
 
             size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
 
-            #self.h.params.ios[index].importance = 0.0
+            self.h.params.ios[index].importance = 0.0
 
             start_act = []
 
