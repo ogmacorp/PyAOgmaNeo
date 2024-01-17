@@ -1,6 +1,6 @@
 <!---
   PyAOgmaNeo
-  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
+  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
 
   This copy of PyAOgmaNeo is licensed to you under the terms described
   in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -61,4 +61,4 @@ Refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) file for information on making
 
 Contact Ogma via licenses@ogmacorp.com to discuss commercial use and licensing options.
 
-PyAOgmaNeo Copyright (c) 2020-2023 [Ogma Intelligent Systems Corp](https://ogmacorp.com). All rights reserved.
+PyAOgmaNeo Copyright (c) 2020-2024 [Ogma Intelligent Systems Corp](https://ogmacorp.com). All rights reserved.
