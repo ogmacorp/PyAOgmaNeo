@@ -154,8 +154,7 @@ public:
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
         bool learn_enabled,
-        float reward,
-        float mimic
+        float reward
     );
 
     void clear_state() {
