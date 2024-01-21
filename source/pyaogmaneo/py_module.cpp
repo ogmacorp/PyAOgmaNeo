@@ -98,6 +98,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
+        .def_readwrite("threshold", &aon::Encoder::Params::threshold)
         .def_readwrite("falloff", &aon::Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
@@ -112,8 +113,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
+        .def_readwrite("rate", &aon::Actor::Params::rate)
         .def_readwrite("leak", &aon::Actor::Params::leak)
-        .def_readwrite("bias", &aon::Actor::Params::bias)
+        .def_readwrite("clip_coef", &aon::Actor::Params::clip_coef)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
@@ -205,6 +207,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
+        .def_readwrite("threshold", &aon::Image_Encoder::Params::threshold)
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
