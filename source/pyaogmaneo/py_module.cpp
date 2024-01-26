@@ -209,7 +209,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
-        .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
+        .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
+        .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
