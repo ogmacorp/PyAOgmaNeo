@@ -106,12 +106,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr);
+        .def_readwrite("lr", &aon::Decoder::Params::lr)
+        .def_readwrite("leak", &aon::Decoder::Params::leak);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("alr", &aon::Actor::Params::alr)
+        .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("rate", &aon::Actor::Params::rate)
         .def_readwrite("clip_coef", &aon::Actor::Params::clip_coef)
         .def_readwrite("discount", &aon::Actor::Params::discount)
