@@ -165,6 +165,7 @@ class EnvRunner:
 
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
+            ld.num_dendrites_per_cell = num_dendrites_per_cell
 
             lds.append(ld)
 
@@ -180,7 +181,7 @@ class EnvRunner:
         for i in range(len(self.action_indices)):
             index = self.action_indices[i]
 
-            self.h.params.ios[index].importance = 0.0
+            #self.h.params.ios[index].importance = 0.0
 
             size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
 
