@@ -37,7 +37,9 @@ jobs:
         uses: pypa/cibuildwheel@v2.16.5
         env:
           # configure cibuildwheel to build native archs ('auto'), and some emulated ones
-          CIBW_ARCHS_LINUX: auto aarch64
+          CIBW_ARCHS_LINUX: auto64 aarch64
+          CIBW_PROJECT_REQUIRES_PYTHON: ">=3.9" # limit to 3.9 and up since build takes forever otherwise
+          CIBW_SKIP: pp* # disable building PyPy wheels on all platforms
 
       - uses: actions/upload-artifact@v4
         with:
