@@ -44,7 +44,7 @@ jobs:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
 
-build_sdist:
+  build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +68,7 @@ build_sdist:
 
   publish:
     runs-on: ubuntu-latest
-    needs: [build_wheels, source_build]
+    needs: [build_wheels, build_sdist]
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
     - name: Download
