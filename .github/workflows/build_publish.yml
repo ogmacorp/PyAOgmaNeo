@@ -46,7 +46,7 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
-  source-build:
+  source_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -73,7 +73,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    needs: [matrix-build, linux-build, source-build]
+    needs: [build_wheels, source_build]
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
     - name: Download
