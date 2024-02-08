@@ -30,6 +30,10 @@ jobs:
         with:
           python-version: "3.x"
 
+      - uses: awalsh128/cache-apt-pkgs-action@latest # install and cache cmake
+        with:
+          packages: cmake
+
       - name: Install dependencies
         run: python -m pip install --upgrade setuptools wheel cmake build
 
