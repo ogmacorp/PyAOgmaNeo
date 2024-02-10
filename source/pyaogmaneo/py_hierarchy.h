@@ -62,19 +62,23 @@ struct Layer_Desc {
     int recurrent_radius;
     int down_radius;
 
+    int spatial_activity;
+
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
         int num_dendrites_per_cell,
         int up_radius,
         int recurrent_radius,
-        int down_radius
+        int down_radius,
+        int spatial_activity
     )
     :
     hidden_size(hidden_size),
     num_dendrites_per_cell(num_dendrites_per_cell),
     up_radius(up_radius),
     recurrent_radius(recurrent_radius),
-    down_radius(down_radius)
+    down_radius(down_radius),
+    spatial_activity(spatial_activity)
     {}
 
     void check_in_range() const;

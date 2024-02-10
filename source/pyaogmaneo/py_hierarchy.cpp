@@ -54,6 +54,9 @@ void Layer_Desc::check_in_range() const {
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
+
+    if (spatial_activity < 1)
+        throw std::runtime_error("error: spatial_activity < 1 is not allowed!");
 }
 
 Hierarchy::Hierarchy(
@@ -121,7 +124,8 @@ void Hierarchy::init_random(
             layer_descs[l].num_dendrites_per_cell,
             layer_descs[l].up_radius,
             layer_descs[l].recurrent_radius,
-            layer_descs[l].down_radius
+            layer_descs[l].down_radius,
+            layer_descs[l].spatial_activity
         );
     }
 
