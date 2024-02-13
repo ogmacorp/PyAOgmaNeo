@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -84,6 +84,12 @@ Hierarchy::Hierarchy(
 
     for (int l = 0; l < h.get_num_layers(); l++)
         params.layers[l] = h.params.layers[l];
+
+    c_input_cis_backing.resize(h.get_num_io());
+    c_input_cis.resize(h.get_num_io());
+
+    for (int i = 0; i < c_input_cis_backing.size(); i++)
+        c_input_cis_backing[i].resize(h.get_io_size(i).x * h.get_io_size(i).y);
 }
 
 void Hierarchy::init_random(
@@ -162,6 +168,24 @@ void Hierarchy::save_to_file(
     h.write(writer);
 }
 
+void Hierarchy::set_state_from_buffer(
+    const py::array_t<unsigned char> &buffer
+) {
+    Buffer_Reader reader;
+    reader.buffer = &buffer;
+
+    h.read_state(reader);
+}
+
+void Hierarchy::set_weights_from_buffer(
+    const py::array_t<unsigned char> &buffer
+) {
+    Buffer_Reader reader;
+    reader.buffer = &buffer;
+
+    h.read_weights(reader);
+}
+
 py::array_t<unsigned char> Hierarchy::serialize_to_buffer() {
     Buffer_Writer writer(h.size() + sizeof(int));
 
@@ -172,27 +196,18 @@ py::array_t<unsigned char> Hierarchy::serialize_to_buffer() {
     return writer.buffer;
 }
 
-void Hierarchy::set_state_from_buffer(
-    const py::array_t<unsigned char> &buffer
-) {
-    Buffer_Reader reader;
-    reader.buffer = &buffer;
-
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != hierarchy_magic)
-        throw std::runtime_error("attempted to set Hierarchy state from incompatible buffer!");
-
-    h.read_state(reader);
-}
-
 py::array_t<unsigned char> Hierarchy::serialize_state_to_buffer() {
-    Buffer_Writer writer(h.state_size() + sizeof(int));
-
-    writer.write(&hierarchy_magic, sizeof(int));
+    Buffer_Writer writer(h.state_size());
 
     h.write_state(writer);
+
+    return writer.buffer;
+}
+
+py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
+    Buffer_Writer writer(h.weights_size());
+
+    h.write_weights(writer);
 
     return writer.buffer;
 }
@@ -208,9 +223,6 @@ void Hierarchy::step(
 
     copy_params_to_h();
 
-    aon::Array<aon::Int_Buffer> c_input_cis_backing(input_cis.size());
-    aon::Array<aon::Int_Buffer_View> c_input_cis(input_cis.size());
-
     for (int i = 0; i < input_cis.size(); i++) {
         auto view = input_cis[i].unchecked();
 
@@ -218,8 +230,6 @@ void Hierarchy::step(
 
         if (view.size() != num_columns)
             throw std::runtime_error("incorrect csdr size at index " + std::to_string(i) + " - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(view.size()));
-
-        c_input_cis_backing[i].resize(view.size());
 
         for (int j = 0; j < view.size(); j++) {
             if (view(j) < 0 || view(j) >= h.get_io_size(i).z)
@@ -365,4 +375,16 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
+}
+
+void Hierarchy::merge(
+    const std::vector<Hierarchy*> &hierarchies,
+    Merge_Mode mode
+) {
+    aon::Array<aon::Hierarchy*> c_hierarchies(hierarchies.size());
+
+    for (int h = 0; h < hierarchies.size(); h++)
+        c_hierarchies[h] = &hierarchies[h]->h;
+
+    h.merge(c_hierarchies, static_cast<aon::Merge_Mode>(mode));
 }

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -49,7 +49,7 @@ public:
 
     void read(
         void* data,
-        int len
+        long len
     ) override;
 };
 
@@ -59,7 +59,7 @@ public:
 
     void write(
         const void* data,
-        int len
+        long len
     ) override;
 };
 
@@ -76,27 +76,31 @@ public:
 
     void read(
         void* data,
-        int len
+        long len
     ) override;
 };
 
 class Buffer_Writer : public aon::Stream_Writer {
 public:
-    int start;
+    long start;
     py::array_t<unsigned char> buffer;
 
     Buffer_Writer(
-        int buffer_size
+        long buffer_size
     )
     :
-    start(0)
-    {
-        buffer = py::array_t<unsigned char>(buffer_size);
-    }
+    start(0),
+    buffer(buffer_size)
+    {}
 
     void write(
         const void* data,
-        int len
+        long len
     ) override;
+};
+
+enum Merge_Mode {
+    merge_random = 0,
+    merge_average = 1
 };
 }
