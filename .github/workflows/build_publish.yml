@@ -30,7 +30,9 @@ jobs:
         with:
           python-version: "3.x"
 
-      - uses: awalsh128/cache-apt-pkgs-action@latest # install and cache cmake
+      - name: Cache packages
+        if: runner.os == 'Linux'
+        uses: awalsh128/cache-apt-pkgs-action@latest # install and cache cmake
         with:
           packages: cmake
 
