@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
 #  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
@@ -8,7 +6,7 @@
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 # ----------------------------------------------------------------------------
 
-# simple Cart-Pole example
+# -*- coding: utf-8 -*-
 
 import pyaogmaneo as neo
 import gymnasium as gym
@@ -16,7 +14,7 @@ import numpy as np
 
 # squashing function
 def sigmoid(x):
-    return 1.0 / (1.0 + np.exp(-x))
+    return np.tanh(x * 0.5) * 0.5 + 0.5
 
 # create the environment
 env = gym.make('CartPole-v1')
@@ -42,14 +40,6 @@ for i in range(2): # layers with exponential memory. Not much memory is needed f
 
 # create the hierarchy
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.action) ], lds)
-
-# setting parameters
-#h.params.ios[1].actor.vlr = 0.01
-#h.params.ios[1].actor.alr = 0.01
-#h.params.ios[1].actor.temperature = 0.5
-
-# set importance of action input to 0, the agent doesn't need to know its own last action for this task. This will speed up learning for this task
-h.params.ios[1].importance = 0.0
 
 reward = 0.0
 
