@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int image_encoder_magic = 2210529;
+const int image_encoder_magic = 5118433;
 
 struct Image_Visible_Layer_Desc {
     std::tuple<int, int, int> size;
