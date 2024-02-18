@@ -98,10 +98,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("threshold", &aon::Encoder::Params::threshold)
         .def_readwrite("falloff", &aon::Encoder::Params::falloff)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("lr", &aon::Encoder::Params::lr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
