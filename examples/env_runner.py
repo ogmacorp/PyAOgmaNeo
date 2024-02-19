@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -23,9 +23,9 @@ input_type_prediction = neo.prediction
 input_type_action = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layer_sizes=2 * [(5, 5, 32)],
+    def __init__(self, env, layer_sizes=4 * [(5, 5, 32)],
         num_dendrites_per_cell=4, layer_radius=2, hidden_size=(10, 10, 16),
-        image_radius=8, image_scale=0.5, obs_resolution=32, action_resolution=15,
+        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=15,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=3.0, n_threads=8
     ):
         self.env = env
@@ -165,6 +165,7 @@ class EnvRunner:
 
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
+            ld.num_dendrites_per_cell = num_dendrites_per_cell
 
             lds.append(ld)
 
@@ -180,9 +181,9 @@ class EnvRunner:
         for i in range(len(self.action_indices)):
             index = self.action_indices[i]
 
-            size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
+            #self.h.params.ios[index].importance = 0.0
 
-            self.h.params.ios[index].importance = 0.0
+            size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
 
             start_act = []
 
