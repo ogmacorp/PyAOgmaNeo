@@ -112,6 +112,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("lr", &aon::Actor::Params::lr)
         .def_readwrite("cons", &aon::Actor::Params::cons)
         .def_readwrite("discount", &aon::Actor::Params::discount)
+        .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
         .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
