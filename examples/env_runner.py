@@ -192,9 +192,6 @@ class EnvRunner:
 
             self.actions.append(start_act)
 
-        self.average_reward = -1.0
-        self.average_reward_decay = 0.01
-
         self.obs_space = obs_space
 
     def _feed_observation(self, obs):
@@ -292,8 +289,6 @@ class EnvRunner:
         self._feed_observation(obs.copy())
 
         r = reward * self.reward_scale + float(term) * self.terminal_reward
-
-        self.average_reward += self.average_reward_decay * (r - self.average_reward)
 
         self.h.step(self.inputs, True, r)
 
