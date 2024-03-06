@@ -23,7 +23,7 @@ input_type_prediction = neo.prediction
 input_type_action = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layer_sizes=5 * [(5, 5, 32)],
+    def __init__(self, env, layer_sizes=2 * [(8, 8, 32)],
         num_dendrites_per_cell=4, input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=15,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=4.0, n_threads=8
@@ -75,8 +75,8 @@ class EnvRunner:
                 square_size = int(np.ceil(np.sqrt(len(obs_space.low))))
                 self.input_sizes.append((square_size, square_size, obs_resolution))
                 self.input_types.append(input_type_none)
-                lows = list(obs_space.low)
-                highs = list(obs_space.high)
+                lows = obs_space.low
+                highs = obs_space.high
                 
                 # detect large numbers/inf
                 for i in range(len(lows)):
@@ -138,8 +138,8 @@ class EnvRunner:
                     self.action_indices.append(len(self.input_sizes))
                     self.input_sizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], action_resolution))
                     self.input_types.append(input_type_action)
-                    lows = list(self.env.action_space.low)
-                    highs = list(self.env.action_space.high)
+                    lows = self.env.action_space.low
+                    highs = self.env.action_space.high
 
                     self.input_lows.append(lows)
                     self.input_highs.append(highs)
@@ -148,8 +148,8 @@ class EnvRunner:
                     self.action_indices.append(len(self.input_sizes))
                     self.input_sizes.append((square_size, square_size, action_resolution))
                     self.input_types.append(input_type_action)
-                    lows = list(self.env.action_space.low)
-                    highs = list(self.env.action_space.high)
+                    lows = self.env.action_space.low
+                    highs = self.env.action_space.high
 
                     self.input_lows.append(lows)
                     self.input_highs.append(highs)
@@ -221,7 +221,7 @@ class EnvRunner:
                 # encode image
                 self.im_enc.step([img.astype(np.uint8).ravel()], True)
 
-                self.inputs.append(list(self.im_enc.get_hidden_cis()))
+                self.inputs.append(self.im_enc.get_hidden_cis())
 
             else:
                 indices = []
@@ -303,6 +303,6 @@ class EnvRunner:
 
             assert(self.input_types[index] == input_type_action)
 
-            self.actions[i] = list(self.h.get_prediction_cis(index))
+            self.actions[i] = self.h.get_prediction_cis(index)
 
         return term or trunc, reward
