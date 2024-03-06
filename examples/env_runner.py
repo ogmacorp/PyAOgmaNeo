@@ -296,7 +296,7 @@ class EnvRunner:
         for i in range(len(self.action_indices)):
             index = self.action_indices[i]
 
-            assert(self.input_types[index] == input_type_action)
+            assert self.input_types[index] == input_type_action
 
             self.actions[i] = self.h.get_prediction_cis(index)
 
