@@ -30,12 +30,8 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install cmake and python3-dev (needed for some reason now)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get -y install cmake python3-dev
-
       - name: Install dependencies
-        run: python -m pip install --upgrade setuptools wheel cmake build
+        run: python3 -m pip install --upgrade setuptools wheel cmake build
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.17.0
@@ -63,7 +59,7 @@ jobs:
           python-version: "3.x"
 
       - name: Install dependencies
-        run: python -m pip install --upgrade setuptools wheel cmake build
+        run: python3 -m pip install --upgrade setuptools wheel cmake build
 
       - name: Build sdist
         run: pipx run build --sdist
