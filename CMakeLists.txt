@@ -80,7 +80,7 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/py_image_encoder.cpp"
 )
 
-find_package(pybind11 CONFIG)
+find_package(pybind11 REQUIRED)
 
 pybind11_add_module(pyaogmaneo ${PYAOGMANEO_SRC})
 
