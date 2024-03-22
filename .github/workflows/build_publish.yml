@@ -40,6 +40,7 @@ jobs:
           CIBW_ARCHS_LINUX: auto64 aarch64
           CIBW_PROJECT_REQUIRES_PYTHON: ">=3.9" # limit to 3.9 and up since build takes forever otherwise
           CIBW_SKIP: pp* # disable building PyPy wheels on all platforms
+          CIBW_BUILD_VERBOSITY: 3
 
       - uses: actions/upload-artifact@v4
         with:
