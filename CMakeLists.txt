@@ -39,12 +39,7 @@ else()
         GIT_TAG b2c4e38d0388de309f7cf70471430a87063cb181
     )
 
-    FetchContent_GetProperties(AOgmaNeo)
-
-    if(NOT AOgmaNeo_POPULATED)
-        FetchContent_Populate(AOgmaNeo)
-        add_subdirectory(${aogmaneo_SOURCE_DIR} ${aogmaneo_BINARY_DIR})
-    endif()
+    FetchContent_MakeAvailable(AOgmaNeo)
 endif()
 
 FetchContent_Declare(
@@ -53,12 +48,7 @@ FetchContent_Declare(
     GIT_TAG origin/master 
 )
 
-FetchContent_GetProperties(pybind11)
-
-if(NOT pybind11_POPULATED)
-    FetchContent_Populate(pybind11)
-    add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
-endif()
+FetchContent_MakeAvailable(pybind11)
 
 include_directories(${AOgmaNeo_SOURCE_DIR}/source)
 
@@ -80,7 +70,7 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/py_image_encoder.cpp"
 )
 
-find_package(pybind11 REQUIRED)
+find_package(pybind11 CONFIG)
 
 pybind11_add_module(pyaogmaneo ${PYAOGMANEO_SRC})
 
