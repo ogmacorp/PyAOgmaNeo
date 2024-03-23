@@ -6,7 +6,7 @@
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 # ----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.24)
 
 project(pyaogmaneo)
 
@@ -69,8 +69,6 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/py_hierarchy.cpp"
     "source/pyaogmaneo/py_image_encoder.cpp"
 )
-
-find_package(pybind11 CONFIG)
 
 pybind11_add_module(pyaogmaneo ${PYAOGMANEO_SRC})
 
