@@ -59,7 +59,8 @@ class CMakeBuild(build_ext):
             extdir += os.path.sep
 
         cmake_args = [ '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                       '-DUSE_SYSTEM_AOGMANEO=' + ('On' if use_system_aogmaneo else 'Off') ]
+                      '-DPYBIND11_FINDPYTHON=ON',
+                      '-DUSE_SYSTEM_AOGMANEO=' + ('On' if use_system_aogmaneo else 'Off') ]
 
         cfg = 'Debug' if self.debug else 'Release'
         build_args = [ '--config', cfg ]
@@ -87,7 +88,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="pyaogmaneo",
-    version="2.3.28",
+    version="2.3.29",
     description="Python bindings for the AOgmaNeo library",
     long_description='https://github.com/ogmacorp/PyAOgmaNeo',
     author='Ogma Intelligent Systems Corp',
