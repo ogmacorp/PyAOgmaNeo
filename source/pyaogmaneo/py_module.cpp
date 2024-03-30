@@ -112,6 +112,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("value_rate", &aon::Actor::Params::value_rate)
         .def_readwrite("clip_coef", &aon::Actor::Params::clip_coef)
         .def_readwrite("discount", &aon::Actor::Params::discount)
+        .def_readwrite("trace_curve", &aon::Actor::Params::trace_curve)
         .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
