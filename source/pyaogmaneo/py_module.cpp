@@ -108,9 +108,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
-        .def_readwrite("policy_rate", &aon::Actor::Params::policy_rate)
         .def_readwrite("value_rate", &aon::Actor::Params::value_rate)
-        .def_readwrite("clip_coef", &aon::Actor::Params::clip_coef)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("trace_curve", &aon::Actor::Params::trace_curve)
         .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
