@@ -108,8 +108,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("vlr", &aon::Actor::Params::vlr)
-        .def_readwrite("plr", &aon::Actor::Params::plr)
+        .def_readwrite("vwlr", &aon::Actor::Params::vwlr)
+        .def_readwrite("vdlr", &aon::Actor::Params::vdlr)
+        .def_readwrite("pwlr", &aon::Actor::Params::pwlr)
+        .def_readwrite("pdlr", &aon::Actor::Params::pdlr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("value_rate", &aon::Actor::Params::value_rate)
         .def_readwrite("discount", &aon::Actor::Params::discount)
