@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 9211838;
+const int hierarchy_magic = 2191388;
 
 enum IO_Type {
     none = 0,
@@ -31,19 +31,23 @@ struct IO_Desc {
     int up_radius;
     int down_radius;
 
+    int history_capacity;
+
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
         int up_radius,
-        int down_radius
+        int down_radius,
+        int history_capacity
     )
     :
     size(size),
     type(type),
     num_dendrites_per_cell(num_dendrites_per_cell),
     up_radius(up_radius),
-    down_radius(down_radius)
+    down_radius(down_radius),
+    history_capacity(history_capacity)
     {}
 
     void check_in_range() const;
@@ -269,6 +273,15 @@ public:
             return h.get_actor(i).get_visible_layer_desc(0).radius;
         
         return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
+    }
+
+    int get_actor_history_capacity(
+        int i
+    ) const {
+        if (i < 0 || i >= h.get_num_io() || h.get_io_type(i) != aon::action)
+            throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
+
+        return h.get_actor(i).get_history_capacity();
     }
 
     void merge(
