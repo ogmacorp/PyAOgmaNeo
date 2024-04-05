@@ -73,17 +73,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("num_dendrites_per_cell") = 4,
+            py::arg("spatial_activity") = 4,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("ticks_per_update") = 2,
-            py::arg("temporal_horizon") = 2
+            py::arg("recurrent_radius") = 0,
+            py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
+        .def_readwrite("spatial_activity", &pyaon::Layer_Desc::spatial_activity)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
+        .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
-        .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
-        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
         .def("__copy__", 
             [](const pyaon::Layer_Desc &other) {
                 return other;
@@ -100,7 +100,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("early_stop_cells", &aon::Encoder::Params::early_stop_cells);
+        .def_readwrite("spatial_recon_tolerance", &aon::Encoder::Params::spatial_recon_tolerance)
+        .def_readwrite("recurrent_recon_tolerance", &aon::Encoder::Params::recurrent_recon_tolerance);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -173,8 +174,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
-        .def("get_ticks", &pyaon::Hierarchy::get_ticks)
-        .def("get_ticks_per_update", &pyaon::Hierarchy::get_ticks_per_update)
         .def("get_num_io", &pyaon::Hierarchy::get_num_io)
         .def("get_io_size", &pyaon::Hierarchy::get_io_size)
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
