@@ -99,7 +99,7 @@ for i in range(1): # layers
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 1000
+iters = 700
 
 # function for the wave
 def wave(t):
