@@ -75,7 +75,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("spatial_activity") = 4,
             py::arg("up_radius") = 2,
-            py::arg("recurrent_radius") = 0,
+            py::arg("recurrent_radius") = 2,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
@@ -106,14 +106,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak);
+        .def_readwrite("lr", &aon::Decoder::Params::lr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
-        .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("policy_rate", &aon::Actor::Params::policy_rate)
         .def_readwrite("value_rate", &aon::Actor::Params::value_rate)
         .def_readwrite("clip_coef", &aon::Actor::Params::clip_coef)
