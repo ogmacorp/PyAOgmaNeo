@@ -36,7 +36,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
@@ -44,8 +43,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 256
+            py::arg("down_radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
@@ -53,7 +51,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
@@ -183,7 +180,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
         .def("merge", &pyaon::Hierarchy::merge)
         .def("__copy__", 
             [](const pyaon::Hierarchy &other) {
