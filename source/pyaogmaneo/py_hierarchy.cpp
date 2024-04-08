@@ -23,8 +23,8 @@ void IO_Desc::check_in_range() const {
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
-    if (value_num_dendrites_per_cell < 1)
-        throw std::runtime_error("error: value_num_dendrites_per_cell < 1 is not allowed!");
+    if (value_num_dendrites_per_cell < 2)
+        throw std::runtime_error("error: value_num_dendrites_per_cell < 2 is not allowed!");
 
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
