@@ -94,6 +94,8 @@ Hierarchy::Hierarchy(
     for (int l = 0; l < h.get_num_layers(); l++)
         params.layers[l] = h.params.layers[l];
 
+    params.representation_anticipation = h.params.representation_anticipation;
+
     c_input_cis_backing.resize(h.get_num_io());
     c_input_cis.resize(h.get_num_io());
 
