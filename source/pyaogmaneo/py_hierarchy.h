@@ -90,6 +90,13 @@ struct Layer_Desc {
 struct Params {
     std::vector<aon::Hierarchy::Layer_Params> layers;
     std::vector<aon::Hierarchy::IO_Params> ios;
+
+    bool representation_anticipation;
+
+    Params()
+    :
+    representation_anticipation(true)
+    {}
 };
 
 class Hierarchy {

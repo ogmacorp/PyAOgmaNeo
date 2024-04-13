@@ -387,6 +387,8 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
+
+    h.params.representation_anticipation = params.representation_anticipation;
 }
 
 void Hierarchy::merge(
