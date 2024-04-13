@@ -36,11 +36,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
+            py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("history_capacity") = 256
@@ -48,6 +50,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
+        .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
         .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
@@ -111,9 +114,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
-        .def_readwrite("alr", &aon::Actor::Params::alr)
+        .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
-        .def_readwrite("rate", &aon::Actor::Params::rate)
+        .def_readwrite("policy_rate", &aon::Actor::Params::policy_rate)
+        .def_readwrite("value_rate", &aon::Actor::Params::value_rate)
         .def_readwrite("clip_coef", &aon::Actor::Params::clip_coef)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
