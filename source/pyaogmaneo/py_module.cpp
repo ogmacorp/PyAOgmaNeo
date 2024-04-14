@@ -138,7 +138,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("layers", &pyaon::Params::layers)
         .def_readwrite("ios", &pyaon::Params::ios)
-        .def_readwrite("representation_anticipation", &pyaon::Params::representation_anticipation);
+        .def_readwrite("anticipation", &pyaon::Params::anticipation);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
