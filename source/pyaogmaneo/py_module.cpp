@@ -36,7 +36,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
