@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 3141858;
+const int hierarchy_magic = 7229311;
 
 enum IO_Type {
     none = 0,
@@ -86,6 +86,13 @@ struct Layer_Desc {
 struct Params {
     std::vector<aon::Hierarchy::Layer_Params> layers;
     std::vector<aon::Hierarchy::IO_Params> ios;
+
+    bool anticipation;
+
+    Params()
+    :
+    anticipation(true)
+    {}
 };
 
 class Hierarchy {

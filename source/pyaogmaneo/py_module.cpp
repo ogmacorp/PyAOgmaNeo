@@ -36,6 +36,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
@@ -113,10 +114,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
+        .def_readwrite("policy_rate", &aon::Actor::Params::policy_rate)
         .def_readwrite("value_rate", &aon::Actor::Params::value_rate)
+        .def_readwrite("clip_coef", &aon::Actor::Params::clip_coef)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("trace_curve", &aon::Actor::Params::trace_curve)
-        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
+        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
+        .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
@@ -132,7 +135,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::Params>(m, "Params")
         .def(py::init<>())
         .def_readwrite("layers", &pyaon::Params::layers)
-        .def_readwrite("ios", &pyaon::Params::ios);
+        .def_readwrite("ios", &pyaon::Params::ios)
+        .def_readwrite("anticipation", &pyaon::Params::anticipation);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
@@ -207,7 +211,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
-        .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
+        .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
+        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
