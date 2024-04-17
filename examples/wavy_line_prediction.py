@@ -98,7 +98,7 @@ for i in range(12): # layers with exponential memory
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
-h.params.anticipation = False
+h.params.anticipation = True
 
 # present the wave sequence for some timesteps, 1000 here
 iters = 100000
