@@ -91,12 +91,7 @@ struct Params {
     std::vector<aon::Hierarchy::Layer_Params> layers;
     std::vector<aon::Hierarchy::IO_Params> ios;
 
-    bool anticipation;
-
-    Params()
-    :
-    anticipation(true)
-    {}
+    float anticipation;
 };
 
 class Hierarchy {
