@@ -88,11 +88,6 @@ struct Params {
     std::vector<aon::Hierarchy::IO_Params> ios;
 
     bool anticipation;
-
-    Params()
-    :
-    anticipation(true)
-    {}
 };
 
 class Hierarchy {
