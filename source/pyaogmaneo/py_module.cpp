@@ -36,7 +36,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
@@ -44,8 +43,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 256
+            py::arg("down_radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
@@ -53,7 +51,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
@@ -116,12 +113,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
-        .def_readwrite("policy_rate", &aon::Actor::Params::policy_rate)
-        .def_readwrite("value_rate", &aon::Actor::Params::value_rate)
-        .def_readwrite("clip_coef", &aon::Actor::Params::clip_coef)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
-        .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
+        .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
+        .def_readwrite("value_clip", &aon::Actor::Params::value_clip)
+        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
@@ -184,7 +179,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_actor_history_capacity", &pyaon::Hierarchy::get_actor_history_capacity)
         .def("merge", &pyaon::Hierarchy::merge)
         .def("__copy__", 
             [](const pyaon::Hierarchy &other) {
