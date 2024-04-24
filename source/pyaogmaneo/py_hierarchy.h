@@ -57,8 +57,6 @@ struct Layer_Desc {
 
     int num_dendrites_per_cell;
 
-    int spatial_activity;
-
     int up_radius;
     int recurrent_radius;
     int down_radius;
@@ -66,7 +64,6 @@ struct Layer_Desc {
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
         int num_dendrites_per_cell,
-        int spatial_activity,
         int up_radius,
         int recurrent_radius,
         int down_radius
@@ -74,7 +71,6 @@ struct Layer_Desc {
     :
     hidden_size(hidden_size),
     num_dendrites_per_cell(num_dendrites_per_cell),
-    spatial_activity(spatial_activity),
     up_radius(up_radius),
     recurrent_radius(recurrent_radius),
     down_radius(down_radius)

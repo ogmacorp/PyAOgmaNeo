@@ -46,9 +46,6 @@ void Layer_Desc::check_in_range() const {
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
-    if (spatial_activity < 1)
-        throw std::runtime_error("error: spatial_activity < 1 is not allowed!");
-
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
@@ -124,7 +121,6 @@ void Hierarchy::init_random(
         c_layer_descs[l] = aon::Hierarchy::Layer_Desc(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
             layer_descs[l].num_dendrites_per_cell,
-            layer_descs[l].spatial_activity,
             layer_descs[l].up_radius,
             layer_descs[l].recurrent_radius,
             layer_descs[l].down_radius

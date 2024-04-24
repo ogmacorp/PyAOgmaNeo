@@ -68,19 +68,16 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("num_dendrites_per_cell") = 4,
-            py::arg("spatial_activity") = 8,
             py::arg("up_radius") = 2,
             py::arg("recurrent_radius") = 0,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
-        .def_readwrite("spatial_activity", &pyaon::Layer_Desc::spatial_activity)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
@@ -98,10 +95,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Encoder::Params::scale)
+        .def_readwrite("choice", &aon::Encoder::Params::choice)
+        .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("spatial_recon_tolerance", &aon::Encoder::Params::spatial_recon_tolerance)
-        .def_readwrite("recurrent_recon_tolerance", &aon::Encoder::Params::recurrent_recon_tolerance);
+        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -122,7 +119,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
+        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder)
+        .def_readwrite("recurrent_importance", &aon::Hierarchy::Layer_Params::recurrent_importance);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
