@@ -166,6 +166,7 @@ class EnvRunner:
             ld.hidden_size = layer_sizes[i]
 
             ld.up_radius = layer_radius
+            ld.recurrent_radius = -1
             ld.down_radius = layer_radius
             ld.num_dendrites_per_cell = num_dendrites_per_cell
 
