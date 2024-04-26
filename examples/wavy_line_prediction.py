@@ -88,10 +88,11 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(6): # layers
+for i in range(1): # layers
     ld = neo.LayerDesc()
 
     ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
+    ld.recurrent_radius = 2
 
     lds.append(ld)
 
