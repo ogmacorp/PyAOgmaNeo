@@ -1,12 +1,12 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
 # ----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.24)
 
 project(pyaogmaneo)
 
@@ -36,15 +36,10 @@ else()
     FetchContent_Declare(
         AOgmaNeo
         GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-        GIT_TAG 9e2e3c80c19eb46ef63cba75455ffd05ee2b2c1d
+        GIT_TAG b9337629ae38f14a8d2b16fe0538acd0d008cd08
     )
 
-    FetchContent_GetProperties(AOgmaNeo)
-
-    if(NOT AOgmaNeo_POPULATED)
-        FetchContent_Populate(AOgmaNeo)
-        add_subdirectory(${aogmaneo_SOURCE_DIR} ${aogmaneo_BINARY_DIR})
-    endif()
+    FetchContent_MakeAvailable(AOgmaNeo)
 endif()
 
 FetchContent_Declare(
@@ -53,12 +48,7 @@ FetchContent_Declare(
     GIT_TAG origin/master 
 )
 
-FetchContent_GetProperties(pybind11)
-
-if(NOT pybind11_POPULATED)
-    FetchContent_Populate(pybind11)
-    add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
-endif()
+FetchContent_MakeAvailable(pybind11)
 
 include_directories(${AOgmaNeo_SOURCE_DIR}/source)
 
@@ -79,9 +69,6 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/py_hierarchy.cpp"
     "source/pyaogmaneo/py_image_encoder.cpp"
 )
-
-find_package(Python COMPONENTS Interpreter Development)
-find_package(pybind11 CONFIG)
 
 pybind11_add_module(pyaogmaneo ${PYAOGMANEO_SRC})
 
