@@ -92,7 +92,6 @@ for i in range(5): # layers
     ld = neo.LayerDesc()
 
     ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
-    ld.recurrent_radius = 2
 
     lds.append(ld)
 
