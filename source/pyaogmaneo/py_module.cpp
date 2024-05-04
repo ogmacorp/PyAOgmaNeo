@@ -98,6 +98,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("choice", &aon::Encoder::Params::choice)
         .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("activity_ratio", &aon::Encoder::Params::activity_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
