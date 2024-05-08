@@ -23,9 +23,9 @@ input_type_prediction = neo.prediction
 input_type_action = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layer_sizes=2 * [(5, 5, 64)],
+    def __init__(self, env, layer_sizes=4 * [(5, 5, 32)],
         num_dendrites_per_cell=4, value_num_dendrites_per_cell=16,
-        input_radius=10, layer_radius=2, hidden_size=(10, 10, 16),
+        input_radius=2, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=4.0, n_threads=8
     ):
@@ -183,7 +183,7 @@ class EnvRunner:
         for i in range(len(self.action_indices)):
             index = self.action_indices[i]
 
-            self.h.params.ios[index].importance = 0.1
+            self.h.params.ios[index].importance = 0.0
 
             size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
 
