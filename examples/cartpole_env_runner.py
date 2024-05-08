@@ -15,7 +15,7 @@ from env_runner import EnvRunner # EnvRunner automatically creates an AOgmaNeo h
 
 env = gym.make('CartPole-v1')
 
-runner = EnvRunner(env, terminal_reward=-10.0, reward_scale=0.0) # Cart-Pole environment always returns a reward of 1, so use a custom reward function: -1 if episode ends, 0 otherwise
+runner = EnvRunner(env, terminal_reward=-100.0, reward_scale=0.0) # Cart-Pole environment always returns a reward of 1, so use a custom reward function: -1 if episode ends, 0 otherwise
 
 for episode in range(10000):
     env.reset()
