@@ -91,8 +91,6 @@ Hierarchy::Hierarchy(
     for (int l = 0; l < h.get_num_layers(); l++)
         params.layers[l] = h.params.layers[l];
 
-    params.anticipation = h.params.anticipation;
-
     c_input_cis_backing.resize(h.get_num_io());
     c_input_cis.resize(h.get_num_io());
 
@@ -279,7 +277,7 @@ py::array_t<int> Hierarchy::get_layer_prediction_cis(
     if (l < 1 || l >= h.get_num_layers())
         throw std::runtime_error("layer index " + std::to_string(l) + " out of range [1, " + std::to_string(h.get_num_layers() - 1) + "]!");
 
-    const aon::Int_Buffer &cis = h.get_decoder(l, h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).get_hidden_cis();
+    const aon::Int_Buffer &cis = h.get_encoder(l).get_visible_layer(h.get_temporal_horizon(l) + h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).recon_cis;
 
     py::array_t<int> predictions(cis.size());
 
@@ -289,70 +287,6 @@ py::array_t<int> Hierarchy::get_layer_prediction_cis(
         view(j) = cis[j];
 
     return predictions;
-}
-
-py::array_t<float> Hierarchy::get_prediction_acts(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    py::array_t<float> predictions(h.get_prediction_acts(i).size());
-
-    auto view = predictions.mutable_unchecked();
-
-    for (int j = 0; j < view.size(); j++)
-        view(j) = h.get_prediction_acts(i)[j];
-
-    return predictions;
-}
-
-py::array_t<int> Hierarchy::sample_prediction(
-    int i,
-    float temperature
-) const {
-    if (temperature == 0.0f)
-        return get_prediction_cis(i);
-
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    py::array_t<int> sample(h.get_prediction_cis(i).size());
-
-    auto view = sample.mutable_unchecked();
-
-    int size_z = h.get_io_size(i).z;
-
-    float temperature_inv = 1.0f / temperature;
-
-    for (int j = 0; j < view.size(); j++) {
-        float total = 0.0f;
-
-        for (int k = 0; k < size_z; k++)
-            total += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-        float cusp = aon::randf() * total;
-
-        float sum_so_far = 0.0f;
-
-        for (int k = 0; k < size_z; k++) {
-            sum_so_far += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-            if (sum_so_far >= cusp) {
-                view(j) = k;
-
-                break;
-            }
-        }
-    }
-
-    return sample;
 }
 
 py::array_t<int> Hierarchy::get_hidden_cis(
@@ -385,8 +319,6 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
-
-    h.params.anticipation = params.anticipation;
 }
 
 void Hierarchy::merge(

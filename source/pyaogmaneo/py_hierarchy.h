@@ -86,8 +86,6 @@ struct Layer_Desc {
 struct Params {
     std::vector<aon::Hierarchy::Layer_Params> layers;
     std::vector<aon::Hierarchy::IO_Params> ios;
-
-    bool anticipation;
 };
 
 class Hierarchy {
@@ -173,15 +171,6 @@ public:
 
     py::array_t<int> get_layer_prediction_cis(
         int l
-    ) const;
-
-    py::array_t<float> get_prediction_acts(
-        int i
-    ) const;
-
-    py::array_t<int> sample_prediction(
-        int i,
-        float temperature
     ) const;
 
     py::array_t<int> get_hidden_cis(
@@ -273,7 +262,10 @@ public:
         if (h.get_io_type(i) == aon::action)
             return h.get_actor(i).get_visible_layer_desc(0).radius;
         
-        return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
+        if (l == 0)
+            return h.get_encoder(l).get_visible_layer_desc(h.get_num_io() * h.get_temporal_horizon(0) + i).radius;
+
+        return h.get_encoder(l).get_visible_layer_desc(h.get_temporal_horizon(l) + i).radius;
     }
 
     void merge(

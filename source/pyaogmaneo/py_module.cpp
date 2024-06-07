@@ -104,12 +104,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
-    py::class_<aon::Decoder::Params>(m, "DecoderParams")
-        .def(py::init<>())
-        .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak);
-
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
@@ -122,20 +116,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
-        .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
+        .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
-        .def_readwrite("decoder", &aon::Hierarchy::IO_Params::decoder)
         .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
         .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
 
     py::class_<pyaon::Params>(m, "Params")
         .def(py::init<>())
         .def_readwrite("layers", &pyaon::Params::layers)
-        .def_readwrite("ios", &pyaon::Params::ios)
-        .def_readwrite("anticipation", &pyaon::Params::anticipation);
+        .def_readwrite("ios", &pyaon::Params::ios);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
@@ -169,8 +160,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
         .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
-        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
-        .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
