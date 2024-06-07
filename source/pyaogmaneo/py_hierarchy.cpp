@@ -258,8 +258,8 @@ py::array_t<int> Hierarchy::get_prediction_cis(
     if (i < 0 || i >= h.get_num_io())
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+    if (h.get_io_type(i) == aon::none)
+        throw std::runtime_error("no prediction/action exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     py::array_t<int> predictions(h.get_prediction_cis(i).size());
 
