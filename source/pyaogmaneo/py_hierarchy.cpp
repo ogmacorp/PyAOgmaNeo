@@ -128,7 +128,8 @@ void Hierarchy::init_random(
             layer_descs[l].up_radius,
             layer_descs[l].down_radius,
             layer_descs[l].ticks_per_update,
-            layer_descs[l].temporal_horizon
+            layer_descs[l].temporal_horizon,
+            layer_descs[l].base_vigilance
         );
     }
 
