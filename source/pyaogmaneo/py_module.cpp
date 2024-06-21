@@ -104,6 +104,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
+        .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
         .def_readwrite("leak", &aon::Decoder::Params::leak)
         .def_readwrite("stability", &aon::Decoder::Params::stability);
@@ -116,7 +117,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("value_clip", &aon::Actor::Params::value_clip)
-        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
+        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay)
+        .def_readwrite("stability", &aon::Actor::Params::stability);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
