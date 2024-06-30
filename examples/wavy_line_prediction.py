@@ -98,10 +98,8 @@ for i in range(4): # layers with exponential memory
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
-h.params.anticipation = True # Anticipation mode, faster learning of long sequences at the cost of some extra compute
-
 # present the wave sequence for some timesteps, 1000 here
-iters = 1000
+iters = 100000
 
 # function for the wave
 def wave(t):
@@ -115,7 +113,7 @@ for t in range(iters):
     csdr = unorm8_to_csdr(float(value_to_encode))
 
     # step the hierarchy given the inputs (just one here)
-    h.step([ csdr ], True) # true for enabling learning
+    h.step([ csdr ], h.get_hidden_cis(h.get_num_layers() - 1), True) # true for enabling learning
 
     # print progress
     if t % 100 == 0:
@@ -135,7 +133,7 @@ for t2 in range(1000):
     csdr = unorm8_to_csdr(float(value_to_encode))
 
     # run off of own predictions with learning disabled
-    h.step([ h.get_prediction_cis(0) ], False) # learning disabled for recall
+    h.step([ h.get_prediction_cis(0) ], np.random.randint(0, 16, size=len(h.get_hidden_cis(h.get_num_layers() - 1))), False) # learning disabled for recall
 
     # decode value from latest prediction
     value = csdr_to_unorm8(h.get_prediction_cis(0))
