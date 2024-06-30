@@ -23,9 +23,6 @@ void IO_Desc::check_in_range() const {
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
-    if (value_num_dendrites_per_cell < 2)
-        throw std::runtime_error("error: value_num_dendrites_per_cell < 2 is not allowed!");
-
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
@@ -98,6 +95,8 @@ Hierarchy::Hierarchy(
 
     for (int i = 0; i < c_input_cis_backing.size(); i++)
         c_input_cis_backing[i].resize(h.get_io_size(i).x * h.get_io_size(i).y);
+
+    c_top_feedback_cis.resize(h.get_hidden_size(h.get_num_layers() - 1));
 }
 
 void Hierarchy::init_random(
@@ -113,7 +112,6 @@ void Hierarchy::init_random(
             aon::Int3(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size), std::get<2>(io_descs[i].size)),
             static_cast<aon::IO_Type>(io_descs[i].type),
             io_descs[i].num_dendrites_per_cell,
-            io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].up_radius,
             io_descs[i].down_radius
         );
@@ -224,9 +222,8 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
-    bool learn_enabled,
-    float reward,
-    float mimic
+    const py::array_t<int, py::array::c_style | py::array::forcecast> &top_feedback_cis,
+    bool learn_enabled
 ) {
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -250,8 +247,22 @@ void Hierarchy::step(
 
         c_input_cis[i] = c_input_cis_backing[i];
     }
+
+    auto view = top_feedback_cis.unchecked();
+
+    const aon::Int3 &top_hidden_size = h.get_hidden_size(h.get_num_layers() - 1);
+
+    int num_columns = top_hidden_size.x * top_hidden_size.y;
+
+    if (view.size() != num_columns)
+        throw std::runtime_error("incorrect top feedback csdr size - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(view.size()));
+
+    for (int i = 0; i < view.size(); i++) {
+        if (view(i) < 0 || view(i) >= top_hidden_size.z)
+            throw std::runtime_error("top feedback csdr has an out-of-bounds column index (" + std::to_string(view(i)) + ") at column index " + std::to_string(i) + ". it must be in the range [0, " + std::to_string(top_hidden_size.z - 1) + "]");
+    }
     
-    h.step(c_input_cis, learn_enabled, reward, mimic);
+    h.step(c_input_cis, learn_enabled);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
@@ -298,7 +309,7 @@ py::array_t<float> Hierarchy::get_prediction_acts(
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     py::array_t<float> predictions(h.get_prediction_acts(i).size());
 
@@ -321,7 +332,7 @@ py::array_t<int> Hierarchy::sample_prediction(
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     py::array_t<int> sample(h.get_prediction_cis(i).size());
 

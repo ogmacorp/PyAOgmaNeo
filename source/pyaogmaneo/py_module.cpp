@@ -109,16 +109,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("leak", &aon::Decoder::Params::leak)
         .def_readwrite("stability", &aon::Decoder::Params::stability);
 
-    py::class_<aon::Actor::Params>(m, "ActorParams")
-        .def(py::init<>())
-        .def_readwrite("vlr", &aon::Actor::Params::vlr)
-        .def_readwrite("plr", &aon::Actor::Params::plr)
-        .def_readwrite("leak", &aon::Actor::Params::leak)
-        .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
-        .def_readwrite("value_clip", &aon::Actor::Params::value_clip)
-        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
-
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
@@ -127,14 +117,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
         .def_readwrite("decoder", &aon::Hierarchy::IO_Params::decoder)
-        .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
         .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
 
     py::class_<pyaon::Params>(m, "Params")
         .def(py::init<>())
         .def_readwrite("layers", &pyaon::Params::layers)
-        .def_readwrite("ios", &pyaon::Params::ios)
-        .def_readwrite("anticipation", &pyaon::Params::anticipation);
+        .def_readwrite("ios", &pyaon::Params::ios);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
@@ -160,9 +148,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
-            py::arg("learn_enabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = 0.0f
+            py::arg("top_feedback_cis"),
+            py::arg("learn_enabled") = true
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
