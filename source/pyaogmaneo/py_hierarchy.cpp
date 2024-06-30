@@ -88,15 +88,13 @@ Hierarchy::Hierarchy(
     for (int l = 0; l < h.get_num_layers(); l++)
         params.layers[l] = h.params.layers[l];
 
-    params.anticipation = h.params.anticipation;
-
     c_input_cis_backing.resize(h.get_num_io());
     c_input_cis.resize(h.get_num_io());
 
     for (int i = 0; i < c_input_cis_backing.size(); i++)
         c_input_cis_backing[i].resize(h.get_io_size(i).x * h.get_io_size(i).y);
 
-    c_top_feedback_cis.resize(h.get_hidden_size(h.get_num_layers() - 1));
+    c_top_feedback_cis.resize(h.get_encoder(h.get_num_layers() - 1).get_hidden_cis().size());
 }
 
 void Hierarchy::init_random(
@@ -250,7 +248,7 @@ void Hierarchy::step(
 
     auto view = top_feedback_cis.unchecked();
 
-    const aon::Int3 &top_hidden_size = h.get_hidden_size(h.get_num_layers() - 1);
+    const aon::Int3 &top_hidden_size = h.get_encoder(h.get_num_layers() - 1).get_hidden_size();
 
     int num_columns = top_hidden_size.x * top_hidden_size.y;
 
@@ -260,9 +258,11 @@ void Hierarchy::step(
     for (int i = 0; i < view.size(); i++) {
         if (view(i) < 0 || view(i) >= top_hidden_size.z)
             throw std::runtime_error("top feedback csdr has an out-of-bounds column index (" + std::to_string(view(i)) + ") at column index " + std::to_string(i) + ". it must be in the range [0, " + std::to_string(top_hidden_size.z - 1) + "]");
+
+        c_top_feedback_cis[i] = view(i);
     }
     
-    h.step(c_input_cis, learn_enabled);
+    h.step(c_input_cis, c_top_feedback_cis, learn_enabled);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
@@ -396,8 +396,6 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
-
-    h.params.anticipation = params.anticipation;
 }
 
 void Hierarchy::merge(

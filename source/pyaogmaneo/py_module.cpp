@@ -21,7 +21,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::enum_<pyaon::IO_Type>(m, "IOType")
         .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
-        .value("action", pyaon::action)
         .export_values();
 
     py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
@@ -35,20 +34,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 pyaon::IO_Type,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
-            py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
-        .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
         .def("__copy__", 
