@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import struct
 
 # set the number of threads
-neo.set_num_threads(1)
+neo.set_num_threads(4)
 
 # scalar encoding used in this example, take a byte and convert 4 consective bits into 2 one-hot columns with 16 cells in them
 
@@ -88,18 +88,21 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(5): # layers with exponential memory
+for i in range(1): # layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 16) # size of the encoder(s) in the layer
+    ld.temporal_horizon = 32
 
     lds.append(ld)
 
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
+#h.params.anticipation = True # Anticipation mode, faster learning of long sequences at the cost of some extra compute
+
 # present the wave sequence for some timesteps, 1000 here
-iters = 100000
+iters = 1000
 
 # function for the wave
 def wave(t):
@@ -114,7 +117,6 @@ for t in range(iters):
 
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
-    print(h.get_hidden_cis(0))
 
     # print progress
     if t % 100 == 0:
