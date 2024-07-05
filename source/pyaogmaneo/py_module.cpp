@@ -68,18 +68,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("ticks_per_update") = 2,
             py::arg("temporal_horizon") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
-        .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
         .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
@@ -110,8 +107,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
-        .def_readwrite("value_clip", &aon::Actor::Params::value_clip)
+        .def_readwrite("trace_scale", &aon::Actor::Params::trace_scale)
         .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
