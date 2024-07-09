@@ -109,8 +109,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak)
-        .def_readwrite("stability", &aon::Decoder::Params::stability);
+        .def_readwrite("leak", &aon::Decoder::Params::leak);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
