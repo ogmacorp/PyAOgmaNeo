@@ -102,7 +102,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius)
+        .def_readwrite("min_matches", &aon::Encoder::Params::min_matches);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
