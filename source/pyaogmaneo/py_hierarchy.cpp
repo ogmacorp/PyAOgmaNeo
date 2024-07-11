@@ -382,6 +382,17 @@ py::array_t<int> Hierarchy::get_hidden_cis(
     return hidden_cis;
 }
 
+py::array_t<int> Hierarchy::get_top_hidden_cis() {
+    py::array_t<int> hidden_cis(h.get_top_hidden_cis().size());
+
+    auto view = hidden_cis.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = h.get_top_hidden_cis()[j];
+
+    return hidden_cis;
+}
+
 void Hierarchy::copy_params_to_h() {
     if (params.ios.size() != h.params.ios.size())
         throw std::runtime_error("ios parameter size mismatch - did you modify the length of params.ios?");

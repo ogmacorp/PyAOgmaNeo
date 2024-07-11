@@ -184,6 +184,8 @@ public:
         int l
     );
 
+    py::array_t<int> get_top_hidden_cis();
+
     std::tuple<int, int, int> get_hidden_size(
         int l
     ) {
