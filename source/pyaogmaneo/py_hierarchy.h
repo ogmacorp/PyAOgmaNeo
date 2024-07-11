@@ -18,8 +18,7 @@ const int hierarchy_magic = 1528834;
 
 enum IO_Type {
     none = 0,
-    prediction = 1,
-    action = 2
+    prediction = 1
 };
 
 struct IO_Desc {

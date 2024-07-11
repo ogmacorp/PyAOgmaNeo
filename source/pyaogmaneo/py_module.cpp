@@ -21,7 +21,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::enum_<pyaon::IO_Type>(m, "IOType")
         .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
-        .value("action", pyaon::action)
         .export_values();
 
     py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
