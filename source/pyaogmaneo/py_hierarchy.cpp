@@ -93,6 +93,8 @@ Hierarchy::Hierarchy(
 
     for (int i = 0; i < c_input_cis_backing.size(); i++)
         c_input_cis_backing[i].resize(h.get_io_size(i).x * h.get_io_size(i).y);
+
+    c_top_feedback_cis.resize(h.get_encoder(h.get_num_layers() - 1).get_hidden_cis().size());
 }
 
 void Hierarchy::init_random(
@@ -218,6 +220,7 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
+    const py::array_t<int, py::array::c_style | py::array::forcecast> &top_feedback_cis,
     bool learn_enabled
 ) {
     if (input_cis.size() != h.get_num_io())
@@ -243,7 +246,23 @@ void Hierarchy::step(
         c_input_cis[i] = c_input_cis_backing[i];
     }
 
-    h.step(c_input_cis, learn_enabled);
+    auto view = top_feedback_cis.unchecked();
+
+    const aon::Int3 &top_hidden_size = h.get_encoder(h.get_num_layers() - 1).get_hidden_size();
+
+    int num_columns = top_hidden_size.x * top_hidden_size.y;
+
+    if (view.size() != num_columns)
+        throw std::runtime_error("incorrect top feedback csdr size - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(view.size()));
+
+    for (int i = 0; i < view.size(); i++) {
+        if (view(i) < 0 || view(i) >= top_hidden_size.z)
+            throw std::runtime_error("top feedback csdr has an out-of-bounds column index (" + std::to_string(view(i)) + ") at column index " + std::to_string(i) + ". it must be in the range [0, " + std::to_string(top_hidden_size.z - 1) + "]");
+
+        c_top_feedback_cis[i] = view(i);
+    }
+    
+    h.step(c_input_cis, c_top_feedback_cis, learn_enabled);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
