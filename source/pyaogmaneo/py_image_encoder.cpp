@@ -55,8 +55,6 @@ void Image_Encoder::init_random(
     const std::tuple<int, int, int> &hidden_size,
     const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs
 ) {
-    bool all_in_range = true;
-
     aon::Array<aon::Image_Encoder::Visible_Layer_Desc> c_visible_layer_descs(visible_layer_descs.size());
 
     for (int v = 0; v < visible_layer_descs.size(); v++) {
@@ -74,9 +72,6 @@ void Image_Encoder::init_random(
 
     if (std::get<2>(hidden_size) < 1)
         throw std::runtime_error("error: hidden_size[2] < 1 is not allowed!");
-
-    if (!all_in_range)
-        throw std::runtime_error(" - Image_Encoder: some parameters out of range!");
 
     enc.init_random(aon::Int3(std::get<0>(hidden_size), std::get<1>(hidden_size), std::get<2>(hidden_size)), c_visible_layer_descs);
 }

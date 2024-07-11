@@ -30,6 +30,8 @@ class CMakeExtension(Extension):
             "source/pyaogmaneo/py_hierarchy.cpp",
             "source/pyaogmaneo/py_image_encoder.h",
             "source/pyaogmaneo/py_image_encoder.cpp",
+            "source/pyaogmaneo/py_searcher.h",
+            "source/pyaogmaneo/py_searcher.cpp",
             "source/pyaogmaneo/py_module.cpp",
             ])
 

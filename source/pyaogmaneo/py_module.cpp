@@ -8,6 +8,7 @@
 
 #include "py_hierarchy.h"
 #include "py_image_encoder.h"
+#include "py_searcher.h"
 
 namespace py = pybind11;
 
@@ -236,6 +237,52 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def("__deepcopy__", 
             [](const pyaon::Image_Encoder &other) {
+                return other;
+            }
+        );
+
+    // bind params
+    py::class_<aon::Searcher::Params>(m, "SearcherParams")
+        .def(py::init<>())
+        .def_readwrite("lr", &aon::Searcher::Params::lr)
+        .def_readwrite("exploration", &aon::Searcher::Params::exploration);
+
+    py::class_<pyaon::Searcher>(m, "Searcher")
+        .def(py::init<
+                const std::tuple<int, int, int>&,
+                int,
+                const std::string&,
+                const py::array_t<unsigned char>&
+            >(),
+            py::arg("config_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("num_dendrites") = 8,
+            py::arg("file_name") = std::string(),
+            py::arg("buffer") = py::array_t<unsigned char>()
+        )
+        .def_readwrite("params", &pyaon::Searcher::params)
+        .def("save_to_file", &pyaon::Searcher::save_to_file)
+        .def("set_state_from_buffer", &pyaon::Searcher::set_state_from_buffer)
+        .def("set_weights_from_buffer", &pyaon::Searcher::set_weights_from_buffer)
+        .def("serialize_to_buffer", &pyaon::Searcher::serialize_to_buffer)
+        .def("serialize_state_to_buffer", &pyaon::Searcher::serialize_state_to_buffer)
+        .def("serialize_weights_to_buffer", &pyaon::Searcher::serialize_weights_to_buffer)
+        .def("get_size", &pyaon::Searcher::get_size)
+        .def("get_state_size", &pyaon::Searcher::get_state_size)
+        .def("get_weights_size", &pyaon::Searcher::get_weights_size)
+        .def("step", &pyaon::Searcher::step,
+            py::arg("reward"),
+            py::arg("learn_enabled") = true
+        )
+        .def("get_config_cis", &pyaon::Searcher::get_config_cis)
+        .def("get_config_size", &pyaon::Searcher::get_config_size)
+        .def("merge", &pyaon::Searcher::merge)
+        .def("__copy__", 
+            [](const pyaon::Searcher &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const pyaon::Searcher &other) {
                 return other;
             }
         );
