@@ -88,10 +88,10 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(4): # layers with exponential memory
+for i in range(5): # layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 16) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
@@ -99,7 +99,7 @@ for i in range(4): # layers with exponential memory
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 100000
+iters = 1000
 
 # function for the wave
 def wave(t):
@@ -133,7 +133,7 @@ for t2 in range(1000):
     csdr = unorm8_to_csdr(float(value_to_encode))
 
     # run off of own predictions with learning disabled
-    h.step([ h.get_prediction_cis(0) ], np.random.randint(0, 16, size=len(h.get_hidden_cis(h.get_num_layers() - 1))), False) # learning disabled for recall
+    h.step([ h.get_prediction_cis(0) ], h.get_hidden_cis(h.get_num_layers() - 1), False) # learning disabled for recall
 
     # decode value from latest prediction
     value = csdr_to_unorm8(h.get_prediction_cis(0))

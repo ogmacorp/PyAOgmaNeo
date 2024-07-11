@@ -144,7 +144,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
-            py::arg("top_feedback_cis"),
             py::arg("learn_enabled") = true
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
