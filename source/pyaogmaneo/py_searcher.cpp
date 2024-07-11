@@ -142,7 +142,7 @@ void Searcher::step(
 }
 
 py::array_t<int> Searcher::get_config_cis() const {
-    py::array_t<int> config_cis(searcher.get_hidden_cis().size());
+    py::array_t<int> config_cis(searcher.get_config_cis().size());
 
     auto view = config_cis.mutable_unchecked();
 
