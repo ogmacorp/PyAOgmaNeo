@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -13,7 +13,7 @@
 import gymnasium as gym
 from env_runner import EnvRunner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
 
-env = gym.make('LunarLander-v2')#, render_mode='human')
+env = gym.make('LunarLander-v3')
 
 runner = EnvRunner(env, terminal_reward=0.0, reward_scale=1.0)
 
