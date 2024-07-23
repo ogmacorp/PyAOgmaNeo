@@ -113,8 +113,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("value_clip", &aon::Actor::Params::value_clip)
-        .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
