@@ -98,12 +98,16 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Encoder::Params::lr);
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
+        .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("fr", &aon::Encoder::Params::fr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
+        .def_readwrite("choice", &aon::Decoder::Params::choice)
+        .def_readwrite("vigilance", &aon::Decoder::Params::vigilance)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak);
+        .def_readwrite("fr", &aon::Decoder::Params::fr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
@@ -162,8 +166,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
         .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
-        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
-        .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
@@ -200,11 +202,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
+        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
+        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
+        .def_readwrite("active_ratio", &aon::Image_Encoder::Params::active_ratio)
+        .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
