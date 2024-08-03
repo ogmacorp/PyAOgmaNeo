@@ -96,15 +96,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Encoder::Params::scale)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("stability", &aon::Encoder::Params::stability);
+        .def_readwrite("lr", &aon::Encoder::Params::lr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Decoder::Params::scale)
+        .def_readwrite("choice", &aon::Decoder::Params::choice)
+        .def_readwrite("vigilance", &aon::Decoder::Params::vigilance)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak)
-        .def_readwrite("stability", &aon::Decoder::Params::stability);
+        .def_readwrite("fr", &aon::Decoder::Params::fr);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
@@ -152,8 +151,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
         .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
-        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
-        .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_top_hidden_cis", &pyaon::Hierarchy::get_top_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
