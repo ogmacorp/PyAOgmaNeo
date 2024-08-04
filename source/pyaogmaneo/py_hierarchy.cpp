@@ -31,9 +31,6 @@ void IO_Desc::check_in_range() const {
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
-
-    if (history_capacity < 2)
-        throw std::runtime_error("error: history_capacity < 2 is not allowed!");
 }
 
 void Layer_Desc::check_in_range() const {
@@ -118,8 +115,7 @@ void Hierarchy::init_random(
             io_descs[i].num_dendrites_per_cell,
             io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].up_radius,
-            io_descs[i].down_radius,
-            io_descs[i].history_capacity
+            io_descs[i].down_radius
         );
     }
     
