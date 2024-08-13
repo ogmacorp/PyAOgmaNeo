@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 7548331;
+const int hierarchy_magic = 4541351;
 
 enum IO_Type {
     none = 0,
@@ -32,13 +32,16 @@ struct IO_Desc {
     int up_radius;
     int down_radius;
 
+    int history_capacity;
+
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
         int value_num_dendrites_per_cell,
         int up_radius,
-        int down_radius
+        int down_radius,
+        int history_capacity
     )
     :
     size(size),
@@ -46,7 +49,8 @@ struct IO_Desc {
     num_dendrites_per_cell(num_dendrites_per_cell),
     value_num_dendrites_per_cell(value_num_dendrites_per_cell),
     up_radius(up_radius),
-    down_radius(down_radius)
+    down_radius(down_radius),
+    history_capacity(history_capacity)
     {}
 
     void check_in_range() const;
