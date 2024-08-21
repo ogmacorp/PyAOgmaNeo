@@ -85,8 +85,6 @@ struct Layer_Desc {
 struct Params {
     std::vector<aon::Hierarchy::Layer_Params> layers;
     std::vector<aon::Hierarchy::IO_Params> ios;
-
-    float min_strength;
 };
 
 class Hierarchy {
