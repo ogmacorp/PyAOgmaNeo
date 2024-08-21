@@ -91,6 +91,8 @@ Hierarchy::Hierarchy(
     for (int l = 0; l < h.get_num_layers(); l++)
         params.layers[l] = h.params.layers[l];
 
+    params.min_strength = h.params.min_strength;
+
     c_input_cis_backing.resize(h.get_num_io());
     c_input_cis.resize(h.get_num_io());
 
@@ -347,6 +349,8 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
+
+    h.params.min_strength = params.min_strength;
 }
 
 void Hierarchy::merge(
