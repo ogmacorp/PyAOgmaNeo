@@ -66,6 +66,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
@@ -73,7 +74,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("ticks_per_update") = 2,
-            py::arg("temporal_horizon") = 2
+            py::arg("temporal_horizon") = 2,
+            py::arg("conditioning_horizon") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
@@ -81,6 +83,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
         .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
         .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
+        .def_readwrite("conditioning_horizon", &pyaon::Layer_Desc::conditioning_horizon)
         .def("__copy__", 
             [](const pyaon::Layer_Desc &other) {
                 return other;
@@ -100,10 +103,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Decoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Decoder::Params::vigilance)
+        .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("fr", &aon::Decoder::Params::fr);
+        .def_readwrite("leak", &aon::Decoder::Params::leak);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())

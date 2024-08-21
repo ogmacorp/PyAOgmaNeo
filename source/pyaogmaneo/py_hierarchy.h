@@ -58,6 +58,7 @@ struct Layer_Desc {
 
     int ticks_per_update;
     int temporal_horizon;
+    int conditioning_horizon;
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
@@ -65,7 +66,8 @@ struct Layer_Desc {
         int up_radius,
         int down_radius,
         int ticks_per_update,
-        int temporal_horizon
+        int temporal_horizon,
+        int conditioning_horizon
     )
     :
     hidden_size(hidden_size),
@@ -73,7 +75,8 @@ struct Layer_Desc {
     up_radius(up_radius),
     down_radius(down_radius),
     ticks_per_update(ticks_per_update),
-    temporal_horizon(temporal_horizon)
+    temporal_horizon(temporal_horizon),
+    conditioning_horizon(conditioning_horizon)
     {}
 
     void check_in_range() const;

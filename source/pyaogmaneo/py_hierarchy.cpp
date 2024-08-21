@@ -57,6 +57,9 @@ void Layer_Desc::check_in_range() const {
 
     if (ticks_per_update > temporal_horizon)
         throw std::runtime_error("error: ticks_per_update > temporal_horizon is not allowed!");
+
+    if (conditioning_horizon < 1)
+        throw std::runtime_error("error: conditioning_horizon < 1 is not allowed!");
 }
 
 Hierarchy::Hierarchy(
@@ -126,7 +129,8 @@ void Hierarchy::init_random(
             layer_descs[l].up_radius,
             layer_descs[l].down_radius,
             layer_descs[l].ticks_per_update,
-            layer_descs[l].temporal_horizon
+            layer_descs[l].temporal_horizon,
+            layer_descs[l].conditioning_horizon
         );
     }
 
