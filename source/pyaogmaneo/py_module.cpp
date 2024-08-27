@@ -117,6 +117,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
         .def_readwrite("discount", &aon::Actor::Params::discount)
+        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
