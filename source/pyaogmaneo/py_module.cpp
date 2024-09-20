@@ -11,6 +11,119 @@
 
 namespace py = pybind11;
 
+template<int S, int L>
+void declare_for_S_L(
+    py::module &m,
+    const std::string &typestr
+) {
+    using Vec_Class = aon::Vec<S, L>;
+    using Bundle_Class = aon::Bundle<S, L>;
+    using Hierarchy_Class = pyaon::Hierarchy<S, L>;
+
+    std::string vec_pyclass_name = std::string("Vec") + typestr;
+    std::string bundle_pyclass_name = std::string("Bundle") + typestr;
+    std::string hierarchy_pyclass_name = std::string("Hierarchy") + typestr;
+
+    py::class_<Vec_Class>(m, vec_pyclass_name.c_str())
+        .def_readonly_static("segments", &Vec_Class::segments)
+        .def_readonly_static("length", &Vec_Class::length)
+        .def_readonly_static("size", &Vec_Class::size)
+        .def_static("randomized", &Vec_Class::randomized)
+        .def("fill", &Vec_Class::fill)
+        .def("__getitem__", [](const Vec_Class &v, int index){ return v[index]; })
+        .def("__setitem__", [](Vec_Class &v, int index, aon::Byte value){ v[index] = value; })
+        .def(py::self * py::self)
+        .def(py::self *= py::self)
+        .def(py::self / py::self)
+        .def(py::self /= py::self)
+        .def(py::self + py::self)
+        .def("dot", &Vec_Class::dot)
+        .def("permute", &Vec_Class::permute,
+            py::arg("shift") = 1
+        )
+        .def("__copy__", 
+            [](const Vec_Class &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const Vec_Class &other) {
+                return other;
+            }
+        );
+
+    py::class_<Bundle_Class>(m, bundle_pyclass_name.c_str())
+        .def_readonly_static("segments", &Bundle_Class::segments)
+        .def_readonly_static("length", &Bundle_Class::length)
+        .def_readonly_static("size", &Bundle_Class::size)
+        .def_static("randomized", &Bundle_Class::randomized)
+        .def("fill", &Bundle_Class::fill)
+        .def("__getitem__", [](const Bundle_Class &v, int index){ return v[index]; })
+        .def("__setitem__", [](Bundle_Class &v, int index, aon::Byte value){ v[index] = value; })
+        .def(py::self + py::self)
+        .def(py::self += py::self)
+        .def(py::self + Vec_Class)
+        .def(py::self += Vec_Class)
+        .def("thin", &Bundle_Class::thin)
+        .def("__copy__", 
+            [](const Bundle_Class &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const Bundle_Class &other) {
+                return other;
+            }
+        );
+
+    py::class_<Hierarchy_Class>(m, hierarchy_pyclass_name.c_str())
+        .def(py::init<
+                const std::vector<pyaon::IO_Desc>&,
+                const std::vector<pyaon::Layer_Desc>&,
+                const std::string&,
+                const py::array_t<unsigned char>&
+            >(),
+            py::arg("io_descs") = std::vector<pyaon::IO_Desc>(),
+            py::arg("layer_descs") = std::vector<pyaon::Layer_Desc>(),
+            py::arg("file_name") = std::string(),
+            py::arg("buffer") = py::array_t<unsigned char>()
+        )
+        .def_readwrite("params", &Hierarchy_Class::params)
+        .def("save_to_file", &Hierarchy_Class::save_to_file)
+        .def("set_state_from_buffer", &Hierarchy_Class::set_state_from_buffer)
+        .def("set_weights_from_buffer", &Hierarchy_Class::set_weights_from_buffer)
+        .def("serialize_to_buffer", &Hierarchy_Class::serialize_to_buffer)
+        .def("serialize_state_to_buffer", &Hierarchy_Class::serialize_state_to_buffer)
+        .def("serialize_weights_to_buffer", &Hierarchy_Class::serialize_weights_to_buffer)
+        .def("get_size", &Hierarchy_Class::get_size)
+        .def("get_state_size", &Hierarchy_Class::get_state_size)
+        .def("get_weights_size", &Hierarchy_Class::get_weights_size)
+        .def("step", &Hierarchy_Class::step,
+            py::arg("input_vecs"),
+            py::arg("learn_enabled") = true
+        )
+        .def("clear_state", &Hierarchy_Class::clear_state)
+        .def("get_num_layers", &Hierarchy_Class::get_num_layers)
+        .def("get_prediction_vecs", &Hierarchy_Class::get_prediction_vecs)
+        .def("get_hidden_vecs", &Hierarchy_Class::get_hidden_vecs)
+        .def("get_hidden_size", &Hierarchy_Class::get_hidden_size)
+        .def("get_num_visible_layers", &Hierarchy_Class::get_num_visible_layers)
+        .def("get_num_io", &Hierarchy_Class::get_num_io)
+        .def("get_io_size", &Hierarchy_Class::get_io_size)
+        .def("get_io_type", &Hierarchy_Class::get_io_type)
+        .def("get_radius", &Hierarchy_Class::get_radius)
+        .def("__copy__", 
+            [](const Hierarchy_Class &other) {
+                return other;
+            }
+        )
+        .def("__deepcopy__", 
+            [](const Hierarchy_Class &other) {
+                return other;
+            }
+        );
+}
+
 PYBIND11_MODULE(pyaogmaneo, m) {
     m.def("set_num_threads", &pyaon::set_num_threads);
     m.def("get_num_threads", &pyaon::get_num_threads);
@@ -21,12 +134,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::enum_<pyaon::IO_Type>(m, "IOType")
         .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
-        .value("action", pyaon::action)
-        .export_values();
-
-    py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
-        .value("merge_random", pyaon::merge_random)
-        .value("merge_average", pyaon::merge_average)
         .export_values();
 
     py::class_<pyaon::IO_Desc>(m, "IODesc")
@@ -99,162 +206,31 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         );
 
     // bind params
-    py::class_<aon::Encoder::Params>(m, "EncoderParams")
+    py::class_<aon::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Encoder::Params::lr);
-
-    py::class_<aon::Decoder::Params>(m, "DecoderParams")
-        .def(py::init<>())
-        .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak);
-
-    py::class_<aon::Actor::Params>(m, "ActorParams")
-        .def(py::init<>())
-        .def_readwrite("vlr", &aon::Actor::Params::vlr)
-        .def_readwrite("plr", &aon::Actor::Params::plr)
-        .def_readwrite("leak", &aon::Actor::Params::leak)
-        .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
-        .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
-        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
-        .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
-
-    py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
-        .def(py::init<>())
-        .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
+        .def_readwrite("lr", &aon::Layer_Params::lr);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
-        .def(py::init<>())
-        .def_readwrite("decoder", &aon::Hierarchy::IO_Params::decoder)
-        .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
-        .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
+        .def(py::init<>());
 
     py::class_<pyaon::Params>(m, "Params")
         .def(py::init<>())
         .def_readwrite("layers", &pyaon::Params::layers)
-        .def_readwrite("ios", &pyaon::Params::ios)
-        .def_readwrite("anticipation", &pyaon::Params::anticipation);
+        .def_readwrite("ios", &pyaon::Params::ios);
 
-    py::class_<pyaon::Hierarchy>(m, "Hierarchy")
-        .def(py::init<
-                const std::vector<pyaon::IO_Desc>&,
-                const std::vector<pyaon::Layer_Desc>&,
-                const std::string&,
-                const py::array_t<unsigned char>&
-            >(),
-            py::arg("io_descs") = std::vector<pyaon::IO_Desc>(),
-            py::arg("layer_descs") = std::vector<pyaon::Layer_Desc>(),
-            py::arg("file_name") = std::string(),
-            py::arg("buffer") = py::array_t<unsigned char>()
-        )
-        .def_readwrite("params", &pyaon::Hierarchy::params)
-        .def("save_to_file", &pyaon::Hierarchy::save_to_file)
-        .def("set_state_from_buffer", &pyaon::Hierarchy::set_state_from_buffer)
-        .def("set_weights_from_buffer", &pyaon::Hierarchy::set_weights_from_buffer)
-        .def("serialize_to_buffer", &pyaon::Hierarchy::serialize_to_buffer)
-        .def("serialize_state_to_buffer", &pyaon::Hierarchy::serialize_state_to_buffer)
-        .def("serialize_weights_to_buffer", &pyaon::Hierarchy::serialize_weights_to_buffer)
-        .def("get_size", &pyaon::Hierarchy::get_size)
-        .def("get_state_size", &pyaon::Hierarchy::get_state_size)
-        .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
-        .def("step", &pyaon::Hierarchy::step,
-            py::arg("input_cis"),
-            py::arg("learn_enabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = 0.0f
-        )
-        .def("clear_state", &pyaon::Hierarchy::clear_state)
-        .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
-        .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
-        .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
-        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
-        .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
-        .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
-        .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
-        .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
-        .def("get_ticks", &pyaon::Hierarchy::get_ticks)
-        .def("get_ticks_per_update", &pyaon::Hierarchy::get_ticks_per_update)
-        .def("get_num_io", &pyaon::Hierarchy::get_num_io)
-        .def("get_io_size", &pyaon::Hierarchy::get_io_size)
-        .def("get_io_type", &pyaon::Hierarchy::get_io_type)
-        .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
-        .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("merge", &pyaon::Hierarchy::merge)
-        .def("__copy__", 
-            [](const pyaon::Hierarchy &other) {
-                return other;
-            }
-        )
-        .def("__deepcopy__", 
-            [](const pyaon::Hierarchy &other) {
-                return other;
-            }
-        );
+    // declare a bunch of sizes to use
+    declare_for_S_L<32, 16>(m, "32_16");
+    declare_for_S_L<64, 16>(m, "64_16");
+    declare_for_S_L<128, 16>(m, "128_16");
+    declare_for_S_L<256, 16>(m, "256_16");
 
-    py::class_<pyaon::Image_Visible_Layer_Desc>(m, "ImageVisibleLayerDesc")
-        .def(py::init<
-                std::tuple<int, int, int>,
-                int
-            >(),
-            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("radius") = 4
-        )
-        .def_readwrite("size", &pyaon::Image_Visible_Layer_Desc::size)
-        .def_readwrite("radius", &pyaon::Image_Visible_Layer_Desc::radius);
+    declare_for_S_L<32, 32>(m, "32_32");
+    declare_for_S_L<64, 32>(m, "64_32");
+    declare_for_S_L<128, 32>(m, "128_32");
+    declare_for_S_L<256, 32>(m, "256_32");
 
-    // bind params
-    py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
-        .def(py::init<>())
-        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
-        .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
-        .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
-        .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
-
-    py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
-        .def(py::init<
-                const std::tuple<int, int, int>&,
-                const std::vector<pyaon::Image_Visible_Layer_Desc>&,
-                const std::string&,
-                const py::array_t<unsigned char>&
-            >(),
-            py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("visible_layer_descs") = std::vector<pyaon::Image_Visible_Layer_Desc>(),
-            py::arg("file_name") = std::string(),
-            py::arg("buffer") = py::array_t<unsigned char>()
-        )
-        .def_readwrite("params", &pyaon::Image_Encoder::params)
-        .def("save_to_file", &pyaon::Image_Encoder::save_to_file)
-        .def("set_state_from_buffer", &pyaon::Image_Encoder::set_state_from_buffer)
-        .def("set_weights_from_buffer", &pyaon::Image_Encoder::set_weights_from_buffer)
-        .def("serialize_to_buffer", &pyaon::Image_Encoder::serialize_to_buffer)
-        .def("serialize_state_to_buffer", &pyaon::Image_Encoder::serialize_state_to_buffer)
-        .def("serialize_weights_to_buffer", &pyaon::Image_Encoder::serialize_weights_to_buffer)
-        .def("get_size", &pyaon::Image_Encoder::get_size)
-        .def("get_state_size", &pyaon::Image_Encoder::get_state_size)
-        .def("get_weights_size", &pyaon::Image_Encoder::get_weights_size)
-        .def("step", &pyaon::Image_Encoder::step,
-            py::arg("inputs"),
-            py::arg("learn_enabled") = true,
-            py::arg("learn_recon") = true
-        )
-        .def("reconstruct", &pyaon::Image_Encoder::reconstruct)
-        .def("get_num_visible_layers", &pyaon::Image_Encoder::get_num_visible_layers)
-        .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
-        .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
-        .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
-        .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
-        .def("merge", &pyaon::Image_Encoder::merge)
-        .def("__copy__", 
-            [](const pyaon::Image_Encoder &other) {
-                return other;
-            }
-        )
-        .def("__deepcopy__", 
-            [](const pyaon::Image_Encoder &other) {
-                return other;
-            }
-        );
+    declare_for_S_L<32, 64>(m, "32_64");
+    declare_for_S_L<64, 64>(m, "64_64");
+    declare_for_S_L<128, 64>(m, "128_64");
+    declare_for_S_L<256, 64>(m, "256_64");
 }
