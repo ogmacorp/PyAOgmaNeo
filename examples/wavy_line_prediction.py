@@ -15,48 +15,42 @@ import matplotlib.pyplot as plt
 # set the number of threads
 neo.set_num_threads(4)
 
-v1 = neo.Vec64_32.randomized()
+vecs = []
 
-print(v1)
-
-
-# this defines the resolution of the input encoding
-num_input_columns = 2
-input_column_size = 16
+for i in range(32):
+    vecs.append(neo.Vec64_32.randomized())
 
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(10): # layers with exponential memory
+for i in range(3):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 16) # size of the encoder(s) in the layer
+    ld.hidden_size = (1, 1) # size of the layer
 
     lds.append(ld)
 
-# create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
-h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
-
-h.params.anticipation = True # Anticipation mode, faster learning of long sequences at the cost of some extra compute
+h = neo.Hierarchy64_32([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 50000
+iters = 10000
 
 # function for the wave
 def wave(t):
-    return float(t % 50 == 0 or t % 7 == 0)#np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
+    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 # iterate
 for t in range(iters):
     value_to_encode = wave(t)
 
     # encode
-    csdr = unorm8_to_csdr(float(value_to_encode))
+    index = int(value_to_encode * (len(vecs) - 1) + 0.5)
 
     # step the hierarchy given the inputs (just one here)
-    h.step([ csdr ], True) # true for enabling learning
+    h.step([[ vecs[index] ]], True) # true for enabling learning
 
-    print(h.get_hidden_cis(0))
+    print(h.get_hidden_vecs(0))
+
     # print progress
     if t % 100 == 0:
         print(t)
@@ -67,18 +61,32 @@ vs = [] # predicted value
 
 trgs = [] # true value
 
+last_index = 0
+
 for t2 in range(1000):
     t = t2 + iters # get "continued" timestep (relative to previous training iterations)
 
     value_to_encode = wave(t)
 
-    csdr = unorm8_to_csdr(float(value_to_encode))
-
     # run off of own predictions with learning disabled
-    h.step([ h.get_prediction_cis(0) ], False) # learning disabled for recall
+    h.step([[ vecs[last_index] ]], False) # learning disabled for recall
 
-    # decode value from latest prediction
-    value = csdr_to_unorm8(h.get_prediction_cis(0))
+    v = h.get_prediction_vecs(0)[0]
+
+    # decode
+    max_index = 0
+    max_similarity = -99999
+
+    for i in range(len(vecs)):
+        d = vecs[i].dot(v)
+
+        if d > max_similarity:
+            max_similarity = d
+            max_index = i
+
+    value = max_index / (len(vecs) - 1)
+
+    last_index = max_index
 
     # append to plot data
     ts.append(t2)
