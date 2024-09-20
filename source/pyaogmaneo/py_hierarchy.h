@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 4440321;
+const int hierarchy_magic = 2840321;
 const int hierarchy_magic_stride = 64;
 
 enum IO_Type {
@@ -273,12 +273,8 @@ public:
             if (input_vecs[i].size() != num_columns)
                 throw std::runtime_error("incorrect csdr size at index " + std::to_string(i) + " - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(input_vecs[i].size()));
 
-            for (int j = 0; j < input_vecs[i].size(); j++) {
-                if (input_vecs[i][j] < 0 || input_vecs[i][j] >= L)
-                    throw std::runtime_error("input vec at input index " + std::to_string(i) + " has an out-of-bounds segment index (value " + std::to_string(input_vecs[i][j]) + ") at " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(L) + "]");
-
+            for (int j = 0; j < input_vecs[i].size(); j++)
                 c_input_vecs_backing[i][j] = input_vecs[i][j];
-            }
 
             c_input_vecs[i] = c_input_vecs_backing[i];
         }
@@ -297,11 +293,11 @@ public:
 
     std::vector<aon::Vec<S, L>> get_prediction_vecs(
         int i
-    ) const {
+    ) {
         if (i < 0 || i >= h.get_num_io())
             throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
-        if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
+        if (h.get_io_type(i) == aon::none)
             throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
         std::vector<aon::Vec<S, L>> prediction_vecs(h.get_prediction_vecs(i).size());
@@ -312,16 +308,16 @@ public:
         return prediction_vecs;
     }
 
-    py::array_t<int> get_hidden_vecs(
+    std::vector<aon::Vec<S, L>> get_hidden_vecs(
         int l
     ) {
         if (l < 0 || l >= h.get_num_layers())
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-        std::vector<aon::Vec<S, L>> hidden_vecs(h.get_encoder(l).get_hidden_vecs().size());
+        std::vector<aon::Vec<S, L>> hidden_vecs(h.get_layer(l).get_hidden_vecs().size());
 
         for (int j = 0; j < hidden_vecs.size(); j++)
-            hidden_vecs[j] = h.get_encoder(l).get_hidden_vecs()[j];
+            hidden_vecs[j] = h.get_layer(l).get_hidden_vecs()[j];
 
         return hidden_vecs;
     }
@@ -332,7 +328,7 @@ public:
         if (l < 0 || l >= h.get_num_layers())
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-        aon::Int3 size = h.get_encoder(l).get_hidden_size();
+        aon::Int2 size = h.get_layer(l).get_hidden_size();
 
         return { size.x, size.y };
     }
@@ -356,7 +352,7 @@ public:
         if (i < 0 || i >= h.get_num_io())
             throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
 
-        aon::Int3 size = h.get_io_size(i);
+        aon::Int2 size = h.get_io_size(i);
 
         return { size.x, size.y };
     }

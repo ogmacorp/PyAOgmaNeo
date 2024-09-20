@@ -25,10 +25,10 @@ void declare_for_S_L(
     std::string hierarchy_pyclass_name = std::string("Hierarchy") + typestr;
 
     py::class_<Vec_Class>(m, vec_pyclass_name.c_str())
-        .def_readonly_static("segments", &Vec_Class::segments)
-        .def_readonly_static("length", &Vec_Class::length)
-        .def_readonly_static("size", &Vec_Class::size)
-        .def_static("randomized", &Vec_Class::randomized)
+        .def_property_readonly_static("segments", [](){ return Vec_Class::segments(); })
+        .def_property_readonly_static("length", [](){ return Vec_Class::length(); })
+        .def_property_readonly_static("size", [](){ return Vec_Class::size(); })
+        .def_static("randomized", [](){ return Vec_Class::randomized(); })
         .def("fill", &Vec_Class::fill)
         .def("__getitem__", [](const Vec_Class &v, int index){ return v[index]; })
         .def("__setitem__", [](Vec_Class &v, int index, aon::Byte value){ v[index] = value; })
@@ -53,10 +53,9 @@ void declare_for_S_L(
         );
 
     py::class_<Bundle_Class>(m, bundle_pyclass_name.c_str())
-        .def_readonly_static("segments", &Bundle_Class::segments)
-        .def_readonly_static("length", &Bundle_Class::length)
-        .def_readonly_static("size", &Bundle_Class::size)
-        .def_static("randomized", &Bundle_Class::randomized)
+        .def_property_readonly_static("segments", [](){ return Vec_Class::segments(); })
+        .def_property_readonly_static("length", [](){ return Vec_Class::length(); })
+        .def_property_readonly_static("size", [](){ return Vec_Class::size(); })
         .def("fill", &Bundle_Class::fill)
         .def("__getitem__", [](const Bundle_Class &v, int index){ return v[index]; })
         .def("__setitem__", [](Bundle_Class &v, int index, aon::Byte value){ v[index] = value; })
@@ -138,29 +137,17 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<pyaon::IO_Desc>(m, "IODesc")
         .def(py::init<
-                std::tuple<int, int, int>,
+                std::tuple<int, int>,
                 pyaon::IO_Type,
-                int,
-                int,
-                int,
-                int,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("size") = std::tuple<int, int>({ 4, 4 }),
             py::arg("io_type") = pyaon::prediction,
-            py::arg("num_dendrites_per_cell") = 4,
-            py::arg("value_num_dendrites_per_cell") = 8,
-            py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 512
+            py::arg("radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
-        .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
-        .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
-        .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
-        .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
+        .def_readwrite("radius", &pyaon::IO_Desc::radius)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
@@ -174,26 +161,14 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<pyaon::Layer_Desc>(m, "LayerDesc")
         .def(py::init<
-                std::tuple<int, int, int>,
-                int,
-                int,
-                int,
-                int,
+                std::tuple<int, int>,
                 int
             >(),
-            py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("num_dendrites_per_cell") = 4,
-            py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("ticks_per_update") = 2,
-            py::arg("temporal_horizon") = 2
+            py::arg("hidden_size") = std::tuple<int, int>({ 4, 4 }),
+            py::arg("radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
-        .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
-        .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
-        .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
-        .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
-        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
+        .def_readwrite("radius", &pyaon::Layer_Desc::radius)
         .def("__copy__", 
             [](const pyaon::Layer_Desc &other) {
                 return other;
@@ -210,7 +185,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("lr", &aon::Layer_Params::lr);
 
-    py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
+    py::class_<aon::IO_Params>(m, "IOParams")
         .def(py::init<>());
 
     py::class_<pyaon::Params>(m, "Params")
