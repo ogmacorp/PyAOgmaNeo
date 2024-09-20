@@ -56,7 +56,22 @@ for t in range(iters):
     # step the hierarchy given the inputs (just one here)
     h.step([[ vecs[index] ]], True) # true for enabling learning
 
-    last_index = index
+    v = h.get_prediction_vecs(0)[0]
+
+    # decode
+    max_index = 0
+    max_similarity = -99999
+
+    for i in range(len(vecs)):
+        d = vecs[i].dot(v)
+
+        if d > max_similarity:
+            max_similarity = d
+            max_index = i
+
+    value = max_index / (len(vecs) - 1)
+
+    last_index = max_index
 
     print(h.get_hidden_vecs(0))
 
