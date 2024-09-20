@@ -67,7 +67,6 @@ set(PYAOGMANEO_SRC
     "source/pyaogmaneo/py_module.cpp"
     "source/pyaogmaneo/py_helpers.cpp"
     "source/pyaogmaneo/py_hierarchy.cpp"
-    "source/pyaogmaneo/py_image_encoder.cpp"
 )
 
 pybind11_add_module(pyaogmaneo ${PYAOGMANEO_SRC})
