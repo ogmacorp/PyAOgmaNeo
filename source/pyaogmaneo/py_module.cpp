@@ -8,6 +8,7 @@
 
 #include "py_hierarchy.h"
 #include <pybind11/operators.h>
+#include <sstream>
 
 namespace py = pybind11;
 
@@ -50,6 +51,20 @@ void declare_for_S_L(
             [](const Vec_Class &other) {
                 return other;
             }
+        )
+        .def("__repr__",
+            [](const Vec_Class &v) {
+                std::ostringstream os;
+
+                os << "[ ";
+
+                for (int i = 0; i < v.segments(); i++)
+                    os << v[i] << " ";
+
+                os << "]";
+
+                return os.str();
+            }
         );
 
     py::class_<Bundle_Class>(m, bundle_pyclass_name.c_str())
@@ -73,7 +88,22 @@ void declare_for_S_L(
             [](const Bundle_Class &other) {
                 return other;
             }
+        )
+        .def("__repr__",
+            [](const Bundle_Class &b) {
+                std::ostringstream os;
+
+                os << "[ ";
+
+                for (int i = 0; i < b.size(); i++)
+                    os << b[i] << " ";
+
+                os << "]";
+
+                return os.str();
+            }
         );
+
 
     py::class_<Hierarchy_Class>(m, hierarchy_pyclass_name.c_str())
         .def(py::init<
