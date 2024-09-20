@@ -11,75 +11,14 @@
 import pyaogmaneo as neo
 import numpy as np
 import matplotlib.pyplot as plt
-import struct
 
 # set the number of threads
 neo.set_num_threads(4)
 
-# scalar encoding used in this example, take a byte and convert 4 consective bits into 2 one-hot columns with 16 cells in them
+v1 = neo.Vec64_32.randomized()
 
-def unorm8_to_csdr(x : float):
-    assert(x >= 0.0 and x <= 1.0)
+print(v1)
 
-    i = int(x * 255.0 + 0.5) & 0xff
-
-    return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
-
-# reverse transform of ieeeto_csdr
-def csdr_to_unorm8(csdr):
-    return (csdr[0] | (csdr[1] << 4)) / 255.0
-
-# some other ways of encoding individual scalers:
-
-# multi-scale embedding
-def f_to_csdr(x, num_columns, cells_per_column, scale_factor=0.25):
-    csdr = []
-
-    scale = 1.0
-
-    for i in range(num_columns):
-        s = (x / scale) % (1.0 if x > 0.0 else -1.0)
-
-        csdr.append(int((s * 0.5 + 0.5) * (cells_per_column - 1) + 0.5))
-
-        rec = scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
-        x -= rec
-
-        scale *= scale_factor
-
-    return csdr
-
-def csdr_to_f(csdr, cells_per_column, scale_factor=0.25):
-    x = 0.0
-
-    scale = 1.0
-
-    for i in range(len(csdr)):
-        x += scale * (float(csdr[i]) / float(cells_per_column - 1) * 2.0 - 1.0)
-
-        scale *= scale_factor
-
-    return x
-
-# convert an ieee float to 8 columns with 16 cells each (similar to first approach but on floating-point data)
-def ieee_to_csdr(x : float):
-    b = struct.pack("<f", x)
-
-    csdr = []
-
-    for i in range(4):
-        csdr.append(b[i] & 0x0f)
-        csdr.append((b[i] & 0xf0) >> 4)
-
-    return csdr
-
-def csdr_to_ieee(csdr):
-    bs = []
-
-    for i in range(4):
-        bs.append(csdr[i * 2 + 0] | (csdr[i * 2 + 1] << 4))
-
-    return struct.unpack("<f", bytes(bs))[0]
 
 # this defines the resolution of the input encoding
 num_input_columns = 2

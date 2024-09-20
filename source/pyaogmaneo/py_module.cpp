@@ -59,7 +59,7 @@ void declare_for_S_L(
                 os << "[ ";
 
                 for (int i = 0; i < v.segments(); i++)
-                    os << v[i] << " ";
+                    os << static_cast<int>(v[i]) << " ";
 
                 os << "]";
 
