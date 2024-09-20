@@ -28,15 +28,19 @@ struct IO_Desc {
 
     int radius;
 
+    float positional_scale;
+
     IO_Desc(
         const std::tuple<int, int> &size,
         IO_Type type,
-        int radius
+        int radius,
+        float positional_scale
     )
     :
     size(size),
     type(type),
-    radius(radius)
+    radius(radius),
+    positional_scale(positional_scale)
     {}
 
     void check_in_range() const;
@@ -88,7 +92,8 @@ private:
             c_io_descs[i] = aon::IO_Desc(
                 aon::Int2(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size)),
                 static_cast<aon::IO_Type>(io_descs[i].type),
-                io_descs[i].radius
+                io_descs[i].radius,
+                io_descs[i].positional_scale
             );
         }
         
