@@ -47,13 +47,17 @@ struct Layer_Desc {
 
     int radius;
 
+    float positional_scale;
+
     Layer_Desc(
         const std::tuple<int, int> &hidden_size,
-        int radius
+        int radius,
+        float positional_scale
     )
     :
     hidden_size(hidden_size),
-    radius(radius)
+    radius(radius),
+    positional_scale(positional_scale)
     {}
 
     void check_in_range() const;
@@ -95,7 +99,8 @@ private:
 
             c_layer_descs[l] = aon::Layer_Desc(
                 aon::Int2(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size)),
-                layer_descs[l].radius
+                layer_descs[l].radius,
+                layer_descs[l].positional_scale
             );
         }
 

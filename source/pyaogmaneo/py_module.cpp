@@ -192,10 +192,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::Layer_Desc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int>,
-                int
+                int,
+                float
             >(),
             py::arg("hidden_size") = std::tuple<int, int>({ 4, 4 }),
             py::arg("radius") = 2
+            py::arg("positional_scale") = 1.0f
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("radius", &pyaon::Layer_Desc::radius)

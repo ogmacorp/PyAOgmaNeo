@@ -12,13 +12,18 @@ import pyaogmaneo as neo
 import numpy as np
 import matplotlib.pyplot as plt
 
+# set types
+Vec = neo.Vec64_32
+Bundle = neo.Bundle64_32
+Hierarchy = neo.Hierarchy64_32
+
 # set the number of threads
 neo.set_num_threads(4)
 
 vecs = []
 
-for i in range(32):
-    vecs.append(neo.Vec64_32.randomized())
+for i in range(8):
+    vecs.append(Vec.randomized())
 
 # define layer descriptors: parameters of each layer upon creation
 lds = []
@@ -30,16 +35,18 @@ for i in range(3):
 
     lds.append(ld)
 
-h = neo.Hierarchy64_32([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
+h = Hierarchy([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
 iters = 10000
 
 # function for the wave
 def wave(t):
-    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
+    return float(t % 20 == 0 or t % 7 == 0)#np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 # iterate
+last_index = 0
+
 for t in range(iters):
     value_to_encode = wave(t)
 
@@ -48,6 +55,8 @@ for t in range(iters):
 
     # step the hierarchy given the inputs (just one here)
     h.step([[ vecs[index] ]], True) # true for enabling learning
+
+    last_index = index
 
     print(h.get_hidden_vecs(0))
 
@@ -60,8 +69,6 @@ ts = [] # time step
 vs = [] # predicted value
 
 trgs = [] # true value
-
-last_index = 0
 
 for t2 in range(1000):
     t = t2 + iters # get "continued" timestep (relative to previous training iterations)
