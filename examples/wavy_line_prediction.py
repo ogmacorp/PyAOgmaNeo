@@ -28,7 +28,7 @@ for i in range(2):
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(2):
+for i in range(8):
     ld = neo.LayerDesc()
 
     ld.hidden_size = (2, 2) # size of the layer
@@ -38,7 +38,7 @@ for i in range(2):
 h = Hierarchy([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps
-iters = 500
+iters = 10000
 
 # function for the wave
 def wave(t):
