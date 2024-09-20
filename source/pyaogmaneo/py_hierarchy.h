@@ -47,16 +47,23 @@ struct Layer_Desc {
 
     int radius;
 
+    int ticks_per_update;
+    int temporal_horizon;
+
     float positional_scale;
 
     Layer_Desc(
         const std::tuple<int, int> &hidden_size,
         int radius,
+        int ticks_per_update,
+        int temporal_horizon,
         float positional_scale
     )
     :
     hidden_size(hidden_size),
     radius(radius),
+    ticks_per_update(ticks_per_update),
+    temporal_horizon(temporal_horizon),
     positional_scale(positional_scale)
     {}
 
@@ -100,6 +107,8 @@ private:
             c_layer_descs[l] = aon::Layer_Desc(
                 aon::Int2(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size)),
                 layer_descs[l].radius,
+                layer_descs[l].ticks_per_update,
+                layer_descs[l].temporal_horizon,
                 layer_descs[l].positional_scale
             );
         }

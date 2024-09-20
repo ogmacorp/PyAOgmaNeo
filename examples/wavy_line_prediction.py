@@ -22,23 +22,23 @@ neo.set_num_threads(4)
 
 vecs = []
 
-for i in range(8):
+for i in range(2):
     vecs.append(Vec.randomized())
 
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(3):
+for i in range(2):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (1, 1) # size of the layer
+    ld.hidden_size = (2, 2) # size of the layer
 
     lds.append(ld)
 
 h = Hierarchy([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
 
-# present the wave sequence for some timesteps, 1000 here
-iters = 10000
+# present the wave sequence for some timesteps
+iters = 500
 
 # function for the wave
 def wave(t):
@@ -73,7 +73,7 @@ for t in range(iters):
 
     last_index = max_index
 
-    print(h.get_hidden_vecs(0))
+    #print(h.get_hidden_vecs(0))
 
     # print progress
     if t % 100 == 0:
