@@ -347,6 +347,30 @@ public:
         return { size.x, size.y };
     }
 
+    int get_update(
+        int l
+    ) const {
+        return h.get_update(l);
+    }
+
+    int get_ticks(
+        int l
+    ) const {
+        return h.get_ticks(l);
+    }
+
+    int get_ticks_per_update(
+        int l
+    ) const {
+        return h.get_ticks_per_update(l);
+    }
+
+    int get_temporal_horizon(
+        int l
+    ) const {
+        return h.get_temporal_horizon(l);
+    }
+
     int get_num_visible_layers(
         int l
     ) {
