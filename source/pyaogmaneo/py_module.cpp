@@ -173,15 +173,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<
                 std::tuple<int, int>,
                 pyaon::IO_Type,
-                int
+                int,
+                float
             >(),
             py::arg("size") = std::tuple<int, int>({ 4, 4 }),
             py::arg("io_type") = pyaon::prediction,
-            py::arg("radius") = 2
+            py::arg("radius") = 2,
+            py::arg("positional_scale") = 1.0f
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("radius", &pyaon::IO_Desc::radius)
+        .def_readwrite("positional_scale", &pyaon::IO_Desc::positional_scale)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
