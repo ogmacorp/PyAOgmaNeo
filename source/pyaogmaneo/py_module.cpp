@@ -209,6 +209,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("radius", &pyaon::Layer_Desc::radius)
+        .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
+        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
         .def_readwrite("positional_scale", &pyaon::Layer_Desc::positional_scale)
         .def("__copy__", 
             [](const pyaon::Layer_Desc &other) {
