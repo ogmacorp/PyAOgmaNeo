@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------------------
 
 #include "py_hierarchy.h"
-#include "py_image_encoder.h"
+#include <pybind11/operators.h>
 
 namespace py = pybind11;
 
@@ -62,8 +62,8 @@ void declare_for_S_L(
         .def("__setitem__", [](Bundle_Class &v, int index, aon::Byte value){ v[index] = value; })
         .def(py::self + py::self)
         .def(py::self += py::self)
-        .def(py::self + Vec_Class)
-        .def(py::self += Vec_Class)
+        .def(py::self + Vec_Class())
+        .def(py::self += Vec_Class())
         .def("thin", &Bundle_Class::thin)
         .def("__copy__", 
             [](const Bundle_Class &other) {

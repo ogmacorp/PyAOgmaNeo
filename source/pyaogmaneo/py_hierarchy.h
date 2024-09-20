@@ -9,7 +9,6 @@
 #pragma once
 
 #include "py_helpers.h"
-#include "py_vec.h"
 #include <aogmaneo/hierarchy.h>
 
 namespace py = pybind11;
