@@ -38,7 +38,7 @@ for i in range(3):
 h = Hierarchy([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 10000
+iters = 600
 
 # function for the wave
 def wave(t):
