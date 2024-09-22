@@ -171,6 +171,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
         .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
+        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
+        .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
