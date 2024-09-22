@@ -87,6 +87,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("choice", &aon::Encoder::Params::choice)
         .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Routed_Layer::Params>(m, "RoutedLayerParams")
@@ -100,7 +101,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
-        .def_readwrite("alr", &aon::Actor::Params::alr)
+        .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
