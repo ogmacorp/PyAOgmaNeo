@@ -121,7 +121,7 @@ private:
         int magic;
         reader.read(&magic, sizeof(int));
 
-        if (magic != hierarchy_magic)
+        if (magic != hierarchy_magic + L + hierarchy_magic_stride * S)
             throw std::runtime_error("attempted to initialize Hierarchy from incompatible file - " + file_name);
 
         h.read(reader);
@@ -136,7 +136,7 @@ private:
         int magic;
         reader.read(&magic, sizeof(int));
 
-        if (magic != hierarchy_magic)
+        if (magic != hierarchy_magic + L + hierarchy_magic_stride * S)
             throw std::runtime_error("attempted to initialize Hierarchy from incompatible buffer!");
 
         h.read(reader);
@@ -203,7 +203,7 @@ public:
         File_Writer writer;
         writer.outs.open(file_name, std::ios::binary);
 
-        int magic = hierarchy_magic + L + hierarchy_magic * S;
+        int magic = hierarchy_magic + L + hierarchy_magic_stride * S;
 
         writer.write(&magic, sizeof(int));
 
@@ -231,7 +231,7 @@ public:
     py::array_t<unsigned char> serialize_to_buffer() {
         Buffer_Writer writer(h.size() + sizeof(int));
 
-        int magic = hierarchy_magic + L + hierarchy_magic * S;
+        int magic = hierarchy_magic + L + hierarchy_magic_stride * S;
 
         writer.write(&magic, sizeof(int));
 
