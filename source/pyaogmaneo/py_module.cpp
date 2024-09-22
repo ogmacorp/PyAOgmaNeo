@@ -102,7 +102,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
+        .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
+        .def_readwrite("bias", &aon::Actor::Params::bias)
         .def_readwrite("discount", &aon::Actor::Params::discount)
+        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
@@ -189,11 +192,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("threshold", &aon::Image_Encoder::Params::threshold)
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
-        .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
+        .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
+        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
