@@ -18,7 +18,7 @@ import time
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
-input_type_none = neo.prediction
+input_type_none = neo.none
 input_type_prediction = neo.prediction
 input_type_action = neo.action
 
@@ -175,7 +175,6 @@ class EnvRunner:
             ld = neo.LayerDesc()
 
             ld.hidden_size = layer_sizes[i]
-            ld.num_dendrites_per_cell = 1
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
 
@@ -184,7 +183,7 @@ class EnvRunner:
         io_descs = []
 
         for i in range(len(self.input_sizes)):
-            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], num_dendrites_per_cell=1, up_radius=input_radius, down_radius=layer_radius))
+            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], up_radius=input_radius, down_radius=layer_radius))
 
         self.h = neo.Hierarchy(io_descs, lds)
 
