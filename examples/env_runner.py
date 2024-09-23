@@ -18,15 +18,75 @@ import time
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
-input_type_none = neo.none
+input_type_none = neo.prediction
 input_type_prediction = neo.prediction
 input_type_action = neo.action
 
 class EnvRunner:
-    def __init__(self, env, layer_sizes=1 * [(5, 5, 32)], 
-        num_dendrites_per_cell=4, input_radius=2, layer_radius=2, hidden_size=(10, 10, 16),
-        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9,
-        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=4.0, n_threads=8
+    def _handle_nodict_obs_space(self, obs_space, obs_resolution, hidden_size, image_scale, image_radius, key=None):
+        match type(obs_space):
+            case gym.spaces.Discrete:
+                self.input_sizes.append((1, 1, obs_space.n))
+                self.input_types.append(input_type_none)
+                self.input_lows.append([0.0])
+                self.input_highs.append([0.0])
+                self.input_encs.append(-1)
+            case gym.spaces.multi_discrete:
+                square_size = int(np.ceil(np.sqrt(len(obs_space.nvec))))
+                high = np.max(obs_space.nvec)
+
+                self.input_sizes.append((square_size, square_size, high))
+                self.input_types.append(input_type_none)
+                self.input_lows.append([0.0])
+                self.input_highs.append([0.0])
+                self.input_encs.append(-1)
+            case gym.spaces.Box:
+                match obs_space.shape:
+                    case ():
+                        return
+
+                if len(obs_space.shape) == 1 or len(obs_space.shape) == 0:
+                    square_size = int(np.ceil(np.sqrt(len(obs_space.low))))
+                    self.input_sizes.append((square_size, square_size, obs_resolution))
+                    self.input_types.append(input_type_none)
+                    lows = obs_space.low
+                    highs = obs_space.high
+                    
+                    # detect large numbers/inf
+                    for i in range(len(lows)):
+                        if abs(lows[i]) > 10000 or abs(highs[i]) > 10000:
+                            # indicate inf by making low greater than high
+                            lows[i] = 1.0
+                            highs[i] = -1.0
+
+                    self.input_lows.append(lows)
+                    self.input_highs.append(highs)
+                    self.input_encs.append(-1)
+                elif len(obs_space.shape) == 2 or len(obs_space.shape) == 3:
+                    scaled_size = (int(obs_space.shape[0] * image_scale), int(obs_space.shape[1] * image_scale), 1 if len(obs_space.shape) == 2 else obs_space.shape[2])
+
+                    self.image_sizes.append(scaled_size)
+
+                    image_enc = neo.ImageEncoder(hidden_size, [neo.ImageVisibleLayerDesc(scaled_size, image_radius)])
+
+                    self.input_sizes.append(hidden_size)
+                    self.input_types.append(input_type_none)
+                    self.input_lows.append([0.0])
+                    self.input_highs.append([1.0])
+                    self.input_encs.append(len(self.image_encs))
+
+                    self.image_encs.append(image_enc)
+                else:
+                    raise Exception("unsupported Box input: dimensions too high " + str(obs_space.shape))
+            case _:
+                raise Exception("unsupported input type " + str(type(obs_space)))
+
+        self.input_keys.append(key)
+
+    def __init__(self, env, layer_sizes=1 * [(5, 5, 32)],
+        input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
+        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.1,
+        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
     ):
         self.env = env
 
@@ -40,6 +100,9 @@ class EnvRunner:
         self.input_lows = []
         self.input_highs = []
         self.input_types = []
+        self.input_keys = []
+        self.input_encs = []
+        self.image_encs = []
         self.image_sizes = []
         self.action_indices = []
 
@@ -51,70 +114,10 @@ class EnvRunner:
         obs_space = env.observation_space
 
         if type(obs_space) is gym.spaces.Dict:
-            # assume the "actual" observation is in the dict
-            if obs_space["observation"] is None:
-                raise Exception("unsupported Dict observation structure!")
-
-            obs_space = obs_space["observation"]
-
-        if type(obs_space) is gym.spaces.Discrete:
-            self.input_sizes.append((1, 1, obs_space.n))
-            self.input_types.append(input_type_none)
-            self.input_lows.append([0.0])
-            self.input_highs.append([0.0])
-        elif type(obs_space) is gym.spaces.multi_discrete:
-            square_size = int(np.ceil(np.sqrt(len(obs_space.nvec))))
-            high = np.max(obs_space.nvec)
-
-            self.input_sizes.append((square_size, square_size, high))
-            self.input_types.append(input_type_none)
-            self.input_lows.append([0.0])
-            self.input_highs.append([0.0])
-        elif type(obs_space) is gym.spaces.Box:
-            if len(obs_space.shape) == 1 or len(obs_space.shape) == 0:
-                square_size = int(np.ceil(np.sqrt(len(obs_space.low))))
-                self.input_sizes.append((square_size, square_size, obs_resolution))
-                self.input_types.append(input_type_none)
-                lows = obs_space.low
-                highs = obs_space.high
-                
-                # detect large numbers/inf
-                for i in range(len(lows)):
-                    if abs(lows[i]) > 10000 or abs(highs[i]) > 10000:
-                        # indicate inf by making low greater than high
-                        lows[i] = 1.0
-                        highs[i] = -1.0
-
-                self.input_lows.append(lows)
-                self.input_highs.append(highs)
-            elif len(obs_space.shape) == 2:
-                scaled_size = (int(obs_space.shape[0] * image_scale), int(obs_space.shape[1] * image_scale), 1)
-
-                self.image_sizes.append(scaled_size)
-            elif len(obs_space.shape) == 3:
-                scaled_size = (int(obs_space.shape[0] * image_scale), int(obs_space.shape[1] * image_scale), 3)
-
-                self.image_sizes.append(scaled_size)
-            else:
-                raise Exception("unsupported Box input: dimensions too high " + str(obs_space.shape))
+            for key, value in obs_space.items():
+                self._handle_nodict_obs_space(value, obs_resolution, hidden_size, image_scale, image_radius, key=key)
         else:
-            raise Exception("unsupported input type " + str(type(obs_space)))
-
-        if len(self.image_sizes) > 0:
-            vlds = []
-
-            for i in range(len(self.image_sizes)):
-                vld = neo.ImageVisibleLayerDesc(self.image_sizes[i], image_radius)
-
-                vlds.append(vld)
-
-            self.im_enc = neo.ImageEncoder(hidden_size, vlds)
-
-            self.im_enc_index = len(self.input_sizes)
-            self.input_sizes.append(hidden_size)
-            self.input_types.append(input_type_none)
-            self.input_lows.append([0.0])
-            self.input_highs.append([1.0])
+            self._handle_nodict_obs_space(obs_space, obs_resolution, hidden_size, image_scale, image_radius)
 
         # actions
         if type(self.env.action_space) is gym.spaces.Discrete:
@@ -123,6 +126,8 @@ class EnvRunner:
             self.input_types.append(input_type_action)
             self.input_lows.append([0.0])
             self.input_highs.append([0.0])
+            self.input_encs.append(-1)
+            self.input_keys.append(None)
         elif type(self.env.action_space) is gym.spaces.multi_discrete:
             square_size = int(np.ceil(np.sqrt(len(self.env.action_space.nvec))))
             high = np.max(self.env.action_space.nvec)
@@ -132,27 +137,33 @@ class EnvRunner:
             self.input_types.append(input_type_action)
             self.input_lows.append([0.0])
             self.input_highs.append([0.0])
+            self.input_encs.append(-1)
+            self.input_keys.append(None)
         elif type(self.env.action_space) is gym.spaces.Box:
             if len(self.env.action_space.shape) < 3:
                 if len(self.env.action_space.shape) == 2:
                     self.action_indices.append(len(self.input_sizes))
                     self.input_sizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], action_resolution))
                     self.input_types.append(input_type_action)
+                    self.input_keys.append(None)
                     lows = self.env.action_space.low
                     highs = self.env.action_space.high
 
                     self.input_lows.append(lows)
                     self.input_highs.append(highs)
+                    self.input_encs.append(-1)
                 else:
                     square_size = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
                     self.action_indices.append(len(self.input_sizes))
                     self.input_sizes.append((square_size, square_size, action_resolution))
                     self.input_types.append(input_type_action)
+                    self.input_keys.append(None)
                     lows = self.env.action_space.low
                     highs = self.env.action_space.high
 
                     self.input_lows.append(lows)
                     self.input_highs.append(highs)
+                    self.input_encs.append(-1)
             else:
                 raise Exception("unsupported Box action: dimensions too high " + str(self.env.action_space.shape))
         else:
@@ -164,18 +175,15 @@ class EnvRunner:
             ld = neo.LayerDesc()
 
             ld.hidden_size = layer_sizes[i]
-
             ld.up_radius = layer_radius
-            ld.recurrent_radius = -1
             ld.down_radius = layer_radius
-            ld.num_dendrites_per_cell = num_dendrites_per_cell
 
             lds.append(ld)
 
         io_descs = []
 
         for i in range(len(self.input_sizes)):
-            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], num_dendrites_per_cell=num_dendrites_per_cell, up_radius=input_radius, down_radius=layer_radius))
+            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], up_radius=input_radius, down_radius=layer_radius))
 
         self.h = neo.Hierarchy(io_descs, lds)
 
@@ -184,7 +192,7 @@ class EnvRunner:
         for i in range(len(self.action_indices)):
             index = self.action_indices[i]
 
-            #self.h.params.ios[index].importance = 0.0
+            self.h.params.ios[index].importance = action_importance
 
             size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
 
@@ -195,55 +203,60 @@ class EnvRunner:
 
             self.actions.append(start_act)
 
+        self.actions = np.array(self.actions, np.int32)
+
         self.obs_space = obs_space
 
     def _feed_observation(self, obs):
-        if type(obs) is dict:
-            # assume the "actual" observation is in the dict
-            if "observation" not in obs:
-                raise Exception("unsupported dict observation structure!")
-
-            obs = obs["observation"]
-
         self.inputs = []
 
         action_index = 0
+        image_enc_index = 0
 
         for i in range(len(self.input_sizes)):
+            sub_obs = obs
+
+            if self.input_keys[i] is not None:
+                sub_obs = sub_obs[self.input_keys[i]]
+
             if self.input_types[i] == input_type_action:
                 self.inputs.append(self.actions[action_index])
 
                 action_index += 1
-            elif i == self.im_enc_index:
+            elif self.input_encs[i] != -1:
                 # format image
-                img = tinyscaler.scale((obs - self.input_lows[i]) / (self.input_highs[i][0] - self.input_lows[i][0]), (self.image_sizes[0][1], self.image_sizes[0][0]))
+                img = tinyscaler.scale((sub_obs - self.input_lows[i]) / (self.input_highs[i][0] - self.input_lows[i][0]),
+                                       (self.image_sizes[image_enc_index][1], self.image_sizes[image_enc_index][0]))
                 
                 # encode image
-                self.im_enc.step([img.astype(np.uint8).ravel()], True)
+                self.image_encs[image_enc_index].step([img.astype(np.uint8).ravel()], True)
 
-                self.inputs.append(self.im_enc.get_hidden_cis())
+                self.inputs.append(self.image_encs[image_enc_index].get_hidden_cis())
 
+                image_enc_index += 1
             else:
+                sub_obs = sub_obs.ravel()
+
                 indices = []
 
                 for j in range(len(self.input_lows[i])):
                     if self.input_lows[i][j] < self.input_highs[i][j]:
                         # rescale
-                        #indices.append(int(min(1.0, max(0.0, (obs[j] - self.input_lows[i][j]) / (self.input_highs[i][j] - self.input_lows[i][j]))) * (self.input_sizes[i][2] - 1) + 0.5))
-                        indices.append(int(sigmoid(obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
+                        #indices.append(int(min(1.0, max(0.0, (sub_obs[j] - self.input_lows[i][j]) / (self.input_highs[i][j] - self.input_lows[i][j]))) * (self.input_sizes[i][2] - 1) + 0.5))
+                        indices.append(int(sigmoid(sub_obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
                     elif self.input_lows[i][j] > self.input_highs[i][j]: # Inf
                         # Rescale
-                        indices.append(int(sigmoid(obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
+                        indices.append(int(sigmoid(sub_obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
                     else:
-                        if type(self.obs_space) is gym.spaces.multi_discrete:
-                            indices.append(int(obs[j]) % self.obs_space.nvec[j])
+                        if type(self.sub_obs_space) is gym.spaces.multi_discrete:
+                            indices.append(int(sub_obs[j]) % self.sub_obs_space.nvec[j])
                         else:
-                            indices.append(int(obs[j]))
+                            indices.append(int(sub_obs[j]))
 
                 if len(indices) < self.input_sizes[i][0] * self.input_sizes[i][1]:
                     indices += ((self.input_sizes[i][0] * self.input_sizes[i][1]) - len(indices)) * [int(0)]
 
-                self.inputs.append(indices)
+                self.inputs.append(np.array(indices, dtype=np.int32))
 
     def act(self, epsilon=0.0, obs_preprocess=None):
         feed_actions = []
