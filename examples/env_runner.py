@@ -83,7 +83,7 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=3 * [(5, 5, 32)],
+    def __init__(self, env, layer_sizes=2 * [(5, 5, 32)],
         num_dendrites_per_cell=4, value_num_dendrites_per_cell=8,
         input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.1,
@@ -299,7 +299,7 @@ class EnvRunner:
         if len(feed_actions) == 1:
             feed_actions = feed_actions[0]
 
-        obs, reward, term, trunc, info = self.env.step(feed_actions)
+        obs, reward, term, trunc, info = self.env.step(np.array(feed_actions))
 
         if obs_preprocess is not None:
             obs = obs_preprocess(obs)
