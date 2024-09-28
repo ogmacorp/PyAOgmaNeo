@@ -202,15 +202,21 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
+                int,
                 float
             >(),
             py::arg("hidden_size") = std::tuple<int, int>({ 4, 4 }),
+            py::arg("hidden_segments") = 8,
+            py::arg("hidden_length") = 32,
             py::arg("radius") = 2,
             py::arg("ticks_per_update") = 2,
             py::arg("temporal_horizon") = 2,
             py::arg("positional_scale") = 1.0f
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
+        .def_readwrite("hidden_segments", &pyaon::Layer_Desc::hidden_segments)
+        .def_readwrite("hidden_length", &pyaon::Layer_Desc::hidden_length)
         .def_readwrite("radius", &pyaon::Layer_Desc::radius)
         .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
         .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
@@ -229,6 +235,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
+        .def_readwrite("lr", &aon::Layer_Params::lr);
         .def_readwrite("lr", &aon::Layer_Params::lr);
 
     py::class_<aon::IO_Params>(m, "IOParams")

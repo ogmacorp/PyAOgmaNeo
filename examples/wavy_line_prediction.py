@@ -22,27 +22,29 @@ neo.set_num_threads(4)
 
 vecs = []
 
-for i in range(2):
+for i in range(32):
     vecs.append(Vec.randomized())
 
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(8):
+for i in range(1):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (2, 2) # size of the layer
+    ld.hidden_size = (1, 1) # size of the layer
+    ld.hidden_segments = 4
+    ld.hidden_length = 32
 
     lds.append(ld)
 
 h = Hierarchy([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
 
-# present the wave sequence for some timesteps
-iters = 10000
+# present the wave sequence for some timesteps, 1000 here
+iters = 5000
 
 # function for the wave
 def wave(t):
-    return float(t % 20 == 0 or t % 7 == 0)#np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
+    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 # iterate
 last_index = 0
@@ -73,11 +75,13 @@ for t in range(iters):
 
     last_index = max_index
 
-    #print(h.get_hidden_vecs(0))
+    print(h.get_prediction_vecs(0))
 
     # print progress
     if t % 100 == 0:
         print(t)
+
+h.save_to_file("test.vohr")
 
 # recall the sequence and plot the result
 ts = [] # time step
