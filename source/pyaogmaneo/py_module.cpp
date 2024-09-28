@@ -235,7 +235,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Layer_Params::lr);
+        .def_readwrite("choice", &aon::Layer_Params::choice)
+        .def_readwrite("vigilance", &aon::Layer_Params::vigilance)
         .def_readwrite("lr", &aon::Layer_Params::lr);
 
     py::class_<aon::IO_Params>(m, "IOParams")
