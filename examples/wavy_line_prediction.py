@@ -28,11 +28,11 @@ for i in range(32):
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(1):
+for i in range(6):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (1, 1) # size of the layer
-    ld.hidden_segments = 4
+    ld.hidden_size = (2, 2) # size of the layer
+    ld.hidden_segments = 8
     ld.hidden_length = 32
 
     lds.append(ld)
