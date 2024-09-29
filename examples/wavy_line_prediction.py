@@ -13,9 +13,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # set types
-Vec = neo.Vec512_64
-Bundle = neo.Bundle512_64
-Hierarchy = neo.Hierarchy512_64
+Vec = neo.Vec1024_32
+Bundle = neo.Bundle1024_32
+Hierarchy = neo.Hierarchy1024_32
 
 # set the number of threads
 neo.set_num_threads(8)
@@ -28,11 +28,11 @@ for i in range(32):
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(6):
+for i in range(1):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (4, 4) # size of the layer
-    ld.temporal_horizon = 4
+    ld.hidden_size = (2, 2) # size of the layer
+    ld.temporal_horizon = 16
 
     lds.append(ld)
 

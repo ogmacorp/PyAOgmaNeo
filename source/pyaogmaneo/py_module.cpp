@@ -240,21 +240,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("ios", &pyaon::Params::ios);
 
     // declare a bunch of sizes to use
-    declare_for_S_L<32, 16>(m, "32_16");
-    declare_for_S_L<64, 16>(m, "64_16");
-    declare_for_S_L<128, 16>(m, "128_16");
     declare_for_S_L<256, 16>(m, "256_16");
     declare_for_S_L<512, 16>(m, "512_16");
+    declare_for_S_L<1024, 16>(m, "1024_16");
+    declare_for_S_L<2048, 16>(m, "2048_16");
+    declare_for_S_L<4096, 16>(m, "4096_16");
 
-    declare_for_S_L<32, 32>(m, "32_32");
-    declare_for_S_L<64, 32>(m, "64_32");
-    declare_for_S_L<128, 32>(m, "128_32");
     declare_for_S_L<256, 32>(m, "256_32");
     declare_for_S_L<512, 32>(m, "512_32");
+    declare_for_S_L<1024, 32>(m, "1024_32");
+    declare_for_S_L<2048, 32>(m, "2048_32");
 
-    declare_for_S_L<32, 64>(m, "32_64");
-    declare_for_S_L<64, 64>(m, "64_64");
-    declare_for_S_L<128, 64>(m, "128_64");
     declare_for_S_L<256, 64>(m, "256_64");
     declare_for_S_L<512, 64>(m, "512_64");
+    declare_for_S_L<1024, 64>(m, "1024_64");
 }
