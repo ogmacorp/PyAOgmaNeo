@@ -13,12 +13,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # set types
-Vec = neo.Vec64_32
-Bundle = neo.Bundle64_32
-Hierarchy = neo.Hierarchy64_32
+Vec = neo.Vec512_64
+Bundle = neo.Bundle512_64
+Hierarchy = neo.Hierarchy512_64
 
 # set the number of threads
-neo.set_num_threads(4)
+neo.set_num_threads(8)
 
 vecs = []
 
@@ -31,16 +31,15 @@ lds = []
 for i in range(6):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (2, 2) # size of the layer
-    ld.hidden_segments = 8
-    ld.hidden_length = 32
+    ld.hidden_size = (4, 4) # size of the layer
+    ld.temporal_horizon = 4
 
     lds.append(ld)
 
 h = Hierarchy([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 5000
+iters = 10000
 
 # function for the wave
 def wave(t):
@@ -75,7 +74,7 @@ for t in range(iters):
 
     last_index = max_index
 
-    print(h.get_prediction_vecs(0))
+    #print(h.get_prediction_vecs(0))
 
     # print progress
     if t % 100 == 0:
