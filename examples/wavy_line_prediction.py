@@ -13,36 +13,36 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # set types
-Vec = neo.Vec64_32
-Bundle = neo.Bundle64_32
-Hierarchy = neo.Hierarchy64_32
+Vec = neo.Vec512_64
+Bundle = neo.Bundle512_64
+Hierarchy = neo.Hierarchy512_64
 
 # set the number of threads
-neo.set_num_threads(4)
+neo.set_num_threads(8)
 
 vecs = []
 
-for i in range(8):
+for i in range(32):
     vecs.append(Vec.randomized())
 
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(3):
+for i in range(1):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (1, 1) # size of the layer
+    ld.hidden_size = (4, 4) # size of the layer
 
     lds.append(ld)
 
 h = Hierarchy([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 1000
+iters = 10000
 
 # function for the wave
 def wave(t):
-    return float(t % 20 == 0 or t % 7 == 0)#np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
+    return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 # iterate
 last_index = 0
@@ -73,11 +73,13 @@ for t in range(iters):
 
     last_index = max_index
 
-    print(h.get_hidden_vecs(0))
+    #print(h.get_prediction_vecs(0))
 
     # print progress
     if t % 100 == 0:
         print(t)
+
+h.save_to_file("test.vohr")
 
 # recall the sequence and plot the result
 ts = [] # time step
