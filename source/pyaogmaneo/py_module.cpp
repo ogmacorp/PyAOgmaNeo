@@ -219,7 +219,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Layer_Params::lr);
+        .def_readwrite("lr", &aon::Layer_Params::lr)
+        .def_readwrite("min_similarity", &aon::Layer_Params::min_similarity);
 
     py::class_<aon::IO_Params>(m, "IOParams")
         .def(py::init<>());
