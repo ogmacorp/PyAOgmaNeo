@@ -49,9 +49,6 @@ struct IO_Desc {
 struct Layer_Desc {
     std::tuple<int, int> hidden_size;
 
-    int hidden_segments;
-    int hidden_length;
-
     int radius;
 
     int ticks_per_update;
@@ -61,8 +58,6 @@ struct Layer_Desc {
 
     Layer_Desc(
         const std::tuple<int, int> &hidden_size,
-        int hidden_segments,
-        int hidden_length,
         int radius,
         int ticks_per_update,
         int temporal_horizon,
@@ -70,8 +65,6 @@ struct Layer_Desc {
     )
     :
     hidden_size(hidden_size),
-    hidden_segments(hidden_segments),
-    hidden_length(hidden_length),
     radius(radius),
     ticks_per_update(ticks_per_update),
     temporal_horizon(temporal_horizon),
@@ -118,8 +111,6 @@ private:
 
             c_layer_descs[l] = aon::Layer_Desc(
                 aon::Int2(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size)),
-                layer_descs[l].hidden_segments,
-                layer_descs[l].hidden_length,
                 layer_descs[l].radius,
                 layer_descs[l].ticks_per_update,
                 layer_descs[l].temporal_horizon,
