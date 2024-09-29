@@ -13,9 +13,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # set types
-Vec = neo.Vec1024_32
-Bundle = neo.Bundle1024_32
-Hierarchy = neo.Hierarchy1024_32
+Vec = neo.Vec1024_16
+Bundle = neo.Bundle1024_16
+Hierarchy = neo.Hierarchy1024_16
 
 # set the number of threads
 neo.set_num_threads(8)
@@ -31,12 +31,15 @@ lds = []
 for i in range(1):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (2, 2) # size of the layer
-    ld.temporal_horizon = 16
+    ld.hidden_size = (1, 1) # size of the layer
+    ld.temporal_horizon = 32
 
     lds.append(ld)
 
 h = Hierarchy([ neo.IODesc(size=(1, 1), io_type=neo.prediction) ], lds)
+
+for i in range(len(lds)):
+    h.params.layers[i].min_similarity = 0.1
 
 # present the wave sequence for some timesteps, 1000 here
 iters = 10000
