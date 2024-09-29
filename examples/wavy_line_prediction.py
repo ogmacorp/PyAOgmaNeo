@@ -31,7 +31,7 @@ lds = []
 for i in range(1):
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (4, 4) # size of the layer
+    ld.hidden_size = (1, 1) # size of the layer
 
     lds.append(ld)
 
@@ -73,7 +73,7 @@ for t in range(iters):
 
     last_index = max_index
 
-    #print(h.get_prediction_vecs(0))
+    print(h.get_hidden_vecs(0))
 
     # print progress
     if t % 100 == 0:
