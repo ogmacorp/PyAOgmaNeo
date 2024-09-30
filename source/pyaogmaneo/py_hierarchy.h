@@ -24,7 +24,7 @@ enum IO_Type {
 
 struct IO_Desc {
     std::tuple<int, int> size;
-    IO_Type type;
+    IO_Type io_type;
 
     int radius;
 
@@ -32,13 +32,13 @@ struct IO_Desc {
 
     IO_Desc(
         const std::tuple<int, int> &size,
-        IO_Type type,
+        IO_Type io_type,
         int radius,
         float positional_scale
     )
     :
     size(size),
-    type(type),
+    io_type(io_type),
     radius(radius),
     positional_scale(positional_scale)
     {}
@@ -91,7 +91,7 @@ private:
 
             c_io_descs[i] = aon::IO_Desc(
                 aon::Int2(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size)),
-                static_cast<aon::IO_Type>(io_descs[i].type),
+                static_cast<aon::IO_Type>(io_descs[i].io_type),
                 io_descs[i].radius,
                 io_descs[i].positional_scale
             );

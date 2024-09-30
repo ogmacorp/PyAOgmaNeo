@@ -178,7 +178,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("positional_scale") = 1.0f
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
-        .def_readwrite("io_type", &pyaon::IO_Desc::type)
+        .def_readwrite("io_type", &pyaon::IO_Desc::io_type)
         .def_readwrite("radius", &pyaon::IO_Desc::radius)
         .def_readwrite("positional_scale", &pyaon::IO_Desc::positional_scale)
         .def("__copy__", 
@@ -220,7 +220,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("lr", &aon::Layer_Params::lr)
-        .def_readwrite("min_similarity", &aon::Layer_Params::min_similarity);
+        .def_readwrite("threshold_rate", &aon::Layer_Params::threshold_rate)
+        .def_readwrite("update_sparsity", &aon::Layer_Params::update_sparsity);
 
     py::class_<aon::IO_Params>(m, "IOParams")
         .def(py::init<>());
