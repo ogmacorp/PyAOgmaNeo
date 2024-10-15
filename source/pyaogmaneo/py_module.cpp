@@ -103,6 +103,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("stability", &aon::Encoder::Params::stability)
         .def_readwrite("early_stop_cells", &aon::Encoder::Params::early_stop_cells);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
