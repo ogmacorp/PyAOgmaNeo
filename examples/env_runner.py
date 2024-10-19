@@ -299,7 +299,7 @@ class EnvRunner:
         if len(feed_actions) == 1:
             feed_actions = feed_actions[0]
 
-        obs, reward, term, trunc, info = self.env.step(np.array(feed_actions))
+        obs, reward, term, trunc, info = self.env.step(feed_actions)
 
         if obs_preprocess is not None:
             obs = obs_preprocess(obs)
