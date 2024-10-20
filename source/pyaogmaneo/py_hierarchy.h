@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 7901213;
+const int hierarchy_magic = 5931212;
 
 enum IO_Type {
     none = 0,
@@ -177,6 +177,15 @@ public:
 
     py::array_t<int> get_layer_prediction_cis(
         int l
+    ) const;
+
+    py::array_t<float> get_prediction_acts(
+        int i
+    ) const;
+
+    py::array_t<int> sample_prediction(
+        int i,
+        float temperature
     ) const;
 
     py::array_t<int> get_hidden_cis(
