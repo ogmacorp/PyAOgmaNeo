@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int image_encoder_magic = 3839112;
+const int image_encoder_magic = 4009311;
 
 struct Image_Visible_Layer_Desc {
     std::tuple<int, int, int> size;
