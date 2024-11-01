@@ -117,7 +117,8 @@ for t in range(iters):
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
 
-    print(h.get_hidden_cis(0))
+
+    print(h.get_encoder_receptive_field(0, 0, (0, 0, 0)))
     # print progress
     if t % 100 == 0:
         print(t)
@@ -154,5 +155,3 @@ for t2 in range(1000):
 plt.plot(ts, vs, ts, trgs)
 
 plt.show()
-
-
