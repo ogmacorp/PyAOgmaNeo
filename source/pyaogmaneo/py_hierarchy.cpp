@@ -329,18 +329,6 @@ void Hierarchy::copy_params_to_h() {
     h.params.anticipation = params.anticipation;
 }
 
-void Hierarchy::merge(
-    const std::vector<Hierarchy*> &hierarchies,
-    Merge_Mode mode
-) {
-    aon::Array<aon::Hierarchy*> c_hierarchies(hierarchies.size());
-
-    for (int h = 0; h < hierarchies.size(); h++)
-        c_hierarchies[h] = &hierarchies[h]->h;
-
-    h.merge(c_hierarchies, static_cast<aon::Merge_Mode>(mode));
-}
-
 std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get_encoder_receptive_field(
     int l,
     int vli,
@@ -400,6 +388,8 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
 
     auto view = field.mutable_unchecked();
 
+    int hidden_cell_index = std::get<2>(pos) + hidden_cells_start;
+
     for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
         for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
             int visible_column_index = address2(aon::Int2(ix, iy), aon::Int2(vld.size.x, vld.size.y));
@@ -408,8 +398,6 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
 
             for (int vc = 0; vc < vld.size.z; vc++) {
                 int wi_offset = vc + vld.size.z * (offset.y + diam * offset.x);
-
-                int hidden_cell_index = std::get<2>(pos) + hidden_cells_start;
 
                 int wi = wi_offset + hidden_cell_index * hidden_stride;
 
@@ -420,4 +408,16 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
     std::tuple<int, int, int> field_size(iter_upper_bound.x - iter_lower_bound.x + 1, iter_upper_bound.y - iter_lower_bound.y + 1, vld.size.z);
 
     return std::make_tuple(field, field_size);
+}
+
+void Hierarchy::merge(
+    const std::vector<Hierarchy*> &hierarchies,
+    Merge_Mode mode
+) {
+    aon::Array<aon::Hierarchy*> c_hierarchies(hierarchies.size());
+
+    for (int h = 0; h < hierarchies.size(); h++)
+        c_hierarchies[h] = &hierarchies[h]->h;
+
+    h.merge(c_hierarchies, static_cast<aon::Merge_Mode>(mode));
 }
