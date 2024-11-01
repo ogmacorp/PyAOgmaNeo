@@ -286,6 +286,10 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
 
     auto view = field.mutable_unchecked();
 
+    // first clear
+    for (int i = 0; i < field_count; i++)
+        view(i) = 0;
+
     int hidden_cell_index = std::get<2>(pos) + hidden_cells_start;
 
     for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
