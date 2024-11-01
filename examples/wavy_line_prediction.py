@@ -101,7 +101,7 @@ h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), i
 h.params.anticipation = True # Anticipation mode, faster learning of long sequences at the cost of some extra compute
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 1000
+iters = 2000
 
 # function for the wave
 def wave(t):

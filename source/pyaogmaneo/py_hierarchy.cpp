@@ -377,11 +377,9 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
     aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
     aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
 
-    int sub_count = (iter_upper_bound.x - iter_lower_bound.x + 1) * (iter_upper_bound.y - iter_lower_bound.y + 1);
-
     int hidden_stride = vld.size.z * area;
 
-    int field_count = sub_count * vld.size.z;
+    int field_count = area * vld.size.z;
 
     py::array_t<unsigned char> field(field_count);
 
@@ -402,7 +400,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
             }
         }
 
-    std::tuple<int, int, int> field_size(iter_upper_bound.x - iter_lower_bound.x + 1, iter_upper_bound.y - iter_lower_bound.y + 1, vld.size.z);
+    std::tuple<int, int, int> field_size(diam, diam, vld.size.z);
 
     return std::make_tuple(field, field_size);
 }
