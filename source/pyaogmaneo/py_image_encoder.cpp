@@ -257,8 +257,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
     const aon::Image_Encoder::Visible_Layer &vl = enc.get_visible_layer(vli);
     const aon::Image_Encoder::Visible_Layer_Desc &vld = enc.get_visible_layer_desc(vli);
 
-    int radius = vld.radius;
-    int diam = radius * 2 + 1;
+    int diam = vld.radius * 2 + 1;
     int area = diam * diam;
 
     aon::Int2 column_pos(std::get<0>(pos), std::get<1>(pos));

@@ -118,7 +118,7 @@ for t in range(iters):
     h.step([ csdr ], True) # true for enabling learning
 
 
-    print(h.get_encoder_receptive_field(0, 0, (0, 0, 0)))
+    print(h.get_encoder_receptive_field(3, 0, (0, 0, 0)))
     # print progress
     if t % 100 == 0:
         print(t)

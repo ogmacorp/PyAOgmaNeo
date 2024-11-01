@@ -356,8 +356,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
     const aon::Encoder::Visible_Layer &vl = enc.get_visible_layer(vli);
     const aon::Encoder::Visible_Layer_Desc &vld = enc.get_visible_layer_desc(vli);
 
-    int radius = vld.radius;
-    int diam = radius * 2 + 1;
+    int diam = vld.radius * 2 + 1;
     int area = diam * diam;
 
     aon::Int2 column_pos(std::get<0>(pos), std::get<1>(pos));
@@ -380,7 +379,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
 
     int sub_count = (iter_upper_bound.x - iter_lower_bound.x + 1) * (iter_upper_bound.y - iter_lower_bound.y + 1);
 
-    int hidden_stride = vld.size.z * diam * diam;
+    int hidden_stride = vld.size.z * area;
 
     int field_count = sub_count * vld.size.z;
 
@@ -397,9 +396,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                int wi_offset = vc + vld.size.z * (offset.y + diam * offset.x);
-
-                int wi = wi_offset + hidden_cell_index * hidden_stride;
+                int wi = vc + vld.size.z * (offset.y + diam * offset.x) + hidden_cell_index * hidden_stride;
 
                 view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
             }
