@@ -236,6 +236,78 @@ py::array_t<int> Image_Encoder::get_hidden_cis() const {
     return hidden_cis;
 }
 
+std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder::get_receptive_field(
+    int vli,
+    const std::tuple<int, int, int> &pos
+) {
+    int num_visible_layers = enc.get_num_visible_layers();
+
+    if (vli < 0 || vli >= num_visible_layers)
+        throw std::runtime_error("visible layer index " + std::to_string(vli) + " out of range [0, " + std::to_string(num_visible_layers - 1) + "]!");
+
+    const aon::Int3 &hidden_size = enc.get_hidden_size();
+
+    if (std::get<0>(pos) < 0 || std::get<0>(pos) >= hidden_size.x ||
+        std::get<1>(pos) < 0 || std::get<1>(pos) >= hidden_size.y ||
+        std::get<2>(pos) < 0 || std::get<2>(pos) >= hidden_size.z) {
+        throw std::runtime_error("position (" + std::to_string(std::get<0>(pos)) + ", " + std::to_string(std::get<1>(pos)) + ", " + std::to_string(std::get<2>(pos)) + ") " +
+                + " not in size (" + std::to_string(hidden_size.x) + ", " + std::to_string(hidden_size.y) + ", " + std::to_string(hidden_size.z) + ")!");
+    }
+
+    const aon::Image_Encoder::Visible_Layer &vl = enc.get_visible_layer(vli);
+    const aon::Image_Encoder::Visible_Layer_Desc &vld = enc.get_visible_layer_desc(vli);
+
+    int diam = vld.radius * 2 + 1;
+    int area = diam * diam;
+
+    aon::Int2 column_pos(std::get<0>(pos), std::get<1>(pos));
+
+    int hidden_column_index = aon::address2(column_pos, aon::Int2(hidden_size.x, hidden_size.y));
+    int hidden_cells_start = hidden_size.z * hidden_column_index;
+
+    // projection
+    aon::Float2 h_to_v = aon::Float2(static_cast<float>(vld.size.x) / static_cast<float>(hidden_size.x),
+            static_cast<float>(vld.size.y) / static_cast<float>(hidden_size.y));
+
+    aon::Int2 visible_center = project(column_pos, h_to_v);
+
+        // lower corner
+    aon::Int2 field_lower_bound(visible_center.x - vld.radius, visible_center.y - vld.radius);
+
+        // bounds of receptive field, clamped to input size
+    aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
+    aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
+
+    int hidden_stride = vld.size.z * diam * diam;
+
+    int field_count = area * vld.size.z;
+
+    py::array_t<unsigned char> field(field_count);
+
+    auto view = field.mutable_unchecked();
+
+    // first clear
+    for (int i = 0; i < field_count; i++)
+        view(i) = 0;
+
+    for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
+        for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
+            int visible_column_index = address2(aon::Int2(ix, iy), aon::Int2(vld.size.x, vld.size.y));
+
+            aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
+
+            for (int vc = 0; vc < vld.size.z; vc++) {
+                int wi = std::get<2>(pos) + hidden_size.z * (vc + vld.size.z * (offset.y + diam * (offset.x + diam * hidden_column_index)));
+
+                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
+            }
+        }
+
+    std::tuple<int, int, int> field_size(diam, diam, vld.size.z);
+
+    return std::make_tuple(field, field_size);
+}
+
 void Image_Encoder::merge(
     const std::vector<Image_Encoder*> &image_encoders,
     Merge_Mode mode
