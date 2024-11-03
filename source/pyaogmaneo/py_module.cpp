@@ -169,6 +169,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
+        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
         .def("merge", &pyaon::Hierarchy::merge)
         .def("__copy__", 
             [](const pyaon::Hierarchy &other) {
@@ -234,6 +235,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
         .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
+        .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field)
         .def("merge", &pyaon::Image_Encoder::merge)
         .def("__copy__", 
             [](const pyaon::Image_Encoder &other) {
