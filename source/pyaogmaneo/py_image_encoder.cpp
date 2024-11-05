@@ -278,8 +278,6 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
     aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
     aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
 
-    int hidden_stride = vld.size.z * diam * diam;
-
     int field_count = area * vld.size.z;
 
     py::array_t<unsigned char> field(field_count);
