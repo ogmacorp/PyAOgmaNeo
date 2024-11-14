@@ -26,18 +26,25 @@ struct IO_Desc {
     std::tuple<int, int, int> size;
     IO_Type type;
 
+    int num_dendrites_per_cell;
+    int value_num_dendrites_per_cell;
+
     int up_radius;
     int down_radius;
 
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
+        int num_dendrites_per_cell,
+        int value_num_dendrites_per_cell,
         int up_radius,
         int down_radius
     )
     :
     size(size),
     type(type),
+    num_dendrites_per_cell(num_dendrites_per_cell),
+    value_num_dendrites_per_cell(value_num_dendrites_per_cell),
     up_radius(up_radius),
     down_radius(down_radius)
     {}
