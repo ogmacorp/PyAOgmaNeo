@@ -18,7 +18,7 @@ import time
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
-input_type_none = neo.none
+input_type_none = neo.prediction
 input_type_prediction = neo.prediction
 input_type_action = neo.action
 
@@ -85,7 +85,7 @@ class EnvRunner:
 
     def __init__(self, env, layer_sizes=2 * [(5, 5, 32)],
         input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
-        image_radius=8, image_scale=0.25, obs_resolution=16, action_resolution=9, action_importance=0.1,
+        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.1,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
     ):
         self.env = env
