@@ -23,7 +23,7 @@ enum IO_Type {
 };
 
 struct IO_Desc {
-    std::tuple<int, int, int> size;
+    std::tuple<int, int, int, int> size;
     IO_Type type;
 
     int num_dendrites_per_cell;
@@ -35,7 +35,7 @@ struct IO_Desc {
     int history_capacity;
 
     IO_Desc(
-        const std::tuple<int, int, int> &size,
+        const std::tuple<int, int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
         int value_num_dendrites_per_cell,
@@ -57,7 +57,7 @@ struct IO_Desc {
 };
 
 struct Layer_Desc {
-    std::tuple<int, int, int> hidden_size;
+    std::tuple<int, int, int, int> hidden_size;
 
     int num_dendrites_per_cell;
 
@@ -68,7 +68,7 @@ struct Layer_Desc {
     int temporal_horizon;
 
     Layer_Desc(
-        const std::tuple<int, int, int> &hidden_size,
+        const std::tuple<int, int, int, int> &hidden_size,
         int num_dendrites_per_cell,
         int up_radius,
         int down_radius,
@@ -183,24 +183,19 @@ public:
         int i
     ) const;
 
-    py::array_t<int> sample_prediction(
-        int i,
-        float temperature
-    ) const;
-
     py::array_t<int> get_hidden_cis(
         int l
     );
 
-    std::tuple<int, int, int> get_hidden_size(
+    std::tuple<int, int, int, int> get_hidden_size(
         int l
     ) {
         if (l < 0 || l >= h.get_num_layers())
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-        aon::Int3 size = h.get_encoder(l).get_hidden_size();
+        aon::Int4 size = h.get_encoder(l).get_hidden_size();
 
-        return { size.x, size.y, size.z };
+        return { size.x, size.y, size.z, size.w };
     }
 
     int get_num_encoder_visible_layers(
@@ -234,15 +229,15 @@ public:
         return h.get_num_io();
     }
 
-    std::tuple<int, int, int> get_io_size(
+    std::tuple<int, int, int, int> get_io_size(
         int i
     ) const {
         if (i < 0 || i >= h.get_num_io())
             throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
 
-        aon::Int3 size = h.get_io_size(i);
+        aon::Int4 size = h.get_io_size(i);
 
-        return { size.x, size.y, size.z };
+        return { size.x, size.y, size.z, size.w };
     }
 
     IO_Type get_io_type(
@@ -279,12 +274,6 @@ public:
         
         return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
     }
-
-    std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> get_encoder_receptive_field(
-        int l,
-        int vli,
-        const std::tuple<int, int, int> &pos
-    );
 
     void merge(
         const std::vector<Hierarchy*> &hierarchies,
