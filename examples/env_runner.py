@@ -26,16 +26,15 @@ class EnvRunner:
     def _handle_nodict_obs_space(self, obs_space, obs_resolution, hidden_size, image_scale, image_radius, key=None):
         match type(obs_space):
             case gym.spaces.Discrete:
-                self.input_sizes.append((1, 1, obs_space.n))
+                self.input_sizes.append((1, 1, 1, obs_space.n))
                 self.input_types.append(input_type_none)
                 self.input_lows.append([0.0])
                 self.input_highs.append([0.0])
                 self.input_encs.append(-1)
             case gym.spaces.multi_discrete:
-                square_size = int(np.ceil(np.sqrt(len(obs_space.nvec))))
                 high = np.max(obs_space.nvec)
 
-                self.input_sizes.append((square_size, square_size, high))
+                self.input_sizes.append((1, 1, len(obs_space.nvec), high))
                 self.input_types.append(input_type_none)
                 self.input_lows.append([0.0])
                 self.input_highs.append([0.0])
@@ -46,8 +45,7 @@ class EnvRunner:
                         return
 
                 if len(obs_space.shape) == 1 or len(obs_space.shape) == 0:
-                    square_size = int(np.ceil(np.sqrt(len(obs_space.low))))
-                    self.input_sizes.append((square_size, square_size, obs_resolution))
+                    self.input_sizes.append((1, 1, len(obs_space.low), obs_resolution))
                     self.input_types.append(input_type_none)
                     lows = obs_space.low
                     highs = obs_space.high
@@ -83,9 +81,9 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=3 * [(5, 5, 32)],
+    def __init__(self, env, layer_sizes=3 * [(3, 3, 4, 16)],
         num_dendrites_per_cell=8, value_num_dendrites_per_cell=16,
-        input_radius=8, layer_radius=2, hidden_size=(10, 10, 16),
+        input_radius=8, layer_radius=2, hidden_size=(10, 10, 4, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=1.0,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
     ):
@@ -123,18 +121,17 @@ class EnvRunner:
         # actions
         if type(self.env.action_space) is gym.spaces.Discrete:
             self.action_indices.append(len(self.input_sizes))
-            self.input_sizes.append((1, 1, self.env.action_space.n))
+            self.input_sizes.append((1, 1, 1, self.env.action_space.n))
             self.input_types.append(input_type_action)
             self.input_lows.append([0.0])
             self.input_highs.append([0.0])
             self.input_encs.append(-1)
             self.input_keys.append(None)
         elif type(self.env.action_space) is gym.spaces.multi_discrete:
-            square_size = int(np.ceil(np.sqrt(len(self.env.action_space.nvec))))
             high = np.max(self.env.action_space.nvec)
 
             self.action_indices.append(len(self.input_sizes))
-            self.input_sizes.append((square_size, square_size, high))
+            self.input_sizes.append((1, 1, self.env.action_space.nvec, high))
             self.input_types.append(input_type_action)
             self.input_lows.append([0.0])
             self.input_highs.append([0.0])
@@ -144,7 +141,7 @@ class EnvRunner:
             if len(self.env.action_space.shape) < 3:
                 if len(self.env.action_space.shape) == 2:
                     self.action_indices.append(len(self.input_sizes))
-                    self.input_sizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], action_resolution))
+                    self.input_sizes.append((self.env.action_space.shape[0], self.env.action_space.shape[1], 1, action_resolution))
                     self.input_types.append(input_type_action)
                     self.input_keys.append(None)
                     lows = self.env.action_space.low
@@ -154,9 +151,8 @@ class EnvRunner:
                     self.input_highs.append(highs)
                     self.input_encs.append(-1)
                 else:
-                    square_size = int(np.ceil(np.sqrt(len(self.env.action_space.low))))
                     self.action_indices.append(len(self.input_sizes))
-                    self.input_sizes.append((square_size, square_size, action_resolution))
+                    self.input_sizes.append((1, 1, len(self.env.action_space.low), action_resolution))
                     self.input_types.append(input_type_action)
                     self.input_keys.append(None)
                     lows = self.env.action_space.low
@@ -196,12 +192,12 @@ class EnvRunner:
 
             self.h.params.ios[index].importance = action_importance
 
-            size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1]
+            size = self.h.get_io_size(index)[0] * self.h.get_io_size(index)[1] * self.h.get_io_size(index)[2]
 
             start_act = []
 
             for _ in range(size):
-                start_act.append(np.random.randint(0, self.input_sizes[index][2]))
+                start_act.append(np.random.randint(0, self.input_sizes[index][3]))
 
             self.actions.append(start_act)
 
@@ -245,10 +241,10 @@ class EnvRunner:
                     if self.input_lows[i][j] < self.input_highs[i][j]:
                         # rescale
                         #indices.append(int(min(1.0, max(0.0, (sub_obs[j] - self.input_lows[i][j]) / (self.input_highs[i][j] - self.input_lows[i][j]))) * (self.input_sizes[i][2] - 1) + 0.5))
-                        indices.append(int(sigmoid(sub_obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
+                        indices.append(int(sigmoid(sub_obs[j] * self.inf_sensitivity) * (self.input_sizes[i][3] - 1) + 0.5))
                     elif self.input_lows[i][j] > self.input_highs[i][j]: # Inf
                         # Rescale
-                        indices.append(int(sigmoid(sub_obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
+                        indices.append(int(sigmoid(sub_obs[j] * self.inf_sensitivity) * (self.input_sizes[i][3] - 1) + 0.5))
                     else:
                         if type(self.sub_obs_space) is gym.spaces.multi_discrete:
                             indices.append(int(sub_obs[j]) % self.sub_obs_space.nvec[j])
@@ -274,10 +270,10 @@ class EnvRunner:
                 # explore
                 for j in range(len(self.input_lows[index])):
                     if np.random.rand() < epsilon:
-                        self.actions[i][j] = np.random.randint(0, self.input_sizes[index][2])
+                        self.actions[i][j] = np.random.randint(0, self.input_sizes[index][3])
 
                     if self.input_lows[index][j] < self.input_highs[index][j]:
-                        feed_action.append(self.actions[i][j] / float(self.input_sizes[index][2] - 1) * (self.input_highs[index][j] - self.input_lows[index][j]) + self.input_lows[index][j])
+                        feed_action.append(self.actions[i][j] / float(self.input_sizes[index][3] - 1) * (self.input_highs[index][j] - self.input_lows[index][j]) + self.input_lows[index][j])
                     else:
                         feed_action.append(self.actions[i][j])
 
@@ -286,12 +282,12 @@ class EnvRunner:
                 if type(self.env.action_space) is gym.spaces.multi_discrete:
                     for j in range(len(self.env.action_space.nvec)):
                         if np.random.rand() < epsilon:
-                            self.actions[i][j] = np.random.randint(0, self.input_sizes[index][2])
+                            self.actions[i][j] = np.random.randint(0, self.input_sizes[index][3])
 
                         feed_actions.append(int(self.actions[i][j]))
                 else:
                     if np.random.rand() < epsilon:
-                        self.actions[i][0] = np.random.randint(0, self.input_sizes[index][2])
+                        self.actions[i][0] = np.random.randint(0, self.input_sizes[index][3])
 
                     feed_actions.append(int(self.actions[i][0]))
 
