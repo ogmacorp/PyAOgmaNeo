@@ -100,7 +100,7 @@ Hierarchy::Hierarchy(
     c_input_cis.resize(h.get_num_io());
 
     for (int i = 0; i < c_input_cis_backing.size(); i++)
-        c_input_cis_backing[i].resize(h.get_io_size(i).x * h.get_io_size(i).y);
+        c_input_cis_backing[i].resize(h.get_prediction_cis(i).size());
 }
 
 void Hierarchy::init_random(
