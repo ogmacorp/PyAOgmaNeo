@@ -464,7 +464,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
             for (int vc = 0; vc < vld.size.z; vc++) {
                 int wi = vc + vld.size.z * (offset.y + diam * offset.x) + hidden_cell_index * hidden_stride;
 
-                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights0[wi];
+                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
             }
         }
 
