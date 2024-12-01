@@ -52,8 +52,8 @@ void Layer_Desc::check_in_range() const {
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
-    if (recurrent_radius < 0)
-        throw std::runtime_error("error: recurrent_radius < 0 is not allowed!");
+    if (recurrent_radius < -1)
+        throw std::runtime_error("error: recurrent_radius < -1 is not allowed!");
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
