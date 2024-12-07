@@ -52,17 +52,11 @@ void Layer_Desc::check_in_range() const {
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
+    if (recurrent_radius < -1)
+        throw std::runtime_error("error: recurrent_radius < -1 is not allowed!");
+
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
-
-    if (ticks_per_update < 1)
-        throw std::runtime_error("error: ticks_per_update < 1 is not allowed!");
-
-    if (temporal_horizon < 1)
-        throw std::runtime_error("error: temporal_horizon < 1 is not allowed!");
-
-    if (ticks_per_update > temporal_horizon)
-        throw std::runtime_error("error: ticks_per_update > temporal_horizon is not allowed!");
 }
 
 Hierarchy::Hierarchy(
@@ -132,9 +126,8 @@ void Hierarchy::init_random(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
             layer_descs[l].num_dendrites_per_cell,
             layer_descs[l].up_radius,
-            layer_descs[l].down_radius,
-            layer_descs[l].ticks_per_update,
-            layer_descs[l].temporal_horizon
+            layer_descs[l].recurrent_radius,
+            layer_descs[l].down_radius
         );
     }
 
@@ -283,7 +276,7 @@ py::array_t<int> Hierarchy::get_layer_prediction_cis(
     if (l < 1 || l >= h.get_num_layers())
         throw std::runtime_error("layer index " + std::to_string(l) + " out of range [1, " + std::to_string(h.get_num_layers() - 1) + "]!");
 
-    const aon::Int_Buffer &cis = h.get_decoder(l, h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).get_hidden_cis();
+    const aon::Int_Buffer &cis = h.get_decoder(l, 0).get_hidden_cis();
 
     py::array_t<int> predictions(cis.size());
 
