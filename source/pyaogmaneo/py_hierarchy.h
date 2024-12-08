@@ -25,24 +25,18 @@ struct IO_Desc {
     std::tuple<int, int, int> size;
     IO_Type type;
 
-    int num_dendrites_per_cell;
-
-    int up_radius;
-    int down_radius;
+    int radius;
 
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
-        int up_radius,
-        int down_radius
+        int radius
     )
     :
     size(size),
     type(type),
-    num_dendrites_per_cell(num_dendrites_per_cell),
-    up_radius(up_radius),
-    down_radius(down_radius)
+    radius(radius)
     {}
 
     void check_in_range() const;
@@ -51,27 +45,20 @@ struct IO_Desc {
 struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
 
-    int num_dendrites_per_cell;
-
-    int up_radius;
-    int down_radius;
+    int radius;
 
     int ticks_per_update;
     int temporal_horizon;
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
-        int num_dendrites_per_cell,
-        int up_radius,
-        int down_radius,
+        int radius,
         int ticks_per_update,
         int temporal_horizon
     )
     :
     hidden_size(hidden_size),
-    num_dendrites_per_cell(num_dendrites_per_cell),
-    up_radius(up_radius),
-    down_radius(down_radius),
+    radius(radius),
     ticks_per_update(ticks_per_update),
     temporal_horizon(temporal_horizon)
     {}
@@ -80,10 +67,8 @@ struct Layer_Desc {
 };
 
 struct Params {
-    std::vector<aon::Hierarchy::Layer_Params> layers;
+    std::vector<aon::Layer::Params> layers;
     std::vector<aon::Hierarchy::IO_Params> ios;
-
-    bool anticipation;
 };
 
 class Hierarchy {
@@ -150,6 +135,7 @@ public:
 
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
+        const py::array_t<py::array_t<int, py::array::c_style | py::array::forcecast>> &top_goal_cis, 
         bool learn_enabled
     );
 
@@ -179,18 +165,18 @@ public:
         if (l < 0 || l >= h.get_num_layers())
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-        aon::Int3 size = h.get_encoder(l).get_hidden_size();
+        aon::Int3 size = h.get_layer(l).get_hidden_size();
 
         return { size.x, size.y, size.z };
     }
 
-    int get_num_encoder_visible_layers(
+    int get_num_layer_visible_layers(
         int l
     ) {
         if (l < 0 || l >= h.get_num_layers())
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-        return h.get_num_encoder_visible_layers(l);
+        return h.get_num_layer_visible_layers(l);
     }
 
     int get_ticks(
@@ -236,37 +222,13 @@ public:
     }
 
     // retrieve additional parameters on the sph's structure
-    int get_up_radius(
+    int get_radius(
         int l
     ) const {
         if (l < 0 || l >= h.get_num_layers())
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-        return h.get_encoder(l).get_visible_layer_desc(0).radius;
+        return h.get_layer(l).get_visible_layer_desc(0).radius;
     }
-
-    int get_down_radius(
-        int l,
-        int i
-    ) const {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        if (l == 0 && i < 0 || i >= h.get_num_io())
-            throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-        
-        return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
-    }
-
-    std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> get_encoder_receptive_field(
-        int l,
-        int vli,
-        const std::tuple<int, int, int> &pos
-    );
-
-    void merge(
-        const std::vector<Hierarchy*> &hierarchies,
-        Merge_Mode mode
-    );
 };
 }

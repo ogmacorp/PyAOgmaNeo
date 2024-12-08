@@ -20,14 +20,8 @@ void IO_Desc::check_in_range() const {
     if (std::get<2>(size) < 1)
         throw std::runtime_error("error: size[2] < 1 is not allowed!");
 
-    if (num_dendrites_per_cell < 1)
-        throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
-
-    if (up_radius < 0)
-        throw std::runtime_error("error: up_radius < 0 is not allowed!");
-
-    if (down_radius < 0)
-        throw std::runtime_error("error: down_radius < 0 is not allowed!");
+    if (radius < 0)
+        throw std::runtime_error("error: radius < 0 is not allowed!");
 }
 
 void Layer_Desc::check_in_range() const {
@@ -40,14 +34,8 @@ void Layer_Desc::check_in_range() const {
     if (std::get<2>(hidden_size) < 1)
         throw std::runtime_error("error: hidden_size[2] < 1 is not allowed!");
 
-    if (num_dendrites_per_cell < 1)
-        throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
-
-    if (up_radius < 0)
-        throw std::runtime_error("error: up_radius < 0 is not allowed!");
-
-    if (down_radius < 0)
-        throw std::runtime_error("error: down_radius < 0 is not allowed!");
+    if (radius < 0)
+        throw std::runtime_error("error: radius < 0 is not allowed!");
 
     if (ticks_per_update < 1)
         throw std::runtime_error("error: ticks_per_update < 1 is not allowed!");
@@ -109,9 +97,7 @@ void Hierarchy::init_random(
         c_io_descs[i] = aon::Hierarchy::IO_Desc(
             aon::Int3(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size), std::get<2>(io_descs[i].size)),
             static_cast<aon::IO_Type>(io_descs[i].type),
-            io_descs[i].num_dendrites_per_cell,
-            io_descs[i].up_radius,
-            io_descs[i].down_radius
+            io_descs[i].radius
         );
     }
     
@@ -122,9 +108,7 @@ void Hierarchy::init_random(
 
         c_layer_descs[l] = aon::Hierarchy::Layer_Desc(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
-            layer_descs[l].num_dendrites_per_cell,
-            layer_descs[l].up_radius,
-            layer_descs[l].down_radius,
+            layer_descs[l].radius,
             layer_descs[l].ticks_per_update,
             layer_descs[l].temporal_horizon
         );
