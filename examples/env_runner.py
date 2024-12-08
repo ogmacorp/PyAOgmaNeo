@@ -104,10 +104,10 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=2 * [(5, 5, 32)],
-        num_dendrites_per_cell=8, explore_chance=0.2, explore_increment=0.1, average_rate=0.01,
+    def __init__(self, env, layer_sizes=3 * [(5, 5, 64)],
+        num_dendrites_per_cell=8, explore_chance=0.1, explore_increment=0.1, average_rate=0.01,
         input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
-        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.2,
+        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=1.0,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
     ):
         self.env = env
@@ -340,21 +340,22 @@ class EnvRunner:
         self.average_reward += self.average_rate * (r - self.average_reward)
 
         if np.random.rand() < self.explore_chance:
-            pred_reward_csdr = self.h.get_prediction_cis(self.h.get_num_io() - 1)
-
-            pred_reward = csdr_to_ieee(pred_reward_csdr)
-
             explore_reward = 0.0
 
-            if pred_reward > 0.0:
-                explore_reward = pred_reward * (1.0 + self.explore_increment)
+            if self.average_reward > 0.0:
+                explore_reward = self.average_reward * (1.0 + self.explore_increment)
             else:
-                explore_reward = pred_reward * (1.0 - self.explore_increment)
+                explore_reward = self.average_reward * (1.0 - self.explore_increment)
 
             self.inputs.append(ieee_to_csdr(explore_reward))
         else:
             self.inputs.append(ieee_to_csdr(self.average_reward))
 
+        pred_reward_csdr = self.h.get_prediction_cis(self.h.get_num_io() - 1)
+
+        pred_reward = csdr_to_ieee(pred_reward_csdr)
+
+        print(pred_reward)
         self.h.step(self.inputs, True)
 
         # retrieve actions
