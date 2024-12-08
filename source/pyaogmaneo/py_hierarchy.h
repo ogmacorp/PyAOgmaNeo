@@ -155,6 +155,10 @@ public:
         int l
     );
 
+    py::array_t<int> get_top_hidden_cis() {
+        return get_hidden_cis(h.get_num_layers() - 1);
+    }
+
     std::tuple<int, int, int> get_hidden_size(
         int l
     ) {
@@ -162,6 +166,14 @@ public:
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
         aon::Int3 size = h.get_layer(l).get_hidden_size();
+
+        return { size.x, size.y, size.z };
+    }
+
+    std::tuple<int, int, int> get_top_hidden_size(
+        int l
+    ) {
+        aon::Int3 size = h.get_top_hidden_size();
 
         return { size.x, size.y, size.z };
     }
