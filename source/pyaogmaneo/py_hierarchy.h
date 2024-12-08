@@ -30,7 +30,6 @@ struct IO_Desc {
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
-        int num_dendrites_per_cell,
         int radius
     )
     :
@@ -77,6 +76,7 @@ private:
 
     aon::Array<aon::Int_Buffer> c_input_cis_backing;
     aon::Array<aon::Int_Buffer_View> c_input_cis;
+    aon::Int_Buffer c_top_goal_cis;
 
     void init_random(
         const std::vector<IO_Desc> &io_descs,
@@ -135,7 +135,7 @@ public:
 
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
-        const py::array_t<py::array_t<int, py::array::c_style | py::array::forcecast>> &top_goal_cis, 
+        const py::array_t<int, py::array::c_style | py::array::forcecast> &top_goal_cis, 
         bool learn_enabled
     );
 
@@ -149,10 +149,6 @@ public:
 
     py::array_t<int> get_prediction_cis(
         int i
-    ) const;
-
-    py::array_t<int> get_layer_prediction_cis(
-        int l
     ) const;
 
     py::array_t<int> get_hidden_cis(

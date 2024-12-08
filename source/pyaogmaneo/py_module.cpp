@@ -23,30 +23,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .value("prediction", pyaon::prediction)
         .export_values();
 
-    py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
-        .value("merge_random", pyaon::merge_random)
-        .value("merge_average", pyaon::merge_average)
-        .export_values();
-
     py::class_<pyaon::IO_Desc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 pyaon::IO_Type,
-                int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
-            py::arg("num_dendrites_per_cell") = 4,
-            py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2
+            py::arg("radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
-        .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
-        .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
-        .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
+        .def_readwrite("radius", &pyaon::IO_Desc::radius)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
@@ -63,21 +52,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int,
                 int,
-                int,
-                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
-            py::arg("num_dendrites_per_cell") = 4,
-            py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
+            py::arg("radius") = 2,
             py::arg("ticks_per_update") = 2,
             py::arg("temporal_horizon") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
-        .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
-        .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
-        .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
+        .def_readwrite("radius", &pyaon::Layer_Desc::radius)
         .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
         .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
         .def("__copy__", 
@@ -92,36 +75,21 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         );
 
     // bind params
-    py::class_<aon::Encoder::Params>(m, "EncoderParams")
+    py::class_<aon::Layer::Params>(m, "LayerParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
-
-    py::class_<aon::Decoder::Params>(m, "DecoderParams")
-        .def(py::init<>())
-        .def_readwrite("choice", &aon::Decoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Decoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("fr", &aon::Decoder::Params::fr);
-
-    py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
-        .def(py::init<>())
-        .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
+        .def_readwrite("scale", &aon::Layer::Params::scale)
+        .def_readwrite("rlr", &aon::Layer::Params::rlr)
+        .def_readwrite("tlr", &aon::Layer::Params::tlr)
+        .def_readwrite("early_stop_cells", &aon::Layer::Params::early_stop_cells);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
-        .def_readwrite("decoder", &aon::Hierarchy::IO_Params::decoder)
         .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
 
     py::class_<pyaon::Params>(m, "Params")
         .def(py::init<>())
         .def_readwrite("layers", &pyaon::Params::layers)
-        .def_readwrite("ios", &pyaon::Params::ios)
-        .def_readwrite("anticipation", &pyaon::Params::anticipation);
+        .def_readwrite("ios", &pyaon::Params::ios);
 
     py::class_<pyaon::Hierarchy>(m, "Hierarchy")
         .def(py::init<
@@ -147,24 +115,21 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
+            py::arg("top_goal_cis"),
             py::arg("learn_enabled") = true
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
-        .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
-        .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
+        .def("get_num_layer_visible_layers", &pyaon::Hierarchy::get_num_layer_visible_layers)
         .def("get_ticks", &pyaon::Hierarchy::get_ticks)
         .def("get_ticks_per_update", &pyaon::Hierarchy::get_ticks_per_update)
         .def("get_num_io", &pyaon::Hierarchy::get_num_io)
         .def("get_io_size", &pyaon::Hierarchy::get_io_size)
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
-        .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
-        .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
-        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
-        .def("merge", &pyaon::Hierarchy::merge)
+        .def("get_radius", &pyaon::Hierarchy::get_radius)
         .def("__copy__", 
             [](const pyaon::Hierarchy &other) {
                 return other;
@@ -190,13 +155,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
+        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("active_ratio", &aon::Image_Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius);
+        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
@@ -231,8 +194,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
         .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
-        .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field)
-        .def("merge", &pyaon::Image_Encoder::merge)
         .def("__copy__", 
             [](const pyaon::Image_Encoder &other) {
                 return other;

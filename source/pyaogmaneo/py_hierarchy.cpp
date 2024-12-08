@@ -76,13 +76,13 @@ Hierarchy::Hierarchy(
     for (int l = 0; l < h.get_num_layers(); l++)
         params.layers[l] = h.params.layers[l];
 
-    params.anticipation = h.params.anticipation;
-
     c_input_cis_backing.resize(h.get_num_io());
     c_input_cis.resize(h.get_num_io());
 
     for (int i = 0; i < c_input_cis_backing.size(); i++)
         c_input_cis_backing[i].resize(h.get_io_size(i).x * h.get_io_size(i).y);
+
+    c_top_goal_cis.resize(h.get_layer(h.get_num_layers() - 1).get_hidden_cis().size());
 }
 
 void Hierarchy::init_random(
@@ -204,6 +204,7 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
+    const py::array_t<int, py::array::c_style | py::array::forcecast> &top_goal_cis,
     bool learn_enabled
 ) {
     if (input_cis.size() != h.get_num_io())
@@ -228,8 +229,24 @@ void Hierarchy::step(
 
         c_input_cis[i] = c_input_cis_backing[i];
     }
+
+    auto view = top_goal_cis.unchecked();
+
+    const aon::Int3 &top_hidden_size = h.get_layer(h.get_num_layers() - 1).get_hidden_size();
+
+    int num_columns = top_hidden_size.x * top_hidden_size.y;
+
+    if (view.size() != num_columns)
+        throw std::runtime_error("incorrect top feedback csdr size - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(view.size()));
+
+    for (int i = 0; i < view.size(); i++) {
+        if (view(i) < 0 || view(i) >= top_hidden_size.z)
+            throw std::runtime_error("top feedback csdr has an out-of-bounds column index (" + std::to_string(view(i)) + ") at column index " + std::to_string(i) + ". it must be in the range [0, " + std::to_string(top_hidden_size.z - 1) + "]");
+
+        c_top_goal_cis[i] = view(i);
+    }
     
-    h.step(c_input_cis, learn_enabled);
+    h.step(c_input_cis, c_top_goal_cis, learn_enabled);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
@@ -238,8 +255,8 @@ py::array_t<int> Hierarchy::get_prediction_cis(
     if (i < 0 || i >= h.get_num_io())
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+    if (h.get_io_type(i) == aon::none)
+        throw std::runtime_error("no prediction exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     py::array_t<int> predictions(h.get_prediction_cis(i).size());
 
@@ -251,36 +268,18 @@ py::array_t<int> Hierarchy::get_prediction_cis(
     return predictions;
 }
 
-py::array_t<int> Hierarchy::get_layer_prediction_cis(
-    int l
-) const {
-    if (l < 1 || l >= h.get_num_layers())
-        throw std::runtime_error("layer index " + std::to_string(l) + " out of range [1, " + std::to_string(h.get_num_layers() - 1) + "]!");
-
-    const aon::Int_Buffer &cis = h.get_decoder(l, h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).get_hidden_cis();
-
-    py::array_t<int> predictions(cis.size());
-
-    auto view = predictions.mutable_unchecked();
-
-    for (int j = 0; j < view.size(); j++)
-        view(j) = cis[j];
-
-    return predictions;
-}
-
 py::array_t<int> Hierarchy::get_hidden_cis(
     int l
 ) {
     if (l < 0 || l >= h.get_num_layers())
         throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
-    py::array_t<int> hidden_cis(h.get_encoder(l).get_hidden_cis().size());
+    py::array_t<int> hidden_cis(h.get_layer(l).get_hidden_cis().size());
 
     auto view = hidden_cis.mutable_unchecked();
 
     for (int j = 0; j < view.size(); j++)
-        view(j) = h.get_encoder(l).get_hidden_cis()[j];
+        view(j) = h.get_layer(l).get_hidden_cis()[j];
 
     return hidden_cis;
 }
@@ -299,96 +298,4 @@ void Hierarchy::copy_params_to_h() {
     // copy params
     for (int l = 0; l < params.layers.size(); l++)
         h.params.layers[l] = params.layers[l];
-
-    h.params.anticipation = params.anticipation;
-}
-
-std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get_encoder_receptive_field(
-    int l,
-    int vli,
-    const std::tuple<int, int, int> &pos
-) {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("layer index " + std::to_string(l) + " out of range [0, " + std::to_string(h.get_num_layers() - 1) + "]!");
-
-    const aon::Encoder &enc = h.get_encoder(l);
-
-    int num_visible_layers = enc.get_num_visible_layers();
-
-    if (vli < 0 || vli >= num_visible_layers)
-        throw std::runtime_error("visible layer index " + std::to_string(vli) + " out of range [0, " + std::to_string(num_visible_layers - 1) + "]!");
-
-    const aon::Int3 &hidden_size = enc.get_hidden_size();
-
-    if (std::get<0>(pos) < 0 || std::get<0>(pos) >= hidden_size.x ||
-        std::get<1>(pos) < 0 || std::get<1>(pos) >= hidden_size.y ||
-        std::get<2>(pos) < 0 || std::get<2>(pos) >= hidden_size.z) {
-        throw std::runtime_error("position (" + std::to_string(std::get<0>(pos)) + ", " + std::to_string(std::get<1>(pos)) + ", " + std::to_string(std::get<2>(pos)) + ") " +
-                + " not in size (" + std::to_string(hidden_size.x) + ", " + std::to_string(hidden_size.y) + ", " + std::to_string(hidden_size.z) + ")!");
-    }
-
-    const aon::Encoder::Visible_Layer &vl = enc.get_visible_layer(vli);
-    const aon::Encoder::Visible_Layer_Desc &vld = enc.get_visible_layer_desc(vli);
-
-    int diam = vld.radius * 2 + 1;
-    int area = diam * diam;
-
-    aon::Int2 column_pos(std::get<0>(pos), std::get<1>(pos));
-
-    int hidden_column_index = aon::address2(column_pos, aon::Int2(hidden_size.x, hidden_size.y));
-    int hidden_cells_start = hidden_size.z * hidden_column_index;
-
-    // projection
-    aon::Float2 h_to_v = aon::Float2(static_cast<float>(vld.size.x) / static_cast<float>(hidden_size.x),
-            static_cast<float>(vld.size.y) / static_cast<float>(hidden_size.y));
-
-    aon::Int2 visible_center = project(column_pos, h_to_v);
-
-        // lower corner
-    aon::Int2 field_lower_bound(visible_center.x - vld.radius, visible_center.y - vld.radius);
-
-        // bounds of receptive field, clamped to input size
-    aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
-    aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
-
-    int hidden_stride = vld.size.z * area;
-
-    int field_count = area * vld.size.z;
-
-    py::array_t<unsigned char> field(field_count);
-
-    auto view = field.mutable_unchecked();
-
-    // first clear
-    for (int i = 0; i < field_count; i++)
-        view(i) = 0;
-
-    for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
-        for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
-            int visible_column_index = address2(aon::Int2(ix, iy), aon::Int2(vld.size.x, vld.size.y));
-
-            aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
-
-            for (int vc = 0; vc < vld.size.z; vc++) {
-                int wi = std::get<2>(pos) + hidden_size.z * (vc + vld.size.z * (offset.y + diam * (offset.x + diam * hidden_column_index)));
-
-                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
-            }
-        }
-
-    std::tuple<int, int, int> field_size(diam, diam, vld.size.z);
-
-    return std::make_tuple(field, field_size);
-}
-
-void Hierarchy::merge(
-    const std::vector<Hierarchy*> &hierarchies,
-    Merge_Mode mode
-) {
-    aon::Array<aon::Hierarchy*> c_hierarchies(hierarchies.size());
-
-    for (int h = 0; h < hierarchies.size(); h++)
-        c_hierarchies[h] = &hierarchies[h]->h;
-
-    h.merge(c_hierarchies, static_cast<aon::Merge_Mode>(mode));
 }
