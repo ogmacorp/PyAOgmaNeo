@@ -14,13 +14,34 @@ import gymnasium as gym
 import tinyscaler
 import os
 import time
+import struct
 
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
-input_type_none = neo.prediction
-input_type_prediction = neo.prediction
-input_type_action = neo.action
+# convert an ieee float to 8 columns with 16 cells each (similar to first approach but on floating-point data)
+def ieee_to_csdr(x : float):
+    b = struct.pack("<f", x)
+
+    csdr = []
+
+    for i in range(4):
+        csdr.append(b[i] & 0x0f)
+        csdr.append((b[i] & 0xf0) >> 4)
+
+    return csdr
+
+def csdr_to_ieee(csdr):
+    bs = []
+
+    for i in range(4):
+        bs.append(csdr[i * 2 + 0] | (csdr[i * 2 + 1] << 4))
+
+    return struct.unpack("<f", bytes(bs))[0]
+
+input_type_none = 0
+input_type_prediction = 1
+input_type_action = 2
 
 class EnvRunner:
     def _handle_nodict_obs_space(self, obs_space, obs_resolution, hidden_size, image_scale, image_radius, key=None):
@@ -84,7 +105,7 @@ class EnvRunner:
         self.input_keys.append(key)
 
     def __init__(self, env, layer_sizes=2 * [(5, 5, 32)],
-        num_dendrites_per_cell=8, value_num_dendrites_per_cell=16,
+        num_dendrites_per_cell=8, explore_chance=0.2, explore_increment=0.1, average_rate=0.01,
         input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.2,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
@@ -185,7 +206,10 @@ class EnvRunner:
         io_descs = []
 
         for i in range(len(self.input_sizes)):
-            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], num_dendrites_per_cell=num_dendrites_per_cell, value_num_dendrites_per_cell=value_num_dendrites_per_cell, up_radius=input_radius, down_radius=layer_radius))
+            io_descs.append(neo.IODesc(self.input_sizes[i], neo.prediction, num_dendrites_per_cell=num_dendrites_per_cell, up_radius=input_radius, down_radius=layer_radius))
+
+        # add conditioning field
+        io_descs.append(neo.IODesc((2, 4, 16), neo.prediction, num_dendrites_per_cell=num_dendrites_per_cell, up_radius=2, down_radius=layer_radius))
 
         self.h = neo.Hierarchy(io_descs, lds)
 
@@ -208,6 +232,11 @@ class EnvRunner:
         self.actions = np.array(self.actions, np.int32)
 
         self.obs_space = obs_space
+
+        self.explore_chance = explore_chance
+        self.explore_increment = explore_increment
+        self.average_reward = 0.0
+        self.average_rate = average_rate
 
     def _feed_observation(self, obs):
         self.inputs = []
@@ -260,7 +289,7 @@ class EnvRunner:
 
                 self.inputs.append(np.array(indices, dtype=np.int32))
 
-    def act(self, epsilon=0.0, obs_preprocess=None):
+    def act(self, epsilon=0.05, obs_preprocess=None):
         feed_actions = []
 
         for i in range(len(self.action_indices)):
@@ -308,7 +337,25 @@ class EnvRunner:
 
         r = reward * self.reward_scale + float(term) * self.terminal_reward
 
-        self.h.step(self.inputs, True, r)
+        self.average_reward += self.average_rate * (r - self.average_reward)
+
+        if np.random.rand() < self.explore_chance:
+            pred_reward_csdr = self.h.get_prediction_cis(self.h.get_num_io() - 1)
+
+            pred_reward = csdr_to_ieee(pred_reward_csdr)
+
+            explore_reward = 0.0
+
+            if pred_reward > 0.0:
+                explore_reward = pred_reward * (1.0 + self.explore_increment)
+            else:
+                explore_reward = pred_reward * (1.0 - self.explore_increment)
+
+            self.inputs.append(ieee_to_csdr(explore_reward))
+        else:
+            self.inputs.append(ieee_to_csdr(self.average_reward))
+
+        self.h.step(self.inputs, True)
 
         # retrieve actions
         for i in range(len(self.action_indices)):
