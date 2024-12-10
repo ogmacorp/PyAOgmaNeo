@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -88,23 +88,24 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(2): # layers with exponential memory
+for i in range(4): # layers with exponential memory
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
-h.params.anticipation = True # Anticipation mode, faster learning of long sequences at the cost of some extra compute
-
 # present the wave sequence for some timesteps, 1000 here
-iters = 2000
+iters = 10000
 
 # function for the wave
 def wave(t):
+    if t % 20 == 0 or t % 7 == 0:
+        return 1.0
+    return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 # iterate
@@ -116,6 +117,7 @@ for t in range(iters):
 
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
+    print(h.get_hidden_cis(1))
 
     # print progress
     if t % 100 == 0:
@@ -153,3 +155,5 @@ for t2 in range(1000):
 plt.plot(ts, vs, ts, trgs)
 
 plt.show()
+
+

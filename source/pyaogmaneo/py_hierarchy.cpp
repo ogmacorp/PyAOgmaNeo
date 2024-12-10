@@ -32,8 +32,8 @@ void IO_Desc::check_in_range() const {
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
 
-    if (history_capacity < 2)
-        throw std::runtime_error("error: history_capacity < 2 is not allowed!");
+    if (history_capacity < 3)
+        throw std::runtime_error("error: history_capacity < 3 is not allowed!");
 }
 
 void Layer_Desc::check_in_range() const {
