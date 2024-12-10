@@ -45,7 +45,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 256
+            py::arg("history_capacity") = 512
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
