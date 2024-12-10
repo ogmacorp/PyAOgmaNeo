@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 9510150;
+const int hierarchy_magic = 2523859;
 
 enum IO_Type {
     none = 0,
@@ -242,6 +242,18 @@ public:
         return h.get_encoder(l).get_visible_layer_desc(0).radius;
     }
 
+    int get_recurrent_radius(
+        int l
+    ) const {
+        if (l < 0 || l >= h.get_num_layers())
+            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
+
+        if (!h.is_layer_recurrent(l))
+            return -1;
+
+        return h.get_encoder(l).get_visible_layer_desc(h.get_encoder(l).get_num_visible_layers() - 1).radius;
+    }
+
     int get_down_radius(
         int l,
         int i
@@ -257,6 +269,12 @@ public:
         
         return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
     }
+
+    std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> get_encoder_receptive_field(
+        int l,
+        int vli,
+        const std::tuple<int, int, int> &pos
+    );
 
     void merge(
         const std::vector<Hierarchy*> &hierarchies,
