@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 1700312;
+const int hierarchy_magic = 2902302;
 
 enum IO_Type {
     none = 0,
