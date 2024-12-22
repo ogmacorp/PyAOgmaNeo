@@ -117,8 +117,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay)
-        .def_readwrite("trace_squash", &aon::Actor::Params::trace_squash)
-        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay);
+        .def_readwrite("trace_squash", &aon::Actor::Params::trace_squash);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
