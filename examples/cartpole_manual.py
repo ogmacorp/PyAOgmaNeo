@@ -30,7 +30,7 @@ neo.set_num_threads(4)
 # define layer descriptors: Parameters of each layer upon creation
 lds = []
 
-for i in range(2): # layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
+for i in range(8): # layers with exponential memory. Not much memory is needed for Cart-Pole, so we only use 2 layers
     ld = neo.LayerDesc()
 
     # set some layer structural parameters
@@ -66,7 +66,7 @@ for episode in range(10000):
         # retrieve the action, the hierarchy already automatically applied exploration
         action = h.get_prediction_cis(1)[0] # First and only column
 
-        if np.random.rand() < 0.05:
+        if np.random.rand() < 0.04:
             action = np.random.randint(0, num_actions)
 
         obs, reward, term, trunc, _ = env.step(action)
