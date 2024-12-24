@@ -35,6 +35,7 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
 
     # set some layer structural parameters
     ld.hidden_size = (5, 5, 32)
+    ld.recurrent_radius = -1
     
     lds.append(ld)
 
