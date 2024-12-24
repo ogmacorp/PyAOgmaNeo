@@ -283,7 +283,7 @@ py::array_t<int> Hierarchy::get_layer_prediction_cis(
     if (l < 1 || l >= h.get_num_layers())
         throw std::runtime_error("layer index " + std::to_string(l) + " out of range [1, " + std::to_string(h.get_num_layers() - 1) + "]!");
 
-    const aon::Int_Buffer &cis = h.get_decoder(l, h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).get_hidden_cis();
+    const aon::Int_Buffer &cis = h.get_decoder(l, 0).get_hidden_cis();
 
     py::array_t<int> predictions(cis.size());
 
