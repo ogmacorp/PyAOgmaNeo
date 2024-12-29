@@ -41,16 +41,16 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
+            py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 512
+            py::arg("down_radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
+        .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
@@ -109,13 +109,15 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("qlr", &aon::Actor::Params::qlr)
+        .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
+        .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
+        .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
+        .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("reweight", &aon::Actor::Params::reweight)
         .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
-        .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
+        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
@@ -161,7 +163,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
-            py::arg("reward") = 0.0f
+            py::arg("reward") = 0.0f,
+            py::arg("mimic") = 0.0f
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
