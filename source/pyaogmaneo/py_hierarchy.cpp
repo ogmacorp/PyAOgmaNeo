@@ -109,7 +109,8 @@ void Hierarchy::init_random(
             io_descs[i].num_dendrites_per_cell,
             io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].up_radius,
-            io_descs[i].down_radius
+            io_descs[i].down_radius,
+            io_descs[i].history_capacity
         );
     }
     
