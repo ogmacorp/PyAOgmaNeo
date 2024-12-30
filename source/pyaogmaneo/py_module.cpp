@@ -109,14 +109,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("vlr", &aon::Actor::Params::vlr)
-        .def_readwrite("plr", &aon::Actor::Params::plr)
+        .def_readwrite("lr", &aon::Actor::Params::lr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
-        .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
-        .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay)
-        .def_readwrite("trace_squash", &aon::Actor::Params::trace_squash);
+        .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
+        .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
