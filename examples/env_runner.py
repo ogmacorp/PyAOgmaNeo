@@ -83,9 +83,9 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=1 * [(5, 5, 64)],
+    def __init__(self, env, layer_sizes=1 * [(7, 7, 64)],
         num_dendrites_per_cell=8,
-        input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
+        input_radius=4, layer_radius=4, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.2,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
     ):
@@ -260,7 +260,7 @@ class EnvRunner:
 
                 self.inputs.append(np.array(indices, dtype=np.int32))
 
-    def act(self, epsilon=0.0, obs_preprocess=None):
+    def act(self, epsilon=0.01, obs_preprocess=None):
         feed_actions = []
 
         for i in range(len(self.action_indices)):
