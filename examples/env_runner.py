@@ -260,7 +260,7 @@ class EnvRunner:
 
                 self.inputs.append(np.array(indices, dtype=np.int32))
 
-    def act(self, epsilon=0.01, obs_preprocess=None):
+    def act(self, epsilon=0.0, obs_preprocess=None):
         feed_actions = []
 
         for i in range(len(self.action_indices)):
