@@ -83,10 +83,10 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=2 * [(5, 5, 64)],
+    def __init__(self, env, layer_sizes=1 * [(7, 7, 32)],
         num_dendrites_per_cell=8,
-        input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
-        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.2,
+        input_radius=4, layer_radius=4, hidden_size=(10, 10, 16),
+        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.5,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
     ):
         self.env = env
