@@ -112,7 +112,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("vlr", &aon::Actor::Params::vlr)
+        .def_readwrite("vlrb", &aon::Actor::Params::vlrb)
+        .def_readwrite("vlrd", &aon::Actor::Params::vlrd)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
