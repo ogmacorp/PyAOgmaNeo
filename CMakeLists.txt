@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2025 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -36,7 +36,7 @@ else()
     FetchContent_Declare(
         AOgmaNeo
         GIT_REPOSITORY https://github.com/ogmacorp/AOgmaNeo.git
-        GIT_TAG ce762e15fc3d6a7611f3b42741c2abbe55a4a728
+        GIT_TAG 8dbf939afbc5d77bf9cbae74e46c850d25d9c15f
     )
 
     FetchContent_MakeAvailable(AOgmaNeo)
