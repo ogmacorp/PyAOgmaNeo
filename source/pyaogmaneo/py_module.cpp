@@ -95,7 +95,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
@@ -111,8 +110,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
-        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
+        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
@@ -200,13 +198,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
-        .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("active_ratio", &aon::Image_Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius);
+        .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
