@@ -79,7 +79,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
             py::arg("ticks_per_update") = 2,
-            py::arg("temporal_horizon") = 2
+            py::arg("temporal_horizon") = 4
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
