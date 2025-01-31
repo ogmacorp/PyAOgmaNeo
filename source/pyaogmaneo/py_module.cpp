@@ -38,7 +38,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 32 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("value_num_dendrites_per_cell") = 8,
@@ -71,9 +71,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int
             >(),
-            py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 32 }),
             py::arg("num_dendrites_per_cell") = 4,
-            py::arg("spatial_activity") = 4,
+            py::arg("spatial_activity") = 8,
             py::arg("up_radius") = 2,
             py::arg("recurrent_radius") = 0,
             py::arg("down_radius") = 2
