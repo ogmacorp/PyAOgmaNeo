@@ -84,7 +84,7 @@ class EnvRunner:
         self.input_keys.append(key)
 
     def __init__(self, env, layer_sizes=2 * [(5, 5, 32)],
-        num_dendrites_per_cell=16, value_num_dendrites_per_cell=16,
+        spatial_activity=8, num_dendrites_per_cell=16, value_num_dendrites_per_cell=16,
         input_radius=4, layer_radius=4, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.5,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
@@ -178,6 +178,7 @@ class EnvRunner:
             ld.hidden_size = layer_sizes[i]
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
+            ld.spatial_activity = spatial_activity
             ld.num_dendrites_per_cell = num_dendrites_per_cell
 
             lds.append(ld)
