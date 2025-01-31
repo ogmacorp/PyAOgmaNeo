@@ -68,16 +68,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("num_dendrites_per_cell") = 4,
+            py::arg("spatial_activity") = 4,
             py::arg("up_radius") = 2,
             py::arg("recurrent_radius") = 0,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
+        .def_readwrite("spatial_activity", &pyaon::Layer_Desc::spatial_activity)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
@@ -96,7 +99,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("mismatch", &aon::Encoder::Params::mismatch)
+        .def_readwrite("spatial_mismatch", &aon::Encoder::Params::spatial_mismatch)
+        .def_readwrite("recurrent_mismatch", &aon::Encoder::Params::recurrent_mismatch)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
@@ -119,8 +123,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
-        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder)
-        .def_readwrite("recurrent_importance", &aon::Hierarchy::Layer_Params::recurrent_importance);
+        .def_readwrite("decoder", &aon::Hierarchy::Layer_Params::decoder);
 
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
