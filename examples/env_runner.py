@@ -178,7 +178,7 @@ class EnvRunner:
             ld.hidden_size = layer_sizes[i]
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
-            #ld.spatial_activity = spatial_activity
+            ld.spatial_activity = spatial_activity
             ld.num_dendrites_per_cell = num_dendrites_per_cell
 
             lds.append(ld)
