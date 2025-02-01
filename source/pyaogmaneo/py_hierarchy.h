@@ -58,10 +58,9 @@ struct IO_Desc {
 
 struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
+    int temporal_size;
 
     int num_dendrites_per_cell;
-
-    int spatial_activity;
 
     int up_radius;
     int recurrent_radius;
@@ -69,16 +68,16 @@ struct Layer_Desc {
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
+        int temporal_size,
         int num_dendrites_per_cell,
-        int spatial_activity,
         int up_radius,
         int recurrent_radius,
         int down_radius
     )
     :
     hidden_size(hidden_size),
+    temporal_size(temporal_size),
     num_dendrites_per_cell(num_dendrites_per_cell),
-    spatial_activity(spatial_activity),
     up_radius(up_radius),
     recurrent_radius(recurrent_radius),
     down_radius(down_radius)
@@ -192,6 +191,10 @@ public:
         int l
     );
 
+    py::array_t<int> get_temporal_cis(
+        int l
+    );
+
     std::tuple<int, int, int> get_hidden_size(
         int l
     ) {
@@ -201,6 +204,17 @@ public:
         aon::Int3 size = h.get_encoder(l).get_hidden_size();
 
         return { size.x, size.y, size.z };
+    }
+
+    int get_temporal_size(
+        int l
+    ) {
+        if (l < 0 || l >= h.get_num_layers())
+            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
+
+        int size = h.get_encoder(l).get_temporal_size();
+
+        return size;
     }
 
     int get_num_encoder_visible_layers(
