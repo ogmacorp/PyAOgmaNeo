@@ -49,6 +49,12 @@ void Layer_Desc::check_in_range() const {
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
+    if (spatial_activity < 1)
+        throw std::runtime_error("error: spatial_activity < 1 is not allowed!");
+
+    if (std::get<2>(hidden_size) % spatial_activity == 0)
+        throw std::runtime_error("error: spatial_activity must evenly divide hidden_size[2]!");
+
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
