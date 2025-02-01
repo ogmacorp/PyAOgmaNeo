@@ -38,7 +38,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 32 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("value_num_dendrites_per_cell") = 8,
@@ -71,9 +71,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int
             >(),
-            py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 32 }),
             py::arg("num_dendrites_per_cell") = 4,
-            py::arg("spatial_activity") = 4,
+            py::arg("spatial_activity") = 8,
             py::arg("up_radius") = 2,
             py::arg("recurrent_radius") = 0,
             py::arg("down_radius") = 2
@@ -114,12 +114,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
-        .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
-        .def_readwrite("bias", &aon::Actor::Params::bias)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
-        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
-        .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
+        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
