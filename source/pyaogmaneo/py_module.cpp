@@ -39,7 +39,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 32 }),
+            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("value_num_dendrites_per_cell") = 8,
@@ -74,7 +74,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int
             >(),
-            py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 32 }),
+            py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("temporal_size") = 4,
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
@@ -202,7 +202,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("radius") = 4
         )
         .def_readwrite("size", &pyaon::Image_Visible_Layer_Desc::size)
@@ -224,7 +224,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 const std::string&,
                 const py::array_t<unsigned char>&
             >(),
-            py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("visible_layer_descs") = std::vector<pyaon::Image_Visible_Layer_Desc>(),
             py::arg("file_name") = std::string(),
             py::arg("buffer") = py::array_t<unsigned char>()
