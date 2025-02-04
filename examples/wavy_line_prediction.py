@@ -88,11 +88,11 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(3): # layers
+for i in range(1): # layers
     ld = neo.LayerDesc()
 
     ld.hidden_size = (5, 5, 4) # size of the encoder(s) in the layer
-    ld.temporal_size = 4
+    ld.temporal_size = 16
     ld.up_radius = 2
     ld.down_radius = 2
 
@@ -102,7 +102,7 @@ for i in range(3): # layers
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction, up_radius=2, down_radius=2) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 10000
+iters = 3000
 
 # function for the wave
 def wave(t):
