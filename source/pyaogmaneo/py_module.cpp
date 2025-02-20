@@ -95,12 +95,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("spatial_mismatch", &aon::Encoder::Params::spatial_mismatch)
-        .def_readwrite("temporal_mismatch", &aon::Encoder::Params::temporal_mismatch)
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("spatial_recon_tolerance", &aon::Encoder::Params::spatial_recon_tolerance)
+        .def_readwrite("recurrent_recon_tolerance", &aon::Encoder::Params::recurrent_recon_tolerance);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
