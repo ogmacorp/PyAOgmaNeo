@@ -101,18 +101,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("spatial_mismatch", &aon::Encoder::Params::spatial_mismatch)
-        .def_readwrite("temporal_mismatch", &aon::Encoder::Params::temporal_mismatch)
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("bias", &aon::Encoder::Params::bias)
+        .def_readwrite("spatial_recon_tolerance", &aon::Encoder::Params::spatial_recon_tolerance)
+        .def_readwrite("recurrent_recon_tolerance", &aon::Encoder::Params::recurrent_recon_tolerance);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
         .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak);
+        .def_readwrite("leak", &aon::Decoder::Params::leak)
+        .def_readwrite("bias", &aon::Decoder::Params::bias);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
