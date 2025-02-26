@@ -103,7 +103,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("scale", &aon::Encoder::Params::scale)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("bias", &aon::Encoder::Params::bias)
         .def_readwrite("spatial_recon_tolerance", &aon::Encoder::Params::spatial_recon_tolerance)
         .def_readwrite("recurrent_recon_tolerance", &aon::Encoder::Params::recurrent_recon_tolerance);
 
