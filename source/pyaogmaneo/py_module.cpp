@@ -35,22 +35,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 pyaon::IO_Type,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 512
+            py::arg("down_radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
@@ -98,12 +95,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
+        .def_readwrite("falloff", &aon::Encoder::Params::falloff)
         .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("spatial_mismatch", &aon::Encoder::Params::spatial_mismatch)
-        .def_readwrite("temporal_mismatch", &aon::Encoder::Params::temporal_mismatch)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius)
+        .def_readwrite("n_radius", &aon::Encoder::Params::n_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -113,13 +110,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("vlr", &aon::Actor::Params::vlr)
-        .def_readwrite("plr", &aon::Actor::Params::plr)
+        .def_readwrite("lr", &aon::Actor::Params::lr)
         .def_readwrite("leak", &aon::Actor::Params::leak)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
-        .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
-        .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
+        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay)
+        .def_readwrite("trace_squash", &aon::Actor::Params::trace_squash);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
@@ -163,8 +158,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = 0.0f
+            py::arg("reward") = 0.0f
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
@@ -212,7 +206,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
+        .def_readwrite("n_radius", &aon::Image_Encoder::Params::n_radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
