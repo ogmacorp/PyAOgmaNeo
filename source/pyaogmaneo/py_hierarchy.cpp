@@ -23,9 +23,6 @@ void IO_Desc::check_in_range() const {
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
-    if (value_num_dendrites_per_cell < 1)
-        throw std::runtime_error("error: value_num_dendrites_per_cell < 1 is not allowed!");
-
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
@@ -113,7 +110,6 @@ void Hierarchy::init_random(
             aon::Int3(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size), std::get<2>(io_descs[i].size)),
             static_cast<aon::IO_Type>(io_descs[i].type),
             io_descs[i].num_dendrites_per_cell,
-            io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].up_radius,
             io_descs[i].down_radius,
             io_descs[i].history_capacity
