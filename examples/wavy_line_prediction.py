@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 #  PyAOgmaNeo
-#  Copyright(c) 2020-2025 Ogma Intelligent Systems Corp. All rights reserved.
+#  Copyright(c) 2020-2023 Ogma Intelligent Systems Corp. All rights reserved.
 #
 #  This copy of PyAOgmaNeo is licensed to you under the terms described
 #  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -91,21 +91,22 @@ lds = []
 for i in range(2): # layers
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 16) # size of the encoder(s) in the layer
-    ld.temporal_size = 8
-    ld.up_radius = 2
-    ld.down_radius = 2
+    ld.hidden_size = (5, 5, 8) # size of the encoder(s) in the layer
+    ld.temporal_size = 32
 
     lds.append(ld)
 
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
-h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction, up_radius=2, down_radius=2) ], lds)
+h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 1000
+iters = 2000
 
 # function for the wave
 def wave(t):
+    if t % 30 == 0 or t % 7 == 0:
+        return 1.0
+    return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
 
 # iterate
@@ -117,6 +118,8 @@ for t in range(iters):
 
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
+
+    print(h.get_hidden_cis(0))
 
     # print progress
     if t % 100 == 0:
@@ -155,5 +158,4 @@ plt.plot(ts, vs, ts, trgs)
 
 plt.show()
 
-h.save_to_file("wavy.ohr")
 

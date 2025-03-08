@@ -104,9 +104,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Decoder::Params::scale)
-        .def_readwrite("lr", &aon::Decoder::Params::lr)
-        .def_readwrite("leak", &aon::Decoder::Params::leak);
+        .def_readwrite("choice", &aon::Decoder::Params::choice)
+        .def_readwrite("mismatch", &aon::Decoder::Params::mismatch)
+        .def_readwrite("lr", &aon::Decoder::Params::lr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
@@ -164,8 +164,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
         .def("get_prediction_cis", &pyaon::Hierarchy::get_prediction_cis)
         .def("get_layer_prediction_cis", &pyaon::Hierarchy::get_layer_prediction_cis)
-        .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
-        .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_temporal_cis", &pyaon::Hierarchy::get_temporal_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
