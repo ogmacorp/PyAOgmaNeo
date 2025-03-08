@@ -95,12 +95,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("falloff", &aon::Encoder::Params::falloff)
         .def_readwrite("choice", &aon::Encoder::Params::choice)
+        .def_readwrite("spatial_mismatch", &aon::Encoder::Params::spatial_mismatch)
+        .def_readwrite("temporal_mismatch", &aon::Encoder::Params::temporal_mismatch)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius)
-        .def_readwrite("n_radius", &aon::Encoder::Params::n_radius);
+        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -193,7 +193,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
+            py::arg("size") = std::tuple<int, int, int>({ 32, 32, 1 }),
             py::arg("radius") = 4
         )
         .def_readwrite("size", &pyaon::Image_Visible_Layer_Desc::size)
@@ -206,7 +206,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("n_radius", &aon::Image_Encoder::Params::n_radius);
+        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
