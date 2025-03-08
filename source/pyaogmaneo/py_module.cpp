@@ -106,7 +106,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("choice", &aon::Decoder::Params::choice)
         .def_readwrite("mismatch", &aon::Decoder::Params::mismatch)
-        .def_readwrite("lr", &aon::Decoder::Params::lr);
+        .def_readwrite("lr", &aon::Decoder::Params::lr)
+        .def_readwrite("fr", &aon::Decoder::Params::fr);
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
