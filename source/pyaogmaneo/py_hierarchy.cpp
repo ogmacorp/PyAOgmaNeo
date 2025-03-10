@@ -23,11 +23,17 @@ void IO_Desc::check_in_range() const {
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
+    if (value_num_dendrites_per_cell < 1)
+        throw std::runtime_error("error: value_num_dendrites_per_cell < 1 is not allowed!");
+
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
+
+    if (history_capacity < 2)
+        throw std::runtime_error("error: history_capacity < 2 is not allowed!");
 }
 
 void Layer_Desc::check_in_range() const {
@@ -107,8 +113,10 @@ void Hierarchy::init_random(
             aon::Int3(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size), std::get<2>(io_descs[i].size)),
             static_cast<aon::IO_Type>(io_descs[i].type),
             io_descs[i].num_dendrites_per_cell,
+            io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].up_radius,
-            io_descs[i].down_radius
+            io_descs[i].down_radius,
+            io_descs[i].history_capacity
         );
     }
     
@@ -218,7 +226,8 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
     bool learn_enabled,
-    float reward
+    float reward,
+    float mimic
 ) {
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -243,7 +252,7 @@ void Hierarchy::step(
         c_input_cis[i] = c_input_cis_backing[i];
     }
     
-    h.step(c_input_cis, learn_enabled, reward);
+    h.step(c_input_cis, learn_enabled, reward, mimic);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
@@ -281,6 +290,70 @@ py::array_t<int> Hierarchy::get_layer_prediction_cis(
         view(j) = cis[j];
 
     return predictions;
+}
+
+py::array_t<float> Hierarchy::get_prediction_acts(
+    int i
+) const {
+    if (i < 0 || i >= h.get_num_io())
+        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
+
+    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
+        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+
+    py::array_t<float> predictions(h.get_prediction_acts(i).size());
+
+    auto view = predictions.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = h.get_prediction_acts(i)[j];
+
+    return predictions;
+}
+
+py::array_t<int> Hierarchy::sample_prediction(
+    int i,
+    float temperature
+) const {
+    if (temperature == 0.0f)
+        return get_prediction_cis(i);
+
+    if (i < 0 || i >= h.get_num_io())
+        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
+
+    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
+        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+
+    py::array_t<int> sample(h.get_prediction_cis(i).size());
+
+    auto view = sample.mutable_unchecked();
+
+    int size_z = h.get_io_size(i).z;
+
+    float temperature_inv = 1.0f / temperature;
+
+    for (int j = 0; j < view.size(); j++) {
+        float total = 0.0f;
+
+        for (int k = 0; k < size_z; k++)
+            total += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
+
+        float cusp = aon::randf() * total;
+
+        float sum_so_far = 0.0f;
+
+        for (int k = 0; k < size_z; k++) {
+            sum_so_far += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
+
+            if (sum_so_far >= cusp) {
+                view(j) = k;
+
+                break;
+            }
+        }
+    }
+
+    return sample;
 }
 
 py::array_t<int> Hierarchy::get_hidden_cis(
