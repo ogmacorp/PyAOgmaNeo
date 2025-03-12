@@ -101,6 +101,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
+        .def_readwrite("falloff", &aon::Encoder::Params::falloff)
         .def_readwrite("choice", &aon::Encoder::Params::choice)
         .def_readwrite("spatial_mismatch", &aon::Encoder::Params::spatial_mismatch)
         .def_readwrite("temporal_mismatch", &aon::Encoder::Params::temporal_mismatch)
@@ -212,6 +213,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
+        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
         .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
