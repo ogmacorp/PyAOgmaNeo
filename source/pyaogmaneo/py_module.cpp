@@ -107,6 +107,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("temporal_mismatch", &aon::Encoder::Params::temporal_mismatch)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
+        .def_readwrite("temperature", &aon::Encoder::Params::temperature)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius)
         .def_readwrite("n_radius", &aon::Encoder::Params::n_radius);
 
@@ -220,6 +221,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
         .def_readwrite("active_ratio", &aon::Image_Encoder::Params::active_ratio)
+        .def_readwrite("temperature", &aon::Image_Encoder::Params::temperature)
         .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius)
         .def_readwrite("n_radius", &aon::Image_Encoder::Params::n_radius);
 
