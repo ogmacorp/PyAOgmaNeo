@@ -43,17 +43,14 @@ void Layer_Desc::check_in_range() const {
     if (std::get<2>(hidden_size) < 1)
         throw std::runtime_error("error: hidden_size[2] < 1 is not allowed!");
 
-    if (temporal_size < 1)
-        throw std::runtime_error("error: temporal_size < 1 is not allowed!");
-
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
-    if (recurrent_radius < 0)
-        throw std::runtime_error("error: recurrent_radius < 0 is not allowed!");
+    if (recurrent_radius < -1)
+        throw std::runtime_error("error: recurrent_radius < -1 is not allowed!");
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
@@ -123,7 +120,6 @@ void Hierarchy::init_random(
 
         c_layer_descs[l] = aon::Hierarchy::Layer_Desc(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
-            layer_descs[l].temporal_size,
             layer_descs[l].num_dendrites_per_cell,
             layer_descs[l].up_radius,
             layer_descs[l].recurrent_radius,
@@ -288,70 +284,6 @@ py::array_t<int> Hierarchy::get_layer_prediction_cis(
     return predictions;
 }
 
-py::array_t<float> Hierarchy::get_prediction_acts(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    py::array_t<float> predictions(h.get_prediction_acts(i).size());
-
-    auto view = predictions.mutable_unchecked();
-
-    for (int j = 0; j < view.size(); j++)
-        view(j) = h.get_prediction_acts(i)[j];
-
-    return predictions;
-}
-
-py::array_t<int> Hierarchy::sample_prediction(
-    int i,
-    float temperature
-) const {
-    if (temperature == 0.0f)
-        return get_prediction_cis(i);
-
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    py::array_t<int> sample(h.get_prediction_cis(i).size());
-
-    auto view = sample.mutable_unchecked();
-
-    int size_z = h.get_io_size(i).z;
-
-    float temperature_inv = 1.0f / temperature;
-
-    for (int j = 0; j < view.size(); j++) {
-        float total = 0.0f;
-
-        for (int k = 0; k < size_z; k++)
-            total += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-        float cusp = aon::randf() * total;
-
-        float sum_so_far = 0.0f;
-
-        for (int k = 0; k < size_z; k++) {
-            sum_so_far += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-            if (sum_so_far >= cusp) {
-                view(j) = k;
-
-                break;
-            }
-        }
-    }
-
-    return sample;
-}
-
 py::array_t<int> Hierarchy::get_hidden_cis(
     int l
 ) {
@@ -366,22 +298,6 @@ py::array_t<int> Hierarchy::get_hidden_cis(
         view(j) = h.get_encoder(l).get_hidden_cis()[j];
 
     return hidden_cis;
-}
-
-py::array_t<int> Hierarchy::get_temporal_cis(
-    int l
-) {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-    py::array_t<int> temporal_cis(h.get_encoder(l).get_temporal_cis().size());
-
-    auto view = temporal_cis.mutable_unchecked();
-
-    for (int j = 0; j < view.size(); j++)
-        view(j) = h.get_encoder(l).get_temporal_cis()[j];
-
-    return temporal_cis;
 }
 
 void Hierarchy::copy_params_to_h() {

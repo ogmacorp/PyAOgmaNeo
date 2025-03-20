@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 5739232;
+const int hierarchy_magic = 1999217;
 
 enum IO_Type {
     none = 0,
@@ -54,7 +54,6 @@ struct IO_Desc {
 
 struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
-    int temporal_size;
 
     int num_dendrites_per_cell;
 
@@ -64,7 +63,6 @@ struct Layer_Desc {
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
-        int temporal_size,
         int num_dendrites_per_cell,
         int up_radius,
         int recurrent_radius,
@@ -72,7 +70,6 @@ struct Layer_Desc {
     )
     :
     hidden_size(hidden_size),
-    temporal_size(temporal_size),
     num_dendrites_per_cell(num_dendrites_per_cell),
     up_radius(up_radius),
     recurrent_radius(recurrent_radius),
@@ -174,20 +171,7 @@ public:
         int l
     ) const;
 
-    py::array_t<float> get_prediction_acts(
-        int i
-    ) const;
-
-    py::array_t<int> sample_prediction(
-        int i,
-        float temperature
-    ) const;
-
     py::array_t<int> get_hidden_cis(
-        int l
-    );
-
-    py::array_t<int> get_temporal_cis(
         int l
     );
 
@@ -200,17 +184,6 @@ public:
         aon::Int3 size = h.get_encoder(l).get_hidden_size();
 
         return { size.x, size.y, size.z };
-    }
-
-    int get_temporal_size(
-        int l
-    ) {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        int size = h.get_encoder(l).get_temporal_size();
-
-        return size;
     }
 
     int get_num_encoder_visible_layers(
