@@ -111,7 +111,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
         .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay)
         .def_readwrite("trace_squash", &aon::Actor::Params::trace_squash);
 
