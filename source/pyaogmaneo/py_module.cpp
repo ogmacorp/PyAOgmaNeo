@@ -68,19 +68,22 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int
+                int,
+                float
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
             py::arg("recurrent_radius") = 0,
-            py::arg("down_radius") = 2
+            py::arg("down_radius") = 2,
+            py::arg("base_vigilance") = 0.9f
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
+        .def_readwrite("base_vigilance", &pyaon::Layer_Desc::base_vigilance)
         .def("__copy__", 
             [](const pyaon::Layer_Desc &other) {
                 return other;
@@ -96,7 +99,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("mismatch", &aon::Encoder::Params::mismatch)
+        .def_readwrite("vigilance_delta", &aon::Encoder::Params::vigilance_delta)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
@@ -198,11 +201,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
+        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
+        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
+        .def_readwrite("active_ratio", &aon::Image_Encoder::Params::active_ratio)
+        .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<

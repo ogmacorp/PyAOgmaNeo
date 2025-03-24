@@ -123,7 +123,8 @@ void Hierarchy::init_random(
             layer_descs[l].num_dendrites_per_cell,
             layer_descs[l].up_radius,
             layer_descs[l].recurrent_radius,
-            layer_descs[l].down_radius
+            layer_descs[l].down_radius,
+            layer_descs[l].base_vigilance
         );
     }
 
