@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 4720517;
+const int hierarchy_magic = 3310217;
 
 enum IO_Type {
     none = 0,
@@ -58,6 +58,7 @@ struct IO_Desc {
 
 struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
+    int temporal_size;
 
     int num_dendrites_per_cell;
 
@@ -67,6 +68,7 @@ struct Layer_Desc {
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
+        int temporal_size,
         int num_dendrites_per_cell,
         int up_radius,
         int recurrent_radius,
@@ -74,6 +76,7 @@ struct Layer_Desc {
     )
     :
     hidden_size(hidden_size),
+    temporal_size(temporal_size),
     num_dendrites_per_cell(num_dendrites_per_cell),
     up_radius(up_radius),
     recurrent_radius(recurrent_radius),
