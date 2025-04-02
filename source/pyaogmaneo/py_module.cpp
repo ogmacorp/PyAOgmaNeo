@@ -101,7 +101,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("choice", &aon::Encoder::Params::choice)
         .def_readwrite("mismatch", &aon::Encoder::Params::mismatch)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("active", &aon::Encoder::Params::active_ratio)
+        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
