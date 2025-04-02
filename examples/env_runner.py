@@ -83,9 +83,9 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=1 * [(5, 5, 32)],
+    def __init__(self, env, layer_sizes=1 * [((5, 5, 32), 8)], # hidden_size, temporal size
         num_dendrites_per_cell=4, value_num_dendrites_per_cell=16,
-        input_radius=2, layer_radius=2, hidden_size=(10, 10, 16),
+        input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.1,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
     ):
@@ -175,7 +175,8 @@ class EnvRunner:
         for i in range(len(layer_sizes)):
             ld = neo.LayerDesc()
 
-            ld.hidden_size = layer_sizes[i]
+            ld.hidden_size = layer_sizes[i][0]
+            ld.temporal_size = layer_sizes[i][1]
             ld.num_dendrites_per_cell = num_dendrites_per_cell
             ld.up_radius = layer_radius
             ld.down_radius = layer_radius
