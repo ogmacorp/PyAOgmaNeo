@@ -71,21 +71,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("temporal_size") = 8,
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
-            py::arg("recurrent_radius") = 0,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
         .def_readwrite("temporal_size", &pyaon::Layer_Desc::temporal_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
-        .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
         .def("__copy__", 
             [](const pyaon::Layer_Desc &other) {
@@ -178,7 +175,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
         .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
+        .def("get_temporal_cis", &pyaon::Hierarchy::get_temporal_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
+        .def("get_temporal_size", &pyaon::Hierarchy::get_temporal_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
         .def("get_num_io", &pyaon::Hierarchy::get_num_io)
         .def("get_io_size", &pyaon::Hierarchy::get_io_size)
