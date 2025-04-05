@@ -99,7 +99,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("mismatch", &aon::Encoder::Params::mismatch)
+        .def_readwrite("category_vigilance", &aon::Encoder::Params::category_vigilance)
+        .def_readwrite("compare_vigilance", &aon::Encoder::Params::compare_vigilance)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active", &aon::Encoder::Params::active_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
