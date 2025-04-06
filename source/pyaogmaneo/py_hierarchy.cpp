@@ -55,6 +55,9 @@ void Layer_Desc::check_in_range() const {
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
+    if (recurrent_radius < 0)
+        throw std::runtime_error("error: recurrent_radius < 0 is not allowed!");
+
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
 }
@@ -127,6 +130,7 @@ void Hierarchy::init_random(
             layer_descs[l].temporal_size,
             layer_descs[l].num_dendrites_per_cell,
             layer_descs[l].up_radius,
+            layer_descs[l].recurrent_radius,
             layer_descs[l].down_radius
         );
     }
