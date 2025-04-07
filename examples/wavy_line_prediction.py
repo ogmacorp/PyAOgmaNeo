@@ -88,22 +88,26 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(1): # layers
+for i in range(3): # layers
     ld = neo.LayerDesc()
 
     ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
+    ld.recurrent_radius = 2
+    #ld.temporal_size = 8
 
     lds.append(ld)
 
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
+for i in range(len(lds)):
+    h.params.layers[i].recurrent_importance = 0.05
 # present the wave sequence for some timesteps, 1000 here
-iters = 5000
+iters = 10000
 
 # function for the wave
 def wave(t):
-    if t % 50 == 0 or t % 7 == 0:
+    if t % 20 == 0 or t % 7 == 0:
         return 1.0
     return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * np.sin(t * 0.04 * 2.0 * np.pi - 0.4) * 0.5 + 0.5
@@ -118,7 +122,7 @@ for t in range(iters):
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
 
-    #print(h.get_hidden_cis(2))
+    print(h.get_hidden_cis(0))
 
     # print progress
     if t % 100 == 0:
