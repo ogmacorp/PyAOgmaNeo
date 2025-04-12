@@ -91,7 +91,7 @@ lds = []
 for i in range(2): # layers
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 32) # size of the encoder(s) in the layer
     #ld.temporal_size = 8
 
     lds.append(ld)
@@ -100,7 +100,7 @@ for i in range(2): # layers
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 50000
+iters = 10000
 
 # function for the wave
 def wave(t):
