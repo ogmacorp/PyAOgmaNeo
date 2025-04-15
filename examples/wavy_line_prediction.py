@@ -91,8 +91,8 @@ lds = []
 for i in range(2): # layers
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 16) # size of the encoder(s) in the layer
-    ld.temporal_size = 8
+    ld.hidden_size = (5, 5, 8) # size of the encoder(s) in the layer
+    ld.temporal_size = 16
 
     lds.append(ld)
 
