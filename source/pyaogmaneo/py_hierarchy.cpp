@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2025 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -31,9 +31,6 @@ void IO_Desc::check_in_range() const {
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
-
-    if (history_capacity < 2)
-        throw std::runtime_error("error: history_capacity < 2 is not allowed!");
 }
 
 void Layer_Desc::check_in_range() const {
@@ -52,11 +49,17 @@ void Layer_Desc::check_in_range() const {
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
-    if (recurrent_radius < -1)
-        throw std::runtime_error("error: recurrent_radius < -1 is not allowed!");
-
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
+
+    if (ticks_per_update < 1)
+        throw std::runtime_error("error: ticks_per_update < 1 is not allowed!");
+
+    if (temporal_horizon < 1)
+        throw std::runtime_error("error: temporal_horizon < 1 is not allowed!");
+
+    if (ticks_per_update > temporal_horizon)
+        throw std::runtime_error("error: ticks_per_update > temporal_horizon is not allowed!");
 }
 
 Hierarchy::Hierarchy(
@@ -112,8 +115,7 @@ void Hierarchy::init_random(
             io_descs[i].num_dendrites_per_cell,
             io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].up_radius,
-            io_descs[i].down_radius,
-            io_descs[i].history_capacity
+            io_descs[i].down_radius
         );
     }
     
@@ -126,8 +128,9 @@ void Hierarchy::init_random(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
             layer_descs[l].num_dendrites_per_cell,
             layer_descs[l].up_radius,
-            layer_descs[l].recurrent_radius,
-            layer_descs[l].down_radius
+            layer_descs[l].down_radius,
+            layer_descs[l].ticks_per_update,
+            layer_descs[l].temporal_horizon
         );
     }
 
@@ -276,7 +279,7 @@ py::array_t<int> Hierarchy::get_layer_prediction_cis(
     if (l < 1 || l >= h.get_num_layers())
         throw std::runtime_error("layer index " + std::to_string(l) + " out of range [1, " + std::to_string(h.get_num_layers() - 1) + "]!");
 
-    const aon::Int_Buffer &cis = h.get_decoder(l, 0).get_hidden_cis();
+    const aon::Int_Buffer &cis = h.get_decoder(l, h.get_ticks_per_update(l) - 1 - h.get_ticks(l)).get_hidden_cis();
 
     py::array_t<int> predictions(cis.size());
 
@@ -286,70 +289,6 @@ py::array_t<int> Hierarchy::get_layer_prediction_cis(
         view(j) = cis[j];
 
     return predictions;
-}
-
-py::array_t<float> Hierarchy::get_prediction_acts(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    py::array_t<float> predictions(h.get_prediction_acts(i).size());
-
-    auto view = predictions.mutable_unchecked();
-
-    for (int j = 0; j < view.size(); j++)
-        view(j) = h.get_prediction_acts(i)[j];
-
-    return predictions;
-}
-
-py::array_t<int> Hierarchy::sample_prediction(
-    int i,
-    float temperature
-) const {
-    if (temperature == 0.0f)
-        return get_prediction_cis(i);
-
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
-
-    py::array_t<int> sample(h.get_prediction_cis(i).size());
-
-    auto view = sample.mutable_unchecked();
-
-    int size_z = h.get_io_size(i).z;
-
-    float temperature_inv = 1.0f / temperature;
-
-    for (int j = 0; j < view.size(); j++) {
-        float total = 0.0f;
-
-        for (int k = 0; k < size_z; k++)
-            total += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-        float cusp = aon::randf() * total;
-
-        float sum_so_far = 0.0f;
-
-        for (int k = 0; k < size_z; k++) {
-            sum_so_far += aon::powf(h.get_prediction_acts(i)[k + j * size_z], temperature_inv);
-
-            if (sum_so_far >= cusp) {
-                view(j) = k;
-
-                break;
-            }
-        }
-    }
-
-    return sample;
 }
 
 py::array_t<int> Hierarchy::get_hidden_cis(
