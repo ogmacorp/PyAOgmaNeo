@@ -175,6 +175,15 @@ public:
         int l
     ) const;
 
+    py::array_t<float> get_prediction_acts(
+        int i
+    ) const;
+
+    py::array_t<int> sample_prediction(
+        int i,
+        float temperature
+    ) const;
+
     py::array_t<int> get_hidden_cis(
         int l
     );
