@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2025 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 3431912;
+const int hierarchy_magic = 9120817;
 
 enum IO_Type {
     none = 0,
@@ -32,13 +32,16 @@ struct IO_Desc {
     int up_radius;
     int down_radius;
 
+    int history_capacity;
+
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
         int value_num_dendrites_per_cell,
         int up_radius,
-        int down_radius
+        int down_radius,
+        int history_capacity
     )
     :
     size(size),
@@ -46,7 +49,8 @@ struct IO_Desc {
     num_dendrites_per_cell(num_dendrites_per_cell),
     value_num_dendrites_per_cell(value_num_dendrites_per_cell),
     up_radius(up_radius),
-    down_radius(down_radius)
+    down_radius(down_radius),
+    history_capacity(history_capacity)
     {}
 
     void check_in_range() const;
@@ -54,30 +58,26 @@ struct IO_Desc {
 
 struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
+    int temporal_size;
 
     int num_dendrites_per_cell;
 
     int up_radius;
     int down_radius;
 
-    int ticks_per_update;
-    int temporal_horizon;
-
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
+        int temporal_size,
         int num_dendrites_per_cell,
         int up_radius,
-        int down_radius,
-        int ticks_per_update,
-        int temporal_horizon
+        int down_radius
     )
     :
     hidden_size(hidden_size),
+    temporal_size(temporal_size),
     num_dendrites_per_cell(num_dendrites_per_cell),
     up_radius(up_radius),
-    down_radius(down_radius),
-    ticks_per_update(ticks_per_update),
-    temporal_horizon(temporal_horizon)
+    down_radius(down_radius)
     {}
 
     void check_in_range() const;
@@ -188,6 +188,10 @@ public:
         int l
     );
 
+    py::array_t<int> get_temporal_cis(
+        int l
+    );
+
     std::tuple<int, int, int> get_hidden_size(
         int l
     ) {
@@ -199,6 +203,15 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    int get_temporal_size(
+        int l
+    ) {
+        if (l < 0 || l >= h.get_num_layers())
+            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
+
+        return h.get_encoder(l).get_temporal_size();
+    }
+
     int get_num_encoder_visible_layers(
         int l
     ) {
@@ -206,24 +219,6 @@ public:
             throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
 
         return h.get_num_encoder_visible_layers(l);
-    }
-
-    int get_ticks(
-        int l
-    ) const {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        return h.get_ticks(l);
-    }
-
-    int get_ticks_per_update(
-        int l
-    ) const {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        return h.get_ticks_per_update(l);
     }
 
     int get_num_io() const {

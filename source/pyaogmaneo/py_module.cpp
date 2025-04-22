@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //  PyAOgmaNeo
-//  Copyright(c) 2020-2024 Ogma Intelligent Systems Corp. All rights reserved.
+//  Copyright(c) 2020-2025 Ogma Intelligent Systems Corp. All rights reserved.
 //
 //  This copy of PyAOgmaNeo is licensed to you under the terms described
 //  in the PYAOGMANEO_LICENSE.md file included in this distribution.
@@ -36,6 +36,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
+                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
@@ -43,7 +44,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2
+            py::arg("down_radius") = 2,
+            py::arg("history_capacity") = 512
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
@@ -51,6 +53,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
+        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
@@ -68,22 +71,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
+            py::arg("temporal_size") = 8,
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("ticks_per_update") = 2,
-            py::arg("temporal_horizon") = 2
+            py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
+        .def_readwrite("temporal_size", &pyaon::Layer_Desc::temporal_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::Layer_Desc::down_radius)
-        .def_readwrite("ticks_per_update", &pyaon::Layer_Desc::ticks_per_update)
-        .def_readwrite("temporal_horizon", &pyaon::Layer_Desc::temporal_horizon)
         .def("__copy__", 
             [](const pyaon::Layer_Desc &other) {
                 return other;
@@ -174,10 +174,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
         .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
+        .def("get_temporal_cis", &pyaon::Hierarchy::get_temporal_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
+        .def("get_temporal_size", &pyaon::Hierarchy::get_temporal_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
-        .def("get_ticks", &pyaon::Hierarchy::get_ticks)
-        .def("get_ticks_per_update", &pyaon::Hierarchy::get_ticks_per_update)
         .def("get_num_io", &pyaon::Hierarchy::get_num_io)
         .def("get_io_size", &pyaon::Hierarchy::get_io_size)
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
@@ -200,8 +200,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 32, 32, 1 }),
-            py::arg("radius") = 2
+            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
+            py::arg("radius") = 4
         )
         .def_readwrite("size", &pyaon::Image_Visible_Layer_Desc::size)
         .def_readwrite("radius", &pyaon::Image_Visible_Layer_Desc::radius);
