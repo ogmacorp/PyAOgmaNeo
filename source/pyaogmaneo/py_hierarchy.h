@@ -63,6 +63,7 @@ struct Layer_Desc {
     int num_dendrites_per_cell;
 
     int up_radius;
+    int recurrent_radius;
     int down_radius;
 
     Layer_Desc(
@@ -70,6 +71,7 @@ struct Layer_Desc {
         int temporal_size,
         int num_dendrites_per_cell,
         int up_radius,
+        int recurrent_radius,
         int down_radius
     )
     :
@@ -77,6 +79,7 @@ struct Layer_Desc {
     temporal_size(temporal_size),
     num_dendrites_per_cell(num_dendrites_per_cell),
     up_radius(up_radius),
+    recurrent_radius(recurrent_radius),
     down_radius(down_radius)
     {}
 
