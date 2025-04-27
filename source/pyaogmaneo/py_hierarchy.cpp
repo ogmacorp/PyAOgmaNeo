@@ -46,17 +46,14 @@ void Layer_Desc::check_in_range() const {
     if (std::get<2>(hidden_size) < 1)
         throw std::runtime_error("error: hidden_size[2] < 1 is not allowed!");
 
-    if (temporal_size < 1)
-        throw std::runtime_error("error: temporal_size < 1 is not allowed!");
-
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
-    if (recurrent_radius < 0)
-        throw std::runtime_error("error: recurrent_radius < 0 is not allowed!");
+    if (recurrent_radius < -1)
+        throw std::runtime_error("error: recurrent_radius < -1 is not allowed!");
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
@@ -127,7 +124,6 @@ void Hierarchy::init_random(
 
         c_layer_descs[l] = aon::Hierarchy::Layer_Desc(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
-            layer_descs[l].temporal_size,
             layer_descs[l].num_dendrites_per_cell,
             layer_descs[l].up_radius,
             layer_descs[l].recurrent_radius,
@@ -370,22 +366,6 @@ py::array_t<int> Hierarchy::get_hidden_cis(
         view(j) = h.get_encoder(l).get_hidden_cis()[j];
 
     return hidden_cis;
-}
-
-py::array_t<int> Hierarchy::get_temporal_cis(
-    int l
-) {
-    if (l < 0 || l >= h.get_num_layers())
-        throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-    py::array_t<int> temporal_cis(h.get_encoder(l).get_temporal_cis().size());
-
-    auto view = temporal_cis.mutable_unchecked();
-
-    for (int j = 0; j < view.size(); j++)
-        view(j) = h.get_encoder(l).get_temporal_cis()[j];
-
-    return temporal_cis;
 }
 
 void Hierarchy::copy_params_to_h() {
