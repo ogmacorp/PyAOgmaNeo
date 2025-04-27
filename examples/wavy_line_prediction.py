@@ -119,7 +119,14 @@ for t in range(iters):
     # step the hierarchy given the inputs (just one here)
     h.step([ csdr ], True) # true for enabling learning
 
-    print(h.get_hidden_cis(3))
+    msg = ""
+
+    if value_to_encode > 0.5:
+        msg = ">>>>>>>>>>>>>>>>>"
+
+    msg += str(h.get_hidden_cis(1))
+
+    print(msg)
 
     # print progress
     if t % 100 == 0:
