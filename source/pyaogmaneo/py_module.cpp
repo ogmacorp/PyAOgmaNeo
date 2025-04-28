@@ -98,10 +98,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
-        .def_readwrite("low_activation", &aon::Encoder::Params::low_activation)
-        .def_readwrite("lr", &aon::Encoder::Params::lr);
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
+        .def_readwrite("lr", &aon::Encoder::Params::lr)
+        .def_readwrite("early_stop", &aon::Encoder::Params::early_stop);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
