@@ -98,15 +98,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("falloff", &aon::Encoder::Params::falloff)
         .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("vigilance_high", &aon::Encoder::Params::vigilance_high)
-        .def_readwrite("vigilance_low", &aon::Encoder::Params::vigilance_low)
+        .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
         .def_readwrite("low_activation", &aon::Encoder::Params::low_activation)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius)
-        .def_readwrite("n_radius", &aon::Encoder::Params::n_radius);
+        .def_readwrite("lr", &aon::Encoder::Params::lr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -213,16 +208,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
-        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
-        .def_readwrite("vigilance_high", &aon::Image_Encoder::Params::vigilance_high)
-        .def_readwrite("vigilance_low", &aon::Image_Encoder::Params::vigilance_low)
-        .def_readwrite("low_activation", &aon::Image_Encoder::Params::low_activation)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("active_ratio", &aon::Image_Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius)
-        .def_readwrite("n_radius", &aon::Image_Encoder::Params::n_radius);
+        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
