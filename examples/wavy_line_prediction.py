@@ -10,8 +10,11 @@
 
 import pyaogmaneo as neo
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import struct
+
+#matplotlib.use('TkAgg')
 
 # set the number of threads
 neo.set_num_threads(4)
