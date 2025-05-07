@@ -308,7 +308,14 @@ class EnvRunner:
 
         r = reward * self.reward_scale + float(term) * self.terminal_reward
 
+        start_time = time.perf_counter()
+
         self.h.step(self.inputs, True, r)
+
+        end_time = time.perf_counter()
+
+        if term or trunc:
+            print(end_time - start_time)
 
         # retrieve actions
         for i in range(len(self.action_indices)):
