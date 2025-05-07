@@ -23,17 +23,11 @@ void IO_Desc::check_in_range() const {
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
-    if (value_num_dendrites_per_cell < 1)
-        throw std::runtime_error("error: value_num_dendrites_per_cell < 1 is not allowed!");
-
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
-
-    if (history_capacity < 2)
-        throw std::runtime_error("error: history_capacity < 2 is not allowed!");
 }
 
 void Layer_Desc::check_in_range() const {
@@ -110,10 +104,8 @@ void Hierarchy::init_random(
             aon::Int3(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size), std::get<2>(io_descs[i].size)),
             static_cast<aon::IO_Type>(io_descs[i].type),
             io_descs[i].num_dendrites_per_cell,
-            io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].up_radius,
-            io_descs[i].down_radius,
-            io_descs[i].history_capacity
+            io_descs[i].down_radius
         );
     }
     
@@ -222,8 +214,7 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
     bool learn_enabled,
-    float reward,
-    float mimic
+    float reward
 ) {
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -248,7 +239,7 @@ void Hierarchy::step(
         c_input_cis[i] = c_input_cis_backing[i];
     }
     
-    h.step(c_input_cis, learn_enabled, reward, mimic);
+    h.step(c_input_cis, learn_enabled, reward);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
