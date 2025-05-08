@@ -63,14 +63,12 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction) ], lds)
 
 input_history = []
-max_history = 100
+max_history = 1000
 action = 0
 reward = 0.0
-average_reward = 0.0
-average_rate = 0.01
 future_state = h.serialize_state_to_buffer()
-reward_bump = 0.01
-exploration = 0.05
+reward_bump = 0.1
+exploration = 0.02
 
 for episode in range(10000):
     obs, _ = env.reset()
@@ -80,12 +78,19 @@ for episode in range(10000):
         # sensory CSDR creation through "squash and bin" method
         csdr = (sigmoid(obs * 3.0) * (input_resolution - 1) + 0.5).astype(np.int32)
 
-        input_history.append((csdr, action))
+        input_history.append((csdr, action, reward))
 
         if len(input_history) > max_history:
             input_history = input_history[len(input_history) - max_history:]
 
         if len(input_history) == max_history:
+            average_reward = 0.0
+
+            for i in range(max_history):
+                average_reward += input_history[i][2] * pow(0.95, i)
+
+            average_reward /= max_history
+
             h.step([input_history[0][0], [input_history[0][1]], ieee_to_csdr(average_reward)], True)
 
         # save state
@@ -113,8 +118,6 @@ for episode in range(10000):
             reward = -100.0
         else:
             reward = 0.0
-
-        average_reward += average_rate * (reward - average_reward)
 
         if term or trunc:
             print(f"Episode {episode + 1} finished after {t + 1} timesteps")
