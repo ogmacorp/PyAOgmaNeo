@@ -18,8 +18,7 @@ const int hierarchy_magic = 4720517;
 
 enum IO_Type {
     none = 0,
-    prediction = 1,
-    action = 2
+    prediction = 1
 };
 
 struct IO_Desc {
@@ -27,30 +26,23 @@ struct IO_Desc {
     IO_Type type;
 
     int num_dendrites_per_cell;
-    int value_num_dendrites_per_cell;
 
     int up_radius;
     int down_radius;
-
-    int history_capacity;
 
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
-        int value_num_dendrites_per_cell,
         int up_radius,
-        int down_radius,
-        int history_capacity
+        int down_radius
     )
     :
     size(size),
     type(type),
     num_dendrites_per_cell(num_dendrites_per_cell),
-    value_num_dendrites_per_cell(value_num_dendrites_per_cell),
     up_radius(up_radius),
-    down_radius(down_radius),
-    history_capacity(history_capacity)
+    down_radius(down_radius)
     {}
 
     void check_in_range() const;
@@ -154,9 +146,7 @@ public:
 
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
-        bool learn_enabled,
-        float reward,
-        float mimic
+        bool learn_enabled
     );
 
     void clear_state() {
@@ -251,9 +241,6 @@ public:
 
         if (l == 0 && i < 0 || i >= h.get_num_io())
             throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-
-        if (h.get_io_type(i) == aon::action)
-            return h.get_actor(i).get_visible_layer_desc(0).radius;
         
         return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
     }

@@ -21,7 +21,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::enum_<pyaon::IO_Type>(m, "IOType")
         .value("none", pyaon::none)
         .value("prediction", pyaon::prediction)
-        .value("action", pyaon::action)
         .export_values();
 
     py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
@@ -35,25 +34,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 pyaon::IO_Type,
                 int,
                 int,
-                int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
-            py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
-            py::arg("down_radius") = 2,
-            py::arg("history_capacity") = 512
+            py::arg("down_radius") = 2
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
-        .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
                 return other;
@@ -107,19 +100,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("scale", &aon::Decoder::Params::scale)
         .def_readwrite("lr", &aon::Decoder::Params::lr);
 
-    py::class_<aon::Actor::Params>(m, "ActorParams")
-        .def(py::init<>())
-        .def_readwrite("vlr", &aon::Actor::Params::vlr)
-        .def_readwrite("plr", &aon::Actor::Params::plr)
-        .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
-        .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
-        .def_readwrite("value_clip", &aon::Actor::Params::value_clip)
-        .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
-        .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
-        .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
-        .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
-
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
         .def_readwrite("encoder", &aon::Hierarchy::Layer_Params::encoder)
@@ -129,7 +109,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Hierarchy::IO_Params>(m, "IOParams")
         .def(py::init<>())
         .def_readwrite("decoder", &aon::Hierarchy::IO_Params::decoder)
-        .def_readwrite("actor", &aon::Hierarchy::IO_Params::actor)
         .def_readwrite("importance", &aon::Hierarchy::IO_Params::importance);
 
     py::class_<pyaon::Params>(m, "Params")
@@ -162,9 +141,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
-            py::arg("learn_enabled") = true,
-            py::arg("reward") = 0.0f,
-            py::arg("mimic") = 0.0f
+            py::arg("learn_enabled") = true
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
