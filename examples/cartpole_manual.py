@@ -69,7 +69,7 @@ reward = 0.0
 average_reward = 0.0
 average_rate = 0.01
 future_state = h.serialize_state_to_buffer()
-reward_bump = 0.1
+reward_bump = 0.01
 exploration = 0.05
 
 for episode in range(10000):
@@ -97,14 +97,14 @@ for episode in range(10000):
 
         h.step([csdr, h.get_prediction_cis(1), ieee_to_csdr(pred_reward + reward_bump)], False)
 
-        future_state = h.serialize_state_to_buffer()
-
-        h.set_state_from_buffer(old_state)
-
         action = h.get_prediction_cis(1)[0]
 
         if np.random.rand() < exploration:
             action = np.random.randint(0, num_actions)
+
+        future_state = h.serialize_state_to_buffer()
+
+        h.set_state_from_buffer(old_state)
 
         obs, reward, term, trunc, _ = env.step(action)
 
