@@ -85,7 +85,7 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     ld = neo.LayerDesc()
 
     # set some layer structural parameters
-    ld.hidden_size = (5, 5, 64)
+    ld.hidden_size = (5, 5, 128)
     
     lds.append(ld)
 
@@ -97,7 +97,7 @@ max_history = 512
 action = 0
 reward = 0.0
 future_state = h.serialize_state_to_buffer()
-reward_bump = 0.03
+reward_bump = 0.1
 exploration = 0.02
 discount = 0.98
 
@@ -117,8 +117,11 @@ for episode in range(10000):
         if len(input_history) == max_history:
             average_reward = 0.0
 
+            weight = 1.0
+
             for i in range(max_history):
-                average_reward += input_history[i][2] * pow(discount, i)
+                average_reward += input_history[i][2] * weight
+                weight *= discount
 
             average_reward /= max_history
 
