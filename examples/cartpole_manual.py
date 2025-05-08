@@ -73,7 +73,7 @@ env = gym.make('CartPole-v1')
 # get observation size
 num_obs = env.observation_space.shape[0] # 4 values for Cart-Pole
 num_actions = env.action_space.n # N actions (1 discrete value)
-input_resolution = 16
+input_resolution = 32
 
 # set the number of threads
 neo.set_num_threads(4)
@@ -93,13 +93,13 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction) ], lds)
 
 input_history = []
-max_history = 500
+max_history = 512
 action = 0
 reward = 0.0
 future_state = h.serialize_state_to_buffer()
-reward_bump = 0.2
-exploration = 0.01
-discount = 0.99
+reward_bump = 0.03
+exploration = 0.02
+discount = 0.98
 
 for episode in range(10000):
     obs, _ = env.reset()
