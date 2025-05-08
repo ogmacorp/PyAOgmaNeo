@@ -97,8 +97,9 @@ max_history = 500
 action = 0
 reward = 0.0
 future_state = h.serialize_state_to_buffer()
-reward_bump = 0.1
-exploration = 0.04
+reward_bump = 0.2
+exploration = 0.01
+discount = 0.99
 
 for episode in range(10000):
     obs, _ = env.reset()
@@ -117,7 +118,7 @@ for episode in range(10000):
             average_reward = 0.0
 
             for i in range(max_history):
-                average_reward += input_history[i][2] * pow(0.97, i)
+                average_reward += input_history[i][2] * pow(discount, i)
 
             average_reward /= max_history
 
