@@ -85,20 +85,20 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     ld = neo.LayerDesc()
 
     # set some layer structural parameters
-    ld.hidden_size = (5, 5, 128)
+    ld.hidden_size = (5, 5, 64)
     
     lds.append(ld)
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction) ], lds)
+h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction, num_dendrites_per_cell=16), neo.IODesc((2, 4, 16), neo.prediction, num_dendrites_per_cell=16) ], lds)
 
 input_history = []
-max_history = 512
+max_history = 1024
 action = 0
 reward = 0.0
 future_state = h.serialize_state_to_buffer()
-reward_bump = 0.1
-exploration = 0.02
+reward_bump = 0.02
+exploration = 0.03
 discount = 0.98
 
 for episode in range(10000):
@@ -107,7 +107,7 @@ for episode in range(10000):
     # timesteps
     for t in range(500):
         # sensory CSDR creation through "squash and bin" method
-        csdr = (sigmoid(obs * 3.0) * (input_resolution - 1) + 0.5).astype(np.int32)
+        csdr = (sigmoid(obs * 4.0) * (input_resolution - 1) + 0.5).astype(np.int32)
 
         input_history.append((csdr, action, reward))
 
