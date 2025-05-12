@@ -237,7 +237,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Image_Encoder::step,
             py::arg("inputs"),
             py::arg("learn_enabled") = true,
-            py::arg("learn_recon") = true
+            py::arg("learn_recon") = false
         )
         .def("reconstruct", &pyaon::Image_Encoder::reconstruct)
         .def("get_num_visible_layers", &pyaon::Image_Encoder::get_num_visible_layers)
