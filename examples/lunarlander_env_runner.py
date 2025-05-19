@@ -13,7 +13,7 @@
 import gymnasium as gym
 from env_runner import EnvRunner # EnvRunner automatically creates an AOgmaNeo hierarchy and appropriate encoders for most Gymnasium environments
 
-env = gym.make('LunarLander-v3')
+env = gym.make('LunarLander-v3', render_mode='human')
 
 runner = EnvRunner(env, terminal_reward=0.0, reward_scale=1.0)
 

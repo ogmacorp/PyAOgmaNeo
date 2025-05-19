@@ -84,7 +84,7 @@ class EnvRunner:
         self.input_keys.append(key)
 
     def __init__(self, env, layer_sizes=1 * [(5, 5, 64)],
-        num_dendrites_per_cell=32, value_num_dendrites_per_cell=64,
+        num_dendrites_per_cell=4, value_num_dendrites_per_cell=8,
         input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=1.0,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0, n_threads=4
@@ -314,8 +314,8 @@ class EnvRunner:
 
         end_time = time.perf_counter()
 
-        if term or trunc:
-            print((end_time - start_time) * 1000.0)
+        #if term or trunc:
+        #    print((end_time - start_time) * 1000.0)
 
         # retrieve actions
         for i in range(len(self.action_indices)):

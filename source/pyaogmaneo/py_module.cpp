@@ -113,7 +113,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
         .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
-        .def_readwrite("value_clip", &aon::Actor::Params::value_clip)
         .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
