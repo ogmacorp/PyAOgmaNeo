@@ -60,7 +60,7 @@ for episode in range(1000):
 
         # re-define reward so that it is 0 normally and then -100 if terminated
         if term:
-            reward = -100.0
+            reward = -10.0
         else:
             reward = 0.0
 
