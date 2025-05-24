@@ -127,6 +127,11 @@ public:
         return { size.x, size.y, size.z };
     }
 
+    std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> get_receptive_field(
+        int vli,
+        const std::tuple<int, int, int> &pos
+    );
+
     void merge(
         const std::vector<Image_Encoder*> &image_encoders,
         Merge_Mode mode

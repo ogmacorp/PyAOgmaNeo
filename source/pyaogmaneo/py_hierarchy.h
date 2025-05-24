@@ -254,6 +254,12 @@ public:
         return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
     }
 
+    std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> get_encoder_receptive_field(
+        int l,
+        int vli,
+        const std::tuple<int, int, int> &pos
+    );
+
     void merge(
         const std::vector<Hierarchy*> &hierarchies,
         Merge_Mode mode
