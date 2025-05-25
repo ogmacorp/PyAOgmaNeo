@@ -38,7 +38,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
+            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
@@ -65,18 +65,21 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<pyaon::Layer_Desc>(m, "LayerDesc")
         .def(py::init<
                 std::tuple<int, int, int>,
+                std::tuple<int, int>,
                 int,
                 int,
                 int,
                 int
             >(),
-            py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
+            py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("group_size") = std::tuple<int, int>({ 2, 2 }),
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
             py::arg("recurrent_radius") = 0,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
+        .def_readwrite("group_size", &pyaon::Layer_Desc::group_size)
         .def_readwrite("num_dendrites_per_cell", &pyaon::Layer_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::Layer_Desc::up_radius)
         .def_readwrite("recurrent_radius", &pyaon::Layer_Desc::recurrent_radius)
@@ -97,9 +100,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<>())
         .def_readwrite("choice", &aon::Encoder::Params::choice)
         .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("lr", &aon::Encoder::Params::lr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -168,6 +169,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
+        .def("get_group_size", &pyaon::Hierarchy::get_group_size)
+        .def("get_group_count", &pyaon::Hierarchy::get_group_count)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
         .def("get_num_io", &pyaon::Hierarchy::get_num_io)
         .def("get_io_size", &pyaon::Hierarchy::get_io_size)
@@ -192,7 +195,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 std::tuple<int, int, int>,
                 int
             >(),
-            py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
+            py::arg("size") = std::tuple<int, int, int>({ 4, 4, 16 }),
             py::arg("radius") = 4
         )
         .def_readwrite("size", &pyaon::Image_Visible_Layer_Desc::size)
@@ -205,18 +208,18 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
-        .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("active_ratio", &aon::Image_Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius);
+        .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
                 const std::tuple<int, int, int>&,
+                const std::tuple<int, int>&,
                 const std::vector<pyaon::Image_Visible_Layer_Desc>&,
                 const std::string&,
                 const py::array_t<unsigned char>&
             >(),
-            py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
+            py::arg("hidden_size") = std::tuple<int, int, int>({ 4, 4, 16 }),
+            py::arg("group_size") = std::tuple<int, int>({ 2, 2 }),
             py::arg("visible_layer_descs") = std::vector<pyaon::Image_Visible_Layer_Desc>(),
             py::arg("file_name") = std::string(),
             py::arg("buffer") = py::array_t<unsigned char>()
@@ -241,6 +244,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
+        .def("get_group_size", &pyaon::Image_Encoder::get_group_size)
+        .def("get_group_count", &pyaon::Image_Encoder::get_group_count)
         .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
         .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field)
         .def("merge", &pyaon::Image_Encoder::merge)

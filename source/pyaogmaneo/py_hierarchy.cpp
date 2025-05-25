@@ -43,6 +43,12 @@ void Layer_Desc::check_in_range() const {
     if (std::get<2>(hidden_size) < 1)
         throw std::runtime_error("error: hidden_size[2] < 1 is not allowed!");
 
+    if (std::get<0>(group_size) < 1)
+        throw std::runtime_error("error: group_size[0] < 1 is not allowed!");
+
+    if (std::get<1>(group_size) < 1)
+        throw std::runtime_error("error: group_size[1] < 1 is not allowed!");
+
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
@@ -120,6 +126,7 @@ void Hierarchy::init_random(
 
         c_layer_descs[l] = aon::Hierarchy::Layer_Desc(
             aon::Int3(std::get<0>(layer_descs[l].hidden_size), std::get<1>(layer_descs[l].hidden_size), std::get<2>(layer_descs[l].hidden_size)),
+            aon::Int2(std::get<0>(layer_descs[l].group_size), std::get<1>(layer_descs[l].group_size)),
             layer_descs[l].num_dendrites_per_cell,
             layer_descs[l].up_radius,
             layer_descs[l].recurrent_radius,

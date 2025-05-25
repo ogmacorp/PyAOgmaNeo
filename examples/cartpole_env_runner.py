@@ -20,9 +20,14 @@ runner = EnvRunner(env, terminal_reward=-100.0, reward_scale=0.0) # Cart-Pole en
 for episode in range(10000):
     env.reset()
 
+    exploration = 1.0 if episode < 1000 else 0.0
+
+    if episode >= 1000:
+        runner.learn_enabled = False
+
     # Timesteps
     for t in range(500):
-        done, _ = runner.act() # Step the environment and agent
+        done, _ = runner.act(epsilon=exploration) # Step the environment and agent
 
         if done:
             print(f"Episode {episode + 1} finished after {t + 1} timesteps")

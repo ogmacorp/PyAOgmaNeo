@@ -26,6 +26,7 @@ void Image_Visible_Layer_Desc::check_in_range() const {
 
 Image_Encoder::Image_Encoder(
     const std::tuple<int, int, int> &hidden_size,
+    const std::tuple<int, int> &group_size,
     const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs,
     const std::string &file_name,
     const py::array_t<unsigned char> &buffer
@@ -38,7 +39,7 @@ Image_Encoder::Image_Encoder(
         if (visible_layer_descs.empty())
             throw std::runtime_error("error: Image_Encoder constructor requires some non-empty arguments!");
 
-        init_random(hidden_size, visible_layer_descs);
+        init_random(hidden_size, group_size, visible_layer_descs);
     }
 
     // copy params
@@ -53,6 +54,7 @@ Image_Encoder::Image_Encoder(
 
 void Image_Encoder::init_random(
     const std::tuple<int, int, int> &hidden_size,
+    const std::tuple<int, int> &group_size,
     const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs
 ) {
     bool all_in_range = true;
@@ -66,6 +68,12 @@ void Image_Encoder::init_random(
         c_visible_layer_descs[v].radius = visible_layer_descs[v].radius;
     }
 
+    if (std::get<0>(group_size) < 1)
+        throw std::runtime_error("error: group_size[0] < 1 is not allowed!");
+
+    if (std::get<1>(group_size) < 1)
+        throw std::runtime_error("error: group_size[1] < 1 is not allowed!");
+
     if (std::get<0>(hidden_size) < 1)
         throw std::runtime_error("error: hidden_size[0] < 1 is not allowed!");
 
@@ -78,7 +86,7 @@ void Image_Encoder::init_random(
     if (!all_in_range)
         throw std::runtime_error(" - Image_Encoder: some parameters out of range!");
 
-    enc.init_random(aon::Int3(std::get<0>(hidden_size), std::get<1>(hidden_size), std::get<2>(hidden_size)), c_visible_layer_descs);
+    enc.init_random(aon::Int3(std::get<0>(hidden_size), std::get<1>(hidden_size), std::get<2>(hidden_size)), aon::Int2(std::get<0>(group_size), std::get<1>(group_size)), c_visible_layer_descs);
 }
 
 void Image_Encoder::init_from_file(

@@ -83,8 +83,8 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=1 * [(7, 7, 64)],
-        num_dendrites_per_cell=4,
+    def __init__(self, env, layer_sizes=1 * [(5, 5, 64)],
+        num_dendrites_per_cell=8,
         input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=1.0,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0, n_threads=4
@@ -209,6 +209,8 @@ class EnvRunner:
 
         self.obs_space = obs_space
 
+        self.learn_enabled = True
+
     def _feed_observation(self, obs):
         self.inputs = []
 
@@ -310,7 +312,7 @@ class EnvRunner:
 
         start_time = time.perf_counter()
 
-        self.h.step(self.inputs, True, r)
+        self.h.step(self.inputs, self.learn_enabled, r)
 
         end_time = time.perf_counter()
 
