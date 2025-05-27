@@ -445,9 +445,9 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
 
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
-                int wi = std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * hidden_column_index));
+            int wi = std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * hidden_column_index));
 
-                view(offset.y + diam * offset.x) = vl.protos[wi];
+            view(offset.y + diam * offset.x) = vl.protos[wi];
         }
 
     std::tuple<int, int, int> field_size(diam, diam, 1);
