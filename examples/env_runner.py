@@ -208,6 +208,8 @@ class EnvRunner:
         self.actions = np.array(self.actions, np.int32)
 
         self.obs_space = obs_space
+        
+        self.learn_enabled = True
 
     def _feed_observation(self, obs):
         self.inputs = []
@@ -231,7 +233,7 @@ class EnvRunner:
                                        (self.image_sizes[image_enc_index][1], self.image_sizes[image_enc_index][0]))
                 
                 # encode image
-                self.image_encs[image_enc_index].step([img.astype(np.uint8).ravel()], True)
+                self.image_encs[image_enc_index].step([img.astype(np.uint8).ravel()], self.learn_enabled)
 
                 self.inputs.append(self.image_encs[image_enc_index].get_hidden_cis())
 
@@ -310,7 +312,7 @@ class EnvRunner:
 
         start_time = time.perf_counter()
 
-        self.h.step(self.inputs, True, r)
+        self.h.step(self.inputs, self.learn_enabled, r)
 
         end_time = time.perf_counter()
 
