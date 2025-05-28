@@ -20,7 +20,7 @@ runner = EnvRunner(env, terminal_reward=-100.0, reward_scale=0.0) # Cart-Pole en
 for episode in range(10000):
     env.reset()
 
-    runner.learn_enabled = episode < 500
+    runner.learn_enabled = episode < 1000
 
     # Timesteps
     for t in range(500):

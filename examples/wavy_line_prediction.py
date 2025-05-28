@@ -94,7 +94,7 @@ lds = []
 for i in range(1): # layers
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 16) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
