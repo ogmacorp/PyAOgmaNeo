@@ -101,6 +101,8 @@ for i in range(4): # layers
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
+for i in range(len(lds)):
+    h.params.layers[i].recurrent_importance = 0.5
 # present the wave sequence for some timesteps, 1000 here
 iters = 10000
 
