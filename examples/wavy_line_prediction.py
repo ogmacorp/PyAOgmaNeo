@@ -94,7 +94,8 @@ lds = []
 for i in range(4): # layers
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
+    ld.hidden_size = (4, 4, 64) # size of the encoder(s) in the layer
+    ld.group_size = (2, 2)
     #ld.temporal_size = 8
 
     lds.append(ld)
@@ -107,9 +108,6 @@ iters = 10000
 
 # function for the wave
 def wave(t):
-    if t % 20 == 0 or t % 7 == 0:
-        return 1.0
-    return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
 # iterate
