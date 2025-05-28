@@ -42,7 +42,6 @@ private:
 
     void init_random(
         const std::tuple<int, int, int> &hidden_size,
-        const std::tuple<int, int> &group_size,
         const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs
     );
 
@@ -59,7 +58,6 @@ public:
 
     Image_Encoder(
         const std::tuple<int, int, int> &hidden_size,
-        const std::tuple<int, int> &group_size,
         const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs,
         const std::string &file_name,
         const py::array_t<unsigned char> &buffer
@@ -119,18 +117,6 @@ public:
         aon::Int3 size = enc.get_hidden_size();
 
         return { size.x, size.y, size.z };
-    }
-
-    std::tuple<int, int> get_group_size() const {
-        aon::Int2 size = enc.get_group_size();
-
-        return { size.x, size.y };
-    }
-
-    std::tuple<int, int> get_group_count() const {
-        aon::Int2 size = enc.get_group_count();
-
-        return { size.x, size.y };
     }
 
     std::tuple<int, int, int> get_visible_size(

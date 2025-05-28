@@ -34,8 +34,7 @@ for i in range(2): # layers with exponential memory. Not much memory is needed f
     ld = neo.LayerDesc()
 
     # set some layer structural parameters
-    ld.hidden_size = (4, 4, 32)
-    ld.group_size = (2, 2)
+    ld.hidden_size = (5, 5, 32)
     
     lds.append(ld)
 

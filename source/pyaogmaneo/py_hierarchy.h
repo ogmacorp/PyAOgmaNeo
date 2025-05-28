@@ -55,7 +55,6 @@ struct IO_Desc {
 
 struct Layer_Desc {
     std::tuple<int, int, int> hidden_size;
-    std::tuple<int, int> group_size;
 
     int num_dendrites_per_cell;
 
@@ -65,7 +64,6 @@ struct Layer_Desc {
 
     Layer_Desc(
         const std::tuple<int, int, int> &hidden_size,
-        const std::tuple<int, int> &group_size,
         int num_dendrites_per_cell,
         int up_radius,
         int recurrent_radius,
@@ -73,7 +71,6 @@ struct Layer_Desc {
     )
     :
     hidden_size(hidden_size),
-    group_size(group_size),
     num_dendrites_per_cell(num_dendrites_per_cell),
     up_radius(up_radius),
     recurrent_radius(recurrent_radius),
@@ -196,28 +193,6 @@ public:
         aon::Int3 size = h.get_encoder(l).get_hidden_size();
 
         return { size.x, size.y, size.z };
-    }
-
-    std::tuple<int, int> get_group_size(
-        int l
-    ) {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        aon::Int2 size = h.get_encoder(l).get_group_size();
-
-        return { size.x, size.y };
-    }
-
-    std::tuple<int, int> get_group_count(
-        int l
-    ) {
-        if (l < 0 || l >= h.get_num_layers())
-            throw std::runtime_error("error: " + std::to_string(l) + " is not a valid layer index!");
-
-        aon::Int2 count = h.get_encoder(l).get_group_count();
-
-        return { count.x, count.y };
     }
 
     int get_num_encoder_visible_layers(

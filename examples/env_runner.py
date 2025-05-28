@@ -209,6 +209,8 @@ class EnvRunner:
 
         self.obs_space = obs_space
 
+        self.learn_enabled = True
+
     def _feed_observation(self, obs):
         self.inputs = []
 
@@ -310,7 +312,7 @@ class EnvRunner:
 
         start_time = time.perf_counter()
 
-        self.h.step(self.inputs, True, r)
+        self.h.step(self.inputs, self.learn_enabled, r)
 
         end_time = time.perf_counter()
 
