@@ -83,10 +83,10 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=1 * [(7, 7, 64)],
+    def __init__(self, env, layer_sizes=1 * [(5, 5, 64)],
         num_dendrites_per_cell=4,
-        input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
-        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=1.0,
+        input_radius=2, layer_radius=2, hidden_size=(10, 10, 16),
+        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.1,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0, n_threads=4
     ):
         self.env = env
@@ -208,8 +208,6 @@ class EnvRunner:
         self.actions = np.array(self.actions, np.int32)
 
         self.obs_space = obs_space
-        
-        self.learn_enabled = True
 
     def _feed_observation(self, obs):
         self.inputs = []
@@ -233,7 +231,7 @@ class EnvRunner:
                                        (self.image_sizes[image_enc_index][1], self.image_sizes[image_enc_index][0]))
                 
                 # encode image
-                self.image_encs[image_enc_index].step([img.astype(np.uint8).ravel()], self.learn_enabled)
+                self.image_encs[image_enc_index].step([img.astype(np.uint8).ravel()], True)
 
                 self.inputs.append(self.image_encs[image_enc_index].get_hidden_cis())
 
@@ -312,7 +310,7 @@ class EnvRunner:
 
         start_time = time.perf_counter()
 
-        self.h.step(self.inputs, self.learn_enabled, r)
+        self.h.step(self.inputs, True, r)
 
         end_time = time.perf_counter()
 
