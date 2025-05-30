@@ -95,9 +95,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Encoder::Params::scale)
-        .def_readwrite("ulr", &aon::Encoder::Params::ulr)
-        .def_readwrite("dlr", &aon::Encoder::Params::dlr);
+        .def_readwrite("mlr", &aon::Encoder::Params::mlr)
+        .def_readwrite("alr", &aon::Encoder::Params::alr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
