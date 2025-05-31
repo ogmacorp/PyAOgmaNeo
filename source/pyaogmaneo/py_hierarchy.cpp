@@ -449,7 +449,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
 
             int wi = std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * hidden_column_index));
 
-            view(offset.y + diam * offset.x) = vl.protos[wi];
+            view(offset.y + diam * offset.x) = static_cast<unsigned char>(vl.protos[wi] * 255.0f + 0.5f);
         }
 
     std::tuple<int, int, int> field_size(diam, diam, 1);
