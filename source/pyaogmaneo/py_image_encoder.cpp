@@ -298,10 +298,10 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
 
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
-            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
+            int wi_start_partial = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_column_index));
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                int wi = vc + wi_start;
+                int wi = std::get<2>(pos) + hidden_size.z * (vc + wi_start_partial);
 
                 view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
             }
