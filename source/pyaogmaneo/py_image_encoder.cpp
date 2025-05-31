@@ -303,7 +303,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
             for (int vc = 0; vc < vld.size.z; vc++) {
                 int wi = vc + wi_start;
 
-                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights_act[wi];
+                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
             }
         }
 
