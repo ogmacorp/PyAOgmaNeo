@@ -181,7 +181,7 @@ void Image_Encoder::step(
         auto view = inputs[i].unchecked();
 
         if (view.size() != c_inputs_backing[i].size())
-            throw std::runtime_error("incorrect number of inputs given to Image_Encode! expected " + std::to_string(c_inputs_backing[i].size()) + " at index " + std::to_string(i) + ", got " + std::to_string(view.size()));
+            throw std::runtime_error("incorrect image size given to Image_Encoder! expected " + std::to_string(c_inputs_backing[i].size()) + " inputs at input index " + std::to_string(i) + ", got " + std::to_string(view.size()));
 
         for (int j = 0; j < view.size(); j++)
             c_inputs_backing[i][j] = view(j);
