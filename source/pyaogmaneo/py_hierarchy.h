@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 2822577;
+const int hierarchy_magic = 4720517;
 
 enum IO_Type {
     none = 0,
@@ -27,6 +27,7 @@ struct IO_Desc {
     IO_Type type;
 
     int num_dendrites_per_cell;
+    int value_num_dendrites_per_cell;
 
     int up_radius;
     int down_radius;
@@ -37,6 +38,7 @@ struct IO_Desc {
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
+        int value_num_dendrites_per_cell,
         int up_radius,
         int down_radius,
         int history_capacity
@@ -45,6 +47,7 @@ struct IO_Desc {
     size(size),
     type(type),
     num_dendrites_per_cell(num_dendrites_per_cell),
+    value_num_dendrites_per_cell(value_num_dendrites_per_cell),
     up_radius(up_radius),
     down_radius(down_radius),
     history_capacity(history_capacity)
@@ -152,7 +155,8 @@ public:
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
         bool learn_enabled,
-        float reward
+        float reward,
+        float mimic
     );
 
     void clear_state() {
