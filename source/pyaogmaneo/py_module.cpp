@@ -102,7 +102,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("qlr", &aon::Actor::Params::qlr)
+        .def_readwrite("vlr", &aon::Actor::Params::vlr)
+        .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay)
         .def_readwrite("td_clip", &aon::Actor::Params::td_clip);
