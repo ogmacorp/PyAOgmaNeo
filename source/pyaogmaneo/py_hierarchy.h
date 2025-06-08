@@ -14,7 +14,7 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 4720517;
+const int hierarchy_magic = 2822577;
 
 enum IO_Type {
     none = 0,
@@ -241,9 +241,15 @@ public:
 
         if (l == 0 && i < 0 || i >= h.get_num_io())
             throw std::runtime_error("error: " + std::to_string(i) + " is not a valid input index!");
-        
+
         return h.get_decoder(l, i).get_visible_layer_desc(0).radius;
     }
+
+    std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> get_encoder_receptive_field(
+        int l,
+        int vli,
+        const std::tuple<int, int, int> &pos
+    );
 
     void merge(
         const std::vector<Hierarchy*> &hierarchies,
