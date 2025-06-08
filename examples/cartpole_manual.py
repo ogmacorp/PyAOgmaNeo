@@ -85,7 +85,7 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     ld = neo.LayerDesc()
 
     # set some layer structural parameters
-    ld.hidden_size = (5, 5, 64)
+    ld.hidden_size = (7, 7, 128)
     
     lds.append(ld)
 
@@ -93,12 +93,12 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction, num_dendrites_per_cell=16), neo.IODesc((2, 4, 16), neo.prediction, num_dendrites_per_cell=16) ], lds)
 
 input_history = []
-max_history = 1024
+max_history = 256
 action = 0
 reward = 0.0
 future_state = h.serialize_state_to_buffer()
-reward_bump = 0.02
-exploration = 0.03
+reward_bump = 0.1
+exploration = 0.05
 discount = 0.98
 
 for episode in range(10000):
@@ -134,7 +134,7 @@ for episode in range(10000):
 
         pred_reward = csdr_to_ieee(h.get_prediction_cis(2))
 
-        h.step([csdr, h.get_prediction_cis(1), ieee_to_csdr(pred_reward + reward_bump)], False)
+        h.step([csdr, h.get_prediction_cis(1), ieee_to_csdr(pred_reward + reward_bump * np.random.rand())], False)
 
         action = h.get_prediction_cis(1)[0]
 
