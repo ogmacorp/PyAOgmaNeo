@@ -105,7 +105,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("qlr", &aon::Actor::Params::qlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay);
+        .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay)
+        .def_readwrite("td_clip", &aon::Actor::Params::td_clip);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
