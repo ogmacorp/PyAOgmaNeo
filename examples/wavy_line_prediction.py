@@ -126,11 +126,11 @@ for t in range(iters):
         # step the hierarchy given the inputs (just one here)
         h.step([ csdr, csdr ], True, -1)
     else:
-        if h.get_max_delay() > delay + 1:
-            h.step([ h.get_input_cis(0, delay), csdr ], True, delay + 1) # true for enabling learning
+        if h.get_max_delay() > delay:
+            h.step([ h.get_next_input_cis(0, delay), csdr ], True, delay) # true for enabling learning
 
         # step the hierarchy given the inputs (just one here)
-        h.step([ csdr, h.get_prediction_cis(1) ], False, -1)
+        h.step([ csdr, h.get_prediction_cis(1) ], False, 0)
 
     msg = ""
 

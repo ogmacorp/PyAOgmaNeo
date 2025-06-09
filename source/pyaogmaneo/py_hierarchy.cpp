@@ -218,8 +218,8 @@ void Hierarchy::step(
     bool learn_enabled,
     int t
 ) {
-    if (t < -1 || t >= h.get_max_delay())
-        throw std::runtime_error("step delay (t) of " + std::to_string(t) + " out of range [-1, " + std::to_string(h.get_max_delay()) + ")!");
+    if (t < 0 || t >= h.get_max_delay())
+        throw std::runtime_error("step delay (t) of " + std::to_string(t) + " out of range [0, " + std::to_string(h.get_max_delay()) + ")!");
 
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
