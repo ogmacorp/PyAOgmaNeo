@@ -120,11 +120,11 @@ for t in range(iters):
     # encode
     csdr = unorm8_to_csdr(float(value_to_encode))
 
-    delay = 0
+    delay = 1
 
-    if delay == -1:
+    if delay == 0:
         # step the hierarchy given the inputs (just one here)
-        h.step([ csdr, csdr ], True, -1)
+        h.step([ csdr, csdr ], True, 0)
     else:
         if h.get_max_delay() > delay:
             h.step([ h.get_next_input_cis(0, delay), csdr ], True, delay) # true for enabling learning
