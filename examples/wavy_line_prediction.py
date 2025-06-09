@@ -104,10 +104,13 @@ for i in range(1): # layers
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction), neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds, max_delay)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 10000
+iters = 50000
 
 # function for the wave
 def wave(t):
+    if t % 10 == 0:
+        return 1.0
+    return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
 # iterate
@@ -123,8 +126,8 @@ for t in range(iters):
         # step the hierarchy given the inputs (just one here)
         h.step([ csdr, csdr ], True, -1)
     else:
-        if h.get_max_delay() > delay:
-            h.step([ h.get_input_cis(0, delay), csdr ], True, delay) # true for enabling learning
+        if h.get_max_delay() > delay + 1:
+            h.step([ h.get_input_cis(0, delay), csdr ], True, delay + 1) # true for enabling learning
 
         # step the hierarchy given the inputs (just one here)
         h.step([ csdr, h.get_prediction_cis(1) ], False, -1)

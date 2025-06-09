@@ -368,6 +368,26 @@ py::array_t<int> Hierarchy::get_input_cis(
     return inputs;
 }
 
+py::array_t<int> Hierarchy::get_next_input_cis(
+    int i,
+    int t
+) const {
+    if (i < 0 || i >= h.get_num_io())
+        throw std::runtime_error("input index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
+
+    if (t < 1 || t >= h.get_max_delay())
+        throw std::runtime_error("next input delay (t) of " + std::to_string(t) + " out of range [1, " + std::to_string(h.get_max_delay()) + ")!");
+
+    py::array_t<int> inputs(h.get_next_input_cis(i, t).size());
+
+    auto view = inputs.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = h.get_next_input_cis(i, t)[j];
+
+    return inputs;
+}
+
 py::array_t<int> Hierarchy::get_hidden_cis(
     int l
 ) {

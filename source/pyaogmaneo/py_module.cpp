@@ -143,7 +143,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
             py::arg("learn_enabled") = true,
-            py::arg("t") = -1 // flag
+            py::arg("t") = 0
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
@@ -152,6 +152,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_prediction_acts", &pyaon::Hierarchy::get_prediction_acts)
         .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_input_cis", &pyaon::Hierarchy::get_input_cis)
+        .def("get_next_input_cis", &pyaon::Hierarchy::get_next_input_cis)
         .def("get_max_delay", &pyaon::Hierarchy::get_max_delay)
         .def("get_delay_capacity", &pyaon::Hierarchy::get_delay_capacity)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)

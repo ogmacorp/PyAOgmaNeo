@@ -182,6 +182,11 @@ public:
         int t
     ) const;
 
+    py::array_t<int> get_next_input_cis(
+        int i,
+        int t
+    ) const;
+
     int get_max_delay() const {
         return h.get_max_delay();
     }
