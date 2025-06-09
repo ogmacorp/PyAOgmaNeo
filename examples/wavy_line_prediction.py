@@ -87,7 +87,7 @@ def csdr_to_ieee(csdr):
 # this defines the resolution of the input encoding
 num_input_columns = 2
 input_column_size = 16
-max_delay = 100
+delay = 0
 
 # define layer descriptors: parameters of each layer upon creation
 lds = []
@@ -101,7 +101,7 @@ for i in range(1): # layers
     lds.append(ld)
 
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
-h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction), neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds, max_delay)
+h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction), neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds, delay)
 
 # present the wave sequence for some timesteps, 1000 here
 iters = 50000
@@ -120,17 +120,11 @@ for t in range(iters):
     # encode
     csdr = unorm8_to_csdr(float(value_to_encode))
 
-    delay = 1
+    if h.delay_ready():
+        h.step_delayed([ h.get_next_input_cis(0), csdr ], True) # true for enabling learning
 
-    if delay == 0:
-        # step the hierarchy given the inputs (just one here)
-        h.step([ csdr, csdr ], True, 0)
-    else:
-        if h.get_max_delay() > delay:
-            h.step([ h.get_next_input_cis(0, delay), csdr ], True, delay) # true for enabling learning
-
-        # step the hierarchy given the inputs (just one here)
-        h.step([ csdr, h.get_prediction_cis(1) ], False, 0)
+    # step the hierarchy given the inputs (just one here)
+    h.step([ csdr, h.get_prediction_cis(1) ], True)
 
     msg = ""
 

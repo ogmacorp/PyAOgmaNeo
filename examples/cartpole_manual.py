@@ -103,16 +103,15 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
 delay_capacity = 256
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction) ], lds, delay_capacity)
+h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((1, 2, 16), neo.prediction) ], lds, delay_capacity)
 
 rewards = []
 
 action = 0
 average_reward = 0.0
-average_rate = 0.01
-reward_bump = 0.5
-exploration = 0.05
-discount = 0.98
+reward_bump = 1.0 / 255.0
+exploration = 0.01
+discount = 0.97
 
 for episode in range(10000):
     obs, _ = env.reset()
@@ -127,18 +126,18 @@ for episode in range(10000):
             w = 1.0
             total = 0.0
 
-            for i in range(len(rewards)):
+            for i in range(1, len(rewards)):
                 r += rewards[i] * w
                 total += w
                 w *= discount
 
             r /= total
 
-            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), ieee_to_csdr(r)], True)
+            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), unorm8_to_csdr(min(1.0, max(0.0, r)))], True)
 
-        pred_reward = csdr_to_ieee(h.get_prediction_cis(2))
+        pred_reward = csdr_to_unorm8(h.get_prediction_cis(2))
 
-        h.step([csdr, [action], ieee_to_csdr(pred_reward + reward_bump)], False)
+        h.step([csdr, [action], unorm8_to_csdr(min(1.0, max(0.0, pred_reward + reward_bump)))], False)
 
         action = h.get_prediction_cis(1)[0]
 
@@ -149,9 +148,9 @@ for episode in range(10000):
 
         # re-define reward
         if term:
-            reward = -100.0
+            reward = -2.0
         else:
-            reward = 0.0
+            reward = 1.0
 
         rewards.append(reward)
 
