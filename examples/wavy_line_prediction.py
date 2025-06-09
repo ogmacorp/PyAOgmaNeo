@@ -108,6 +108,7 @@ iters = 10000
 
 # function for the wave
 def wave(t):
+    return 0.3
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
 # iterate
@@ -117,7 +118,7 @@ for t in range(iters):
     # encode
     csdr = unorm8_to_csdr(float(value_to_encode))
 
-    delay = 3
+    delay = 0
 
     if delay == -1:
         # step the hierarchy given the inputs (just one here)
