@@ -216,7 +216,7 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
     bool learn_enabled,
-    int delay
+    int t
 ) {
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -241,7 +241,7 @@ void Hierarchy::step(
         c_input_cis[i] = c_input_cis_backing[i];
     }
     
-    h.step(c_input_cis, learn_enabled, delay);
+    h.step(c_input_cis, learn_enabled, t);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
@@ -343,6 +343,26 @@ py::array_t<int> Hierarchy::sample_prediction(
     }
 
     return sample;
+}
+
+py::array_t<int> Hierarchy::get_input_cis(
+    int i,
+    int t
+) const {
+    if (i < 0 || i >= h.get_num_io())
+        throw std::runtime_error("input index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
+
+    if (t < 0 || t >= h.get_max_delay())
+        throw std::runtime_error("delay (t) of " + std::to_string(t) + "at input index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_max_delay() - 1) + "]!");
+
+    py::array_t<int> inputs(h.get_input_cis(i, t).size());
+
+    auto view = inputs.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = h.get_input_cis(i, t)[j];
+
+    return inputs;
 }
 
 py::array_t<int> Hierarchy::get_hidden_cis(

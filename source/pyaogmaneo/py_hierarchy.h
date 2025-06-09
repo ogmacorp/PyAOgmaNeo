@@ -149,7 +149,7 @@ public:
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
         bool learn_enabled,
-        int delay
+        int t
     );
 
     void clear_state() {
@@ -176,6 +176,19 @@ public:
         int i,
         float temperature
     ) const;
+
+    py::array_t<int> get_input_cis(
+        int i,
+        int t
+    ) const;
+
+    int get_max_delay() const {
+        return h.get_max_delay();
+    }
+
+    int get_delay_capacity() const {
+        return h.get_delay_capacity();
+    }
 
     py::array_t<int> get_hidden_cis(
         int l
