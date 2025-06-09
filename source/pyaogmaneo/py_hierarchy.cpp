@@ -218,8 +218,8 @@ void Hierarchy::step(
     bool learn_enabled,
     int t
 ) {
-    if (t < 0 || t >= h.get_max_delay())
-        throw std::runtime_error("delay (t) of " + std::to_string(t) + " out of range [0, " + std::to_string(h.get_max_delay() - 1) + "]!");
+    if (t < -1 || t >= h.get_max_delay())
+        throw std::runtime_error("delay (t) of " + std::to_string(t) + " out of range [-1, " + std::to_string(h.get_max_delay()) + ")!");
 
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -355,8 +355,8 @@ py::array_t<int> Hierarchy::get_input_cis(
     if (i < 0 || i >= h.get_num_io())
         throw std::runtime_error("input index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
-    if (t < 0 || t >= h.get_max_delay())
-        throw std::runtime_error("delay (t) of " + std::to_string(t) + " out of range [0, " + std::to_string(h.get_max_delay() - 1) + "]!");
+    if (t < -1 || t >= h.get_max_delay())
+        throw std::runtime_error("delay (t) of " + std::to_string(t) + " out of range [-1, " + std::to_string(h.get_max_delay()) + ")!");
 
     py::array_t<int> inputs(h.get_input_cis(i, t).size());
 
