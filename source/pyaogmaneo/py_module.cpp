@@ -120,11 +120,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def(py::init<
                 const std::vector<pyaon::IO_Desc>&,
                 const std::vector<pyaon::Layer_Desc>&,
+                int,
                 const std::string&,
                 const py::array_t<unsigned char>&
             >(),
             py::arg("io_descs") = std::vector<pyaon::IO_Desc>(),
             py::arg("layer_descs") = std::vector<pyaon::Layer_Desc>(),
+            py::arg("delay_capacity") = 0,
             py::arg("file_name") = std::string(),
             py::arg("buffer") = py::array_t<unsigned char>()
         )
@@ -140,7 +142,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
-            py::arg("learn_enabled") = true
+            py::arg("learn_enabled") = true,
+            py::arg("delay") = 0
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)

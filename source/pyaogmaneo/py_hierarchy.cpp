@@ -56,6 +56,7 @@ void Layer_Desc::check_in_range() const {
 Hierarchy::Hierarchy(
     const std::vector<IO_Desc> &io_descs,
     const std::vector<Layer_Desc> &layer_descs,
+    int delay_capacity,
     const std::string &file_name,
     const py::array_t<unsigned char> &buffer
 ) {
@@ -67,7 +68,7 @@ Hierarchy::Hierarchy(
         if (io_descs.empty() || layer_descs.empty())
             throw std::runtime_error("error: Hierarchy constructor requires some non-empty arguments!");
 
-        init_random(io_descs, layer_descs);
+        init_random(io_descs, layer_descs, delay_capacity);
     }
 
     // copy params
@@ -93,7 +94,8 @@ Hierarchy::Hierarchy(
 
 void Hierarchy::init_random(
     const std::vector<IO_Desc> &io_descs,
-    const std::vector<Layer_Desc> &layer_descs
+    const std::vector<Layer_Desc> &layer_descs,
+    int delay_capacity
 ) {
     aon::Array<aon::Hierarchy::IO_Desc> c_io_descs(io_descs.size());
 
@@ -123,7 +125,7 @@ void Hierarchy::init_random(
         );
     }
 
-    h.init_random(c_io_descs, c_layer_descs);
+    h.init_random(c_io_descs, c_layer_descs, delay_capacity);
 }
 
 void Hierarchy::init_from_file(
@@ -213,7 +215,8 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
-    bool learn_enabled
+    bool learn_enabled,
+    int delay
 ) {
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -238,7 +241,7 @@ void Hierarchy::step(
         c_input_cis[i] = c_input_cis_backing[i];
     }
     
-    h.step(c_input_cis, learn_enabled);
+    h.step(c_input_cis, learn_enabled, delay);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(

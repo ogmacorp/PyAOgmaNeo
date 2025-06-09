@@ -91,7 +91,8 @@ private:
 
     void init_random(
         const std::vector<IO_Desc> &io_descs,
-        const std::vector<Layer_Desc> &layer_descs
+        const std::vector<Layer_Desc> &layer_descs,
+        int delay_capacity
     );
 
     void init_from_file(
@@ -110,6 +111,7 @@ public:
     Hierarchy(
         const std::vector<IO_Desc> &io_descs,
         const std::vector<Layer_Desc> &layer_descs,
+        int delay_capacity,
         const std::string &file_name,
         const py::array_t<unsigned char> &buffer
     );
@@ -146,7 +148,8 @@ public:
 
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
-        bool learn_enabled
+        bool learn_enabled,
+        int delay
     );
 
     void clear_state() {
