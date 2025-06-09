@@ -108,7 +108,6 @@ iters = 10000
 
 # function for the wave
 def wave(t):
-    return 0.3
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
 
 # iterate
@@ -157,7 +156,7 @@ for t2 in range(1000):
     csdr = unorm8_to_csdr(float(value_to_encode))
 
     # run off of own predictions with learning disabled
-    h.step([ h.get_prediction_cis(0), h.get_prediction_cis(1) ], False) # learning disabled for recall
+    h.step([ csdr, h.get_prediction_cis(1) ], False) # learning disabled for recall
 
     # decode value from latest prediction
     value = csdr_to_unorm8(h.get_prediction_cis(1))
