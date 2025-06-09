@@ -87,6 +87,7 @@ def csdr_to_ieee(csdr):
 # this defines the resolution of the input encoding
 num_input_columns = 2
 input_column_size = 16
+max_delay = 100
 
 # define layer descriptors: parameters of each layer upon creation
 lds = []
@@ -100,10 +101,10 @@ for i in range(1): # layers
     lds.append(ld)
 
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
-h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
+h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction), neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds, max_delay)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 1000
+iters = 10000
 
 # function for the wave
 def wave(t):
@@ -116,15 +117,24 @@ for t in range(iters):
     # encode
     csdr = unorm8_to_csdr(float(value_to_encode))
 
-    # step the hierarchy given the inputs (just one here)
-    h.step([ csdr ], True, 3) # true for enabling learning
+    delay = 3
+
+    if delay == -1:
+        # step the hierarchy given the inputs (just one here)
+        h.step([ csdr, csdr ], True, -1)
+    else:
+        if h.get_max_delay() > delay:
+            h.step([ h.get_input_cis(0, delay), csdr ], True, delay) # true for enabling learning
+
+        # step the hierarchy given the inputs (just one here)
+        h.step([ csdr, h.get_prediction_cis(1) ], False, -1)
 
     msg = ""
 
     if value_to_encode > 0.5:
         msg = ">>>>>>>>>>>>>>>>>"
 
-    msg += str(h.get_prediction_acts(0))
+    msg += str(h.get_prediction_acts(1))
 
     print(msg)
 
@@ -146,10 +156,10 @@ for t2 in range(1000):
     csdr = unorm8_to_csdr(float(value_to_encode))
 
     # run off of own predictions with learning disabled
-    h.step([ h.get_prediction_cis(0) ], False) # learning disabled for recall
+    h.step([ h.get_prediction_cis(0), h.get_prediction_cis(1) ], False) # learning disabled for recall
 
     # decode value from latest prediction
-    value = csdr_to_unorm8(h.get_prediction_cis(0))
+    value = csdr_to_unorm8(h.get_prediction_cis(1))
 
     # append to plot data
     ts.append(t2)
