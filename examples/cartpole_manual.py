@@ -100,14 +100,15 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     
     lds.append(ld)
 
-# create the hierarchy
-h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction, num_dendrites_per_cell=16), neo.IODesc((1, 2, 16), neo.prediction, num_dendrites_per_cell=16) ], lds)
+delay_capacity = 512
+delay = delay_capacity - 2
 
-input_history = []
-max_history = 256
+# create the hierarchy
+h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction, num_dendrites_per_cell=16), neo.IODesc((1, 2, 16), neo.prediction, num_dendrites_per_cell=16) ], lds, delay_capacity)
+
 action = 0
-reward = 0.0
-future_state = h.serialize_state_to_buffer()
+average_reward = 0.0
+average_rate = 0.01
 reward_bump = 1.0 / 255.0
 exploration = 0.01
 discount = 0.97
@@ -120,25 +121,7 @@ for episode in range(10000):
         # sensory CSDR creation through "squash and bin" method
         csdr = (sigmoid(obs * 4.0) * (input_resolution - 1) + 0.5).astype(np.int32)
 
-        input_history.append((csdr, action, reward))
-
-        if len(input_history) > max_history:
-            input_history = input_history[len(input_history) - max_history:]
-
-        if len(input_history) == max_history:
-            average_reward = 0.0
-
-            weight = 1.0
-            total_weight = 0.0
-
-            for i in range(max_history):
-                average_reward += input_history[i][2] * weight
-                total_weight += weight
-                weight *= discount
-
-            average_reward /= total_weight
-
-            h.step([input_history[0][0], [input_history[0][1]], unorm8_to_csdr(min(1.0, max(0.0, average_reward)))], True)
+        h.step([h.get_input_cis(0, delay), h.get_input_cis(1, delay), unorm8_to_csdr(min(1.0, max(0.0, average_reward)))], True, delay)
 
         # save state
         old_state = h.serialize_state_to_buffer()
@@ -159,6 +142,8 @@ for episode in range(10000):
         h.set_state_from_buffer(old_state)
 
         obs, reward, term, trunc, _ = env.step(action)
+
+        average_reward += reward_rate * (reward - average_reward)
 
         # re-define reward so that it is 0 normally and then -100 if terminated
         if term:
