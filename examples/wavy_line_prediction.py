@@ -127,7 +127,7 @@ for t in range(iters):
     if value_to_encode > 0.5:
         msg = ">>>>>>>>>>>>>>>>>"
 
-    msg += str(h.get_hidden_cis(1))
+    msg += str(h.get_prediction_acts(0))
 
     print(msg)
 

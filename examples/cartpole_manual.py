@@ -13,6 +13,17 @@ import gymnasium as gym
 import numpy as np
 import struct
 
+def unorm8_to_csdr(x : float):
+    assert(x >= 0.0 and x <= 1.0)
+
+    i = int(x * 255.0 + 0.5) & 0xff
+
+    return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
+
+# reverse transform of unorm8_to_csdr
+def csdr_to_unorm8(csdr):
+    return (csdr[0] | (csdr[1] << 4)) / 255.0
+
 # multi-scale embedding
 def f_to_csdr(x, num_columns, cells_per_column, scale_factor=0.25):
     csdr = []
@@ -73,7 +84,7 @@ env = gym.make('CartPole-v1')
 # get observation size
 num_obs = env.observation_space.shape[0] # 4 values for Cart-Pole
 num_actions = env.action_space.n # N actions (1 discrete value)
-input_resolution = 32
+input_resolution = 16
 
 # set the number of threads
 neo.set_num_threads(4)
@@ -85,21 +96,21 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     ld = neo.LayerDesc()
 
     # set some layer structural parameters
-    ld.hidden_size = (7, 7, 128)
+    ld.hidden_size = (5, 5, 32)
     
     lds.append(ld)
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction, num_dendrites_per_cell=16), neo.IODesc((2, 4, 16), neo.prediction, num_dendrites_per_cell=16) ], lds)
+h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction, num_dendrites_per_cell=16), neo.IODesc((1, 2, 16), neo.prediction, num_dendrites_per_cell=16) ], lds)
 
 input_history = []
 max_history = 256
 action = 0
 reward = 0.0
 future_state = h.serialize_state_to_buffer()
-reward_bump = 0.1
-exploration = 0.05
-discount = 0.98
+reward_bump = 1.0 / 255.0
+exploration = 0.01
+discount = 0.97
 
 for episode in range(10000):
     obs, _ = env.reset()
@@ -118,23 +129,25 @@ for episode in range(10000):
             average_reward = 0.0
 
             weight = 1.0
+            total_weight = 0.0
 
             for i in range(max_history):
                 average_reward += input_history[i][2] * weight
+                total_weight += weight
                 weight *= discount
 
-            average_reward /= max_history
+            average_reward /= total_weight
 
-            h.step([input_history[0][0], [input_history[0][1]], ieee_to_csdr(average_reward)], True)
+            h.step([input_history[0][0], [input_history[0][1]], unorm8_to_csdr(min(1.0, max(0.0, average_reward)))], True)
 
         # save state
         old_state = h.serialize_state_to_buffer()
 
         h.set_state_from_buffer(future_state)
 
-        pred_reward = csdr_to_ieee(h.get_prediction_cis(2))
+        pred_reward = csdr_to_unorm8(h.get_prediction_cis(2))
 
-        h.step([csdr, h.get_prediction_cis(1), ieee_to_csdr(pred_reward + reward_bump * np.random.rand())], False)
+        h.step([csdr, h.get_prediction_cis(1), unorm8_to_csdr(min(1.0, max(0.0, pred_reward + reward_bump)))], False)
 
         action = h.get_prediction_cis(1)[0]
 
@@ -149,9 +162,9 @@ for episode in range(10000):
 
         # re-define reward so that it is 0 normally and then -100 if terminated
         if term:
-            reward = -100.0
+            reward = -2.0
         else:
-            reward = 0.0
+            reward = 1.0
 
         if term or trunc:
             print(f"Episode {episode + 1} finished after {t + 1} timesteps")
