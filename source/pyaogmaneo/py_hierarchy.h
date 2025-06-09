@@ -148,8 +148,12 @@ public:
 
     void step(
         const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
-        bool learn_enabled,
-        int t
+        bool learn_enabled
+    );
+
+    void step_delayed(
+        const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
+        bool learn_enabled
     );
 
     void clear_state() {
@@ -178,21 +182,23 @@ public:
     ) const;
 
     py::array_t<int> get_input_cis(
-        int i,
-        int t
+        int i
     ) const;
 
     py::array_t<int> get_next_input_cis(
-        int i,
-        int t
+        int i
     ) const;
 
-    int get_max_delay() const {
-        return h.get_max_delay();
+    int get_num_input_states() const {
+        return h.get_num_input_states();
     }
 
-    int get_delay_capacity() const {
-        return h.get_delay_capacity();
+    int get_input_state_capacity() const {
+        return h.get_input_state_capacity();
+    }
+
+    bool delay_ready() const {
+        return h.delay_ready();
     }
 
     py::array_t<int> get_hidden_cis(

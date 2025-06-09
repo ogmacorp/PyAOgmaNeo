@@ -142,8 +142,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_weights_size", &pyaon::Hierarchy::get_weights_size)
         .def("step", &pyaon::Hierarchy::step,
             py::arg("input_cis"),
-            py::arg("learn_enabled") = true,
-            py::arg("t") = 0
+            py::arg("learn_enabled") = true
+        )
+        .def("step_delayed", &pyaon::Hierarchy::step_delayed,
+            py::arg("input_cis"),
+            py::arg("learn_enabled") = true
         )
         .def("clear_state", &pyaon::Hierarchy::clear_state)
         .def("get_num_layers", &pyaon::Hierarchy::get_num_layers)
@@ -153,8 +156,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("sample_prediction", &pyaon::Hierarchy::sample_prediction)
         .def("get_input_cis", &pyaon::Hierarchy::get_input_cis)
         .def("get_next_input_cis", &pyaon::Hierarchy::get_next_input_cis)
-        .def("get_max_delay", &pyaon::Hierarchy::get_max_delay)
-        .def("get_delay_capacity", &pyaon::Hierarchy::get_delay_capacity)
+        .def("get_num_input_states", &pyaon::Hierarchy::get_num_input_states)
+        .def("get_input_state_capacity", &pyaon::Hierarchy::get_input_state_capacity)
+        .def("delay_ready", &pyaon::Hierarchy::delay_ready)
         .def("get_hidden_cis", &pyaon::Hierarchy::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Hierarchy::get_hidden_size)
         .def("get_num_encoder_visible_layers", &pyaon::Hierarchy::get_num_encoder_visible_layers)
