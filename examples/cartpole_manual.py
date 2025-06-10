@@ -115,7 +115,7 @@ rewards = []
 action = 0
 average_reward = 0.0
 reward_bump = 1.0 / 255.0
-exploration = 0.02
+exploration = 0.03
 discount = 0.97
 
 for episode in range(10000):
