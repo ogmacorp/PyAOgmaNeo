@@ -101,11 +101,11 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     ld = neo.LayerDesc()
 
     # set some layer structural parameters
-    ld.hidden_size = (5, 5, 64)
+    ld.hidden_size = (5, 5, 128)
     
     lds.append(ld)
 
-delay_capacity = 64
+delay_capacity = 1024
 
 # create the hierarchy
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 2, 4), neo.prediction) ], lds, delay_capacity)
@@ -114,7 +114,7 @@ rewards = []
 
 action = 0
 average_reward = 0.0
-reward_bump = 2.0 / 255.0
+reward_bump = 1.0 / 255.0
 exploration = 0.03
 discount = 0.97
 
@@ -153,7 +153,7 @@ for episode in range(10000):
 
         # re-define reward
         if term:
-            reward = 0.0
+            reward = -1.0
         else:
             reward = 1.0
 
