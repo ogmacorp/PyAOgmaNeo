@@ -16,13 +16,18 @@ import struct
 def unorm8_to_csdr(x : float):
     assert(x >= 0.0 and x <= 1.0)
 
-    i = int(x * 255.0 + 0.5) & 0xff
+    v = int(x * 255.0 + 0.5) & 0xff
 
-    return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
+    return [ (v >> (2 * i)) & 0x03 for i in range(4) ]
 
 # reverse transform of unorm8_to_csdr
 def csdr_to_unorm8(csdr):
-    return (csdr[0] | (csdr[1] << 4)) / 255.0
+    r = int(0)
+
+    for i in range(4):
+        r |= csdr[i] << (2 * i)
+
+    return r / 255.0
 
 # multi-scale embedding
 def f_to_csdr(x, num_columns, cells_per_column, scale_factor=0.25):
@@ -79,7 +84,7 @@ def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
 # create the environment
-env = gym.make('CartPole-v1')
+env = gym.make('CartPole-v1')#, render_mode='human')
 
 # get observation size
 num_obs = env.observation_space.shape[0] # 4 values for Cart-Pole
@@ -103,13 +108,13 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
 delay_capacity = 64
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((1, 2, 16), neo.prediction) ], lds, delay_capacity)
+h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 2, 4), neo.prediction) ], lds, delay_capacity)
 
 rewards = []
 
 action = 0
 average_reward = 0.0
-reward_bump = 1.5 / 255.0
+reward_bump = 1.0 / 255.0
 exploration = 0.02
 discount = 0.97
 
@@ -148,7 +153,7 @@ for episode in range(10000):
 
         # re-define reward
         if term:
-            reward = -1.0
+            reward = 0.0
         else:
             reward = 1.0
 
