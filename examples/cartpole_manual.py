@@ -89,7 +89,7 @@ env = gym.make('CartPole-v1')#, render_mode='human')
 # get observation size
 num_obs = env.observation_space.shape[0] # 4 values for Cart-Pole
 num_actions = env.action_space.n # N actions (1 discrete value)
-input_resolution = 16
+input_resolution = 32
 
 # set the number of threads
 neo.set_num_threads(4)
@@ -105,7 +105,7 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     
     lds.append(ld)
 
-delay_capacity = 1024
+delay_capacity = 256
 
 # create the hierarchy
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 2, 4), neo.prediction) ], lds, delay_capacity)
@@ -114,7 +114,8 @@ rewards = []
 
 action = 0
 average_reward = 0.0
-reward_bump = 1.0 / 255.0
+reward_bump_min = 1.0 / 255.0
+reward_mult = 1.05
 exploration = 0.03
 discount = 0.97
 
@@ -142,7 +143,7 @@ for episode in range(10000):
 
         pred_reward = csdr_to_unorm8(h.get_prediction_cis(2))
 
-        h.step([csdr, [action], unorm8_to_csdr(min(1.0, max(0.0, pred_reward + reward_bump)))], False)
+        h.step([csdr, [action], unorm8_to_csdr(min(1.0, max(0.0, max(pred_reward + reward_bump_min, max(pred_reward / reward_mult, pred_reward * reward_mult)))))], False)
 
         action = h.get_prediction_cis(1)[0]
 
