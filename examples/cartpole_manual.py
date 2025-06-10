@@ -105,7 +105,7 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     
     lds.append(ld)
 
-delay_capacity = 64
+delay_capacity = 512
 
 # create the hierarchy
 h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 2, 4), neo.prediction) ], lds, delay_capacity)
