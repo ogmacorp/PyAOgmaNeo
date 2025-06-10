@@ -105,8 +105,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("qlr", &aon::Actor::Params::qlr)
-        .def_readwrite("plr", &aon::Actor::Params::plr)
+        .def_readwrite("lr", &aon::Actor::Params::lr)
+        .def_readwrite("bc", &aon::Actor::Params::bc)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
