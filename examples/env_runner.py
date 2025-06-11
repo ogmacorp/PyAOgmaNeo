@@ -219,6 +219,8 @@ class EnvRunner:
 
         self.h = neo.Hierarchy(io_descs, lds, max_input_delay)
 
+        self.h.params.ios[self.reward_index] = 0.0 # dubious, but seems to reduce interference
+
         # buffers
         self.rewards = []
         self.pred_cumm_rewards = []
