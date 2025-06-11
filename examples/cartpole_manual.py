@@ -118,7 +118,7 @@ pred_cumm_rewards = []
 action = 0
 pred_cumm_reward = 0.0
 exploration = 0.03
-discount = 0.99
+discount = 0.9
 pred_bound = 999
 
 for episode in range(10000):
