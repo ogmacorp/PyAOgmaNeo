@@ -28,7 +28,7 @@ def unorm8_to_csdr(x : float):
 
     return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
 
-# reverse transform of ieeeto_csdr
+# reverse transform of unorm8_to_csdr
 def csdr_to_unorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
@@ -153,7 +153,7 @@ vs = [] # predicted value
 
 trgs = [] # true value
 
-line = 0
+line = 1
 
 for t2 in range(1000):
     t = t2 + iters # get "continued" timestep (relative to previous training iterations)

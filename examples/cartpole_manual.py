@@ -25,7 +25,7 @@ def csdr_to_unorm8(csdr):
     r = int(0)
 
     for i in range(4):
-        r |= csdr[i] << (2 * i)
+        r |= int(csdr[i]) << (2 * i)
 
     return r / 255.0
 
@@ -105,21 +105,21 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     
     lds.append(ld)
 
-delay_capacity = 128
+delay_capacity = 64
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 2, 4), neo.prediction), neo.IODesc((1, 1, 2), neo.prediction) ], lds, delay_capacity)
+h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction), neo.IODesc((1, 1, 2), neo.none) ], lds, delay_capacity)
 
 h.params.ios[2].importance = 0.0
-h.params.ios[3].importance = 2.0
 
 rewards = []
 pred_cumm_rewards = []
 
 action = 0
-pred_cumm_reward = 1.0
+pred_cumm_reward = 0.0
 exploration = 0.03
-discount = 0.98
+discount = 0.99
+pred_bound = 999
 
 for episode in range(10000):
     obs, _ = env.reset()
@@ -137,15 +137,16 @@ for episode in range(10000):
                 r += rewards[i] * w
                 w *= discount
 
-            target = (r + w * pred_cumm_reward / (1.0 - discount)) * (1.0 - discount)
+            target = r + w * pred_cumm_reward
 
             td_error = target - pred_cumm_rewards[0]
+            #print(str(target) + " " + str(pred_cumm_rewards[0]))
 
-            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), unorm8_to_csdr(min(1.0, max(0.0, target))), [int(td_error > 0.0)]], True)
+            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), ieee_to_csdr(target), [int(td_error > 0.0)]], True)
 
         h.step([csdr, [action], h.get_prediction_cis(2), [1]], False)
 
-        pred_cumm_reward = csdr_to_unorm8(h.get_prediction_cis(2))
+        pred_cumm_reward = min(pred_bound, max(-pred_bound, csdr_to_ieee(h.get_prediction_cis(2))))
 
         action = h.get_prediction_cis(1)[0]
 
@@ -156,9 +157,9 @@ for episode in range(10000):
 
         # re-define reward
         if term:
-            reward = -4.0
+            reward = -100.0
         else:
-            reward = 1.0
+            reward = 0.0
 
         rewards.append(reward)
         pred_cumm_rewards.append(pred_cumm_reward)

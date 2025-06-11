@@ -11,12 +11,35 @@
 import pyaogmaneo as neo
 import numpy as np
 import gymnasium as gym
+import struct
 import tinyscaler
 import os
 import time
 
+max_cumm_reward = 99999.0
+
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
+
+# convert an ieee float to 8 columns with 16 cells each (similar to first approach but on floating-point data)
+def ieee_to_csdr(x : float):
+    b = struct.pack("<f", x)
+
+    csdr = []
+
+    for i in range(4):
+        csdr.append(b[i] & 0x0f)
+        csdr.append((b[i] & 0xf0) >> 4)
+
+    return csdr
+
+def csdr_to_ieee(csdr):
+    bs = []
+
+    for i in range(4):
+        bs.append(csdr[i * 2 + 0] | (csdr[i * 2 + 1] << 4))
+
+    return struct.unpack("<f", bytes(bs))[0]
 
 input_type_none = neo.none
 input_type_prediction = neo.none
@@ -84,7 +107,7 @@ class EnvRunner:
         self.input_keys.append(key)
 
     def __init__(self, env, layer_sizes=1 * [(5, 5, 64)],
-        num_dendrites_per_cell=16, value_num_dendrites_per_cell=32,
+        num_dendrites_per_cell=16, max_input_delay=128, discount=0.99,
         input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=1.0,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0, n_threads=4
@@ -185,9 +208,22 @@ class EnvRunner:
         io_descs = []
 
         for i in range(len(self.input_sizes)):
-            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], num_dendrites_per_cell=num_dendrites_per_cell, value_num_dendrites_per_cell=value_num_dendrites_per_cell, up_radius=input_radius, down_radius=layer_radius))
+            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], num_dendrites_per_cell=num_dendrites_per_cell, up_radius=input_radius, down_radius=layer_radius))
 
-        self.h = neo.Hierarchy(io_descs, lds)
+        # reward and TD IOs
+        self.reward_index = len(io_descs)
+        self.td_index = self.reward_index + 1
+        
+        io_descs.append(neo.IODesc((2, 4, 16), neo.prediction, num_dendrites_per_cell=num_dendrites_per_cell, up_radius=2, down_radius=layer_radius))
+        io_descs.append(neo.IODesc((1, 1, 2), neo.none, num_dendrites_per_cell=num_dendrites_per_cell, up_radius=0, down_radius=layer_radius))
+
+        self.h = neo.Hierarchy(io_descs, lds, max_input_delay)
+
+        # buffers
+        self.rewards = []
+        self.pred_cumm_rewards = []
+
+        self.discount = discount
 
         self.actions = []
 
@@ -260,7 +296,7 @@ class EnvRunner:
 
                 self.inputs.append(np.array(indices, dtype=np.int32))
 
-    def act(self, epsilon=0.0, obs_preprocess=None):
+    def act(self, epsilon=0.01, obs_preprocess=None):
         feed_actions = []
 
         for i in range(len(self.action_indices)):
@@ -306,11 +342,38 @@ class EnvRunner:
 
         self._feed_observation(obs.copy())
 
-        r = reward * self.reward_scale + float(term) * self.terminal_reward
+        # extra inputs for RL
+        self.inputs.append(self.h.get_prediction_cis(self.reward_index))
+        self.inputs.append([1])
 
         start_time = time.perf_counter()
 
-        self.h.step(self.inputs, True, r)
+        pred_cumm_reward = min(max_cumm_reward, max(-max_cumm_reward, csdr_to_ieee(self.h.get_prediction_cis(self.reward_index))))
+
+        final_reward = reward * self.reward_scale + float(term) * self.terminal_reward
+        
+        self.rewards.append(final_reward)
+        self.pred_cumm_rewards.append(pred_cumm_reward)
+
+        if self.h.delay_ready():
+            self.rewards = self.rewards[1:]
+            self.pred_cumm_rewards = self.pred_cumm_rewards[1:]
+
+            r = 0.0
+            w = 1.0
+
+            for i in range(len(self.rewards)):
+                r += self.rewards[i] * w
+                w *= self.discount
+
+            target = r + w * pred_cumm_reward
+
+            td_error = target - self.pred_cumm_rewards[0]
+            print(td_error)
+
+            self.h.step_delayed([self.h.get_next_input_cis(i) for i in range(self.reward_index)] + [ieee_to_csdr(target), [int(td_error > 0.0)]], True)
+
+        self.h.step(self.inputs, False)
 
         end_time = time.perf_counter()
 
