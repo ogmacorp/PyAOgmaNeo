@@ -28,7 +28,7 @@ def unorm8_to_csdr(x : float):
 
     return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
 
-# reverse transform of ieeeto_csdr
+# reverse transform of unorm8_to_csdr
 def csdr_to_unorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
@@ -91,10 +91,10 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(3): # layers
+for i in range(1): # layers
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 16) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
