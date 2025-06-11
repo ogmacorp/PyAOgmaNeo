@@ -356,8 +356,6 @@ class EnvRunner:
         self.pred_cumm_rewards.append(pred_cumm_reward)
 
         if self.h.delay_ready():
-            self.rewards = self.rewards[1:]
-            self.pred_cumm_rewards = self.pred_cumm_rewards[1:]
 
             r = 0.0
             w = 1.0
@@ -371,13 +369,15 @@ class EnvRunner:
             td_error = target - self.pred_cumm_rewards[0]
 
             self.h.step_delayed([self.h.get_next_input_cis(i) for i in range(self.reward_index)] + [ieee_to_csdr(target), [int(td_error > 0.0)]], True)
+            self.rewards = self.rewards[1:]
+            self.pred_cumm_rewards = self.pred_cumm_rewards[1:]
 
         self.h.step(self.inputs, False)
 
         end_time = time.perf_counter()
 
-        if term or trunc:
-            print((end_time - start_time) * 1000.0)
+        #if term or trunc:
+        #    print((end_time - start_time) * 1000.0)
 
         # retrieve actions
         for i in range(len(self.action_indices)):
