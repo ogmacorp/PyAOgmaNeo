@@ -89,7 +89,7 @@ env = gym.make('CartPole-v1')#, render_mode='human')
 # get observation size
 num_obs = env.observation_space.shape[0] # 4 values for Cart-Pole
 num_actions = env.action_space.n # N actions (1 discrete value)
-input_resolution = 16
+input_resolution = 32
 
 # set the number of threads
 neo.set_num_threads(4)
@@ -105,19 +105,21 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     
     lds.append(ld)
 
-delay_capacity = 64
+delay_capacity = 128
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 2, 4), neo.prediction) ], lds, delay_capacity)
+h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 2, 4), neo.prediction), neo.IODesc((1, 1, 2), neo.prediction) ], lds, delay_capacity)
+
+h.params.ios[2].importance = 0.0
+h.params.ios[3].importance = 2.0
 
 rewards = []
+pred_cumm_rewards = []
 
 action = 0
-average_reward = 0.0
-reward_bump = 1.0 / 255.0
-pred_cumm_reward = 0.0
+pred_cumm_reward = 1.0
 exploration = 0.03
-discount = 0.95
+discount = 0.98
 
 for episode in range(10000):
     obs, _ = env.reset()
@@ -137,9 +139,11 @@ for episode in range(10000):
 
             target = (r + w * pred_cumm_reward / (1.0 - discount)) * (1.0 - discount)
 
-            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), unorm8_to_csdr(min(1.0, max(0.0, target)))], True)
+            td_error = target - pred_cumm_rewards[0]
 
-        h.step([csdr, [action], unorm8_to_csdr(min(1.0, max(0.0, pred_cumm_reward + reward_bump)))], False)
+            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), unorm8_to_csdr(min(1.0, max(0.0, target))), [int(td_error > 0.0)]], True)
+
+        h.step([csdr, [action], h.get_prediction_cis(2), [1]], False)
 
         pred_cumm_reward = csdr_to_unorm8(h.get_prediction_cis(2))
 
@@ -157,9 +161,11 @@ for episode in range(10000):
             reward = 1.0
 
         rewards.append(reward)
+        pred_cumm_rewards.append(pred_cumm_reward)
 
         if len(rewards) > delay_capacity:
             rewards = rewards[1:]
+            pred_cumm_rewards = pred_cumm_rewards[1:]
 
         if term or trunc:
             print(f"Episode {episode + 1} finished after {t + 1} timesteps")
