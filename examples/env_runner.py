@@ -86,7 +86,7 @@ class EnvRunner:
     def __init__(self, env, layer_sizes=1 * [(5, 5, 64)],
         num_dendrites_per_cell=4,
         input_radius=2, layer_radius=2, hidden_size=(10, 10, 16),
-        image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.1,
+        image_radius=8, image_scale=0.5, obs_resolution=32, action_resolution=9, action_importance=0.1,
         reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0, n_threads=4
     ):
         self.env = env
