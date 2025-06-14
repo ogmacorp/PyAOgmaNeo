@@ -101,11 +101,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
 
     py::class_<aon::Actor::Params>(m, "ActorParams")
         .def(py::init<>())
-        .def_readwrite("lr", &aon::Actor::Params::vlr)
+        .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("trace_decay", &aon::Actor::Params::trace_decay)
-        .def_readwrite("trace_squash", &aon::Actor::Params::trace_squash);
+        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
