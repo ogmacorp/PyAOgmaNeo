@@ -105,7 +105,7 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
     
     lds.append(ld)
 
-delay_capacity = 64
+delay_capacity = 128
 
 # create the hierarchy
 h = neo.Hierarchy([neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction)], lds, delay_capacity)
@@ -117,7 +117,7 @@ pred_cumm_rewards = []
 
 action = 0
 pred_cumm_reward = 0.0
-reward_scale = 1.05
+reward_scale = 1.1
 exploration = 0.03
 discount = 0.9
 pred_bound = 999
@@ -140,9 +140,9 @@ for episode in range(10000):
 
             target = r + w * pred_cumm_reward
 
-            #td_error = target - pred_cumm_rewards[0]
+            td_error = target - pred_cumm_rewards[0]
 
-            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), ieee_to_csdr(target)], True)
+            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), ieee_to_csdr(target)], td_error > 0.0)
 
         h.step([csdr, [action], ieee_to_csdr(max(pred_cumm_reward / reward_scale, pred_cumm_reward * reward_scale))], False)
 
