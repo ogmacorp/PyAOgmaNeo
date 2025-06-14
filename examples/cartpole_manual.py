@@ -18,7 +18,7 @@ def unorm8_to_csdr(x : float):
 
     v = int(x * 255.0 + 0.5) & 0xff
 
-    return [ (v >> (2 * i)) & 0x03 for i in range(4) ]
+    return [(v >> (2 * i)) & 0x03 for i in range(4)]
 
 # reverse transform of unorm8_to_csdr
 def csdr_to_unorm8(csdr):
@@ -108,7 +108,7 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
 delay_capacity = 64
 
 # create the hierarchy
-h = neo.Hierarchy([ neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction), neo.IODesc((1, 1, 2), neo.none) ], lds, delay_capacity)
+h = neo.Hierarchy([neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction)], lds, delay_capacity)
 
 h.params.ios[2].importance = 0.0
 
@@ -117,6 +117,7 @@ pred_cumm_rewards = []
 
 action = 0
 pred_cumm_reward = 0.0
+reward_scale = 1.05
 exploration = 0.03
 discount = 0.9
 pred_bound = 999
@@ -139,12 +140,11 @@ for episode in range(10000):
 
             target = r + w * pred_cumm_reward
 
-            td_error = target - pred_cumm_rewards[0]
-            #print(str(target) + " " + str(pred_cumm_rewards[0]))
+            #td_error = target - pred_cumm_rewards[0]
 
-            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), ieee_to_csdr(target), [int(td_error > 0.0)]], True)
+            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), ieee_to_csdr(target)], True)
 
-        h.step([csdr, [action], h.get_prediction_cis(2), [1]], False)
+        h.step([csdr, [action], ieee_to_csdr(max(pred_cumm_reward / reward_scale, pred_cumm_reward * reward_scale))], False)
 
         pred_cumm_reward = min(pred_bound, max(-pred_bound, csdr_to_ieee(h.get_prediction_cis(2))))
 
