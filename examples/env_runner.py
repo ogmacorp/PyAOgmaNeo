@@ -212,20 +212,18 @@ class EnvRunner:
 
         # reward and TD IOs
         self.reward_index = len(io_descs)
-        self.td_index = self.reward_index + 1
         
         io_descs.append(neo.IODesc((2, 4, 16), neo.prediction, num_dendrites_per_cell=num_dendrites_per_cell, up_radius=2, down_radius=layer_radius))
-        io_descs.append(neo.IODesc((1, 1, 2), neo.none, num_dendrites_per_cell=num_dendrites_per_cell, up_radius=0, down_radius=layer_radius))
 
         self.h = neo.Hierarchy(io_descs, lds, max_input_delay)
-
-        self.h.params.ios[self.reward_index] = 0.0 # dubious, but seems to reduce interference
 
         # buffers
         self.rewards = []
         self.pred_cumm_rewards = []
+        self.pred_cumm_reward = 0.0
 
         self.discount = discount
+        self.reward_infer_mult = 1.05
 
         self.actions = []
 
@@ -345,20 +343,18 @@ class EnvRunner:
         self._feed_observation(obs.copy())
 
         # extra inputs for RL
-        self.inputs.append(self.h.get_prediction_cis(self.reward_index))
-        self.inputs.append([1])
+        self.inputs.append(ieee_to_csdr(max(self.pred_cumm_reward / self.reward_infer_mult, self.pred_cumm_reward * self.reward_infer_mult)))
 
         start_time = time.perf_counter()
 
-        pred_cumm_reward = min(max_cumm_reward, max(-max_cumm_reward, csdr_to_ieee(self.h.get_prediction_cis(self.reward_index))))
+        self.pred_cumm_reward = min(max_cumm_reward, max(-max_cumm_reward, csdr_to_ieee(self.h.get_prediction_cis(self.reward_index))))
 
         final_reward = reward * self.reward_scale + float(term) * self.terminal_reward
         
         self.rewards.append(final_reward)
-        self.pred_cumm_rewards.append(pred_cumm_reward)
+        self.pred_cumm_rewards.append(self.pred_cumm_reward)
 
         if self.h.delay_ready():
-
             r = 0.0
             w = 1.0
 
@@ -366,11 +362,11 @@ class EnvRunner:
                 r += self.rewards[i] * w
                 w *= self.discount
 
-            target = r + w * pred_cumm_reward
+            target = r + w * self.pred_cumm_reward
 
             td_error = target - self.pred_cumm_rewards[0]
 
-            self.h.step_delayed([self.h.get_next_input_cis(i) for i in range(self.reward_index)] + [ieee_to_csdr(target), [int(td_error > 0.0)]], True)
+            self.h.step_delayed([self.h.get_next_input_cis(i) for i in range(self.reward_index)] + [ieee_to_csdr(target)], td_error > 0.0)
             self.rewards = self.rewards[1:]
             self.pred_cumm_rewards = self.pred_cumm_rewards[1:]
 
