@@ -108,6 +108,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("lr", &aon::Actor::Params::lr)
         .def_readwrite("bc", &aon::Actor::Params::bc)
         .def_readwrite("discount", &aon::Actor::Params::discount)
+        .def_readwrite("td_clip", &aon::Actor::Params::td_clip)
         .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
