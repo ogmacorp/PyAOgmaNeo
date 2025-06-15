@@ -1,5 +1,5 @@
-export AOGMANEO_LOCATION="../AOgmaNeo"
-export PYAOGMANEO_LOCATION="$PWD"
+AOGMANEO_LOCATION="../AOgmaNeo"
+PYAOGMANEO_LOCATION="$PWD"
 
 echo -n "Enter branch name to switch to and build: "
 read branch_name
@@ -21,6 +21,8 @@ cd $PYAOGMANEO_LOCATION
 git fetch origin $branch_name
 git checkout $branch_name
 git merge origin/$branch_name
+
+export USE_SYSTEM_AOGMANEO=1
 
 python -m pip install .
 
