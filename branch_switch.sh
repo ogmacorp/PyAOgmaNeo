@@ -22,6 +22,8 @@ git fetch origin $branch_name
 git checkout $branch_name
 git merge origin/$branch_name
 
+export USE_SYSTEM_AOGMANEO=1
+
 python -m pip install .
 
 echo "Done switching!"
