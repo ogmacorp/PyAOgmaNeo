@@ -42,14 +42,13 @@ else()
     FetchContent_MakeAvailable(AOgmaNeo)
 endif()
 
-add_subdirectory(pybind11-src)
-#FetchContent_Declare(
-#    pybind11
-#    GIT_REPOSITORY https://github.com/pybind/pybind11
-#    GIT_TAG origin/master 
-#)
-#
-#FetchContent_MakeAvailable(pybind11)
+FetchContent_Declare(
+    pybind11
+    GIT_REPOSITORY https://github.com/pybind/pybind11
+    GIT_TAG origin/master 
+)
+
+FetchContent_MakeAvailable(pybind11)
 
 include_directories(${AOgmaNeo_SOURCE_DIR}/source)
 
