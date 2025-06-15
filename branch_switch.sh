@@ -1,5 +1,5 @@
-export AOGMANEO_LOCATION="../AOgmaNeo"
-export PYAOGMANEO_LOCATION="$PWD"
+AOGMANEO_LOCATION="../AOgmaNeo"
+PYAOGMANEO_LOCATION="$PWD"
 
 echo -n "Enter branch name to switch to and build: "
 read branch_name
