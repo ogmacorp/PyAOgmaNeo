@@ -347,8 +347,6 @@ class EnvRunner:
 
         start_time = time.perf_counter()
 
-        self.pred_cumm_reward = min(max_cumm_reward, max(-max_cumm_reward, csdr_to_ieee(self.h.get_prediction_cis(self.reward_index))))
-
         final_reward = reward * self.reward_scale + float(term) * self.terminal_reward
         
         self.rewards.append(final_reward)
@@ -366,11 +364,13 @@ class EnvRunner:
 
             td_error = target - self.pred_cumm_rewards[0]
 
-            self.h.step_delayed([self.h.get_next_input_cis(i) for i in range(self.reward_index)] + [ieee_to_csdr(target)], td_error > 0.0)
+            self.h.step_delayed([self.h.get_next_input_cis(i) for i in range(self.reward_index)] + [ieee_to_csdr(target)], True)
             self.rewards = self.rewards[1:]
             self.pred_cumm_rewards = self.pred_cumm_rewards[1:]
 
         self.h.step(self.inputs, False)
+
+        self.pred_cumm_reward = min(max_cumm_reward, max(-max_cumm_reward, csdr_to_ieee(self.h.get_prediction_cis(self.reward_index))))
 
         end_time = time.perf_counter()
 
