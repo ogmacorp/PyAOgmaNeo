@@ -434,7 +434,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
     aon::Int2 iter_lower_bound(aon::max(0, field_lower_bound.x), aon::max(0, field_lower_bound.y));
     aon::Int2 iter_upper_bound(aon::min(vld.size.x - 1, visible_center.x + vld.radius), aon::min(vld.size.y - 1, visible_center.y + vld.radius));
 
-    int field_count = area * vld.size.z;
+    int field_count = area;
 
     py::array_t<unsigned char> field(field_count);
 
@@ -450,14 +450,12 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
 
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
-            for (int vc = 0; vc < vld.size.z; vc++) {
-                int wi = std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * (vc + vld.size.z * hidden_column_index)));
+            int wi = std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * hidden_column_index));
 
-                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
-            }
+            view(offset.y + diam * offset.x) = static_cast<unsigned char>(vl.protos[wi] * 255.0f + 0.5f);
         }
 
-    std::tuple<int, int, int> field_size(diam, diam, vld.size.z);
+    std::tuple<int, int, int> field_size(diam, diam, 1);
 
     return std::make_tuple(field, field_size);
 }
