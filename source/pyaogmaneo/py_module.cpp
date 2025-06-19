@@ -99,6 +99,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("falloff", &aon::Encoder::Params::falloff)
+        .def_readwrite("choice", &aon::Encoder::Params::choice)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
         .def_readwrite("l_radius", &aon::Encoder::Params::l_radius)
