@@ -153,7 +153,7 @@ vs = [] # predicted value
 
 trgs = [] # true value
 
-line = 0
+line = 1
 
 for t2 in range(1000):
     t = t2 + iters # get "continued" timestep (relative to previous training iterations)

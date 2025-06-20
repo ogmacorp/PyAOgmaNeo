@@ -89,7 +89,7 @@ env = gym.make('CartPole-v1')#, render_mode='human')
 # get observation size
 num_obs = env.observation_space.shape[0] # 4 values for Cart-Pole
 num_actions = env.action_space.n # N actions (1 discrete value)
-input_resolution = 32
+input_resolution = 16
 
 # set the number of threads
 neo.set_num_threads(4)
@@ -108,16 +108,14 @@ for i in range(1): # layers with exponential memory. Not much memory is needed f
 delay_capacity = 128
 
 # create the hierarchy
-h = neo.Hierarchy([neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 4, 16), neo.prediction)], lds, delay_capacity)
-
-h.params.ios[2].importance = 0.0
+h = neo.Hierarchy([neo.IODesc((2, 2, input_resolution), neo.none), neo.IODesc((1, 1, num_actions), neo.prediction), neo.IODesc((2, 2, 4), neo.prediction)], lds, delay_capacity)
 
 rewards = []
 pred_cumm_rewards = []
 
 action = 0
 pred_cumm_reward = 0.0
-reward_scale = 1.1
+reward_bump = 1.0 / 255.0
 exploration = 0.03
 discount = 0.9
 pred_bound = 999
@@ -132,23 +130,23 @@ for episode in range(10000):
 
         if h.delay_ready():
             r = 0.0
-            w = 1.0
+            d = 1.0
 
             for i in range(len(rewards)):
-                r += rewards[i] * w
-                w *= discount
+                r += rewards[i] * d
+                d *= discount
 
-            target = r + w * pred_cumm_reward
+            target = (r + d * pred_cumm_reward / (1.0 - discount)) * (1.0 - discount)
 
             td_error = target - pred_cumm_rewards[0]
 
-            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), ieee_to_csdr(target)], td_error > 0.0)
+            h.step_delayed([h.get_next_input_cis(0), h.get_next_input_cis(1), unorm8_to_csdr(min(1.0, max(0.0, target)))], True)
 
-        h.step([csdr, [action], ieee_to_csdr(max(pred_cumm_reward / reward_scale, pred_cumm_reward * reward_scale))], False)
+        h.step([csdr, [action], unorm8_to_csdr(min(1.0, pred_cumm_reward + reward_bump))], False)
 
-        pred_cumm_reward = min(pred_bound, max(-pred_bound, csdr_to_ieee(h.get_prediction_cis(2))))
+        pred_cumm_reward = min(pred_bound, max(-pred_bound, csdr_to_unorm8(h.get_prediction_cis(2))))
 
-        action = h.get_prediction_cis(1)[0]
+        action = h.sample_prediction(1, 0.5)[0]
 
         if np.random.rand() < exploration:
             action = np.random.randint(0, num_actions)
@@ -157,9 +155,9 @@ for episode in range(10000):
 
         # re-define reward
         if term:
-            reward = -100.0
+            reward = -2.0
         else:
-            reward = 0.0
+            reward = 1.0
 
         rewards.append(reward)
         pred_cumm_rewards.append(pred_cumm_reward)

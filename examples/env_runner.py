@@ -364,7 +364,7 @@ class EnvRunner:
 
             td_error = target - self.pred_cumm_rewards[0]
 
-            self.h.step_delayed([self.h.get_next_input_cis(i) for i in range(self.reward_index)] + [ieee_to_csdr(target)], td_error > 0.0)
+            self.h.step_delayed([self.h.get_next_input_cis(i) for i in range(self.reward_index)] + [ieee_to_csdr(target)], True)
             self.rewards = self.rewards[1:]
             self.pred_cumm_rewards = self.pred_cumm_rewards[1:]
 
