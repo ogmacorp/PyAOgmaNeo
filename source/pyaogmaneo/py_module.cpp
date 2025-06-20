@@ -99,11 +99,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
         .def_readwrite("falloff", &aon::Encoder::Params::falloff)
-        .def_readwrite("min_rate", &aon::Encoder::Params::min_rate)
         .def_readwrite("choice", &aon::Encoder::Params::choice)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius)
+        .def_readwrite("n_radius", &aon::Encoder::Params::n_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -210,10 +210,10 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
         .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
-        .def_readwrite("min_rate", &aon::Image_Encoder::Params::min_rate)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
-        .def_readwrite("rr", &aon::Image_Encoder::Params::rr);
+        .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
+        .def_readwrite("n_radius", &aon::Image_Encoder::Params::n_radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
