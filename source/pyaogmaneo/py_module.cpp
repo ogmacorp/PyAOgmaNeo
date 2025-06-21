@@ -73,7 +73,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
-            py::arg("recurrent_radius") = 0,
+            py::arg("recurrent_radius") = 2,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
@@ -108,7 +108,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("lr", &aon::Actor::Params::lr)
         .def_readwrite("bc", &aon::Actor::Params::bc)
         .def_readwrite("discount", &aon::Actor::Params::discount)
-        .def_readwrite("td_clip", &aon::Actor::Params::td_clip)
         .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
