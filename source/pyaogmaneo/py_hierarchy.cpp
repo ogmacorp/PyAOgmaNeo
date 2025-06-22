@@ -450,10 +450,8 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
 
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
-            int wi_start = vld.size.z * (std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * hidden_column_index)));
-
             for (int vc = 0; vc < vld.size.z; vc++) {
-                int wi = vc + wi_start;
+                int wi = std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * (vc + vld.size.z * hidden_column_index)));
 
                 view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
             }
