@@ -76,7 +76,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("hidden_size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
-            py::arg("recurrent_radius") = 2,
+            py::arg("recurrent_radius") = 0,
             py::arg("down_radius") = 2
         )
         .def_readwrite("hidden_size", &pyaon::Layer_Desc::hidden_size)
@@ -98,11 +98,12 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
+        .def_readwrite("falloff", &aon::Encoder::Params::falloff)
         .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
         .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius)
+        .def_readwrite("n_radius", &aon::Encoder::Params::n_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
