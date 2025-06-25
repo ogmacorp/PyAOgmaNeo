@@ -28,7 +28,7 @@ def unorm8_to_csdr(x : float):
 
     return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
 
-# reverse transform of ieeeto_csdr
+# reverse transform of unorm8_to_csdr
 def csdr_to_unorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
@@ -99,7 +99,7 @@ for i in range(5): # layers
     lds.append(ld)
 
 # create the hierarchy with a single IO layer of size (1 x num_input_columns x input_column_size) and type prediction
-h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.action) ], lds)
+h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.prediction) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
 iters = 10000
