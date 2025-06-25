@@ -102,11 +102,11 @@ for i in range(3): # layers
 h = neo.Hierarchy([ neo.IODesc(size=(1, num_input_columns, input_column_size), io_type=neo.action) ], lds)
 
 # present the wave sequence for some timesteps, 1000 here
-iters = 1000
+iters = 10000
 
 # function for the wave
 def wave(t):
-    if t % 20 == 0:
+    if t % 20 == 0 or t % 7 == 0:
         return 1.0
     return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
