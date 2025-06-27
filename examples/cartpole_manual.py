@@ -155,7 +155,7 @@ for episode in range(10000):
 
         # re-define reward
         if term:
-            reward = -2.0
+            reward = 0.0
         else:
             reward = 1.0
 
