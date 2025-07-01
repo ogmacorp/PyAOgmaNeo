@@ -91,10 +91,10 @@ input_column_size = 16
 # define layer descriptors: parameters of each layer upon creation
 lds = []
 
-for i in range(4): # layers
+for i in range(5): # layers
     ld = neo.LayerDesc()
 
-    ld.hidden_size = (5, 5, 128) # size of the encoder(s) in the layer
+    ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
 
     lds.append(ld)
 
@@ -106,7 +106,7 @@ iters = 10000
 
 # function for the wave
 def wave(t):
-    if t % 20 == 0 or t % 7 == 0:
+    if t % 30 == 0 or t % 7 == 0:
         return 1.0
     return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
@@ -126,7 +126,7 @@ for t in range(iters):
     if value_to_encode > 0.5:
         msg = ">>>>>>>>>>>>>>>>>"
 
-    msg += str(h.get_hidden_cis(3))
+    msg += str(h.get_hidden_cis(0))
 
     print(msg)
 
