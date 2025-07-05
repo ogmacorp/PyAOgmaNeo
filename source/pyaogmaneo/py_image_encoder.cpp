@@ -293,8 +293,6 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
     for (int i = 0; i < field_count; i++)
         view(i) = 0;
 
-    int hidden_cell_index = std::get<2>(pos) + hidden_cells_start;
-
     for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
         for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
             int visible_column_index = address2(aon::Int2(ix, iy), aon::Int2(vld.size.x, vld.size.y));
