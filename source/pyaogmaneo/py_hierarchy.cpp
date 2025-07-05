@@ -31,6 +31,9 @@ void IO_Desc::check_in_range() const {
 
     if (history_capacity < 2)
         throw std::runtime_error("error: history_capacity < 2 is not allowed!");
+
+    if (history_capacity < 2)
+        throw std::runtime_error("error: history_capacity < 2 is not allowed!");
 }
 
 void Layer_Desc::check_in_range() const {
@@ -59,7 +62,6 @@ void Layer_Desc::check_in_range() const {
 Hierarchy::Hierarchy(
     const std::vector<IO_Desc> &io_descs,
     const std::vector<Layer_Desc> &layer_descs,
-    int delay_capacity,
     const std::string &file_name,
     const py::array_t<unsigned char> &buffer
 ) {
@@ -71,7 +73,7 @@ Hierarchy::Hierarchy(
         if (io_descs.empty() || layer_descs.empty())
             throw std::runtime_error("error: Hierarchy constructor requires some non-empty arguments!");
 
-        init_random(io_descs, layer_descs, delay_capacity);
+        init_random(io_descs, layer_descs);
     }
 
     // copy params
@@ -97,8 +99,7 @@ Hierarchy::Hierarchy(
 
 void Hierarchy::init_random(
     const std::vector<IO_Desc> &io_descs,
-    const std::vector<Layer_Desc> &layer_descs,
-    int delay_capacity
+    const std::vector<Layer_Desc> &layer_descs
 ) {
     aon::Array<aon::Hierarchy::IO_Desc> c_io_descs(io_descs.size());
 
@@ -110,7 +111,8 @@ void Hierarchy::init_random(
             static_cast<aon::IO_Type>(io_descs[i].type),
             io_descs[i].num_dendrites_per_cell,
             io_descs[i].up_radius,
-            io_descs[i].down_radius
+            io_descs[i].down_radius,
+            io_descs[i].history_capacity
         );
     }
     
@@ -128,7 +130,7 @@ void Hierarchy::init_random(
         );
     }
 
-    h.init_random(c_io_descs, c_layer_descs, delay_capacity);
+    h.init_random(c_io_descs, c_layer_descs);
 }
 
 void Hierarchy::init_from_file(
@@ -218,7 +220,8 @@ py::array_t<unsigned char> Hierarchy::serialize_weights_to_buffer() {
 
 void Hierarchy::step(
     const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
-    bool learn_enabled
+    bool learn_enabled,
+    float reward
 ) {
     if (input_cis.size() != h.get_num_io())
         throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
@@ -243,37 +246,7 @@ void Hierarchy::step(
         c_input_cis[i] = c_input_cis_backing[i];
     }
     
-    h.step(c_input_cis, learn_enabled);
-}
-
-void Hierarchy::step_delayed(
-    const std::vector<py::array_t<int, py::array::c_style | py::array::forcecast>> &input_cis,
-    bool learn_enabled
-) {
-    if (input_cis.size() != h.get_num_io())
-        throw std::runtime_error("incorrect number of input_cis passed to step! received " + std::to_string(input_cis.size()) + ", need " + std::to_string(h.get_num_io()));
-
-    copy_params_to_h();
-
-    for (int i = 0; i < input_cis.size(); i++) {
-        auto view = input_cis[i].unchecked();
-
-        int num_columns = h.get_io_size(i).x * h.get_io_size(i).y;
-
-        if (view.size() != num_columns)
-            throw std::runtime_error("incorrect csdr size at index " + std::to_string(i) + " - expected " + std::to_string(num_columns) + " columns, got " + std::to_string(view.size()));
-
-        for (int j = 0; j < view.size(); j++) {
-            if (view(j) < 0 || view(j) >= h.get_io_size(i).z)
-                throw std::runtime_error("input csdr at input index " + std::to_string(i) + " has an out-of-bounds column index (" + std::to_string(view(j)) + ") at column index " + std::to_string(j) + ". it must be in the range [0, " + std::to_string(h.get_io_size(i).z - 1) + "]");
-
-            c_input_cis_backing[i][j] = view(j);
-        }
-
-        c_input_cis[i] = c_input_cis_backing[i];
-    }
-    
-    h.step_delayed(c_input_cis, learn_enabled);
+    h.step(c_input_cis, learn_enabled, reward);
 }
 
 py::array_t<int> Hierarchy::get_prediction_cis(
@@ -320,7 +293,7 @@ py::array_t<float> Hierarchy::get_prediction_acts(
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     py::array_t<float> predictions(h.get_prediction_acts(i).size());
 
@@ -343,7 +316,7 @@ py::array_t<int> Hierarchy::sample_prediction(
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
     if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or decoder exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     py::array_t<int> sample(h.get_prediction_cis(i).size());
 
@@ -375,38 +348,6 @@ py::array_t<int> Hierarchy::sample_prediction(
     }
 
     return sample;
-}
-
-py::array_t<int> Hierarchy::get_input_cis(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("input index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    py::array_t<int> inputs(h.get_input_cis(i).size());
-
-    auto view = inputs.mutable_unchecked();
-
-    for (int j = 0; j < view.size(); j++)
-        view(j) = h.get_input_cis(i)[j];
-
-    return inputs;
-}
-
-py::array_t<int> Hierarchy::get_next_input_cis(
-    int i
-) const {
-    if (i < 0 || i >= h.get_num_io())
-        throw std::runtime_error("input index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
-
-    py::array_t<int> inputs(h.get_next_input_cis(i).size());
-
-    auto view = inputs.mutable_unchecked();
-
-    for (int j = 0; j < view.size(); j++)
-        view(j) = h.get_next_input_cis(i)[j];
-
-    return inputs;
 }
 
 py::array_t<int> Hierarchy::get_hidden_cis(
