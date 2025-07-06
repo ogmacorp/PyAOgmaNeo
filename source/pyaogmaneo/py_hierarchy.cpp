@@ -453,23 +453,11 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
             for (int vc = 0; vc < vld.size.z; vc++) {
                 int wi = std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * (vc + vld.size.z * hidden_column_index)));
 
-                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights0[wi];
+                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
             }
         }
 
     std::tuple<int, int, int> field_size(diam, diam, vld.size.z);
 
     return std::make_tuple(field, field_size);
-}
-
-void Hierarchy::merge(
-    const std::vector<Hierarchy*> &hierarchies,
-    Merge_Mode mode
-) {
-    aon::Array<aon::Hierarchy*> c_hierarchies(hierarchies.size());
-
-    for (int h = 0; h < hierarchies.size(); h++)
-        c_hierarchies[h] = &hierarchies[h]->h;
-
-    h.merge(c_hierarchies, static_cast<aon::Merge_Mode>(mode));
 }

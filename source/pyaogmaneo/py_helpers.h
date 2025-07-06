@@ -98,9 +98,4 @@ public:
         long len
     ) override;
 };
-
-enum Merge_Mode {
-    merge_random = 0,
-    merge_average = 1
-};
 }

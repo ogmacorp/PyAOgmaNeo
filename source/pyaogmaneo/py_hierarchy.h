@@ -263,10 +263,5 @@ public:
         int vli,
         const std::tuple<int, int, int> &pos
     );
-
-    void merge(
-        const std::vector<Hierarchy*> &hierarchies,
-        Merge_Mode mode
-    );
 };
 }
