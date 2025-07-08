@@ -131,10 +131,5 @@ public:
         int vli,
         const std::tuple<int, int, int> &pos
     );
-
-    void merge(
-        const std::vector<Image_Encoder*> &image_encoders,
-        Merge_Mode mode
-    );
 };
 }

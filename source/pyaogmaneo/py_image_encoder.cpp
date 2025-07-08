@@ -314,15 +314,3 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
 
     return std::make_tuple(field, field_size);
 }
-
-void Image_Encoder::merge(
-    const std::vector<Image_Encoder*> &image_encoders,
-    Merge_Mode mode
-) {
-    aon::Array<aon::Image_Encoder*> c_image_encoders(image_encoders.size());
-
-    for (int i = 0; i < image_encoders.size(); i++)
-        c_image_encoders[i] = &image_encoders[i]->enc;
-
-    enc.merge(c_image_encoders, static_cast<aon::Merge_Mode>(mode));
-}
