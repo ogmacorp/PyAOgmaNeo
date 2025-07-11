@@ -109,9 +109,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
-        .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
+        .def_readwrite("value_delay", &aon::Actor::Params::value_delay)
+        .def_readwrite("policy_delay", &aon::Actor::Params::policy_delay)
         .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("discount", &aon::Actor::Params::discount)
+        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
