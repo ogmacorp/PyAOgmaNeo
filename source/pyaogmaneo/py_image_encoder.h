@@ -40,6 +40,9 @@ private:
     aon::Array<aon::Byte_Buffer> c_inputs_backing;
     aon::Array<aon::Byte_Buffer_View> c_inputs;
 
+    aon::Array<aon::Byte_Buffer> c_recons_backing;
+    aon::Array<aon::Byte_Buffer_View> c_recons;
+
     void init_random(
         const std::tuple<int, int, int> &hidden_size,
         const std::vector<Image_Visible_Layer_Desc> &visible_layer_descs
@@ -97,6 +100,11 @@ public:
         const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,
         bool learn_enabled,
         bool learn_recon
+    );
+
+    void step_recon(
+        const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,
+        const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &recons
     );
 
     void reconstruct(
