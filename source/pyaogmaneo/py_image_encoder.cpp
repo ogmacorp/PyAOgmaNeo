@@ -49,12 +49,6 @@ Image_Encoder::Image_Encoder(
 
     for (int i = 0; i < c_inputs_backing.size(); i++)
         c_inputs_backing[i].resize(enc.get_visible_layer_desc(i).size.x * enc.get_visible_layer_desc(i).size.y * enc.get_visible_layer_desc(i).size.z);
-
-    c_recons_backing.resize(enc.get_num_visible_layers());
-    c_recons.resize(enc.get_num_visible_layers());
-
-    for (int i = 0; i < c_recons.size(); i++)
-        c_recons_backing[i].resize(enc.get_visible_layer_desc(i).size.x * enc.get_visible_layer_desc(i).size.y * enc.get_visible_layer_desc(i).size.z);
 }
 
 void Image_Encoder::init_random(
@@ -198,46 +192,6 @@ void Image_Encoder::step(
     enc.step(c_inputs, learn_enabled, learn_recon);
 }
 
-void Image_Encoder::step_recon(
-    const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &inputs,
-    const std::vector<py::array_t<unsigned char, py::array::c_style | py::array::forcecast>> &recons
-) {
-    if (inputs.size() != enc.get_num_visible_layers())
-        throw std::runtime_error("incorrect number of inputs given to Image_Encoder! expected " + std::to_string(enc.get_num_visible_layers()) + ", got " + std::to_string(inputs.size()));
-
-    if (recons.size() != enc.get_num_visible_layers())
-        throw std::runtime_error("incorrect number of recons given to Image_Encoder! expected " + std::to_string(enc.get_num_visible_layers()) + ", got " + std::to_string(recons.size()));
-
-    // copy params
-    enc.params = params;
-
-    for (int i = 0; i < inputs.size(); i++) {
-        auto view = inputs[i].unchecked();
-
-        if (view.size() != c_inputs_backing[i].size())
-            throw std::runtime_error("incorrect image size given to Image_Encoder! expected " + std::to_string(c_inputs_backing[i].size()) + " inputs at input index " + std::to_string(i) + ", got " + std::to_string(view.size()));
-
-        for (int j = 0; j < view.size(); j++)
-            c_inputs_backing[i][j] = view(j);
-
-        c_inputs[i] = c_inputs_backing[i];
-    }
-
-    for (int i = 0; i < recons.size(); i++) {
-        auto view = recons[i].unchecked();
-
-        if (view.size() != c_recons_backing[i].size())
-            throw std::runtime_error("incorrect image size given to Image_Encoder! expected " + std::to_string(c_recons[i].size()) + " recons at input index " + std::to_string(i) + ", got " + std::to_string(view.size()));
-
-        for (int j = 0; j < view.size(); j++)
-            c_recons_backing[i][j] = view(j);
-
-        c_recons[i] = c_recons_backing[i];
-    }
-
-    enc.step_recon(c_inputs, c_recons);
-}
-
 void Image_Encoder::reconstruct(
     const py::array_t<int, py::array::c_style | py::array::forcecast> &recon_cis
 ) {
@@ -352,7 +306,7 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
             for (int vc = 0; vc < vld.size.z; vc++) {
                 int wi = std::get<2>(pos) + hidden_size.z * (vc + wi_start_partial);
 
-                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights0[wi];
+                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
             }
         }
 

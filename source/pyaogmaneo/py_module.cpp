@@ -93,11 +93,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
-        .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
+        .def_readwrite("scale", &aon::Encoder::Params::scale)
+        .def_readwrite("lr", &aon::Encoder::Params::lr);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -203,13 +200,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Image_Encoder::Params>(m, "ImageEncoderParams")
         .def(py::init<>())
-        .def_readwrite("choice", &aon::Image_Encoder::Params::choice)
-        .def_readwrite("vigilance", &aon::Image_Encoder::Params::vigilance)
+        .def_readwrite("falloff", &aon::Image_Encoder::Params::falloff)
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("active_ratio", &aon::Image_Encoder::Params::active_ratio)
-        .def_readwrite("l_radius", &aon::Image_Encoder::Params::l_radius);
+        .def_readwrite("n_radius", &aon::Image_Encoder::Params::n_radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
@@ -238,7 +233,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("learn_enabled") = true,
             py::arg("learn_recon") = false
         )
-        .def("step_recon", &pyaon::Image_Encoder::step_recon)
         .def("reconstruct", &pyaon::Image_Encoder::reconstruct)
         .def("get_num_visible_layers", &pyaon::Image_Encoder::get_num_visible_layers)
         .def("get_reconstruction", &pyaon::Image_Encoder::get_reconstruction)
