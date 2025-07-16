@@ -32,6 +32,7 @@ struct IO_Desc {
     int up_radius;
     int down_radius;
 
+    int value_size;
     int history_capacity;
 
     IO_Desc(
@@ -41,6 +42,7 @@ struct IO_Desc {
         int value_num_dendrites_per_cell,
         int up_radius,
         int down_radius,
+        int value_size,
         int history_capacity
     )
     :
@@ -50,6 +52,7 @@ struct IO_Desc {
     value_num_dendrites_per_cell(value_num_dendrites_per_cell),
     up_radius(up_radius),
     down_radius(down_radius),
+    value_size(value_size),
     history_capacity(history_capacity)
     {}
 
