@@ -112,6 +112,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("reweight", &aon::Actor::Params::reweight)
+        .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
         .def_readwrite("n_steps", &aon::Actor::Params::n_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
