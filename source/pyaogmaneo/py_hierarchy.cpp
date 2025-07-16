@@ -31,9 +31,6 @@ void IO_Desc::check_in_range() const {
 
     if (history_capacity < 2)
         throw std::runtime_error("error: history_capacity < 2 is not allowed!");
-
-    if (history_capacity < 2)
-        throw std::runtime_error("error: history_capacity < 2 is not allowed!");
 }
 
 void Layer_Desc::check_in_range() const {
@@ -458,16 +455,4 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
     std::tuple<int, int, int> field_size(diam, diam, vld.size.z);
 
     return std::make_tuple(field, field_size);
-}
-
-void Hierarchy::merge(
-    const std::vector<Hierarchy*> &hierarchies,
-    Merge_Mode mode
-) {
-    aon::Array<aon::Hierarchy*> c_hierarchies(hierarchies.size());
-
-    for (int h = 0; h < hierarchies.size(); h++)
-        c_hierarchies[h] = &hierarchies[h]->h;
-
-    h.merge(c_hierarchies, static_cast<aon::Merge_Mode>(mode));
 }

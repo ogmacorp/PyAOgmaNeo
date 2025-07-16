@@ -24,11 +24,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .value("action", pyaon::action)
         .export_values();
 
-    py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
-        .value("merge_random", pyaon::merge_random)
-        .value("merge_average", pyaon::merge_average)
-        .export_values();
-
     py::class_<pyaon::IO_Desc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
@@ -176,7 +171,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
         .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
-        .def("merge", &pyaon::Hierarchy::merge)
         .def("__copy__", 
             [](const pyaon::Hierarchy &other) {
                 return other;
@@ -242,7 +236,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
         .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
         .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field)
-        .def("merge", &pyaon::Image_Encoder::merge)
         .def("__copy__", 
             [](const pyaon::Image_Encoder &other) {
                 return other;
