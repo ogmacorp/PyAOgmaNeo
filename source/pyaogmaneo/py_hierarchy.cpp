@@ -317,8 +317,8 @@ py::array_t<float> Hierarchy::get_prediction_values(
     if (i < 0 || i >= h.get_num_io())
         throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
 
-    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
-        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+    if (!h.io_layer_exists(i) || h.get_io_type(i) != aon::action)
+        throw std::runtime_error("no actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
 
     py::array_t<float> predictions(h.get_prediction_values(i).size());
 
