@@ -182,6 +182,10 @@ public:
         int i
     ) const;
 
+    py::array_t<float> get_prediction_values(
+        int i
+    ) const;
+
     py::array_t<int> sample_prediction(
         int i,
         float temperature

@@ -311,6 +311,25 @@ py::array_t<float> Hierarchy::get_prediction_acts(
     return predictions;
 }
 
+py::array_t<float> Hierarchy::get_prediction_values(
+    int i
+) const {
+    if (i < 0 || i >= h.get_num_io())
+        throw std::runtime_error("prediction index " + std::to_string(i) + " out of range [0, " + std::to_string(h.get_num_io() - 1) + "]!");
+
+    if (!h.io_layer_exists(i) || h.get_io_type(i) == aon::none)
+        throw std::runtime_error("no decoder or actor exists at index " + std::to_string(i) + " - did you set it to the correct type?");
+
+    py::array_t<float> predictions(h.get_prediction_values(i).size());
+
+    auto view = predictions.mutable_unchecked();
+
+    for (int j = 0; j < view.size(); j++)
+        view(j) = h.get_prediction_values(i)[j];
+
+    return predictions;
+}
+
 py::array_t<int> Hierarchy::sample_prediction(
     int i,
     float temperature
