@@ -83,11 +83,11 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=1 * [(5, 5, 64)],
+    def __init__(self, env, layer_sizes=1 * [(7, 7, 64)],
         num_dendrites_per_cell=4,
-        input_radius=2, layer_radius=2, hidden_size=(10, 10, 16),
+        input_radius=4, layer_radius=3, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.1,
-        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0, n_threads=4
+        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=1.0, n_threads=4
     ):
         self.env = env
 
@@ -252,7 +252,7 @@ class EnvRunner:
                         # Rescale
                         indices.append(int(sigmoid(sub_obs[j] * self.inf_sensitivity) * (self.input_sizes[i][2] - 1) + 0.5))
                     else:
-                        if type(self.sub_obs_space) is gym.spaces.multi_discrete:
+                        if type(self.env.observation_space) is gym.spaces.multi_discrete:
                             indices.append(int(sub_obs[j]) % self.sub_obs_space.nvec[j])
                         else:
                             indices.append(int(sub_obs[j]))
@@ -306,7 +306,10 @@ class EnvRunner:
         if obs_preprocess is not None:
             obs = obs_preprocess(obs)
 
-        self._feed_observation(obs.copy())
+        if type(obs) is not np.array:
+            obs = np.array(obs)
+
+        self._feed_observation(obs)
 
         r = reward * self.reward_scale + float(term) * self.terminal_reward
 
