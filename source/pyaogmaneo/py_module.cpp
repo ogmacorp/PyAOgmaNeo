@@ -31,7 +31,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
                 int,
                 int,
                 int,
-                int,
                 int
             >(),
             py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
@@ -39,15 +38,13 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
-            py::arg("value_size") = 64,
-            py::arg("value_num_dendrites_per_cell") = 1
+            py::arg("value_num_dendrites_per_cell") = 4
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
-        .def_readwrite("value_size", &pyaon::IO_Desc::value_size)
         .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
@@ -110,7 +107,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("trace_rate", &aon::Actor::Params::trace_rate)
-        .def_readwrite("value_range", &aon::Actor::Params::value_range)
         .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
