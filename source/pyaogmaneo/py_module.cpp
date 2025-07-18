@@ -39,8 +39,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("num_dendrites_per_cell") = 4,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
-            py::arg("value_size") = 128,
-            py::arg("value_num_dendrites_per_cell") = 2
+            py::arg("value_size") = 64,
+            py::arg("value_num_dendrites_per_cell") = 1
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
