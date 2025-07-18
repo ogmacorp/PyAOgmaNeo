@@ -110,7 +110,8 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("trace_rate", &aon::Actor::Params::trace_rate)
-        .def_readwrite("value_range", &aon::Actor::Params::value_range);
+        .def_readwrite("value_range", &aon::Actor::Params::value_range)
+        .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay);
 
     py::class_<aon::Hierarchy::Layer_Params>(m, "LayerParams")
         .def(py::init<>())
