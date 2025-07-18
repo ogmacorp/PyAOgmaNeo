@@ -31,19 +31,26 @@ struct IO_Desc {
     int up_radius;
     int down_radius;
 
+    int value_size;
+    int value_num_dendrites_per_cell;
+
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
         int up_radius,
-        int down_radius
+        int down_radius,
+        int value_size,
+        int value_num_dendrites_per_cell
     )
     :
     size(size),
     type(type),
     num_dendrites_per_cell(num_dendrites_per_cell),
     up_radius(up_radius),
-    down_radius(down_radius)
+    down_radius(down_radius),
+    value_size(value_size),
+    value_num_dendrites_per_cell(value_num_dendrites_per_cell)
     {}
 
     void check_in_range() const;
