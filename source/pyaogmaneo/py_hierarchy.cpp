@@ -136,12 +136,6 @@ void Hierarchy::init_from_file(
     File_Reader reader;
     reader.ins.open(file_name, std::ios::binary);
 
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != hierarchy_magic)
-        throw std::runtime_error("attempted to initialize Hierarchy from incompatible file - " + file_name);
-
     h.read(reader);
 }
 
@@ -151,12 +145,6 @@ void Hierarchy::init_from_buffer(
     Buffer_Reader reader;
     reader.buffer = &buffer;
 
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != hierarchy_magic)
-        throw std::runtime_error("attempted to initialize Hierarchy from incompatible buffer!");
-
     h.read(reader);
 }
 
@@ -165,8 +153,6 @@ void Hierarchy::save_to_file(
 ) {
     File_Writer writer;
     writer.outs.open(file_name, std::ios::binary);
-
-    writer.write(&hierarchy_magic, sizeof(int));
 
     h.write(writer);
 }
@@ -191,8 +177,6 @@ void Hierarchy::set_weights_from_buffer(
 
 py::array_t<unsigned char> Hierarchy::serialize_to_buffer() {
     Buffer_Writer writer(h.size() + sizeof(int));
-
-    writer.write(&hierarchy_magic, sizeof(int));
 
     h.write(writer);
 

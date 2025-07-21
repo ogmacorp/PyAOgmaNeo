@@ -87,12 +87,6 @@ void Image_Encoder::init_from_file(
     File_Reader reader;
     reader.ins.open(file_name, std::ios::binary);
 
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != image_encoder_magic)
-        throw std::runtime_error("attempted to initialize Image_Encoder from incompatible file - " + file_name);
-
     enc.read(reader);
 }
 
@@ -102,12 +96,6 @@ void Image_Encoder::init_from_buffer(
     Buffer_Reader reader;
     reader.buffer = &buffer;
 
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != image_encoder_magic)
-        throw std::runtime_error("attempted to initialize Image_Encoder from incompatible buffer!");
-
     enc.read(reader);
 }
 
@@ -116,8 +104,6 @@ void Image_Encoder::save_to_file(
 ) {
     File_Writer writer;
     writer.outs.open(file_name, std::ios::binary);
-
-    writer.write(&image_encoder_magic, sizeof(int));
 
     enc.write(writer);
 }
@@ -142,8 +128,6 @@ void Image_Encoder::set_weights_from_buffer(
 
 py::array_t<unsigned char> Image_Encoder::serialize_to_buffer() {
     Buffer_Writer writer(enc.size() + sizeof(int));
-
-    writer.write(&image_encoder_magic, sizeof(int));
 
     enc.write(writer);
 
@@ -301,12 +285,12 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
 
             aon::Int2 offset(ix - field_lower_bound.x, iy - field_lower_bound.y);
 
-            int wi_start = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_cell_index));
+            int wi_start_partial = vld.size.z * (offset.y + diam * (offset.x + diam * hidden_column_index));
 
             for (int vc = 0; vc < vld.size.z; vc++) {
-                int wi = vc + wi_start;
+                int wi = std::get<2>(pos) + hidden_size.z * (vc + wi_start_partial);
 
-                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
+                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights0[wi];
             }
         }
 
