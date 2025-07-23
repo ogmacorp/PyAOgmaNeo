@@ -14,8 +14,6 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int image_encoder_magic = 2118029;
-
 struct Image_Visible_Layer_Desc {
     std::tuple<int, int, int> size;
 
@@ -130,11 +128,6 @@ public:
     std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> get_receptive_field(
         int vli,
         const std::tuple<int, int, int> &pos
-    );
-
-    void merge(
-        const std::vector<Image_Encoder*> &image_encoders,
-        Merge_Mode mode
     );
 };
 }

@@ -14,8 +14,6 @@
 namespace py = pybind11;
 
 namespace pyaon {
-const int hierarchy_magic = 5710502;
-
 enum IO_Type {
     none = 0,
     prediction = 1,
@@ -27,29 +25,32 @@ struct IO_Desc {
     IO_Type type;
 
     int num_dendrites_per_cell;
-    int value_num_dendrites_per_cell;
 
     int up_radius;
     int down_radius;
 
+    int value_size;
+    int value_num_dendrites_per_cell;
     int history_capacity;
 
     IO_Desc(
         const std::tuple<int, int, int> &size,
         IO_Type type,
         int num_dendrites_per_cell,
-        int value_num_dendrites_per_cell,
         int up_radius,
         int down_radius,
+        int value_size,
+        int value_num_dendrites_per_cell,
         int history_capacity
     )
     :
     size(size),
     type(type),
     num_dendrites_per_cell(num_dendrites_per_cell),
-    value_num_dendrites_per_cell(value_num_dendrites_per_cell),
     up_radius(up_radius),
     down_radius(down_radius),
+    value_size(value_size),
+    value_num_dendrites_per_cell(value_num_dendrites_per_cell),
     history_capacity(history_capacity)
     {}
 
@@ -262,11 +263,6 @@ public:
         int l,
         int vli,
         const std::tuple<int, int, int> &pos
-    );
-
-    void merge(
-        const std::vector<Hierarchy*> &hierarchies,
-        Merge_Mode mode
     );
 };
 }

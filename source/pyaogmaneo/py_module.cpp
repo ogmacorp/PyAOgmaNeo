@@ -24,15 +24,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .value("action", pyaon::action)
         .export_values();
 
-    py::enum_<pyaon::Merge_Mode>(m, "MergeMode")
-        .value("merge_random", pyaon::merge_random)
-        .value("merge_average", pyaon::merge_average)
-        .export_values();
-
     py::class_<pyaon::IO_Desc>(m, "IODesc")
         .def(py::init<
                 std::tuple<int, int, int>,
                 pyaon::IO_Type,
+                int,
                 int,
                 int,
                 int,
@@ -42,17 +38,19 @@ PYBIND11_MODULE(pyaogmaneo, m) {
             py::arg("size") = std::tuple<int, int, int>({ 5, 5, 16 }),
             py::arg("io_type") = pyaon::prediction,
             py::arg("num_dendrites_per_cell") = 4,
-            py::arg("value_num_dendrites_per_cell") = 8,
             py::arg("up_radius") = 2,
             py::arg("down_radius") = 2,
+            py::arg("value_size") = 128,
+            py::arg("value_num_dendrites_per_cell") = 4,
             py::arg("history_capacity") = 512
         )
         .def_readwrite("size", &pyaon::IO_Desc::size)
         .def_readwrite("io_type", &pyaon::IO_Desc::type)
         .def_readwrite("num_dendrites_per_cell", &pyaon::IO_Desc::num_dendrites_per_cell)
-        .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("up_radius", &pyaon::IO_Desc::up_radius)
         .def_readwrite("down_radius", &pyaon::IO_Desc::down_radius)
+        .def_readwrite("value_size", &pyaon::IO_Desc::value_size)
+        .def_readwrite("value_num_dendrites_per_cell", &pyaon::IO_Desc::value_num_dendrites_per_cell)
         .def_readwrite("history_capacity", &pyaon::IO_Desc::history_capacity)
         .def("__copy__", 
             [](const pyaon::IO_Desc &other) {
@@ -114,10 +112,9 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("vlr", &aon::Actor::Params::vlr)
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
-        .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
-        .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
+        .def_readwrite("value_range", &aon::Actor::Params::value_range)
         .def_readwrite("min_steps", &aon::Actor::Params::min_steps)
         .def_readwrite("history_iters", &aon::Actor::Params::history_iters);
 
@@ -182,7 +179,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
         .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
-        .def("merge", &pyaon::Hierarchy::merge)
         .def("__copy__", 
             [](const pyaon::Hierarchy &other) {
                 return other;
@@ -248,7 +244,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
         .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
         .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field)
-        .def("merge", &pyaon::Image_Encoder::merge)
         .def("__copy__", 
             [](const pyaon::Image_Encoder &other) {
                 return other;

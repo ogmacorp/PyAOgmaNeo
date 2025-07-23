@@ -87,12 +87,6 @@ void Image_Encoder::init_from_file(
     File_Reader reader;
     reader.ins.open(file_name, std::ios::binary);
 
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != image_encoder_magic)
-        throw std::runtime_error("attempted to initialize Image_Encoder from incompatible file - " + file_name);
-
     enc.read(reader);
 }
 
@@ -102,12 +96,6 @@ void Image_Encoder::init_from_buffer(
     Buffer_Reader reader;
     reader.buffer = &buffer;
 
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != image_encoder_magic)
-        throw std::runtime_error("attempted to initialize Image_Encoder from incompatible buffer!");
-
     enc.read(reader);
 }
 
@@ -116,8 +104,6 @@ void Image_Encoder::save_to_file(
 ) {
     File_Writer writer;
     writer.outs.open(file_name, std::ios::binary);
-
-    writer.write(&image_encoder_magic, sizeof(int));
 
     enc.write(writer);
 }
@@ -142,8 +128,6 @@ void Image_Encoder::set_weights_from_buffer(
 
 py::array_t<unsigned char> Image_Encoder::serialize_to_buffer() {
     Buffer_Writer writer(enc.size() + sizeof(int));
-
-    writer.write(&image_encoder_magic, sizeof(int));
 
     enc.write(writer);
 
@@ -293,6 +277,8 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
     for (int i = 0; i < field_count; i++)
         view(i) = 0;
 
+    int hidden_cell_index = std::get<2>(pos) + hidden_cells_start;
+
     for (int ix = iter_lower_bound.x; ix <= iter_upper_bound.x; ix++)
         for (int iy = iter_lower_bound.y; iy <= iter_upper_bound.y; iy++) {
             int visible_column_index = address2(aon::Int2(ix, iy), aon::Int2(vld.size.x, vld.size.y));
@@ -311,16 +297,4 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Image_Encoder:
     std::tuple<int, int, int> field_size(diam, diam, vld.size.z);
 
     return std::make_tuple(field, field_size);
-}
-
-void Image_Encoder::merge(
-    const std::vector<Image_Encoder*> &image_encoders,
-    Merge_Mode mode
-) {
-    aon::Array<aon::Image_Encoder*> c_image_encoders(image_encoders.size());
-
-    for (int i = 0; i < image_encoders.size(); i++)
-        c_image_encoders[i] = &image_encoders[i]->enc;
-
-    enc.merge(c_image_encoders, static_cast<aon::Merge_Mode>(mode));
 }

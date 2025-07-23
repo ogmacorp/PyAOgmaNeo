@@ -23,14 +23,17 @@ void IO_Desc::check_in_range() const {
     if (num_dendrites_per_cell < 1)
         throw std::runtime_error("error: num_dendrites_per_cell < 1 is not allowed!");
 
-    if (value_num_dendrites_per_cell < 1)
-        throw std::runtime_error("error: value_num_dendrites_per_cell < 1 is not allowed!");
-
     if (up_radius < 0)
         throw std::runtime_error("error: up_radius < 0 is not allowed!");
 
     if (down_radius < 0)
         throw std::runtime_error("error: down_radius < 0 is not allowed!");
+
+    if (value_size < 2)
+        throw std::runtime_error("error: value_size < 2 is not allowed!");
+
+    if (value_num_dendrites_per_cell < 1)
+        throw std::runtime_error("error: value_num_dendrites_per_cell < 1 is not allowed!");
 
     if (history_capacity < 2)
         throw std::runtime_error("error: history_capacity < 2 is not allowed!");
@@ -110,9 +113,10 @@ void Hierarchy::init_random(
             aon::Int3(std::get<0>(io_descs[i].size), std::get<1>(io_descs[i].size), std::get<2>(io_descs[i].size)),
             static_cast<aon::IO_Type>(io_descs[i].type),
             io_descs[i].num_dendrites_per_cell,
-            io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].up_radius,
             io_descs[i].down_radius,
+            io_descs[i].value_size,
+            io_descs[i].value_num_dendrites_per_cell,
             io_descs[i].history_capacity
         );
     }
@@ -140,12 +144,6 @@ void Hierarchy::init_from_file(
     File_Reader reader;
     reader.ins.open(file_name, std::ios::binary);
 
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != hierarchy_magic)
-        throw std::runtime_error("attempted to initialize Hierarchy from incompatible file - " + file_name);
-
     h.read(reader);
 }
 
@@ -155,12 +153,6 @@ void Hierarchy::init_from_buffer(
     Buffer_Reader reader;
     reader.buffer = &buffer;
 
-    int magic;
-    reader.read(&magic, sizeof(int));
-
-    if (magic != hierarchy_magic)
-        throw std::runtime_error("attempted to initialize Hierarchy from incompatible buffer!");
-
     h.read(reader);
 }
 
@@ -169,8 +161,6 @@ void Hierarchy::save_to_file(
 ) {
     File_Writer writer;
     writer.outs.open(file_name, std::ios::binary);
-
-    writer.write(&hierarchy_magic, sizeof(int));
 
     h.write(writer);
 }
@@ -195,8 +185,6 @@ void Hierarchy::set_weights_from_buffer(
 
 py::array_t<unsigned char> Hierarchy::serialize_to_buffer() {
     Buffer_Writer writer(h.size() + sizeof(int));
-
-    writer.write(&hierarchy_magic, sizeof(int));
 
     h.write(writer);
 
@@ -453,23 +441,11 @@ std::tuple<py::array_t<unsigned char>, std::tuple<int, int, int>> Hierarchy::get
             for (int vc = 0; vc < vld.size.z; vc++) {
                 int wi = std::get<2>(pos) + hidden_size.z * (offset.y + diam * (offset.x + diam * (vc + vld.size.z * hidden_column_index)));
 
-                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights0[wi];
+                view(vc + vld.size.z * (offset.y + diam * offset.x)) = vl.weights[wi];
             }
         }
 
     std::tuple<int, int, int> field_size(diam, diam, vld.size.z);
 
     return std::make_tuple(field, field_size);
-}
-
-void Hierarchy::merge(
-    const std::vector<Hierarchy*> &hierarchies,
-    Merge_Mode mode
-) {
-    aon::Array<aon::Hierarchy*> c_hierarchies(hierarchies.size());
-
-    for (int h = 0; h < hierarchies.size(); h++)
-        c_hierarchies[h] = &hierarchies[h]->h;
-
-    h.merge(c_hierarchies, static_cast<aon::Merge_Mode>(mode));
 }
