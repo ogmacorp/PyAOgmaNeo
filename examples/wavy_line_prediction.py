@@ -10,8 +10,11 @@
 
 import pyaogmaneo as neo
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import struct
+
+#matplotlib.use('TkAgg')
 
 # set the number of threads
 neo.set_num_threads(4)
@@ -25,7 +28,7 @@ def unorm8_to_csdr(x : float):
 
     return [ int(i & 0x0f), int((i & 0xf0) >> 4) ]
 
-# reverse transform of ieeeto_csdr
+# reverse transform of unorm8_to_csdr
 def csdr_to_unorm8(csdr):
     return (csdr[0] | (csdr[1] << 4)) / 255.0
 
@@ -92,7 +95,6 @@ for i in range(2): # layers
     ld = neo.LayerDesc()
 
     ld.hidden_size = (5, 5, 64) # size of the encoder(s) in the layer
-    #ld.temporal_size = 8
 
     lds.append(ld)
 
@@ -104,7 +106,7 @@ iters = 10000
 
 # function for the wave
 def wave(t):
-    if t % 20 == 0 or t % 7 == 0:
+    if t % 50 == 0 or t % 7 == 0:
         return 1.0
     return 0.0
     return np.sin(t * 0.05 * 2.0 * np.pi + 0.5) * 0.5 + 0.5
@@ -124,7 +126,7 @@ for t in range(iters):
     if value_to_encode > 0.5:
         msg = ">>>>>>>>>>>>>>>>>"
 
-    msg += str(h.get_hidden_cis(1))
+    msg += str(h.get_hidden_cis(0))
 
     print(msg)
 

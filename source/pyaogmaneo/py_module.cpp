@@ -98,9 +98,11 @@ PYBIND11_MODULE(pyaogmaneo, m) {
     // bind params
     py::class_<aon::Encoder::Params>(m, "EncoderParams")
         .def(py::init<>())
-        .def_readwrite("scale", &aon::Encoder::Params::scale)
+        .def_readwrite("choice", &aon::Encoder::Params::choice)
+        .def_readwrite("vigilance", &aon::Encoder::Params::vigilance)
         .def_readwrite("lr", &aon::Encoder::Params::lr)
-        .def_readwrite("early_stop", &aon::Encoder::Params::early_stop);
+        .def_readwrite("active_ratio", &aon::Encoder::Params::active_ratio)
+        .def_readwrite("l_radius", &aon::Encoder::Params::l_radius);
 
     py::class_<aon::Decoder::Params>(m, "DecoderParams")
         .def(py::init<>())
@@ -113,7 +115,6 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("plr", &aon::Actor::Params::plr)
         .def_readwrite("smoothing", &aon::Actor::Params::smoothing)
         .def_readwrite("delay_rate", &aon::Actor::Params::delay_rate)
-        .def_readwrite("value_clip", &aon::Actor::Params::value_clip)
         .def_readwrite("policy_clip", &aon::Actor::Params::policy_clip)
         .def_readwrite("discount", &aon::Actor::Params::discount)
         .def_readwrite("td_scale_decay", &aon::Actor::Params::td_scale_decay)
@@ -180,6 +181,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_io_type", &pyaon::Hierarchy::get_io_type)
         .def("get_up_radius", &pyaon::Hierarchy::get_up_radius)
         .def("get_down_radius", &pyaon::Hierarchy::get_down_radius)
+        .def("get_encoder_receptive_field", &pyaon::Hierarchy::get_encoder_receptive_field)
         .def("merge", &pyaon::Hierarchy::merge)
         .def("__copy__", 
             [](const pyaon::Hierarchy &other) {
@@ -210,7 +212,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def_readwrite("lr", &aon::Image_Encoder::Params::lr)
         .def_readwrite("scale", &aon::Image_Encoder::Params::scale)
         .def_readwrite("rr", &aon::Image_Encoder::Params::rr)
-        .def_readwrite("radius", &aon::Image_Encoder::Params::radius);
+        .def_readwrite("n_radius", &aon::Image_Encoder::Params::n_radius);
 
     py::class_<pyaon::Image_Encoder>(m, "ImageEncoder")
         .def(py::init<
@@ -237,7 +239,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("step", &pyaon::Image_Encoder::step,
             py::arg("inputs"),
             py::arg("learn_enabled") = true,
-            py::arg("learn_recon") = true
+            py::arg("learn_recon") = false
         )
         .def("reconstruct", &pyaon::Image_Encoder::reconstruct)
         .def("get_num_visible_layers", &pyaon::Image_Encoder::get_num_visible_layers)
@@ -245,6 +247,7 @@ PYBIND11_MODULE(pyaogmaneo, m) {
         .def("get_hidden_cis", &pyaon::Image_Encoder::get_hidden_cis)
         .def("get_hidden_size", &pyaon::Image_Encoder::get_hidden_size)
         .def("get_visible_size", &pyaon::Image_Encoder::get_visible_size)
+        .def("get_receptive_field", &pyaon::Image_Encoder::get_receptive_field)
         .def("merge", &pyaon::Image_Encoder::merge)
         .def("__copy__", 
             [](const pyaon::Image_Encoder &other) {

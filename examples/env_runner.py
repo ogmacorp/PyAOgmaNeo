@@ -18,7 +18,7 @@ import time
 def sigmoid(x):
     return np.tanh(x * 0.5) * 0.5 + 0.5
 
-input_type_none = neo.prediction
+input_type_none = neo.none
 input_type_prediction = neo.prediction
 input_type_action = neo.action
 
@@ -83,11 +83,11 @@ class EnvRunner:
 
         self.input_keys.append(key)
 
-    def __init__(self, env, layer_sizes=1 * [(5, 5, 128)],
-        num_dendrites_per_cell=8, value_num_dendrites_per_cell=16,
-        input_radius=4, layer_radius=2, hidden_size=(10, 10, 16),
+    def __init__(self, env, layer_sizes=1 * [(5, 5, 64)],
+        num_dendrites_per_cell=4,
+        input_radius=2, layer_radius=2, hidden_size=(10, 10, 16),
         image_radius=8, image_scale=0.5, obs_resolution=16, action_resolution=9, action_importance=0.1,
-        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0,  n_threads=4
+        reward_scale=1.0, terminal_reward=0.0, inf_sensitivity=2.0, n_threads=4
     ):
         self.env = env
 
@@ -185,7 +185,7 @@ class EnvRunner:
         io_descs = []
 
         for i in range(len(self.input_sizes)):
-            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], num_dendrites_per_cell=num_dendrites_per_cell, value_num_dendrites_per_cell=value_num_dendrites_per_cell, up_radius=input_radius, down_radius=layer_radius))
+            io_descs.append(neo.IODesc(self.input_sizes[i], self.input_types[i], num_dendrites_per_cell=num_dendrites_per_cell, up_radius=input_radius, down_radius=layer_radius))
 
         self.h = neo.Hierarchy(io_descs, lds)
 
@@ -208,6 +208,8 @@ class EnvRunner:
         self.actions = np.array(self.actions, np.int32)
 
         self.obs_space = obs_space
+
+        self.learn_enabled = True
 
     def _feed_observation(self, obs):
         self.inputs = []
@@ -308,7 +310,14 @@ class EnvRunner:
 
         r = reward * self.reward_scale + float(term) * self.terminal_reward
 
-        self.h.step(self.inputs, True, r)
+        start_time = time.perf_counter()
+
+        self.h.step(self.inputs, self.learn_enabled, r)
+
+        end_time = time.perf_counter()
+
+        #if term or trunc:
+        #    print((end_time - start_time) * 1000.0)
 
         # retrieve actions
         for i in range(len(self.action_indices)):
